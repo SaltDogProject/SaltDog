@@ -1,3 +1,3 @@
-import {saltDogApp} from '~/main/app'
+import { saltDogApp } from "~/main/app";
 
-saltDogApp.launchApp()
+saltDogApp.launchApp();
