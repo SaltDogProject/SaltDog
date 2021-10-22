@@ -1,7 +1,7 @@
 import { createApp } from 'vue';
-import App from './renderer/App.vue';
-import router from './renderer/router';
-import store from './renderer/store';
+import App from '@/entryWindow/App.vue';
+import router from './router';
+import store from './store';
 // global use element-plus
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';

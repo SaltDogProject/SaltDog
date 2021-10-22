@@ -5,12 +5,37 @@ function resolve(dir) {
 }
 const arch = process.argv.includes('--ia32') ? 'ia32' : 'x64';
 const config = {
+    pages: {
+        entry: {
+            entry: 'src/renderer/entryWindow/main.ts',
+            template: 'public/index.html',
+            filename: 'entry.html',
+            title: 'SaltDog-Entry',
+        },
+        workspace: {
+            entry: 'src/renderer/workspaceWindow/main.ts',
+            template: 'public/index.html',
+            filename: 'workspace.html',
+            title: 'SaltDog-Workspace',
+        },
+    },
     configureWebpack: {
         // FIXME: debug mode
         devtool: 'cheap-module-eval-source-map',
     },
     chainWebpack: (config) => {
-        config.resolve.alias.set('@', resolve('src/renderer')).set('~', resolve('src')).set('root', resolve('./'));
+        config.resolve.alias
+            .set('@', resolve('src/renderer'))
+            .set('~', resolve('src'))
+            .set('root', resolve('./'))
+            .set('#', resolve('utils'));
+        // build web
+        // config.entry('entryWindow').add('src/renderer/entryWindow/main.ts').end().output.filename('entryWindow.js');
+        // config
+        //     .entry('workspaceWindow')
+        //     .add('src/renderer/workspacWindow/main.ts')
+        //     .end()
+        //     .output.filename('workspacWindow.js');
     },
     pluginOptions: {
         electronBuilder: {
@@ -95,6 +120,7 @@ const config = {
             },
         },
     },
+    productionSourceMap: false,
 };
 if (process.env.NODE_ENV === 'development') {
     config.configureWebpack = {
