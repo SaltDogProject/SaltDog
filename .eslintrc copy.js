@@ -3,6 +3,7 @@ module.exports = {
     root: true,
     env: {
         node: true,
+        es6: true,
     },
     extends: [
         'plugin:vue/vue3-essential',
@@ -27,15 +28,9 @@ module.exports = {
         '@typescript-eslint/no-var-requires': 0,
         'vue/attributes-order': 'off',
         indent: 'off',
-        '@typescript-eslint/indent': ['off'],
+        '@typescript-eslint/indent': ['off', 4, { VariableDeclarator: 4, SwitchCase: 1 }],
         '@typescript-eslint/no-non-null-assertion': 'off',
-        'prettier/prettier': [
-            'error',
-            {},
-            {
-                usePrettierrc: true,
-            },
-        ],
+        'prettier/prettier': 'error',
         'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
         'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     },
