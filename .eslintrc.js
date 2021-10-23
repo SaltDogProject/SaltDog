@@ -32,7 +32,7 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
         'prettier/prettier': [
-            'error',
+            'off',
             {},
             {
                 usePrettierrc: true,

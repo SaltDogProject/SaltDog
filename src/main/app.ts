@@ -24,8 +24,6 @@ class LifeCycle {
             // }
             // Create the browser window.
             windowManager.create(IWindowList.ENTRY_WINDOW);
-
-            console.log('loadok');
         };
         if (!app.isReady()) {
             // This method will be called when Electron has finished
