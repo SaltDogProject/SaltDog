@@ -22,8 +22,10 @@ class LifeCycle {
             //         console.error("Vue Devtools failed to install:", e.toString());
             //     }
             // }
-            // Create the browser window.
-            windowManager.create(IWindowList.ENTRY_WINDOW);
+            // Create the entry window.
+            //windowManager.create(IWindowList.ENTRY_WINDOW);
+            // FIXME: debug create the WORKSPACE window
+            windowManager.create(IWindowList.WORKSPACE_WINDOW);
         };
         if (!app.isReady()) {
             // This method will be called when Electron has finished

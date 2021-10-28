@@ -10,6 +10,7 @@ export interface IBrowserWindowOptions {
         backgroundThrottling: boolean;
         webSecurity?: boolean;
         contextIsolation: boolean;
+        webviewTag?: boolean;
     };
     vibrancy?: string | any;
     frame?: boolean;

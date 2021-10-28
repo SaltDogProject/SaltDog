@@ -11,17 +11,26 @@
         "skipLibCheck": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
+        "allowJs": true,
         "sourceMap": true,
         "baseUrl": ".",
         "types": ["webpack-env"],
         "paths": {
-            "@/*": ["src/*"],
+            "@/*": ["src/renderer/*"],
             "~/*": ["src/*"],
             "#/*": ["src/utils/*"],
             "root/*": ["./*"]
         },
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
     },
-    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx"],
+    "include": [
+        "node_modules/pdfjs-dist/*",
+        "src/**/*.js",
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.vue",
+        "tests/**/*.ts",
+        "tests/**/*.tsx"
+    ],
     "exclude": ["node_modules"]
 }

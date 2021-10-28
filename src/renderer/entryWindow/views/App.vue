@@ -4,7 +4,6 @@
             <div class="fake-title-bar__title">SaltDog - {{ version }}</div>
             <div class="handle-bar" v-if="os !== 'darwin'">
                 <i class="el-icon-minus" @click="minimizeWindow"></i>
-                <i class="el-icon-circle-plus-outline" @click="openMiniWindow"></i>
                 <i class="el-icon-close" @click="closeWindow"></i>
             </div>
         </div>

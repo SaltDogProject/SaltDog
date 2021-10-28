@@ -18,6 +18,12 @@ const config = {
             filename: 'workspace.html',
             title: 'SaltDog-Workspace',
         },
+        // pdfviewer: {
+        //     entry: 'src/renderer/webviews/pdfviewer/viewer.js',
+        //     template: 'src/renderer/webviews/pdfviewer/viewer.html',
+        //     filename: 'pdfviewer.html',
+        //     title: 'SaltDog-Viewer',
+        // },
     },
     configureWebpack: {
         // FIXME: debug mode
@@ -59,8 +65,8 @@ const config = {
                         provider: 'github',
                         owner: 'Dorapocket',
                         repo: 'SaltDog',
-                        // FIXME: beta
-                        releaseType: 'beta',
+                        // FIXME: "draft" | "prerelease" | "release" | null
+                        releaseType: 'draft',
                     },
                 ],
                 directories: {

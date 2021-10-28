@@ -3,3 +3,4 @@ test/unit/*.js
 test/e2e/*.js
 dist/
 .eslintrc.js
+src/renderer/webviews/pdfviewer/**
