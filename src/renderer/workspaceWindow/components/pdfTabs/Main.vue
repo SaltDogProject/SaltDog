@@ -20,7 +20,6 @@ import tabManager from './tabManager';
 declare const __static: any;
 export default defineComponent({
     setup() {
-        console.log('run setup', tabManager, tabManager.getTabListRef());
         const editableTabs = tabManager.getTabListRef();
         const editableTabsValue = tabManager.getCurrentTabRef();
         let tabIndex = 1;

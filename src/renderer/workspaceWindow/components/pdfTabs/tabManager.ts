@@ -78,7 +78,6 @@ class MainTabManager implements ITabManager {
         console.log('beforeUpdate');
     }
     public onUpdated() {
-        console.log('onUpdated');
         if (this.tabList.value.length == 0) return;
         else {
             const newWebviews = this.tabList.value.filter((item) => {

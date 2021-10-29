@@ -21,7 +21,7 @@
                                 <pdf-tabs></pdf-tabs>
                             </div>
                             <div id="resizer-primaryPanel2secondaryPanel" class="resizer"></div>
-                            <div id="secondaryPanel" class="secondaryPanel hidden"></div>
+                            <div id="secondaryPanel" class="secondaryPanel"></div>
                         </div>
                         <div id="resizer-mainPanel2BottomPanel" class="resizer"></div>
                         <div id="bottomPanel" class="bottomPanel"></div>
@@ -108,7 +108,7 @@ bottom_bar_height = 20px
 side_bar_icons_width = 40px
 side_bar_width = 180px
 bottom_panel_height = 200px
-resizer_width_or_height = 5px;
+resizer_width_or_height = 4px;
 $darwinBg = transparentify(#172426, #000, 0.7)
 .saltdog-fade
   &-enter,
@@ -193,7 +193,7 @@ $darwinBg = transparentify(#172426, #000, 0.7)
                 background-color #3ef
                 height resizer_width_or_height
             .sideBarIcons
-                order -1
+                order 0
                 width side_bar_icons_width
                 background-color: #ff0
             .sideBar
@@ -219,11 +219,11 @@ $darwinBg = transparentify(#172426, #000, 0.7)
                             width: 100%
                     .primaryPanel
                             order -1
-                            width: 50%
+                            width: 80%
                             //background-color: #444
                     .secondaryPanel
                         order 1
-                        width:50%
+                        width:20%
                         background-color: #555
                 .bottomPanel
                     order 1

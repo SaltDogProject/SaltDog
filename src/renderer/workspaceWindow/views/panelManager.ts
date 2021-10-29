@@ -1,8 +1,18 @@
 import { ITabManager } from '@/utils/panelTab';
+import {
+    initWindowResizeListener,
+    initPrimarySecondaryPanelListener,
+    initSideBarMainPanelListener,
+    initBottomBarMainPanelListener,
+} from './resize';
 import { throttle } from 'lodash';
 interface IPanelObject {
     htmlElement: HTMLDivElement;
     controller?: ITabManager;
+    size?: {
+        width: number;
+        height: number;
+    };
 }
 interface IPanels {
     sideBar: IPanelObject;
@@ -47,69 +57,71 @@ class viewsManager {
             this.sideBarIcon =
                 null;
     }
+    public updateView() {
+        this.sideBar!.htmlElement.style.height = `${this.sideBar!.size!.height}px`;
+        this.sideBar!.htmlElement.style.width = `${this.sideBar!.size!.width}px`;
+        this.mainPanel!.htmlElement.style.height = `${this.mainPanel!.size!.height}px`;
+        this.mainPanel!.htmlElement.style.width = `${this.mainPanel!.size!.width}px`;
+        this.primaryPanel!.htmlElement.style.height = `${this.primaryPanel!.size!.height}px`;
+        this.primaryPanel!.htmlElement.style.width = `${this.primaryPanel!.size!.width}px`;
+        this.secondaryPanel!.htmlElement.style.height = `${this.secondaryPanel!.size!.height}px`;
+        this.secondaryPanel!.htmlElement.style.width = `${this.secondaryPanel!.size!.width}px`;
+        this.bottomPanel!.htmlElement.style.height = `${this.bottomPanel!.size!.height}px`;
+        this.bottomPanel!.htmlElement.style.width = `${this.bottomPanel!.size!.width}px`;
+        this.functionalZone!.htmlElement.style.height = `${this.functionalZone!.size!.height}px`;
+        this.functionalZone!.htmlElement.style.width = `${this.functionalZone!.size!.width}px`;
+        this.sideBarIcon!.htmlElement.style.height = `${this.sideBarIcon!.size!.height}px`;
+        this.sideBarIcon!.htmlElement.style.width = `${this.sideBarIcon!.size!.width}px`;
+    }
     public init(panels: IPanels) {
         if (this.isInit) {
             console.log('[viewsManager] Double init');
         } else {
             this.sideBar = panels.sideBar;
+            this.sideBar.size = {
+                width: this.sideBar.htmlElement.getBoundingClientRect().width,
+                height: this.sideBar.htmlElement.getBoundingClientRect().height,
+            };
             this.mainPanel = panels.mainPanel;
+            this.mainPanel.size = {
+                width: this.mainPanel.htmlElement.getBoundingClientRect().width,
+                height: this.mainPanel.htmlElement.getBoundingClientRect().height,
+            };
             this.primaryPanel = panels.primaryPanel;
+            this.primaryPanel.size = {
+                width: this.primaryPanel.htmlElement.getBoundingClientRect().width,
+                height: this.primaryPanel.htmlElement.getBoundingClientRect().height,
+            };
             this.secondaryPanel = panels.secondaryPanel;
-            this.bottomPanel = panels.secondaryPanel;
+            this.secondaryPanel.size = {
+                width: this.secondaryPanel.htmlElement.getBoundingClientRect().width,
+                height: this.secondaryPanel.htmlElement.getBoundingClientRect().height,
+            };
+            this.bottomPanel = panels.bottomPanel;
+            this.bottomPanel.size = {
+                width: this.bottomPanel.htmlElement.getBoundingClientRect().width,
+                height: this.bottomPanel.htmlElement.getBoundingClientRect().height,
+            };
             this.functionalZone = panels.functionalZone;
+            this.functionalZone.size = {
+                width: this.functionalZone.htmlElement.getBoundingClientRect().width,
+                height: this.functionalZone.htmlElement.getBoundingClientRect().height,
+            };
             this.sideBarIcon = panels.sideBarIcon;
+            this.sideBarIcon.size = {
+                width: this.sideBarIcon.htmlElement.getBoundingClientRect().width,
+                height: this.sideBarIcon.htmlElement.getBoundingClientRect().height,
+            };
             this.isInit = true;
+            this.updateView();
         }
     }
     public initResizeListener(resizers: IResizeDivs) {
         this.resizers = resizers;
-        this.initWindowResizeListener();
-        this.initSideBarMainPanelListener();
-    }
-    private initWindowResizeListener() {
-        const windowResizeHandler = throttle((e: UIEvent) => {
-            const innerWidth = (e!.currentTarget as Window).innerWidth;
-            // const innerHeight = (e!.currentTarget as Window).innerHeight;
-            const updateWidth = innerWidth - this.sideBarIcon!.htmlElement.getBoundingClientRect().width;
-            console.log('window resize', innerWidth, this.sideBarIcon!.htmlElement.getBoundingClientRect().width);
-            this.functionalZone!.htmlElement.style.width = `100%`;
-            this.resizers!.sideBar2mainPanel.outerContainer.style.width = `${updateWidth}px`;
-        }, 100);
-        window.addEventListener('resize', windowResizeHandler);
-    }
-    private initSideBarMainPanelListener() {
-        const resizer = this.resizers?.sideBar2mainPanel.resizer;
-        let outer: DOMRect;
-        const movehandler = throttle((e: MouseEvent) => {
-            const sideBarWidthStart = outer!.x;
-            const sideBarWidthEnd = e.clientX;
-            const sideBarWidth = sideBarWidthEnd - sideBarWidthStart > 150 ? sideBarWidthEnd - sideBarWidthStart : 150;
-            const mainPanelWidth = outer!.width - sideBarWidth;
-            this.sideBar!.htmlElement.style.width = `${sideBarWidth}px`;
-            this.functionalZone!.htmlElement.style.width = `${mainPanelWidth}px`;
-            console.log('mousemove', sideBarWidth, mainPanelWidth);
-        }, 100);
-        let downHandler = (e: MouseEvent) => {
-            return;
-        };
-        const uphandler = (e: MouseEvent) => {
-            console.log('mouseup,remove listener');
-            document.removeEventListener('mousedown', downHandler);
-            document.removeEventListener('mousemove', movehandler);
-            document.removeEventListener('mouseup', uphandler);
-            this.sideBar!.htmlElement.style.pointerEvents = 'auto';
-            this.mainPanel!.htmlElement.style.pointerEvents = 'auto';
-            e.stopPropagation();
-        };
-        downHandler = (e: MouseEvent) => {
-            this.sideBar!.htmlElement.style.pointerEvents = 'none';
-            this.mainPanel!.htmlElement.style.pointerEvents = 'none';
-            outer = this.resizers!.sideBar2mainPanel.outerContainer.getBoundingClientRect();
-            console.log('[PanelManager] SideBarMainPanel resizing.');
-            document.addEventListener('mousemove', movehandler);
-            document.addEventListener('mouseup', uphandler);
-        };
-        resizer?.addEventListener('mousedown', downHandler);
+        initWindowResizeListener.call(this);
+        initSideBarMainPanelListener.call(this);
+        initBottomBarMainPanelListener.call(this);
+        initPrimarySecondaryPanelListener.call(this);
     }
 }
 export default new viewsManager();
