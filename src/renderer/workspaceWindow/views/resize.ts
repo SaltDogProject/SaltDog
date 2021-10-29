@@ -7,8 +7,15 @@ export function initWindowResizeListener(): void {
         const innerHeight = (e!.currentTarget as Window).innerHeight;
         this.primaryPanel!.size.width = updateWidth;
         // 30 标题栏高 20 bottombar高
-        const updateHeight = innerHeight - 30 - 20 - this.bottomPanel!.size.height - 4;
-        const updateWidth = innerWidth - this.sideBarIcon!.size.width - this.sideBar!.size.width - 4;
+        const updateHeight =
+            innerHeight - 30 - 20 - this.bottomPanel!.size.height - 4 + (this.isBottomPanelOpen ? 0 : 4);
+        const updateWidth =
+            innerWidth -
+            this.sideBarIcon!.size.width -
+            this.sideBar!.size.width -
+            4 +
+            (this.isSideBarOpen ? 0 : 4) +
+            (this.isSecondaryPanelOpen ? 0 : 4);
         this.primaryPanel!.size.height = updateHeight;
         this.secondaryPanel!.size.height = updateHeight;
         this.sideBarIcon!.size.height = innerHeight - 30 - 20;

@@ -51,31 +51,8 @@ const App = defineComponent({
         function refreshWindow() {
             location.reload();
         }
+
         onMounted(() => {
-            panelManager.init({
-                sideBarIcon: {
-                    htmlElement: document.getElementById('sideBarIcons') as HTMLDivElement,
-                },
-                sideBar: {
-                    htmlElement: document.getElementById('sideBar') as HTMLDivElement,
-                },
-                functionalZone: {
-                    htmlElement: document.getElementById('functionalZone') as HTMLDivElement,
-                },
-                mainPanel: {
-                    htmlElement: document.getElementById('mainPanel') as HTMLDivElement,
-                },
-                primaryPanel: {
-                    htmlElement: document.getElementById('primaryPanel') as HTMLDivElement,
-                    controller: pdfTabManager,
-                },
-                secondaryPanel: {
-                    htmlElement: document.getElementById('secondaryPanel') as HTMLDivElement,
-                },
-                bottomPanel: {
-                    htmlElement: document.getElementById('bottomPanel') as HTMLDivElement,
-                },
-            });
             panelManager.initResizeListener({
                 sideBar2mainPanel: {
                     resizer: document.getElementById('resizer-sideBar2mainPanel') as HTMLDivElement,
@@ -90,6 +67,38 @@ const App = defineComponent({
                     outerContainer: document.getElementById('mainPanel') as HTMLDivElement,
                 },
             });
+            panelManager.init(
+                {
+                    sideBarIcon: {
+                        htmlElement: document.getElementById('sideBarIcons') as HTMLDivElement,
+                    },
+                    sideBar: {
+                        htmlElement: document.getElementById('sideBar') as HTMLDivElement,
+                    },
+                    functionalZone: {
+                        htmlElement: document.getElementById('functionalZone') as HTMLDivElement,
+                    },
+                    mainPanel: {
+                        htmlElement: document.getElementById('mainPanel') as HTMLDivElement,
+                    },
+                    primaryPanel: {
+                        htmlElement: document.getElementById('primaryPanel') as HTMLDivElement,
+                        controller: pdfTabManager,
+                    },
+                    secondaryPanel: {
+                        htmlElement: document.getElementById('secondaryPanel') as HTMLDivElement,
+                    },
+                    bottomPanel: {
+                        htmlElement: document.getElementById('bottomPanel') as HTMLDivElement,
+                    },
+                },
+                {
+                    // 初始状态：关闭所有panels 要打开后面再开，不然计算会乱
+                    sideBar: false,
+                    bottomPanel: false,
+                    secondaryPanel: false,
+                }
+            );
         });
         return {
             documentName,
@@ -209,7 +218,7 @@ $darwinBg = transparentify(#172426, #000, 0.7)
                 align-items: stretch
                 .mainPanel
                     order -1
-                    height 'calc(100% - %s)' % bottom_panel_height
+                    height 100%
                     //background-color: #666
                     display: flex
                     flex-flow :row nowrap
@@ -219,11 +228,10 @@ $darwinBg = transparentify(#172426, #000, 0.7)
                             width: 100%
                     .primaryPanel
                             order -1
-                            width: 80%
+                            width: 100%
                             //background-color: #444
                     .secondaryPanel
                         order 1
-                        width:20%
                         background-color: #555
                 .bottomPanel
                     order 1
