@@ -27,7 +27,7 @@ export default defineComponent({
         function handleTabsEdit(targetName: string, action: string) {
             if (action === 'add') {
                 const newTabName = `${++tabIndex}`;
-                tabManager.addTab('New Tab', newTabName, '');
+                tabManager.addTab('New Tab', 'about:blank');
             }
             if (action === 'remove') {
                 tabManager.removeTab(targetName);
@@ -52,11 +52,15 @@ export default defineComponent({
 });
 </script>
 <style lang="stylus">
+tabitem_height = 40px
 .pdftabview
     height: 100%
+    .el-tabs__header
+        .el-tabs__item
+            height tabitem_height
     .el-tabs__content
         padding 0px!important
-        height:100%
+        height:'calc(100% - %s)' % tabitem_height
         width:100%
         .el-tab-pane
             height:100%

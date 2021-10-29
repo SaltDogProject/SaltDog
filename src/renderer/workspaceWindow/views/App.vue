@@ -10,16 +10,22 @@
         </div>
         <div class="workspaceContainer">
             <div class="mainContent">
-                <div class="sideBarIcons"></div>
-                <div class="sideBar"></div>
-                <div class="functionalZone">
-                    <div class="mainPanel onePanel">
-                        <div class="primaryPanel">
-                            <pdf-tabs></pdf-tabs>
+                <div id="sideBarIcons" class="sideBarIcons"></div>
+                <div id="panelAndSidebarContainer">
+                    <div id="sideBar" class="sideBar"></div>
+                    <div id="resizer-sideBar2mainPanel" class="resizer"></div>
+                    <div id="functionalZone" class="functionalZone">
+                        <div id="mainPanel" class="mainPanel">
+                            <!-- onePanel if only one-->
+                            <div id="primaryPanel" class="primaryPanel">
+                                <pdf-tabs></pdf-tabs>
+                            </div>
+                            <div id="resizer-primaryPanel2secondaryPanel" class="resizer"></div>
+                            <div id="secondaryPanel" class="secondaryPanel hidden"></div>
                         </div>
-                        <div class="secondaryPanel hidden"></div>
+                        <div id="resizer-mainPanel2BottomPanel" class="resizer"></div>
+                        <div id="bottomPanel" class="bottomPanel"></div>
                     </div>
-                    <div class="bottomPanel"></div>
                 </div>
             </div>
 
@@ -28,9 +34,11 @@
     </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, getCurrentInstance, ComponentInternalInstance } from 'vue';
+import { defineComponent, ref, getCurrentInstance, ComponentInternalInstance, onMounted } from 'vue';
 import pkg from 'root/package.json';
 import PdfTabs from '../components/pdfTabs/Main.vue';
+import panelManager from './panelManager';
+import pdfTabManager from '../components/pdfTabs/tabManager';
 declare var __static: string;
 
 const App = defineComponent({
@@ -43,6 +51,46 @@ const App = defineComponent({
         function refreshWindow() {
             location.reload();
         }
+        onMounted(() => {
+            panelManager.init({
+                sideBarIcon: {
+                    htmlElement: document.getElementById('sideBarIcons') as HTMLDivElement,
+                },
+                sideBar: {
+                    htmlElement: document.getElementById('sideBar') as HTMLDivElement,
+                },
+                functionalZone: {
+                    htmlElement: document.getElementById('functionalZone') as HTMLDivElement,
+                },
+                mainPanel: {
+                    htmlElement: document.getElementById('mainPanel') as HTMLDivElement,
+                },
+                primaryPanel: {
+                    htmlElement: document.getElementById('primaryPanel') as HTMLDivElement,
+                    controller: pdfTabManager,
+                },
+                secondaryPanel: {
+                    htmlElement: document.getElementById('secondaryPanel') as HTMLDivElement,
+                },
+                bottomPanel: {
+                    htmlElement: document.getElementById('bottomPanel') as HTMLDivElement,
+                },
+            });
+            panelManager.initResizeListener({
+                sideBar2mainPanel: {
+                    resizer: document.getElementById('resizer-sideBar2mainPanel') as HTMLDivElement,
+                    outerContainer: document.getElementById('panelAndSidebarContainer') as HTMLDivElement,
+                },
+                mainPanel2BottomPanel: {
+                    resizer: document.getElementById('resizer-mainPanel2BottomPanel') as HTMLDivElement,
+                    outerContainer: document.getElementById('functionalZone') as HTMLDivElement,
+                },
+                primaryPanel2secondaryPanel: {
+                    resizer: document.getElementById('resizer-primaryPanel2secondaryPanel') as HTMLDivElement,
+                    outerContainer: document.getElementById('mainPanel') as HTMLDivElement,
+                },
+            });
+        });
         return {
             documentName,
             os,
@@ -56,10 +104,11 @@ export default App;
 
 <style lang="stylus">
 title_bar_height = 30px
-bottom_bar_height = 0px//20px
-side_bar_icons_width = 0px//40px
-side_bar_width = 0px//180px
-bottom_panel_height = 0px//200px
+bottom_bar_height = 20px
+side_bar_icons_width = 40px
+side_bar_width = 180px
+bottom_panel_height = 200px
+resizer_width_or_height = 5px;
 $darwinBg = transparentify(#172426, #000, 0.7)
 .saltdog-fade
   &-enter,
@@ -128,6 +177,21 @@ $darwinBg = transparentify(#172426, #000, 0.7)
             display: flex
             flex-flow row nowrap
             align-items stretch
+            #panelAndSidebarContainer
+                display:flex
+                width:'calc(100% - %s)' % side_bar_icons_width
+                flex-flow: row nowrap
+                align-items: stretch
+            #resizer-sideBar2mainPanel
+                order 2
+                background-color #3ef
+                width resizer_width_or_height
+            #resizer-primaryPanel2secondaryPanel
+                background-color #3ef
+                width resizer_width_or_height
+            #resizer-mainPanel2BottomPanel
+                background-color #3ef
+                height resizer_width_or_height
             .sideBarIcons
                 order -1
                 width side_bar_icons_width
@@ -137,8 +201,8 @@ $darwinBg = transparentify(#172426, #000, 0.7)
                 width: side_bar_width
                 background-color: #0ff
             .functionalZone
-                order 2
-                width: 'calc(100% - %s)' % (side_bar_icons_width + side_bar_width)
+                order 3
+                width: 100%
                 //background-color: #f0f
                 display: flex
                 flex-flow: column nowrap

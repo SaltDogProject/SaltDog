@@ -18,11 +18,13 @@
     "main": "background.js",
     "dependencies": {
         "@element-plus/icons": "^0.0.11",
+        "@types/lodash": "^4.14.176",
         "core-js": "^3.6.5",
         "element-plus": "^1.1.0-beta.24",
         "eslint-config-prettier": "^8.3.0",
         "husky": "^7.0.4",
         "lint-staged": "^11.2.3",
+        "lodash": "^4.17.21",
         "pdfjs-dist": "^2.10.377",
         "stylus": "^0.55.0",
         "stylus-loader": "3.0.2",

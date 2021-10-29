@@ -1,19 +1,15 @@
 import { ref } from 'vue';
 import { PDFVIEWER_WEBVIEW_URL } from '@/utils/constants';
 import { WebviewTag } from 'electron';
-interface ITabConfig {
-    title: string;
-    name: string;
-    webviewUrl: string;
-    webviewId: string;
-}
-class MainTabManager {
+import { uniqueId } from 'lodash';
+import { ITabConfig, ITabManager } from '@/utils/panelTab';
+class MainTabManager implements ITabManager {
     private currentTab = ref('1');
     private tabList = ref<Array<ITabConfig>>([
         {
             title: 'Test Document.pdf',
             name: '1',
-            webviewId: `pdfWebview-1`,
+            webviewId: `1`,
             webviewUrl: PDFVIEWER_WEBVIEW_URL,
         },
     ]);
@@ -33,17 +29,18 @@ class MainTabManager {
     public setCurrentTab(tabName: string): void {
         this.currentTab.value = tabName;
     }
-    public addTab(title: string, name: string, webviewUrl: string): void {
+    public addTab(title: string, webviewUrl: string): string {
+        const id = uniqueId(`pdfWebview-`);
         this.getTabList().push({
             title,
-            name,
+            name: id,
             webviewUrl,
-            webviewId: `pdfWebview-${name}`,
+            webviewId: id,
         });
-        this.setCurrentTab(name);
+        this.setCurrentTab(id);
+        return id;
     }
     public removeTab(name: string) {
-        console.log('removeTab', name);
         const tabs = this.tabList.value;
         let activeName = this.currentTab.value;
         if (activeName === name) {
@@ -58,6 +55,7 @@ class MainTabManager {
         }
         this.currentTab.value = activeName;
         this.tabList.value = tabs.filter((tab) => tab.name !== name);
+        if (this.webviewMap.has(name)) this.webviewMap.delete(name);
     }
     onMounted() {
         if (this.tabList.value.length == 0) return;

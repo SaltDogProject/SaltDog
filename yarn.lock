@@ -1210,6 +1210,11 @@
   resolved "https://registry.nlark.com/@types/json-schema/download/@types/json-schema-7.0.9.tgz?cache=0&sync_timestamp=1629708346907&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fjson-schema%2Fdownload%2F%40types%2Fjson-schema-7.0.9.tgz#97edc9037ea0c38585320b28964dde3b39e4660d"
   integrity sha1-l+3JA36gw4WFMgsolk3eOznkZg0=
 
+"@types/lodash@^4.14.176":
+  version "4.14.176"
+  resolved "https://registry.npmmirror.com/@types/lodash/download/@types/lodash-4.14.176.tgz?cache=0&sync_timestamp=1634769182663&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Flodash%2Fdownload%2F%40types%2Flodash-4.14.176.tgz#641150fc1cda36fbfa329de603bbb175d7ee20c0"
+  integrity sha1-ZBFQ/BzaNvv6Mp3mA7uxddfuIMA=
+
 "@types/mime@^1":
   version "1.3.2"
   resolved "https://registry.nlark.com/@types/mime/download/@types/mime-1.3.2.tgz?cache=0&sync_timestamp=1629708403517&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fmime%2Fdownload%2F%40types%2Fmime-1.3.2.tgz#93e25bf9ee75fe0fd80b594bc4feb0e862111b5a"
@@ -6881,7 +6886,7 @@ lodash.uniq@^4.5.0:
 
 lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.3:
   version "4.17.21"
-  resolved "https://registry.npm.taobao.org/lodash/download/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
+  resolved "https://registry.nlark.com/lodash/download/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha1-Z5WRxWTDv/quhFTPCz3zcMPWkRw=
 
 log-symbols@^2.2.0:
