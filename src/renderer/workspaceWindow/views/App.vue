@@ -21,7 +21,9 @@
                                 <pdf-tabs></pdf-tabs>
                             </div>
                             <div id="resizer-primaryPanel2secondaryPanel" class="resizer"></div>
-                            <div id="secondaryPanel" class="secondaryPanel"></div>
+                            <div id="secondaryPanel" class="secondaryPanel">
+                                <translator></translator>
+                            </div>
                         </div>
                         <div id="resizer-mainPanel2BottomPanel" class="resizer"></div>
                         <div id="bottomPanel" class="bottomPanel"></div>
@@ -39,10 +41,12 @@ import pkg from 'root/package.json';
 import PdfTabs from '../components/pdfTabs/Main.vue';
 import panelManager from './panelManager';
 import pdfTabManager from '../components/pdfTabs/tabManager';
+import translator from '../components/translator/translator.vue';
+import tabManager from '../components/pdfTabs/tabManager';
 declare var __static: string;
 
 const App = defineComponent({
-    components: { PdfTabs },
+    components: { PdfTabs, translator },
     setup() {
         const documentName = ref('Test Document.pdf');
         const os = ref(process.platform);
@@ -99,6 +103,7 @@ const App = defineComponent({
                     secondaryPanel: false,
                 }
             );
+            panelManager.showSecondaryPanel();
         });
         return {
             documentName,
@@ -232,7 +237,7 @@ $darwinBg = transparentify(#172426, #000, 0.7)
                             //background-color: #444
                     .secondaryPanel
                         order 1
-                        background-color: #555
+                        // background-color: #555
                 .bottomPanel
                     order 1
                     height bottom_panel_height

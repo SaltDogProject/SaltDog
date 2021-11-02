@@ -3,6 +3,7 @@ import { PDFVIEWER_WEBVIEW_URL } from '@/utils/constants';
 import { WebviewTag } from 'electron';
 import { uniqueId } from 'lodash';
 import { ITabConfig, ITabManager } from '@/utils/panelTab';
+import bus from '@/utils/bus';
 class MainTabManager implements ITabManager {
     private currentTab = ref('1');
     private tabList = ref<Array<ITabConfig>>([
@@ -61,16 +62,7 @@ class MainTabManager implements ITabManager {
         if (this.tabList.value.length == 0) return;
         else {
             this.tabList.value.map((v) => {
-                const element = document.getElementById(v.webviewId) as WebviewTag;
-                if (!this.webviewMap.has(v.webviewId)) {
-                    this.webviewMap.set(v.webviewId, element);
-                    element.addEventListener('dom-ready', () => {
-                        element.openDevTools();
-                    });
-                    element.addEventListener('console-message', (e) => {
-                        console.log('[webview]: ' + e.message);
-                    });
-                }
+                this.addWebviewTabEventLIstener(v);
             });
         }
     }
@@ -84,16 +76,23 @@ class MainTabManager implements ITabManager {
                 return !this.webviewMap.has(item.webviewId);
             });
             newWebviews.map((v) => {
-                const element = document.getElementById(v.webviewId) as WebviewTag;
-                if (!this.webviewMap.has(v.webviewId)) {
-                    this.webviewMap.set(v.webviewId, element);
-                    element.addEventListener('dom-ready', () => {
-                        element.openDevTools();
-                    });
-                    element.addEventListener('console-message', (e) => {
-                        console.log('[webview]: ' + e.message);
-                    });
-                }
+                this.addWebviewTabEventLIstener(v);
+            });
+        }
+    }
+    private addWebviewTabEventLIstener(v: ITabConfig) {
+        const element = document.getElementById(v.webviewId) as WebviewTag;
+        if (!this.webviewMap.has(v.webviewId)) {
+            this.webviewMap.set(v.webviewId, element);
+            element.addEventListener('dom-ready', () => {
+                element.openDevTools();
+            });
+            element.addEventListener('console-message', (e) => {
+                console.log('[webview]: ' + e.message);
+            });
+            element.addEventListener('ipc-message', (msg) => {
+                console.log('ipcMessage', msg);
+                bus.emit(msg.channel, msg.args);
             });
         }
     }
