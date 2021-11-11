@@ -26,5 +26,8 @@ pnpm-debug.log*
 /saltdog_dist
 /saltdog_electron
 
+#Thirdparty build
+public/pdfviewer/build
+public/pdfviewer/web
 #others
 my_notice

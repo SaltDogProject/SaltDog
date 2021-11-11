@@ -292,6 +292,7 @@ const Stepper = (function StepperClosure() {
       this.breakPoints = initialBreakPoints;
       this.currentIdx = -1;
       this.operatorListIdx = 0;
+      this.indentLevel = 0;
     }
 
     init(operatorList) {
@@ -382,8 +383,14 @@ const Stepper = (function StepperClosure() {
           table.appendChild(charCodeRow);
           table.appendChild(fontCharRow);
           table.appendChild(unicodeRow);
+        } else if (fn === "restore") {
+          this.indentLevel--;
         }
-        line.appendChild(c("td", fn));
+        line.appendChild(c("td", " ".repeat(this.indentLevel * 2) + fn));
+        if (fn === "save") {
+          this.indentLevel++;
+        }
+
         if (decArgs instanceof HTMLElement) {
           line.appendChild(decArgs);
         } else {
@@ -540,7 +547,8 @@ window.PDFBug = (function PDFBugClosure() {
         });
       }
     },
-    init(pdfjsLib, container) {
+    init(pdfjsLib, container, ids) {
+      this.enable(ids);
       /*
        * Basic Layout:
        * PDFBug
@@ -589,12 +597,8 @@ window.PDFBug = (function PDFBugClosure() {
           tool.init(pdfjsLib);
         } else {
           panel.textContent =
-            tool.name +
-            " is disabled. To enable add " +
-            ' "' +
-            tool.id +
-            '" to the pdfBug parameter ' +
-            "and refresh (separate multiple by commas).";
+            `${tool.name} is disabled. To enable add "${tool.id}" to ` +
+            "the pdfBug parameter and refresh (separate multiple by commas).";
         }
         buttons.push(panelButton);
       }

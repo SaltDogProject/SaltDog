@@ -1,20 +1,20 @@
-import { ref } from 'vue';
+import { ref, getCurrentInstance } from 'vue';
 import { PDFVIEWER_WEBVIEW_URL } from '@/utils/constants';
 import { WebviewTag } from 'electron';
-import { uniqueId } from 'lodash';
+import { noop, uniqueId } from 'lodash';
 import { ITabConfig, ITabManager } from '@/utils/panelTab';
+import MessageHandler from './messageHandler';
+import path from 'path';
+import { EventEmitter } from 'events';
 import bus from '@/utils/bus';
+
 class MainTabManager implements ITabManager {
-    private currentTab = ref('1');
-    private tabList = ref<Array<ITabConfig>>([
-        {
-            title: 'Test Document.pdf',
-            name: '1',
-            webviewId: `1`,
-            webviewUrl: PDFVIEWER_WEBVIEW_URL,
-        },
-    ]);
+    private bus = new EventEmitter();
+    private currentTab = ref('');
+    private tabList = ref<Array<ITabConfig>>([]);
+    private messageHandler: any;
     private webviewMap = new Map<string, WebviewTag>();
+    private webviewMessageHandler = new Map<string, MessageHandler>();
     public getCurrentTabRef(): any {
         return this.currentTab;
     }
@@ -29,6 +29,19 @@ class MainTabManager implements ITabManager {
     }
     public setCurrentTab(tabName: string): void {
         this.currentTab.value = tabName;
+    }
+    public getMessageHandler(id: string): MessageHandler | undefined {
+        return this.webviewMessageHandler.get(id);
+    }
+    public addPdfTab(pdfPath: string) {
+        const name = path.basename(pdfPath);
+        const tabid = this.addTab(name, PDFVIEWER_WEBVIEW_URL);
+        bus.once(`${tabid}_domReady`, () => {
+            const handler = this.getMessageHandler(tabid) as MessageHandler;
+            handler.invokeWebview('loadPdf', { path: pdfPath }, () => {
+                noop();
+            });
+        });
     }
     public addTab(title: string, webviewUrl: string): string {
         const id = uniqueId(`pdfWebview-`);
@@ -62,7 +75,7 @@ class MainTabManager implements ITabManager {
         if (this.tabList.value.length == 0) return;
         else {
             this.tabList.value.map((v) => {
-                this.addWebviewTabEventLIstener(v);
+                this.addWebviewTabEventListener(v);
             });
         }
     }
@@ -76,23 +89,23 @@ class MainTabManager implements ITabManager {
                 return !this.webviewMap.has(item.webviewId);
             });
             newWebviews.map((v) => {
-                this.addWebviewTabEventLIstener(v);
+                this.addWebviewTabEventListener(v);
             });
         }
     }
-    private addWebviewTabEventLIstener(v: ITabConfig) {
+    private addWebviewTabEventListener(v: ITabConfig) {
         const element = document.getElementById(v.webviewId) as WebviewTag;
         if (!this.webviewMap.has(v.webviewId)) {
             this.webviewMap.set(v.webviewId, element);
             element.addEventListener('dom-ready', () => {
+                if (!this.webviewMessageHandler.has(v.webviewId)) {
+                    this.webviewMessageHandler.set(v.webviewId, new MessageHandler(element));
+                }
+                bus.emit(`${v.webviewId}_domReady`);
                 element.openDevTools();
             });
             element.addEventListener('console-message', (e) => {
                 console.log('[webview]: ' + e.message);
-            });
-            element.addEventListener('ipc-message', (msg) => {
-                console.log('ipcMessage', msg);
-                bus.emit(msg.channel, msg.args);
             });
         }
     }

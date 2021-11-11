@@ -15,13 +15,14 @@
     </el-tabs>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref, onBeforeUpdate, onUpdated } from 'vue';
+import { defineComponent, onMounted, ref, onBeforeUpdate, onUpdated, getCurrentInstance } from 'vue';
 import tabManager from './tabManager';
 declare const __static: any;
 export default defineComponent({
     setup() {
         const editableTabs = tabManager.getTabListRef();
         const editableTabsValue = tabManager.getCurrentTabRef();
+        const { proxy } = getCurrentInstance()!;
         let tabIndex = 1;
         function handleTabsEdit(targetName: string, action: string) {
             if (action === 'add') {
@@ -34,6 +35,8 @@ export default defineComponent({
         }
         onMounted(() => {
             tabManager.onMounted();
+            // @ts-ignore
+            tabManager.addPdfTab(proxy.__sdConfig.pdfPath);
         });
         onBeforeUpdate(() => {
             tabManager.onBeforeUpdate();

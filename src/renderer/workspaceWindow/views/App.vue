@@ -103,7 +103,7 @@ const App = defineComponent({
                     secondaryPanel: false,
                 }
             );
-            panelManager.showSecondaryPanel();
+            // panelManager.showSecondaryPanel();
         });
         return {
             documentName,

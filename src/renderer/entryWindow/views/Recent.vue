@@ -1,7 +1,9 @@
 <template>
     <div>
         <h2 style="color: #eee; padding-left: 40px; padding-right: 20px; display: inline-block">最近打开</h2>
-        <el-button size="mini" class="openNew" type="primary" icon="el-icon-plus" round>打开文档</el-button>
+        <el-button size="mini" class="openNew" type="primary" icon="el-icon-plus" round @click="openDocument">
+            打开文档
+        </el-button>
         <el-table max-height="300px" class="recentTable" :fit="false" :data="tableData" style="width: 100%">
             <el-table-column show-overflow-tooltip prop="name" label="名称" width="400">
                 <template #default="scope">
@@ -14,6 +16,7 @@
     </div>
 </template>
 <script lang="ts">
+import { ipcRenderer } from 'electron';
 import { defineComponent, ref } from 'vue';
 export default defineComponent({
     setup() {
@@ -31,7 +34,18 @@ export default defineComponent({
                 name: 'Demystifying Microglia: And Now the Work Begins',
             },
         ]);
+        function openDocument() {
+            ipcRenderer.send('openFileDialog', {});
+            ipcRenderer.once('openFileDialogReply', (e, arg) => {
+                if (!arg.canceled && arg.filePaths.length != 0) {
+                    ipcRenderer.send('openWorkspace', {
+                        pdfPath: arg.filePaths[0],
+                    });
+                }
+            });
+        }
         return {
+            openDocument,
             tableData,
         };
     },
