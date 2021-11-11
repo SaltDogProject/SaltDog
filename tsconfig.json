@@ -25,7 +25,6 @@
     },
     "include": [
         "node_modules/pdfjs-dist/*",
-        "src/**/*.js",
         "src/**/*.ts",
         "src/**/*.tsx",
         "src/**/*.vue",

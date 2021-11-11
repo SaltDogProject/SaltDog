@@ -25,9 +25,11 @@ const config = {
         //     title: 'SaltDog-Viewer',
         // },
     },
-    configureWebpack: {
+    configureWebpack: (config) => {
         // FIXME: debug mode
-        devtool: 'cheap-module-eval-source-map',
+        config.devtool = 'cheap-module-eval-source-map';
+
+        return config;
     },
     chainWebpack: (config) => {
         config.resolve.alias

@@ -4,13 +4,16 @@ import store from './store';
 // global use element-plus
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
+import { ipcRenderer } from 'electron';
 
-const app = createApp(Frame)
-    .use(store)
-    .use(ElementPlus, {
-        zIndex: 3000,
-        size: 'small',
-    })
-    .mount('#app');
-
+ipcRenderer.once('initWorkspace', (e, arg) => {
+    const app = createApp(Frame);
+    app.config.globalProperties.__sdConfig = arg;
+    app.use(store)
+        .use(ElementPlus, {
+            zIndex: 3000,
+            size: 'small',
+        })
+        .mount('#app');
+});
 //app.config.globalProperties.$qs = qs;

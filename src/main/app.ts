@@ -23,9 +23,9 @@ class LifeCycle {
             //     }
             // }
             // Create the entry window.
-            //windowManager.create(IWindowList.ENTRY_WINDOW);
+            windowManager.create(IWindowList.ENTRY_WINDOW, {});
             // FIXME: debug create the WORKSPACE window
-            windowManager.create(IWindowList.WORKSPACE_WINDOW);
+            //windowManager.create(IWindowList.WORKSPACE_WINDOW);
         };
         if (!app.isReady()) {
             // This method will be called when Electron has finished

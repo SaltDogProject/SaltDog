@@ -9,7 +9,7 @@ declare interface IWindowListItem {
 }
 
 declare interface IWindowManager {
-    create: (name: IWindowList) => BrowserWindow | null;
+    create: (name: IWindowList, config?: any) => BrowserWindow | null;
     get: (name: IWindowList) => BrowserWindow | null;
     has: (name: IWindowList) => boolean;
     // delete: (name: IWindowList) => void

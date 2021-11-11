@@ -7,7 +7,8 @@ class WindowManager implements IWindowManager {
     private a = 1;
     private windowMap: Map<IWindowList | string, BrowserWindow> = new Map();
     private windowIdMap: Map<number, IWindowList | string> = new Map();
-    create(name: IWindowList) {
+    private windowConfig: Map<number, any> = new Map();
+    create(name: IWindowList, config?: any) {
         const windowConfig: IWindowListItem = windowList.get(name)!;
         if (windowConfig.isValid) {
             if (!windowConfig.multiple) {
@@ -22,6 +23,7 @@ class WindowManager implements IWindowManager {
                 this.windowMap.set(name, window);
                 this.windowIdMap.set(window.id, name);
             }
+            if (config) this.windowConfig.set(window.id, config);
             windowConfig.callback(window, this);
             window.on('close', () => {
                 this.deleteById(id);
@@ -32,12 +34,16 @@ class WindowManager implements IWindowManager {
         }
     }
     get(name: IWindowList) {
-        if (this.has(name)) {
+        if (this.windowMap.has(name)) {
             return this.windowMap.get(name)!;
-        } else {
-            const window = this.create(name);
-            return window;
-        }
+        } else return null;
+        // else {
+        //     const window = this.create(name);
+        //     return window;
+        // }
+    }
+    getConfig(id: number) {
+        return this.windowConfig.get(id);
     }
     has(name: IWindowList) {
         return this.windowMap.has(name);

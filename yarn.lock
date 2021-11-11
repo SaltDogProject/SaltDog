@@ -2819,6 +2819,13 @@ buffer@^5.1.0, buffer@^5.2.1, buffer@^5.5.0:
     base64-js "^1.3.1"
     ieee754 "^1.1.13"
 
+bufferutil@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.npmmirror.com/bufferutil/download/bufferutil-4.0.5.tgz?cache=0&sync_timestamp=1634145376793&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fbufferutil%2Fdownload%2Fbufferutil-4.0.5.tgz#da9ea8166911cc276bf677b8aed2d02d31f59028"
+  integrity sha1-2p6oFmkRzCdr9ne4rtLQLTH1kCg=
+  dependencies:
+    node-gyp-build "^4.3.0"
+
 builder-util-runtime@8.8.1:
   version "8.8.1"
   resolved "https://registry.npmmirror.com/builder-util-runtime/download/builder-util-runtime-8.8.1.tgz?cache=0&sync_timestamp=1634102867397&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fbuilder-util-runtime%2Fdownload%2Fbuilder-util-runtime-8.8.1.tgz#d6e2b5f27723a7606f381e52a3000dadb1d6e4a9"
@@ -6964,6 +6971,11 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
+licia@^1.31.1:
+  version "1.31.1"
+  resolved "https://registry.npmmirror.com/licia/download/licia-1.31.1.tgz#750ebc35804e7c1497a112faaf7ca1699cb4efab"
+  integrity sha1-dQ68NYBOfBSXoRL6r3yhaZy076s=
+
 lie@~3.3.0:
   version "3.3.0"
   resolved "https://registry.npm.taobao.org/lie/download/lie-3.3.0.tgz#dcf82dee545f46074daf200c7c1c5a08e0f40f6a"
@@ -7617,6 +7629,11 @@ node-forge@^0.10.0:
   version "0.10.0"
   resolved "https://registry.nlark.com/node-forge/download/node-forge-0.10.0.tgz#32dea2afb3e9926f02ee5ce8794902691a676bf3"
   integrity sha1-Mt6ir7Ppkm8C7lzoeUkCaRpna/M=
+
+node-gyp-build@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.nlark.com/node-gyp-build/download/node-gyp-build-4.3.0.tgz?cache=0&sync_timestamp=1631436654031&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fnode-gyp-build%2Fdownload%2Fnode-gyp-build-4.3.0.tgz#9f256b03e5826150be39c764bf51e993946d71a3"
+  integrity sha1-nyVrA+WCYVC+Ocdkv1Hpk5RtcaM=
 
 node-ipc@^9.1.1:
   version "9.2.1"
@@ -8838,6 +8855,24 @@ puppeteer-core@^10.4.0:
   version "10.4.0"
   resolved "https://registry.nlark.com/puppeteer-core/download/puppeteer-core-10.4.0.tgz#4e2da57c52339b8c07cd9362922020eb3c3c95bf"
   integrity sha1-Ti2lfFIzm4wHzZNikiAg6zw8lb8=
+  dependencies:
+    debug "4.3.1"
+    devtools-protocol "0.0.901419"
+    extract-zip "2.0.1"
+    https-proxy-agent "5.0.0"
+    node-fetch "2.6.1"
+    pkg-dir "4.2.0"
+    progress "2.0.1"
+    proxy-from-env "1.1.0"
+    rimraf "3.0.2"
+    tar-fs "2.0.0"
+    unbzip2-stream "1.3.3"
+    ws "7.4.6"
+
+puppeteer@^10.4.0:
+  version "10.4.0"
+  resolved "https://registry.nlark.com/puppeteer/download/puppeteer-10.4.0.tgz#a6465ff97fda0576c4ac29601406f67e6fea3dc7"
+  integrity sha1-pkZf+X/aBXbErClgFAb2fm/qPcc=
   dependencies:
     debug "4.3.1"
     devtools-protocol "0.0.901419"
@@ -10818,6 +10853,13 @@ user-agents@^1.0.779:
   dependencies:
     dot-json "^1.2.2"
     lodash.clonedeep "^4.5.0"
+
+utf-8-validate@^5.0.7:
+  version "5.0.7"
+  resolved "https://registry.npmmirror.com/utf-8-validate/download/utf-8-validate-5.0.7.tgz#c15a19a6af1f7ad9ec7ddc425747ca28c3644922"
+  integrity sha1-wVoZpq8fetnsfdxCV0fKKMNkSSI=
+  dependencies:
+    node-gyp-build "^4.3.0"
 
 utf8-byte-length@^1.0.1:
   version "1.0.4"
