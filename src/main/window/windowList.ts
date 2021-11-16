@@ -1,4 +1,4 @@
-import { IWindowList, ENTRY_WINDOW_URL, WORKSPACE_WINDOW_URL } from './constants';
+import { IWindowList, ENTRY_WINDOW_URL, WORKSPACE_WINDOW_URL, PLUGIN_HOST_WINDOW_URL } from './constants';
 import { IWindowListItem } from '#/types/electron';
 import { app, ipcMain } from 'electron';
 import { IBrowserWindowOptions } from '#/types/browserWindow';

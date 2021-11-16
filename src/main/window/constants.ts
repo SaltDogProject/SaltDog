@@ -1,6 +1,7 @@
 export enum IWindowList {
     ENTRY_WINDOW = 'ENTRY_WINDOW',
     WORKSPACE_WINDOW = 'WORKSPACE_WINDOW',
+    PLUGIN_HOST_WINDOW = 'PLUGIN_HOST_WINDOW',
 }
 const isDevelopment = process.env.NODE_ENV !== 'production';
 

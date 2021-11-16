@@ -8,11 +8,14 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 import windowManager from './window/windowManager';
 import { dbChecker } from './apis/db/dbChecker';
 import db from './apis/db/index';
+import SaltDogPlugin from './apis/plugin/index';
 class LifeCycle {
+    private pluginManager = new SaltDogPlugin();
     beforeReady() {
         // Scheme must be registered before the app is ready
         protocol.registerSchemesAsPrivileged([{ scheme: 'saltdog', privileges: { secure: true, standard: true } }]);
         dbChecker();
+        this.pluginManager.init();
     }
     onReady() {
         const readyFunction = async () => {

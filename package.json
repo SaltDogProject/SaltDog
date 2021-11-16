@@ -20,6 +20,11 @@
         "set-proxy": "set http_proxy=http://127.0.0.1:7890 & set https_proxy=http://127.0.0.1:7890"
     },
     "main": "background.js",
+    "build": {
+        "extraResources": [
+            "./extraResources/**"
+        ]
+    },
     "dependencies": {
         "@element-plus/icons": "^0.0.11",
         "@types/lodash": "^4.14.176",
@@ -47,7 +52,8 @@
         "vue": "^3.2.20",
         "vue-class-component": "^8.0.0-0",
         "vue-router": "^4.0.0-0",
-        "vuex": "^4.0.0-0"
+        "vuex": "^4.0.0-0",
+        "worker-plugin": "^5.0.1"
     },
     "devDependencies": {
         "@types/electron-devtools-installer": "^2.2.0",
