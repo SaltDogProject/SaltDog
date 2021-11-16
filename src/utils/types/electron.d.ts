@@ -14,6 +14,8 @@ declare interface IWindowManager {
     has: (name: IWindowList) => boolean;
     // delete: (name: IWindowList) => void
     deleteById: (id: number) => void;
+    minimizeById: (id: number) => void;
+    closeById: (id: number) => void;
     // getAvailableWindow: () => BrowserWindow;
 }
 

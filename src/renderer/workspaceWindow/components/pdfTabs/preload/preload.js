@@ -1,10 +1,14 @@
 // 为了在pdfpages执行node能力，对nodemodules的引用要用requireFunc
 // 不要export default 否则要require().default
 window.requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
-let api = require('./api/api');
-let electron = requireFunc('electron');
-let uniqId = requireFunc('licia/uniqId');
+import { listenTextSelect } from './api/events/index';
+import bus from './bus';
+const { noop } = require('lodash');
+const api = require('./api/api');
+const electron = requireFunc('electron');
+const uniqId = requireFunc('licia/uniqId');
 const callbacks = {};
+
 window._sdConfig = {};
 window.__sdJSBridge = {
     // 向host发送信息
@@ -38,6 +42,16 @@ window.__sdJSBridge = {
             console.warn('[SaltDog] Method not found', method);
         }
     },
+    // webview向host发送事件
+    publish: function (event, data) {
+        console.log('sendtohost!');
+        electron.ipcRenderer.sendToHost('WEBVIEW_PUBLISH', JSON.stringify({ event, data }));
+    },
+    // webview向host订阅事件
+    subscribe: function (event, callback) {
+        // TODO:
+        noop();
+    },
 };
 
 electron.ipcRenderer.on('HOST_INVOKE', (e, args) => {
@@ -50,4 +64,9 @@ electron.ipcRenderer.on('HOST_INVOKE_CALLBACK', (e, args) => {
     if (callback) {
         callback(arg.data);
     }
+});
+listenTextSelect();
+bus.on('selectText', (txt) => {
+    console.log('select! sending!');
+    window.__sdJSBridge.publish('selectText', txt);
 });

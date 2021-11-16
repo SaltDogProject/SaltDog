@@ -91,12 +91,13 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
     callback(window, windowManager) {
         window.loadURL(WORKSPACE_WINDOW_URL);
         if (!process.env.IS_TEST) window.webContents.openDevTools();
-        //openTranslateWeb();
-        ipcMain.on('translate_web', (e: IpcMainEvent, str: string) => {
+        openTranslateWeb();
+        ipcMain.on('selectText', (e: IpcMainEvent, str: string) => {
+            console.log(str);
             doTranslate(str);
         });
         window.on('closed', () => {
-            //closeBrowser();
+            closeBrowser();
             if (process.platform === 'linux') {
                 process.nextTick(() => {
                     app.quit();

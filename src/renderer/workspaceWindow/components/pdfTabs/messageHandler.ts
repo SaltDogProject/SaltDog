@@ -1,5 +1,6 @@
 import uniqId from 'licia/uniqId';
 import { noop } from 'lodash';
+import { ipcRenderer } from 'electron';
 export default class MessageHandler {
     private webview: Electron.WebviewTag;
     private callbacks: { [key: string]: (args: any[]) => void } = {};
@@ -15,6 +16,10 @@ export default class MessageHandler {
                 break;
             case 'WEBVIEW_INVOKE_CALLBACK':
                 this.webviewCallbackHandler(msg.args);
+                break;
+            case 'WEBVIEW_PUBLISH':
+                this.webviewPublishHandler(msg.args);
+                break;
         }
     }
     public webviewInvokeHandler(args: any[]): void {
@@ -31,6 +36,11 @@ export default class MessageHandler {
             this.callbacks[arg.callbackId as string](arg.data);
             delete this.callbacks[arg.callbackId as string];
         }
+    }
+    public webviewPublishHandler(args: any[]): void {
+        console.log('webviewPublish', JSON.parse(args[0]));
+        // TODO:
+        ipcRenderer.send(JSON.parse(args[0]).event, JSON.parse(args[0]).data);
     }
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     public invokeWebview(method: string, data: any, callback: any): void {

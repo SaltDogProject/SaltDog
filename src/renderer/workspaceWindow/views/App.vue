@@ -43,6 +43,7 @@ import panelManager from './panelManager';
 import pdfTabManager from '../components/pdfTabs/tabManager';
 import translator from '../components/translator/translator.vue';
 import tabManager from '../components/pdfTabs/tabManager';
+import { ipcRenderer } from 'electron';
 declare var __static: string;
 
 const App = defineComponent({
@@ -51,11 +52,19 @@ const App = defineComponent({
         const documentName = ref('Test Document.pdf');
         const os = ref(process.platform);
         const version = ref('');
+        const { proxy } = getCurrentInstance()!;
         version.value = process.env.NOCE_ENV === 'production' ? pkg.version : 'Dev';
         function refreshWindow() {
             location.reload();
         }
-
+        function minimizeWindow() {
+            // @ts-ignore
+            ipcRenderer.send('minimize-window', proxy!.__sdConfig!.windowId);
+        }
+        function closeWindow() {
+            // @ts-ignore
+            ipcRenderer.send('close-window', proxy!.__sdConfig!.windowId);
+        }
         onMounted(() => {
             panelManager.initResizeListener({
                 sideBar2mainPanel: {
@@ -110,6 +119,8 @@ const App = defineComponent({
             os,
             version,
             refreshWindow,
+            minimizeWindow,
+            closeWindow,
         };
     },
 });
