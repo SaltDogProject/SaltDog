@@ -6,10 +6,21 @@ import { IWindowList } from './window/constants';
 // import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
 const isDevelopment = process.env.NODE_ENV !== 'production';
 import windowManager from './window/windowManager';
+import { dbChecker } from './apis/db/dbChecker';
+import db from './apis/db/index';
 class LifeCycle {
     beforeReady() {
         // Scheme must be registered before the app is ready
         protocol.registerSchemesAsPrivileged([{ scheme: 'saltdog', privileges: { secure: true, standard: true } }]);
+        dbChecker();
+        console.log('set:', db.set('a.b', 1));
+        console.log('set:', db.set('a.c', [2]));
+        console.log('get:', db.get('a.b'));
+        console.log('has:', db.has('a.b'));
+        console.log('has:', db.get('a.c'));
+        console.log('getConfigPath:', db.getConfigPath());
+        console.log('insert:', db.insert('a.c', 1));
+        console.log('unset:', db.unset('a', 'c'));
     }
     onReady() {
         const readyFunction = async () => {

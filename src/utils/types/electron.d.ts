@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 import { IWindowList } from '@/main/window/constants';
-
+import { IAppNotification } from './types';
 declare interface IWindowListItem {
     isValid: boolean;
     multiple: boolean;
@@ -22,6 +22,7 @@ declare global {
     namespace NodeJS {
         interface Global {
             SALTDOG_VERSION: string;
+            notificationList?: IAppNotification[];
             //
         }
     }

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 var exec = require('child_process').exec;
-let buildCmd = 'cd third_party/pdf.js && gulp generic';
+let buildCmd = 'cd third_party/pdfjs && gulp generic';
 console.log('[Build-pdf] Building pdf.js...');
 exec(buildCmd, function (error, stdout, stderr) {
     // 打印错误堆栈
@@ -12,8 +12,8 @@ exec(buildCmd, function (error, stdout, stderr) {
     console.log('[Build-pdf]: ' + stdout);
     deleteFolder('../public/pdfviewer/build');
     deleteFolder('../public/pdfviewer/web');
-    copyFolder('../third_party/pdf.js/build/generic/build', '../public/pdfviewer/build');
-    copyFolder('../third_party/pdf.js/build/generic/web', '../public/pdfviewer/web');
+    copyFolder('../third_party/pdfjs/build/generic/build', '../public/pdfviewer/build');
+    copyFolder('../third_party/pdfjs/build/generic/web', '../public/pdfviewer/web');
     console.log('[Build-pdf] Success');
 });
 

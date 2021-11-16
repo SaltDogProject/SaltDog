@@ -15,6 +15,7 @@
         "sourceMap": true,
         "baseUrl": ".",
         "types": ["webpack-env"],
+        "typeRoots": ["./src/utils/types/*"],
         "paths": {
             "@/*": ["src/renderer/*"],
             "~/*": ["src/*"],
@@ -23,13 +24,6 @@
         },
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
     },
-    "include": [
-        "node_modules/pdfjs-dist/*",
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "src/**/*.vue",
-        "tests/**/*.ts",
-        "tests/**/*.tsx"
-    ],
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx", "src/**/*.d.ts"],
     "exclude": ["node_modules"]
 }
