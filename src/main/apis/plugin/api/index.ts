@@ -5,7 +5,6 @@ export class SaltDogPluginApiFactory {
     public createApi(pluginHost: ChildProcess, pluginInfo: ISaltDogPluginInfo): ISaltDogPluginApi {
         const api = {
             getPluginInfo: (arg: any, callback: any) => {
-                console.log('pluginGetInfo！');
                 callback(pluginInfo);
             },
         };

@@ -1,5 +1,5 @@
-import { fork } from 'child_process';
-import { fromPairs, noop } from 'lodash';
+import { fork, ForkOptions } from 'child_process';
+import { extend, fromPairs, noop } from 'lodash';
 import SaltDogPlugin from '.';
 import apiFactory from './api/index';
 import windowManager from '~/main/window/windowManager';
@@ -12,15 +12,22 @@ export class SaltDogPluginActivator {
         this._pluginManager = _plugin;
     }
     activatePlugin(pluginInfo: ISaltDogPluginInfo): void {
-        const pluginHost = fork(__static + '/plugin/preload/preload.js', [], {
+        const processConfig = {
             env: {
                 pluginManifest: JSON.stringify(pluginInfo),
             },
             serialization: 'advanced',
-            // FIXME:debug
-            stdio: 'inherit',
-            execArgv: ['--inspect', '--inspect-brk'],
-        });
+        };
+        if (process.env.NODE_ENV === 'development') {
+            const port = 18044 + Math.floor(Math.random() * 1000);
+            extend(processConfig, {
+                execArgv: ['--inspect=' + port],
+                // FIXME:debug
+                stdio: 'inherit',
+            });
+            console.log(`[Plugin] Plugin ${pluginInfo.name} is in develop mode, port: ${port}`);
+        }
+        const pluginHost = fork(__static + '/plugin/preload/preload.js', [], processConfig as ForkOptions);
         this._pluginManager.setPluginHost(pluginInfo.name, pluginHost);
         const newApi = apiFactory.createApi(pluginHost, pluginInfo);
         const messageChannel = new SaltDogMessageChannel(pluginHost, pluginInfo, newApi);
