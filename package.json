@@ -41,19 +41,16 @@
         "lodash": "^4.17.21",
         "lodash-id": "^0.14.1",
         "lowdb": "^1.0.0",
-        "pdfjs-dist": "^2.10.377",
         "puppeteer": "^10.4.0",
         "puppeteer-core": "^10.4.0",
         "sbd": "^1.0.19",
         "stylus": "^0.55.0",
         "stylus-loader": "3.0.2",
-        "translate-google": "^1.5.0",
         "utf-8-validate": "^5.0.7",
         "vue": "^3.2.20",
         "vue-class-component": "^8.0.0-0",
         "vue-router": "^4.0.0-0",
-        "vuex": "^4.0.0-0",
-        "worker-plugin": "^5.0.1"
+        "vuex": "^4.0.0-0"
     },
     "devDependencies": {
         "@types/electron-devtools-installer": "^2.2.0",

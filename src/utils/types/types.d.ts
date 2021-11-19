@@ -3,3 +3,4 @@ interface IAppNotification {
     body: string;
     icon?: string;
 }
+declare const __static: string;

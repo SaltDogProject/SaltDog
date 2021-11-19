@@ -59,6 +59,9 @@ const config = {
             outputDir: 'saltdog_electron',
             nodeIntegration: true,
             builderOptions: {
+                electronDownload: {
+                    mirror: 'https://npm.taobao.org/mirrors/electron',
+                },
                 appId: 'top.lgyserver.saltdog',
                 productName: 'SaltDog',
                 copyright: 'Copyright © 2021 Dorapocket',

@@ -29,6 +29,7 @@ pnpm-debug.log*
 #Thirdparty build
 public/pdfviewer/build
 public/pdfviewer/web
+public/plugin/preload
 third_party
 #others
 my_notice

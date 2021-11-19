@@ -3,11 +3,14 @@ import { app } from 'electron';
 import { existsSync, readdirSync, readJsonSync } from 'fs-extra';
 import { startsWith, extend } from 'lodash';
 import { normalize } from 'path';
+import { ChildProcess } from 'child_process';
+import SaltDogMessageChannel from './api/messageChannel';
 class SaltDogPlugin {
     private _plugins: Map<string, ISaltDogPluginInfo> = new Map();
+    private _pluginHosts: Map<string, ChildProcess> = new Map();
+    private _pluginMessageChannel: Map<string, SaltDogMessageChannel> = new Map();
     private _activator: SaltDogPluginActivator;
     public pluginPath = normalize(app.getPath('userData') + '/SaltDogPlugins');
-    public pluginPreloadScript = normalize(app.getPath('userData') + '/SaltDogPlugins/preload.js');
     constructor() {
         this._activator = new SaltDogPluginActivator(this);
     }
@@ -36,8 +39,15 @@ class SaltDogPlugin {
             }
         });
         this._plugins.forEach((item) => {
+            // TODO: 依据激活事件激活插件
             this._activator.activatePlugin(item);
         });
+    }
+    public setPluginHost(name: string, host: ChildProcess): void {
+        this._pluginHosts.set(name, host);
+    }
+    public setMessageChannel(name: string, channel: SaltDogMessageChannel): void {
+        this._pluginMessageChannel.set(name, channel);
     }
 }
 export default SaltDogPlugin;

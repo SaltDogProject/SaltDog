@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
-if (fs.existsSync(path.join(__dirname, '../public/pdfviewer/web/preload')))
-    deleteFolder('../public/pdfviewer/web/preload');
-copyFolder('../src/renderer/workspaceWindow/components/pdfTabs/preload', '../public/pdfviewer/web/preload');
+// pluginHost js don't need compile
+if (fs.existsSync(path.join(__dirname, '../public/plugin/preload'))) deleteFolder('../public/plugin/preload');
+copyFolder('../src/main/apis/plugin/preload', '../public/plugin/preload');
 webpack(
     {
         entry: path.join(__dirname, '../src/renderer/workspaceWindow/components/pdfTabs/preload/preload.js'),

@@ -4,3 +4,4 @@ test/e2e/*.js
 dist/
 .eslintrc.js
 src/renderer/workspaceWindow/components/pdfTabs/preload/**
+src/main/apis/plugin/preload/**
