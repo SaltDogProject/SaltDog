@@ -2,6 +2,7 @@ import { ipcMain, dialog } from 'electron';
 import { IWindowManager } from '~/utils/types/electron';
 import { IWindowList } from './constants';
 import { extend } from 'lodash';
+import pluginManager from '../apis/plugin/index';
 export function initIpc(windowManager: IWindowManager): void {
     ipcMain.on('openFileDialog', (e, msg) => {
         dialog
@@ -13,13 +14,13 @@ export function initIpc(windowManager: IWindowManager): void {
     });
     ipcMain.on('openWorkspace', (e, config) => {
         const window = windowManager.create(IWindowList.WORKSPACE_WINDOW, config);
-        window!.on('ready-to-show', () => {
-            window!.show();
-            // console.log(windowManager.has(IWindowList.ENTRY_WINDOW), windowManager.get(IWindowList.ENTRY_WINDOW)!.id);
-            if (windowManager.has(IWindowList.ENTRY_WINDOW)) {
-                windowManager.closeById(windowManager.get(IWindowList.ENTRY_WINDOW)!.id);
-            }
-        });
+        // window!.on('ready-to-show', () => {
+        //     window!.show();
+        //     // console.log(windowManager.has(IWindowList.ENTRY_WINDOW), windowManager.get(IWindowList.ENTRY_WINDOW)!.id);
+        //     if (windowManager.has(IWindowList.ENTRY_WINDOW)) {
+        //         windowManager.closeById(windowManager.get(IWindowList.ENTRY_WINDOW)!.id);
+        //     }
+        // });
         const _cfg = extend(config, { windowId: window!.id });
         window!.webContents.on('did-finish-load', () => {
             window!.webContents.send('initWorkspace', _cfg);
@@ -30,5 +31,10 @@ export function initIpc(windowManager: IWindowManager): void {
     });
     ipcMain.on('close-window', (e, msg) => {
         windowManager.closeById(msg);
+    });
+    ipcMain.on('getBasicInfoSync', (e, msg) => {
+        e.returnValue = {
+            plugins: pluginManager.workspaceGetBasicPluginInfo(),
+        };
     });
 }

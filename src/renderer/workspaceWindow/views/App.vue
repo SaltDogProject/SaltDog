@@ -10,9 +10,13 @@
         </div>
         <div class="workspaceContainer">
             <div class="mainContent">
-                <div id="sideBarIcons" class="sideBarIcons"></div>
+                <div id="sideBarIcons" class="sideBarIcons">
+                    <sidebar-icons></sidebar-icons>
+                </div>
                 <div id="panelAndSidebarContainer">
-                    <div id="sideBar" class="sideBar"></div>
+                    <div id="sideBar" class="sideBar">
+                        <sidebar></sidebar>
+                    </div>
                     <div id="resizer-sideBar2mainPanel" class="resizer"></div>
                     <div id="functionalZone" class="functionalZone">
                         <div id="mainPanel" class="mainPanel">
@@ -22,7 +26,7 @@
                             </div>
                             <div id="resizer-primaryPanel2secondaryPanel" class="resizer"></div>
                             <div id="secondaryPanel" class="secondaryPanel">
-                                <translator></translator>
+                                <!-- <translator></translator> -->
                             </div>
                         </div>
                         <div id="resizer-mainPanel2BottomPanel" class="resizer"></div>
@@ -39,15 +43,18 @@
 import { defineComponent, ref, getCurrentInstance, ComponentInternalInstance, onMounted } from 'vue';
 import pkg from 'root/package.json';
 import PdfTabs from '../components/pdfTabs/Main.vue';
-import panelManager from './panelManager';
+import panelManager from '../controller/panelManager';
 import pdfTabManager from '../components/pdfTabs/tabManager';
-import translator from '../components/translator/translator.vue';
+// @ts-ignore
+import SidebarIcons from '../components/sideBarIcons.vue';
+// @ts-ignore
+import sidebar from '../components/sidebar/sideBar.vue';
 import tabManager from '../components/pdfTabs/tabManager';
 import { ipcRenderer } from 'electron';
 declare var __static: string;
 
 const App = defineComponent({
-    components: { PdfTabs, translator },
+    components: { PdfTabs, SidebarIcons, sidebar },
     setup() {
         const documentName = ref('Test Document.pdf');
         const os = ref(process.platform);
@@ -112,7 +119,8 @@ const App = defineComponent({
                     secondaryPanel: false,
                 }
             );
-            // panelManager.showSecondaryPanel();
+            //panelManager.showSecondaryPanel();
+            panelManager.showSideBar();
         });
         return {
             documentName,
@@ -153,6 +161,7 @@ $darwinBg = transparentify(#172426, #000, 0.7)
         width 100%
         text-align center
         color --el-text-color-primary
+        background-color var(--saltdog-titlebar-background-color)
         font-size 12px
         line-height @height
         position fixed
@@ -209,22 +218,26 @@ $darwinBg = transparentify(#172426, #000, 0.7)
                 align-items: stretch
             #resizer-sideBar2mainPanel
                 order 2
-                background-color #3ef
+                background-color var(--saltdog-sidebar-background-color)
                 width resizer_width_or_height
+                cursor: ew-resize
             #resizer-primaryPanel2secondaryPanel
-                background-color #3ef
+                background-color var(--saltdog-panel-background-color)
                 width resizer_width_or_height
+                cursor: ew-resize
             #resizer-mainPanel2BottomPanel
-                background-color #3ef
+                background-color var(--saltdog-panel-background-color)
                 height resizer_width_or_height
+                cursor: ns-resize
             .sideBarIcons
                 order 0
                 width side_bar_icons_width
-                background-color: #ff0
+                overflow:hidden
+                background-color: var(--saltdog-sidebaricon-background-color)
             .sideBar
                 order 1
                 width: side_bar_width
-                background-color: #0ff
+                background-color: var(--saltdog-sidebar-background-color)
             .functionalZone
                 order 3
                 width: 100%
@@ -257,7 +270,7 @@ $darwinBg = transparentify(#172426, #000, 0.7)
             order 100
             height bottom_bar_height
             width 100vw
-            background-color: #0f0
+            background-color: var(--saltdog-bottombar-background-color)
         //     .mainPanel
         //         .primaryPanel
         //         .secondaryPanel

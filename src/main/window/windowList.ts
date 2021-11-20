@@ -1,10 +1,9 @@
-import { IWindowList, ENTRY_WINDOW_URL, WORKSPACE_WINDOW_URL, PLUGIN_HOST_WINDOW_URL } from './constants';
+import { IWindowList, ENTRY_WINDOW_URL, WORKSPACE_WINDOW_URL } from './constants';
 import { IWindowListItem } from '#/types/electron';
 import { app, ipcMain } from 'electron';
 import { IBrowserWindowOptions } from '#/types/browserWindow';
 import { closeBrowser, doTranslate, openTranslateWeb } from './translator';
 import { IpcMainEvent } from 'electron/main';
-import { initIpc } from './ipcMessage';
 const windowList = new Map<IWindowList, IWindowListItem>();
 declare const __static: string;
 // entry
@@ -43,7 +42,6 @@ windowList.set(IWindowList.ENTRY_WINDOW, {
     callback(window, windowManager) {
         window.loadURL(ENTRY_WINDOW_URL);
         if (!process.env.IS_TEST) window.webContents.openDevTools();
-        initIpc(windowManager);
         window.on('closed', () => {
             if (process.platform === 'linux') {
                 process.nextTick(() => {
@@ -62,7 +60,7 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
         const options: IBrowserWindowOptions = {
             height: 800,
             width: 1200,
-            show: false, // 预加载
+            show: true, //false, // 预加载
             frame: true,
             center: true,
             fullscreenable: false,
@@ -91,13 +89,13 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
     callback(window, windowManager) {
         window.loadURL(WORKSPACE_WINDOW_URL);
         if (!process.env.IS_TEST) window.webContents.openDevTools();
-        openTranslateWeb();
+        //openTranslateWeb();
         ipcMain.on('selectText', (e: IpcMainEvent, str: string) => {
             console.log(str);
-            doTranslate(str);
+            //doTranslate(str);
         });
         window.on('closed', () => {
-            closeBrowser();
+            //closeBrowser();
             if (process.platform === 'linux') {
                 process.nextTick(() => {
                     app.quit();

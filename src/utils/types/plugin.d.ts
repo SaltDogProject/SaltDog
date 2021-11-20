@@ -4,6 +4,14 @@ interface ISaltDogPluginInfo {
     description?: string;
     author?: string;
     localPath: string;
+    rootDir: string;
+    contributes?: {
+        viewsContainers?: {
+            activitybar?: {
+                [key: string]: any;
+            };
+        };
+    };
 }
 interface ISaltDogPluginApi {
     [key: string]: any;

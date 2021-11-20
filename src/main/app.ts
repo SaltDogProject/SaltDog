@@ -8,14 +8,16 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 import windowManager from './window/windowManager';
 import { dbChecker } from './apis/db/dbChecker';
 import db from './apis/db/index';
-import SaltDogPlugin from './apis/plugin/index';
+import saltDogPlugin from './apis/plugin/index';
+import { initIpc } from './window/ipcMessage';
 class LifeCycle {
-    private pluginManager = new SaltDogPlugin();
+    private pluginManager = saltDogPlugin;
     beforeReady() {
         // Scheme must be registered before the app is ready
         protocol.registerSchemesAsPrivileged([{ scheme: 'saltdog', privileges: { secure: true, standard: true } }]);
         dbChecker();
         this.pluginManager.init();
+        initIpc(windowManager);
     }
     onReady() {
         const readyFunction = async () => {
@@ -29,9 +31,9 @@ class LifeCycle {
             //     }
             // }
             // Create the entry window.
-            windowManager.create(IWindowList.ENTRY_WINDOW, {});
+            //windowManager.create(IWindowList.ENTRY_WINDOW, {});
             // FIXME: debug create the WORKSPACE window
-            //windowManager.create(IWindowList.WORKSPACE_WINDOW);
+            windowManager.create(IWindowList.WORKSPACE_WINDOW);
         };
         if (!app.isReady()) {
             // This method will be called when Electron has finished

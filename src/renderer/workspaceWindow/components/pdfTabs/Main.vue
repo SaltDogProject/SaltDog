@@ -36,7 +36,7 @@ export default defineComponent({
         onMounted(() => {
             tabManager.onMounted();
             // @ts-ignore
-            tabManager.addPdfTab(proxy.__sdConfig.pdfPath);
+            tabManager.addPdfTab(proxy.__workspaceInfo.pdfPath);
         });
         onBeforeUpdate(() => {
             tabManager.onBeforeUpdate();
@@ -56,8 +56,11 @@ export default defineComponent({
 <style lang="stylus">
 tabitem_height = 40px
 .pdftabview
+    box-shadow: none!important
+    border:none!important
     height: 100%
     .el-tabs__header
+        background-color: var(--saltdog-tabheader-background-color)!important
         .el-tabs__item
             height tabitem_height
     .el-tabs__content

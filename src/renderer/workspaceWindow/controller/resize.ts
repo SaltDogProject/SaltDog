@@ -57,7 +57,7 @@ export function initSideBarMainPanelListener(): void {
         document.removeEventListener('mouseup', uphandler);
         this.sideBar!.htmlElement.style.pointerEvents = 'auto';
         this.mainPanel!.htmlElement.style.pointerEvents = 'auto';
-        e.stopPropagation();
+        //e.stopPropagation();
     };
     downHandler = (e: MouseEvent) => {
         this.sideBar!.htmlElement.style.pointerEvents = 'none';
@@ -97,7 +97,7 @@ export function initBottomBarMainPanelListener(): void {
         this.sideBar!.htmlElement.style.pointerEvents = 'auto';
         this.mainPanel!.htmlElement.style.pointerEvents = 'auto';
         this.bottomPanel!.htmlElement.style.pointerEvents = 'auto';
-        e.stopPropagation();
+        //e.stopPropagation();
     };
     downHandler = (e: MouseEvent) => {
         this.sideBar!.htmlElement.style.pointerEvents = 'none';
@@ -135,7 +135,7 @@ export function initPrimarySecondaryPanelListener(): void {
         document.removeEventListener('mouseup', uphandler);
         this.sideBar!.htmlElement.style.pointerEvents = 'auto';
         this.mainPanel!.htmlElement.style.pointerEvents = 'auto';
-        e.stopPropagation();
+        //e.stopPropagation();
     };
     downHandler = (e: MouseEvent) => {
         this.sideBar!.htmlElement.style.pointerEvents = 'none';

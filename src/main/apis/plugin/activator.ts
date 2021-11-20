@@ -6,6 +6,7 @@ import windowManager from '~/main/window/windowManager';
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 import path from 'path';
 import SaltDogMessageChannel from './api/messageChannel';
+const TAG = '[Plugin Activator]';
 export class SaltDogPluginActivator {
     private _pluginManager: SaltDogPlugin;
     constructor(_plugin: SaltDogPlugin) {
@@ -22,10 +23,9 @@ export class SaltDogPluginActivator {
             const port = 18044 + Math.floor(Math.random() * 1000);
             extend(processConfig, {
                 execArgv: ['--inspect=' + port],
-                // FIXME:debug
-                stdio: 'inherit',
+                // stdio: 'inherit',
             });
-            console.log(`[Plugin] Plugin ${pluginInfo.name} is in develop mode, port: ${port}`);
+            console.log(TAG, `Plugin ${pluginInfo.name} is in develop mode, port: ${port}`);
         }
         const pluginHost = fork(__static + '/plugin/preload/preload.js', [], processConfig as ForkOptions);
         this._pluginManager.setPluginHost(pluginInfo.name, pluginHost);
@@ -33,19 +33,19 @@ export class SaltDogPluginActivator {
         const messageChannel = new SaltDogMessageChannel(pluginHost, pluginInfo, newApi);
         this._pluginManager.setMessageChannel(pluginInfo.name, messageChannel);
         pluginHost.on('close', (message: any) => {
-            console.log('plugin close', message);
+            console.warn(TAG, `plugin close`, message);
         });
         pluginHost.on('disconnect', (message: any) => {
-            console.log('plugin disconnect', message);
+            console.warn(TAG, `plugin ${pluginInfo.name} disconnect`, message);
         });
         pluginHost.on('error', (message: any) => {
-            console.log('plugin error', message);
+            console.error(TAG, `plugin ${pluginInfo.name} error`, message);
         });
         pluginHost.on('exit', (message: any) => {
-            console.log('plugin exit', message);
+            console.warn(TAG, `plugin ${pluginInfo.name} exit`, message);
         });
-        messageChannel.publishEventToPluginHost('sdConfigReady', {
-            message: 'ready',
-        });
+        // messageChannel.publishEventToPluginHost('sdConfigReady', {
+        //     message: 'ready',
+        // });
     }
 }

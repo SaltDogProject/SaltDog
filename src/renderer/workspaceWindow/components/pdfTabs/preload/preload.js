@@ -67,6 +67,5 @@ electron.ipcRenderer.on('HOST_INVOKE_CALLBACK', (e, args) => {
 });
 listenTextSelect();
 bus.on('selectText', (txt) => {
-    console.log('select! sending!');
     window.__sdJSBridge.publish('selectText', txt);
 });

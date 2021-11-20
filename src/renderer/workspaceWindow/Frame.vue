@@ -13,6 +13,18 @@ export default {
 </script>
 
 <style lang="stylus">
+:root
+    --saltdog-titlebar-background-color: #eaeaeb;
+    --saltdog-tabheader-background-color: #eaeaeb;
+    --saltdog-sidebar-background-color:#eaeaeb;
+    --saltdog-sidebar-title-font-color:#616161;
+    --saltdog-bottombar-background-color: #eaeaeb;
+    --saltdog-sidebaricon-background-color:#fafafa;
+    --saltdog-sidebaricon-active-color:#121417;
+    --saltdog-sidebaricon-icon-color:#9d9e9f;
+    --saltdog-panel-background-color:#fafafa;
+
+    --saltdog-scrollbar-thumb-background-color:#a2a7b0
 body,html
     padding 0
     margin 0
@@ -21,6 +33,9 @@ body,html
 #app
     user-select none
     overflow hidden
+.clickable
+    -webkit-app-region: no-drag;
+    user-select: "auto";
 .el-button-group
     width 100%
     .el-button

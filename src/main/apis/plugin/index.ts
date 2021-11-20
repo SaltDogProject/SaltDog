@@ -1,10 +1,11 @@
 import { SaltDogPluginActivator } from './activator';
 import { app } from 'electron';
 import { existsSync, readdirSync, readJsonSync } from 'fs-extra';
-import { startsWith, extend } from 'lodash';
+import { startsWith, extend, set, has } from 'lodash';
 import { normalize } from 'path';
 import { ChildProcess } from 'child_process';
 import SaltDogMessageChannel from './api/messageChannel';
+const TAG = 'SaltDogPlugin';
 class SaltDogPlugin {
     private _plugins: Map<string, ISaltDogPluginInfo> = new Map();
     private _pluginHosts: Map<string, ChildProcess> = new Map();
@@ -49,5 +50,29 @@ class SaltDogPlugin {
     public setMessageChannel(name: string, channel: SaltDogMessageChannel): void {
         this._pluginMessageChannel.set(name, channel);
     }
+    public workspaceGetBasicPluginInfo(): any {
+        const pluginInfo: any = {};
+
+        this._plugins.forEach((plugin) => {
+            const info = {};
+            // 处理activitybar 即左侧sidebaricon数据
+            if (has(plugin, 'contributes.viewsContainers.activitybar')) {
+                set(info, 'sidebarIcon', []);
+                // @ts-ignore
+                plugin.contributes.viewsContainers.activitybar.forEach((item) => {
+                    try {
+                        // @ts-ignore
+                        info.sidebarIcon.push({
+                            iconPath: normalize(plugin.rootDir + '/' + item.icon),
+                        });
+                    } catch (e) {
+                        console.log(TAG, `plugin ${plugin.name} workspaceGetBasicPluginInfo-activitybar failed`, e);
+                    }
+                });
+            }
+            pluginInfo[plugin.name] = info;
+        });
+        return pluginInfo;
+    }
 }
-export default SaltDogPlugin;
+export default new SaltDogPlugin();

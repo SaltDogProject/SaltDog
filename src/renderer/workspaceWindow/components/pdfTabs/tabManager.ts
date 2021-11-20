@@ -34,7 +34,7 @@ class MainTabManager implements ITabManager {
         return this.webviewMessageHandler.get(id);
     }
     public addPdfTab(pdfPath: string) {
-        const name = path.basename(pdfPath);
+        const name = path.basename(pdfPath || '未命名');
         const tabid = this.addTab(name, PDFVIEWER_WEBVIEW_URL);
         bus.once(`${tabid}_domReady`, () => {
             const handler = this.getMessageHandler(tabid) as MessageHandler;

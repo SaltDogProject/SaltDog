@@ -4,6 +4,9 @@ const webpack = require('webpack');
 // pluginHost js don't need compile
 if (fs.existsSync(path.join(__dirname, '../public/plugin/preload'))) deleteFolder('../public/plugin/preload');
 copyFolder('../src/main/apis/plugin/preload', '../public/plugin/preload');
+// sidebar webviews
+if (fs.existsSync(path.join(__dirname, '../public/sidebar'))) deleteFolder('../public/sidebar');
+copyFolder('../src/renderer/workspaceWindow/components/sidebar/basic', '../public/sidebar');
 webpack(
     {
         entry: path.join(__dirname, '../src/renderer/workspaceWindow/components/pdfTabs/preload/preload.js'),
