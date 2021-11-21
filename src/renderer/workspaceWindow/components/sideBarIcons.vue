@@ -14,55 +14,27 @@
 import { defineComponent, getCurrentInstance, ref } from 'vue';
 import { Location, Document, Menu as IconMenu, Setting } from '@element-plus/icons';
 import bus from '../controller/bus';
+import plugins from '../controller/plugin';
+import panelManager from '../controller/panelManager';
 export default defineComponent({
     setup() {
-        const { proxy } = getCurrentInstance()!;
-        // eslint-disable-next-line no-undef
-        const buildinIconPath = __static + '/images/workspace';
-        const iconList = ref([
-            {
-                iconImg: `${buildinIconPath}/content.svg`,
-                description: '目录',
-                active: false,
-                command: 'onClickSideBarIcon:content',
-            },
-            {
-                iconImg: `${buildinIconPath}/search.svg`,
-                description: '搜索',
-                active: false,
-                command: 'onClickSideBarIcon:search',
-            },
-        ]);
-        // @ts-ignore
-        const basicInfo = proxy.__basicInfo;
-        console.log(basicInfo);
-        // 加载插件sidebarIcon图标
-        if (basicInfo.plugins) {
-            for (let plugin in basicInfo.plugins) {
-                if (basicInfo.plugins[plugin].sidebarIcon) {
-                    basicInfo.plugins[plugin].sidebarIcon.forEach((icon: any) => {
-                        iconList.value.push({
-                            iconImg: icon.iconPath,
-                            description: icon.description,
-                            active: false,
-                            // FIXME:
-                            command: `onClickSideBarIcon:`,
-                        });
-                    });
-                }
-            }
-        }
+        const iconList = plugins.getSidebarIconListRef();
         function iconClick(index: number) {
             if (iconList.value[index].active) {
                 // TODO:本来就是打开的，再次点击关闭sidebar
                 iconList.value[index].active = false;
+                panelManager.closeSideBar();
             } else {
                 iconList.value[index].active = true;
-                iconList.value.forEach((item, i) => {
+                iconList.value.forEach((item: any, i: number) => {
                     if (i !== index) {
                         item.active = false;
                     }
                 });
+                plugins.loadSidebarViews(iconList.value[index].command);
+                if (!panelManager.isSideBarOpen) {
+                    panelManager.showSideBar();
+                }
             }
         }
         return {

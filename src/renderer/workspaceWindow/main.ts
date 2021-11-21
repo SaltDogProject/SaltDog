@@ -5,7 +5,7 @@ import store from './store';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import { ipcRenderer } from 'electron';
-
+import pluginManager from './controller/plugin';
 const app = createApp(Frame);
 // FIXME: debug
 //ipcRenderer.once('initWorkspace', (e, arg) => {
@@ -13,6 +13,8 @@ const app = createApp(Frame);
 const basicInfo = ipcRenderer.sendSync('getBasicInfoSync'); // 基本配置，和打开的文件无关，包括插件等信息
 app.config.globalProperties.__workspaceInfo = {}; //arg;
 app.config.globalProperties.__basicInfo = basicInfo; //arg;
+console.log('[Workspace load]', basicInfo);
+pluginManager.init(basicInfo.plugins);
 app.use(store)
     .use(ElementPlus, {
         zIndex: 3000,

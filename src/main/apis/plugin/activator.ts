@@ -8,8 +8,8 @@ import path from 'path';
 import SaltDogMessageChannel from './api/messageChannel';
 const TAG = '[Plugin Activator]';
 export class SaltDogPluginActivator {
-    private _pluginManager: SaltDogPlugin;
-    constructor(_plugin: SaltDogPlugin) {
+    private _pluginManager: typeof SaltDogPlugin;
+    constructor(_plugin: typeof SaltDogPlugin) {
         this._pluginManager = _plugin;
     }
     activatePlugin(pluginInfo: ISaltDogPluginInfo): void {

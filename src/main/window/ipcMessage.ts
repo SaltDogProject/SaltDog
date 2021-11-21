@@ -4,6 +4,7 @@ import { IWindowList } from './constants';
 import { extend } from 'lodash';
 import pluginManager from '../apis/plugin/index';
 export function initIpc(windowManager: IWindowManager): void {
+    console.log('[IPC] inited');
     ipcMain.on('openFileDialog', (e, msg) => {
         dialog
             .showOpenDialog({ properties: ['openFile'], filters: [{ name: 'Documents', extensions: ['pdf'] }] })
@@ -33,6 +34,7 @@ export function initIpc(windowManager: IWindowManager): void {
         windowManager.closeById(msg);
     });
     ipcMain.on('getBasicInfoSync', (e, msg) => {
+        console.log('[IPC] getBasicInfoSync');
         e.returnValue = {
             plugins: pluginManager.workspaceGetBasicPluginInfo(),
         };

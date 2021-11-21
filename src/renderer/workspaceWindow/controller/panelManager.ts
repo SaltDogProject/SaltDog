@@ -49,9 +49,9 @@ class viewsManager {
     private resizers: IResizeDivs | null;
 
     private isInit = false;
-    private isSideBarOpen = true;
-    private isBottomPanelOpen = true;
-    private isSecondaryPanelOpen = true;
+    public isSideBarOpen = false;
+    public isBottomPanelOpen = false;
+    public isSecondaryPanelOpen = false;
     constructor() {
         this.resizers =
             this.sideBar =
@@ -185,7 +185,7 @@ class viewsManager {
     }
     public init(panels: IPanels, openStatus: IPanelOpenStatus) {
         if (this.isInit) {
-            console.log('[viewsManager] Double init');
+            console.log(TAG, ' Double init');
         } else {
             this.isSideBarOpen = openStatus.sideBar;
             this.isSecondaryPanelOpen = openStatus.secondaryPanel;

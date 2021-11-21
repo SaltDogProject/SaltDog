@@ -120,7 +120,7 @@ const App = defineComponent({
                 }
             );
             //panelManager.showSecondaryPanel();
-            panelManager.showSideBar();
+            //panelManager.showSideBar();
         });
         return {
             documentName,

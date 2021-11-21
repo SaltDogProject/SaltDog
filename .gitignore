@@ -30,6 +30,7 @@ pnpm-debug.log*
 public/pdfviewer/build
 public/pdfviewer/web
 public/plugin/preload
+public/sidebar
 third_party
 #others
 my_notice

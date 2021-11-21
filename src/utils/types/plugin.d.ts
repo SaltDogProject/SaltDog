@@ -5,11 +5,15 @@ interface ISaltDogPluginInfo {
     author?: string;
     localPath: string;
     rootDir: string;
+    messageChannelTicket?: string;
     contributes?: {
         viewsContainers?: {
             activitybar?: {
                 [key: string]: any;
             };
+        };
+        views?: {
+            [key: string]: any;
         };
     };
 }

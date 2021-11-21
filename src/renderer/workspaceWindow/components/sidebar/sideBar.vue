@@ -1,51 +1,59 @@
 <template>
-    <div v-for="(view, index) in sidebarViews" :key="index">
-        <div v-if="view.show" class="sidebar-main">
-            <keep-alive>
-                <div>
-                    <div class="sidebar-titlebar">
-                        <div class="sidebar-title">{{ view.title }}</div>
-                    </div>
-                    <div class="sidebar-content">
-                        <webview id="test" :src="view.viewSrc" :preload="sidebarPreload"></webview>
-                    </div>
+    <div v-for="(view, index) in sidebarViews" :key="index" class="sidebar-main" v-show="view.show">
+        <keep-alive>
+            <div style="width: 100%; height: 100%">
+                <div class="sidebar-titlebar">
+                    <div class="sidebar-title">{{ view.name }}</div>
                 </div>
-            </keep-alive>
-        </div>
+                <div class="sidebar-content">
+                    <webview
+                        class="sidebar-webview"
+                        :id="view.id"
+                        :src="view.viewSrc"
+                        :preload="sidebarPreload"
+                    ></webview>
+                </div>
+            </div>
+        </keep-alive>
     </div>
+    <!-- <div>
+        <webview class="sidebar-webview" :src="testViews" :preload="sidebarPreload"></webview>
+    </div> -->
 </template>
 <script lang="ts">
-import { defineComponent, DefineComponent, getCurrentInstance, onMounted, ref } from 'vue';
+import { WebviewTag } from 'electron';
+import { defineComponent, DefineComponent, getCurrentInstance, onMounted, onUpdated, ref } from 'vue';
+import plugins from '../../controller/plugin';
+const TAG = '[Sidebar]';
 export default defineComponent({
     setup() {
         // eslint-disable-next-line no-undef
         const staticPath = __static;
         const sidebarPreload = ref(`${staticPath}/sidebar/sidebarPreload.js`);
-        const { proxy } = getCurrentInstance()!;
-        const sidebarViews = [
-            {
-                title: '微软翻译',
-                viewSrc: `${staticPath}/sidebar/sidebar.html`,
-                show: true,
-            },
-            {
-                title: '微软翻译2',
-                viewSrc: `${staticPath}/sidebar/sidebar2.html`,
-                show: false,
-            },
-        ];
+        const testViews = staticPath + '/sidebar/sidebar.html';
+        const sidebarViews = ref(plugins.getSidebarViewsRef());
+        const mountedViews = new Map<string, boolean>();
         onMounted(() => {
-            const webview = document.getElementById('test');
-            webview?.addEventListener('dom-ready', () => {
-                // @ts-ignore
-                webview?.openDevTools();
-            });
-            webview?.addEventListener('ipc-message', function (event) {
-                // @ts-ignore
-                console.log('sidebar', event);
-            });
+            const views = document.getElementsByClassName('sidebar-webview');
+            for (let i = 0; i < views.length; i++) {
+                const webviewTag = views[i] as WebviewTag;
+                console.log(TAG, `Mount with webview`, webviewTag);
+                plugins.registerSidebarView(webviewTag);
+                mountedViews.set(webviewTag.id, true);
+            }
+        });
+        onUpdated(() => {
+            const views = document.getElementsByClassName('sidebar-webview');
+            for (let i = 0; i < views.length; i++) {
+                const webviewTag = views[i] as WebviewTag;
+                if (!mountedViews.has(webviewTag.id)) {
+                    plugins.registerSidebarView(webviewTag);
+                    mountedViews.set(webviewTag.id, true);
+                }
+            }
         });
         return {
+            testViews,
             sidebarViews,
             sidebarPreload,
         };
@@ -55,6 +63,10 @@ export default defineComponent({
 <style lang="stylus">
 sidebar-content-margin = 5px
 sidebar-title-margin-left = 10px
+.sidebar-webview
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 .sidebar-main
     height:100%
     font-size: 14px;

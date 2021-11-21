@@ -1,2 +1,4 @@
 import EventEmitter from 'eventemitter3';
-export default new EventEmitter();
+import panelManager from './panelManager';
+const bus = new EventEmitter();
+export default bus;
