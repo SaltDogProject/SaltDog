@@ -5,11 +5,10 @@ import { noop, uniqueId } from 'lodash';
 import { ITabConfig, ITabManager } from '@/utils/panelTab';
 import MessageHandler from './messageHandler';
 import path from 'path';
-import { EventEmitter } from 'events';
-import bus from '@/utils/bus';
+// FIXME:
+import bus from '../../controller/systemBus';
 
 class MainTabManager implements ITabManager {
-    private bus = new EventEmitter();
     private currentTab = ref('');
     private tabList = ref<Array<ITabConfig>>([]);
     private messageHandler: any;

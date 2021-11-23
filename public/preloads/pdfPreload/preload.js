@@ -1,15 +1,14 @@
 // 为了在pdfpages执行node能力，对nodemodules的引用要用requireFunc
 // 不要export default 否则要require().default
-window.requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
-import { listenTextSelect } from './api/events/index';
-import bus from './bus';
+const { listenTextSelect } = require('./api/events/index');
+const bus = require('./bus');
 const { noop } = require('lodash');
 const api = require('./api/api');
-const electron = requireFunc('electron');
-const uniqId = requireFunc('licia/uniqId');
+const electron = require('electron');
+const uniqId = require('licia/uniqId');
 const callbacks = {};
 
-window._sdConfig = {};
+window.__sdConfig = {};
 window.__sdJSBridge = {
     // 向host发送信息
     invoke: function (method, params, callback) {

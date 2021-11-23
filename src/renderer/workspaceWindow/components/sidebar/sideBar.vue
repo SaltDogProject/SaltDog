@@ -29,8 +29,7 @@ export default defineComponent({
     setup() {
         // eslint-disable-next-line no-undef
         const staticPath = __static;
-        const sidebarPreload = ref(`${staticPath}/sidebar/sidebarPreload.js`);
-        const testViews = staticPath + '/sidebar/sidebar.html';
+        const sidebarPreload = ref(`${staticPath}/preloads/pluginWebviewPreload/preload.js`);
         const sidebarViews = ref(plugins.getSidebarViewsRef());
         const mountedViews = new Map<string, boolean>();
         onMounted(() => {
@@ -53,7 +52,6 @@ export default defineComponent({
             }
         });
         return {
-            testViews,
             sidebarViews,
             sidebarPreload,
         };

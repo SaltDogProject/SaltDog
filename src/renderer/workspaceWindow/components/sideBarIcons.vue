@@ -13,9 +13,9 @@
 <script lang="ts">
 import { defineComponent, getCurrentInstance, ref } from 'vue';
 import { Location, Document, Menu as IconMenu, Setting } from '@element-plus/icons';
-import bus from '../controller/bus';
+import sysBus from '../controller/systemBus';
 import plugins from '../controller/plugin';
-import panelManager from '../controller/panelManager';
+
 export default defineComponent({
     setup() {
         const iconList = plugins.getSidebarIconListRef();
@@ -23,7 +23,7 @@ export default defineComponent({
             if (iconList.value[index].active) {
                 // TODO:本来就是打开的，再次点击关闭sidebar
                 iconList.value[index].active = false;
-                panelManager.closeSideBar();
+                sysBus.emit('saltdog:closeSidebar');
             } else {
                 iconList.value[index].active = true;
                 iconList.value.forEach((item: any, i: number) => {
@@ -31,10 +31,9 @@ export default defineComponent({
                         item.active = false;
                     }
                 });
+                //sysBus.emit('onClickSidebarIcon', iconList.value[index].command);
                 plugins.loadSidebarViews(iconList.value[index].command);
-                if (!panelManager.isSideBarOpen) {
-                    panelManager.showSideBar();
-                }
+                sysBus.emit('saltdog:openSidebar');
             }
         }
         return {

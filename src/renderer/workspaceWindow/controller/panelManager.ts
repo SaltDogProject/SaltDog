@@ -6,6 +6,7 @@ import {
     initBottomBarMainPanelListener,
 } from './resize';
 import { throttle } from 'lodash';
+import sysBus from './systemBus';
 const TAG = '[PanelManager]';
 interface IPanelObject {
     htmlElement: HTMLDivElement;
@@ -242,6 +243,12 @@ class viewsManager {
             };
             this.isInit = true;
             this.updateView();
+            sysBus.on('saltdog:openSidebar', () => {
+                this.showSideBar();
+            });
+            sysBus.on('saltdog:closeSidebar', () => {
+                this.closeSideBar();
+            });
         }
     }
     public initResizeListener(resizers: IResizeDivs) {

@@ -29,7 +29,6 @@ pnpm-debug.log*
 #Thirdparty build
 public/pdfviewer/build
 public/pdfviewer/web
-public/plugin/preload
 public/sidebar
 third_party
 #others

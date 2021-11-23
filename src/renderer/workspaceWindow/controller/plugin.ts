@@ -1,5 +1,6 @@
 import { WebviewTag } from 'electron';
 import { ref } from 'vue';
+import sysBus from './systemBus';
 const TAG = '[SaltDogPlugin]';
 class SaltDogPlugin {
     private _basicInfo: any = {};
@@ -9,6 +10,9 @@ class SaltDogPlugin {
     public init(basicInfo: any): void {
         this._basicInfo = basicInfo;
         console.log(TAG, 'basicInfo', this._basicInfo);
+        // sysBus.on('onClickSidebarIcon', (cmd) => {
+        //     this.loadSidebarViews(cmd);
+        // });
     }
     public getSidebarIconListRef(): any {
         const buildinIconPath = __static + '/images/workspace';
@@ -17,13 +21,13 @@ class SaltDogPlugin {
                 iconImg: `${buildinIconPath}/content.svg`,
                 description: '目录',
                 active: false,
-                command: 'saltdog.content',
+                command: 'onClickSidebarIcon:saltdog.content',
             },
             {
                 iconImg: `${buildinIconPath}/search.svg`,
                 description: '搜索',
                 active: false,
-                command: 'saltdog.search',
+                command: 'onClickSidebarIcon:saltdog.search',
             },
         ];
         if (this._basicInfo) {
@@ -34,7 +38,7 @@ class SaltDogPlugin {
                             iconImg: icon.iconPath,
                             description: icon.description,
                             active: false,
-                            command: `${icon.command}`,
+                            command: `onClickSidebarIcon:${icon.command}`,
                         });
                     });
                 }
@@ -48,6 +52,11 @@ class SaltDogPlugin {
     }
     // 新增webview（插件激活时）
     public loadSidebarViews(viewName: string) {
+        if (!viewName.startsWith('onClickSidebarIcon:')) {
+            console.warn(`[Sidebar Plugin] load sidebar without 'onCLickSidebarIcon',cmd:${viewName}`);
+        } else {
+            viewName = viewName.replace('onClickSidebarIcon:', '');
+        }
         //viewname = pluginName.viewName
         if (this._sidebarViewsMap.has(viewName)) {
             console.log(`[Sidebar Plugin] Already has sidebar views ${viewName}`);

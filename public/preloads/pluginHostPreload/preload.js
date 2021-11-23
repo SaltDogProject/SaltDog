@@ -3,7 +3,6 @@ const messageChannel = require('./messageChannel.js');
 global.__sdConfig = {
     message: 'not inited',
 };
-require = global.require;
 messageChannel.initListener();
 messageChannel.subscribe(
     'sdConfigReady',

@@ -9,6 +9,7 @@
                     disablewebsecurity
                     nodeintegration
                     webpreferences="contextIsolation=false"
+                    :preload="pdfViewerPreload"
                 ></webview>
             </keep-alive>
         </el-tab-pane>
@@ -20,6 +21,7 @@ import tabManager from './tabManager';
 declare const __static: any;
 export default defineComponent({
     setup() {
+        const pdfViewerPreload = `${__static}/preloads/pdfPreload/preload.js`;
         const editableTabs = tabManager.getTabListRef();
         const editableTabsValue = tabManager.getCurrentTabRef();
         const { proxy } = getCurrentInstance()!;
@@ -48,6 +50,7 @@ export default defineComponent({
             editableTabsValue,
             editableTabs,
             tabIndex,
+            pdfViewerPreload,
             handleTabsEdit,
         };
     },
