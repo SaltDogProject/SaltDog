@@ -6,6 +6,7 @@ interface ISaltDogPluginInfo {
     localPath: string;
     rootDir: string;
     messageChannelTicket?: string;
+    main: string;
     contributes?: {
         viewsContainers?: {
             activitybar?: {
@@ -36,4 +37,10 @@ interface ISaltDogPluginHostEventToPlugin {
     type: ISaltDogPluginMessageType;
     event: string;
     data: any;
+}
+interface IPluginWebviewIPC {
+    type: ISaltDogPluginMessageType;
+    data: any;
+    ticket: string;
+    callbackId: string;
 }

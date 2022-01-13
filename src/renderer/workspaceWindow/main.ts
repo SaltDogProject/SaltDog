@@ -11,6 +11,7 @@ const app = createApp(Frame);
 //ipcRenderer.once('initWorkspace', (e, arg) => {
 
 const basicInfo = ipcRenderer.sendSync('getBasicInfoSync'); // 基本配置，和打开的文件无关，包括插件等信息
+console.log('[Saltdog Kernel] BasicInfo:', basicInfo);
 app.config.globalProperties.__workspaceInfo = {}; //arg;
 app.config.globalProperties.__basicInfo = basicInfo; //arg;
 console.log('[Workspace load]', basicInfo);

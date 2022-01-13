@@ -1,6 +1,7 @@
-import { WebviewTag } from 'electron';
+import { ipcRenderer, WebviewTag } from 'electron';
 import { ref } from 'vue';
 import sysBus from './systemBus';
+import path from 'path';
 const TAG = '[SaltDogPlugin]';
 class SaltDogPlugin {
     private _basicInfo: any = {};
@@ -92,10 +93,25 @@ class SaltDogPlugin {
     public registerSidebarView(webview: WebviewTag) {
         webview.addEventListener('dom-ready', () => {
             console.log('[Sidebar View] Dom Ready');
+            const cssPath = path
+                .normalize(__static + '/preloads/pluginWebviewPreload/sidebar.css')
+                .replaceAll('\\', '/');
+
+            console.log('Inject CSS', cssPath);
+            webview.executeJavaScript(`
+                const css=document.createElement('link');
+                css.rel="stylesheet";
+                css.type="text/css";
+                css.href="${cssPath}";
+                document.head.appendChild(css);
+                // 避免结构化克隆报错，加;0
+                ;0
+            `);
             webview.openDevTools();
         });
         webview.addEventListener('ipc-message', (event) => {
-            console.log('[Sidebar View]', event.channel, event.args);
+            // console.log('[Sidebar View]', event.channel, event.args);
+            ipcRenderer.send(event.channel, event.args);
         });
     }
 }

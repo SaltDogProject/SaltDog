@@ -19,18 +19,24 @@ export class SaltDogPluginActivator {
             },
             serialization: 'advanced',
         };
+        const newApi = apiFactory.createApi(pluginInfo);
+        const messageChannel = new SaltDogMessageChannel(pluginInfo, newApi);
         if (process.env.NODE_ENV === 'development') {
             const port = 18044 + Math.floor(Math.random() * 1000);
             extend(processConfig, {
                 execArgv: ['--inspect=' + port],
+                env: {
+                    messageChannelTicket: messageChannel.getTicket(),
+                    mainjs: path.resolve(pluginInfo.rootDir, pluginInfo.main),
+                    sdConfig: JSON.stringify(pluginInfo),
+                },
                 // stdio: 'inherit',
             });
             console.log(TAG, `Plugin ${pluginInfo.name} is in develop mode, port: ${port}`);
         }
-        const pluginHost = fork(__static + '/plugin/preload/preload.js', [], processConfig as ForkOptions);
+        const pluginHost = fork(__static + '/preloads/pluginHostPreload/preload.js', [], processConfig as ForkOptions);
         this._pluginManager.setPluginHost(pluginInfo.name, pluginHost);
-        const newApi = apiFactory.createApi(pluginHost, pluginInfo);
-        const messageChannel = new SaltDogMessageChannel(pluginHost, pluginInfo, newApi);
+        messageChannel.bindHost(pluginHost);
         this._pluginManager.setMessageChannel(pluginInfo.name, messageChannel);
         pluginHost.on('close', (message: any) => {
             console.warn(TAG, `plugin close`, message);

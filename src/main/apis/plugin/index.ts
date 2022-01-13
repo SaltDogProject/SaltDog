@@ -1,16 +1,14 @@
 import { SaltDogPluginActivator } from './activator';
 import { app, ipcMain } from 'electron';
-import { existsSync, readdirSync, readJsonSync } from 'fs-extra';
+import { existsSync, readdirSync, readJsonSync, mkdirSync } from 'fs-extra';
 import { startsWith, extend, set, has } from 'lodash';
 import { normalize } from 'path';
 import { ChildProcess } from 'child_process';
 import SaltDogMessageChannel from './api/messageChannel';
-import { uuid } from 'licia';
 const TAG = 'SaltDogPlugin';
 class SaltDogPlugin {
     private _plugins: Map<string, ISaltDogPluginInfo> = new Map();
     private _pluginHosts: Map<string, ChildProcess> = new Map();
-    private _pluginMessageChannelName: Map<string, SaltDogMessageChannel> = new Map(); // string为name
     private _pluginMessageChannelTicket: Map<string, SaltDogMessageChannel> = new Map(); // string为ticket
     private _activator: SaltDogPluginActivator;
     public pluginPath = normalize(app.getPath('userData') + '/SaltDogPlugins');
@@ -20,6 +18,9 @@ class SaltDogPlugin {
     // 加载appdata/SaltDogPlugins下的所有插件
     // TODO: 禁用插件
     public init(): void {
+        if (!existsSync(this.pluginPath)) {
+            mkdirSync(this.pluginPath);
+        }
         const plugindir = readdirSync(this.pluginPath).filter((item) => {
             return item.startsWith('saltdogplugin_');
         });
@@ -54,10 +55,13 @@ class SaltDogPlugin {
         this._pluginHosts.set(name, host);
     }
     public setMessageChannel(name: string, channel: SaltDogMessageChannel): void {
-        const ticket = uuid();
-        this._pluginMessageChannelName.set(name, channel);
+        const ticket = channel.getTicket();
         this._pluginMessageChannelTicket.set(ticket, channel);
         this._plugins.get(name)!.messageChannelTicket = ticket;
+    }
+    public sendToPluginHost(data: IPluginWebviewIPC) {
+        const messageChannel = this._pluginMessageChannelTicket.get(data.ticket);
+        messageChannel!.sendToPluginHost(data);
     }
     public workspaceGetBasicPluginInfo(): any {
         const pluginInfo: any = {};
@@ -86,19 +90,16 @@ class SaltDogPlugin {
                 for (const key in plugin.contributes.views) {
                     set(info, `views.${key}`, []);
                     const views = plugin.contributes!.views[key];
-
-                    views.forEach((item: any) => {
-                        try {
-                            // @ts-ignore
-                            info.views[key].push({
-                                src: normalize(plugin.rootDir + '/' + item.src),
-                                name: item.name,
-                                // command: `${plugin.name}.${item.id}`,
-                            });
-                        } catch (e) {
-                            console.log(TAG, `plugin ${plugin.name} workspaceGetBasicPluginInfo-views failed`, e);
-                        }
-                    });
+                    try {
+                        // @ts-ignore
+                        info.views[key].push({
+                            src: normalize(plugin.rootDir + '/' + views.src),
+                            name: views.name,
+                            // command: `${plugin.name}.${item.id}`,
+                        });
+                    } catch (e) {
+                        console.log(TAG, `plugin ${plugin.name} workspaceGetBasicPluginInfo-views failed`, e);
+                    }
                 }
             }
             extend(info, {

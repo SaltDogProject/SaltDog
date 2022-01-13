@@ -23,6 +23,16 @@ class WindowManager implements IWindowManager {
                 this.windowMap.set(name, window);
                 this.windowIdMap.set(window.id, name);
             }
+            // block x-frame-options
+            window.webContents.session.webRequest.onHeadersReceived({ urls: ['*://*/*'] }, (d, c) => {
+                if (d.responseHeaders && d.responseHeaders['X-Frame-Options']) {
+                    delete d.responseHeaders['X-Frame-Options'];
+                } else if (d.responseHeaders && d.responseHeaders['x-frame-options']) {
+                    delete d.responseHeaders['x-frame-options'];
+                }
+
+                c({ cancel: false, responseHeaders: d.responseHeaders });
+            });
             if (config) this.windowConfig.set(window.id, config);
             windowConfig.callback(window, this);
             window.on('close', () => {

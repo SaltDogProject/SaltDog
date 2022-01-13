@@ -47,6 +47,7 @@
         "stylus": "^0.55.0",
         "stylus-loader": "3.0.2",
         "utf-8-validate": "^5.0.7",
+        "vm2": "^3.9.5",
         "vue": "^3.2.20",
         "vue-class-component": "^8.0.0-0",
         "vue-router": "^4.0.0-0",

@@ -20,6 +20,7 @@ import { defineComponent, onMounted, ref, onBeforeUpdate, onUpdated, getCurrentI
 import tabManager from './tabManager';
 declare const __static: any;
 export default defineComponent({
+    //item.webviewUrl
     setup() {
         const pdfViewerPreload = `${__static}/preloads/pdfPreload/preload.js`;
         const editableTabs = tabManager.getTabListRef();

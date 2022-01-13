@@ -1,45 +1,12 @@
+// @ts-nocheck
 const fs = require('fs');
 const path = require('path');
-const webpack = require('webpack');
-// pluginHost js don't need compile
-// teFolif (fs.existsSync(path.join(__dirname, '../public/plugin/preload'))) deleder('../public/plugin/preload');
-// copyFolder('../src/main/apis/plugin/preload', '../public/plugin/preload');
-// webviews preload don't need compile
-// if (fs.existsSync(path.join(__dirname, '../public/sidebar'))) deleteFolder('../public/sidebar');
-// copyFolder('../src/renderer/workspaceWindow/components/sidebar/basic', '../public/sidebar');
-// webpack(
-//     {
-//         entry: path.join(__dirname, '../src/applib/preload/preload.js'),
-//         output: {
-//             path: path.join(__dirname, '../public/applib'),
-//             filename: 'preload.js',
-//         },
-//         resolve: {
-//             extensions: ['.js', '.ts', '.json'],
-//         },
-//         devtool: 'source-map', // 打包出的js文件是否生成map文件（方便浏览器调试）
-//         mode: 'production',
-//     },
-//     (err, stats) => {
-//         if (err || stats.hasErrors()) {
-//             console.error('[Prebuild] Build preload.js failed.', err, stats);
-//         } else {
-//             console.log('[Prebuild] Build preload.js successfully.');
-//         }
-//     }
-// );
-// config.entry = {
-//     pdfPreload: ['src/renderer/workspaceWindow/components/pdfTabs/preload/preload.js'],
-// };
-// config.output = {
-//     path: path.resolve(__dirname, 'public/compile'),
-//     filename: '[name].js',
-// };
-function copyFile(src, dist) {
+
+export function copyFile(src, dist) {
     fs.writeFileSync(path.join(__dirname, dist), fs.readFileSync(path.join(__dirname, src)));
 }
 
-function copyFolder(copiedPath, resultPath, direct) {
+export function copyFolder(copiedPath, resultPath, direct) {
     if (!direct) {
         copiedPath = path.join(__dirname, copiedPath);
         resultPath = path.join(__dirname, resultPath);
@@ -51,14 +18,6 @@ function copyFolder(copiedPath, resultPath, direct) {
 
     if (fs.existsSync(copiedPath)) {
         createDir(resultPath);
-        /**
-         * @des 方式一：利用子进程操作命令行方式
-         */
-        // child_process.spawn('cp', ['-r', copiedPath, resultPath])
-
-        /**
-         * @des 方式二：
-         */
         const files = fs.readdirSync(copiedPath, { withFileTypes: true });
         for (let i = 0; i < files.length; i++) {
             const cf = files[i];
@@ -73,9 +32,7 @@ function copyFolder(copiedPath, resultPath, direct) {
                 readStream.pipe(writeStream);
             } else {
                 try {
-                    /**
-                     * @des 判断读(R_OK | W_OK)写权限
-                     */
+                    //判断读(R_OK | W_OK)写权限
                     fs.accessSync(path.join(crp, '..'), fs.constants.W_OK);
                     copyFolder(ccp, crp, true);
                 } catch (error) {
@@ -91,12 +48,10 @@ function copyFolder(copiedPath, resultPath, direct) {
  * @param { delPath：String } （需要删除文件的地址）
  * @param { direct：Boolean } （是否需要处理地址）
  */
-function deleteFile(delPath, direct) {
+export function deleteFile(delPath, direct) {
     delPath = direct ? delPath : path.join(__dirname, delPath);
     try {
-        /**
-         * @des 判断文件或文件夹是否存在
-         */
+        // 判断文件或文件夹是否存在
         if (fs.existsSync(delPath)) {
             fs.unlinkSync(delPath);
         } else {
@@ -107,7 +62,7 @@ function deleteFile(delPath, direct) {
     }
 }
 
-function deleteFolder(delPath) {
+export function deleteFolder(delPath) {
     delPath = path.join(__dirname, delPath);
 
     try {
@@ -122,9 +77,7 @@ function deleteFolder(delPath) {
                         deleteFile(dirPath, true);
                     }
                 }
-                /**
-                 * @des 只能删空文件夹
-                 */
+                // 只能删空文件夹
                 fs.rmdirSync(address);
             };
             delFn(delPath);

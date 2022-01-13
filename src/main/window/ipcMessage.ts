@@ -34,9 +34,14 @@ export function initIpc(windowManager: IWindowManager): void {
         windowManager.closeById(msg);
     });
     ipcMain.on('getBasicInfoSync', (e, msg) => {
-        console.log('[IPC] getBasicInfoSync');
+        // console.log('[IPC] getBasicInfoSync');
         e.returnValue = {
             plugins: pluginManager.workspaceGetBasicPluginInfo(),
         };
+    });
+    // plugin webview->plugin host
+    ipcMain.on('PLUGINWEBVIEW_IPC', (e, msg) => {
+        //console.log('[MAIN] PLUGINWEBVIEW_IPC', msg);
+        pluginManager.sendToPluginHost(msg[0]);
     });
 }

@@ -2,7 +2,7 @@ import { ChildProcess } from 'child_process';
 
 export class SaltDogPluginApiFactory {
     private _pluginApis = new Map<string, ISaltDogPluginApi>();
-    public createApi(pluginHost: ChildProcess, pluginInfo: ISaltDogPluginInfo): ISaltDogPluginApi {
+    public createApi(pluginInfo: ISaltDogPluginInfo): ISaltDogPluginApi {
         const api = {
             getPluginInfo: (arg: any, callback: any) => {
                 callback(pluginInfo);

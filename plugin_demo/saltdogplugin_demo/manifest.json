@@ -1,0 +1,22 @@
+{
+    "name": "demo",
+    "version": "1.0.0",
+    "description": "A demo for developers",
+    "author": "dorapocket",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "icon": "images/icon.svg",
+                    "id": "demo"
+                }
+            ]
+        },
+        "views": [
+            {
+                "name": "demo",
+                "src": "index.html"
+            }
+        ]
+    }
+}

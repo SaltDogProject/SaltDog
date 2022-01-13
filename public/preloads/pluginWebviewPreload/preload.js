@@ -1,4 +1,5 @@
 const { ipcRenderer, contextBridge } = require('electron');
+const uniqId = require('licia/uniqId');
 ipcRenderer.sendToHost('_getSidebarInfo');
 function getQueryVariable() {
     let query = window.location.search.substring(1);
@@ -10,11 +11,22 @@ function getQueryVariable() {
     });
     return params;
 }
-
+const ticket = getQueryVariable().ticket;
 contextBridge.exposeInMainWorld('__sdConfig', getQueryVariable());
+contextBridge.exposeInMainWorld('_pendingFunction', {});
 contextBridge.exposeInMainWorld('saltdog', {
-    send: (msg) => {
-        ipcRenderer.sendToHost('SIDEBAR_TO_PLUGINHOST_MESSAGE', msg);
+    send: (msg, callback) => {
+        const id = uniqId();
+        if (!window._pendingFunction) {
+            window._pendingFunction = {};
+        }
+        window._pendingFunction[id] = callback;
+        ipcRenderer.sendToHost('PLUGINWEBVIEW_IPC', {
+            type: 'PLUGINWEBVIEW_INVOKE',
+            data: msg,
+            ticket: ticket || window.__sdConfig.ticket || 'error: no ticket',
+            callbackId: id,
+        });
     },
     on: (event, callback) => {
         ipcRenderer.on('PLUGINHOST_TO_SIDEBAR_MESSAGE', (msg) => {
