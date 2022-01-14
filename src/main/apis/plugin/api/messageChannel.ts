@@ -1,6 +1,9 @@
 import { ChildProcess } from 'child_process';
+import { ipcMain } from 'electron';
 import { ISaltDogPluginMessageType } from '../constant';
 import { uuid } from 'licia';
+import windowManager from '~/main/window/windowManager';
+const TAG = '[SaltDogMessageChannel]';
 class SaltDogMessageChannel {
     public pluginHost?: ChildProcess;
     public pluginInfo: ISaltDogPluginInfo;
@@ -17,6 +20,9 @@ class SaltDogMessageChannel {
             switch (msg.type as ISaltDogPluginMessageType) {
                 case ISaltDogPluginMessageType.PLUGINHOST_INVOKE:
                     this.handlePluginHostInvoke(msg as ISaltDogPluginInvoke);
+                    break;
+                case ISaltDogPluginMessageType.PLUGINWEBVIEW_INVOKE_CALLBACK:
+                    this.sendToRenderer(msg as ISaltDogPluginWebviewInvokeCallback);
             }
         });
     }
@@ -47,6 +53,16 @@ class SaltDogMessageChannel {
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     public sendToPluginHost(data: any): void {
         this.pluginHost!.send(data);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    public sendToRenderer(data: any): void {
+        if (windowManager.getById(data.windowId)) {
+            console.log(TAG, 'sendToRenderer', data);
+            windowManager.getById(data.windowId)!.webContents.send(data.type, data);
+        } else {
+            console.error(TAG, 'wrong windowId: do not exist', data.windowId);
+        }
     }
 
     public getTicket(): string {

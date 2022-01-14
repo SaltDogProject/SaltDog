@@ -1,16 +1,26 @@
 import { ipcRenderer, WebviewTag } from 'electron';
-import { ref } from 'vue';
+import { getCurrentInstance, ref } from 'vue';
 import sysBus from './systemBus';
 import path from 'path';
+import { uuid, extend } from 'licia';
 const TAG = '[SaltDogPlugin]';
 class SaltDogPlugin {
     private _basicInfo: any = {};
     private _sidebarIconList: any = [];
     private _sidebarViews: any = ref([]);
     private _sidebarViewsMap: Map<string, any> = new Map(); // plugin.view--->index in _sidebarViews
-    public init(basicInfo: any): void {
+    private _sidebarViewsUUIDMap: Map<string, any> = new Map();
+    // @ts-ignore
+    private windowId;
+    public init(basicInfo: any, windowId: any): void {
         this._basicInfo = basicInfo;
+        this.windowId = windowId;
         console.log(TAG, 'basicInfo', this._basicInfo);
+        ipcRenderer.on('PLUGINWEBVIEW_INVOKE_CALLBACK', (event: any, data: any) => {
+            console.log(TAG, 'PLUGINWEBVIEW_INVOKE_CALLBACK', data);
+            const webview = this._sidebarViewsUUIDMap.get(data.webviewId);
+            webview.send('PLUGINWEBVIEW_INVOKE_CALLBACK', data);
+        });
         // sysBus.on('onClickSidebarIcon', (cmd) => {
         //     this.loadSidebarViews(cmd);
         // });
@@ -72,13 +82,15 @@ class SaltDogPlugin {
             const _view = this._basicInfo[viewName.split('.')[0]].views[viewName.split('.')[1]][0]; // TODO: 可能有多个view,暂时只支持一个
             const alreadyLoadedViewsLen = this._sidebarViews.value.length;
             this._sidebarViewsMap.set(viewName, alreadyLoadedViewsLen); // 记录下标
+            const id = uuid();
             const viewinfo = {
                 id: `sidebarView_${alreadyLoadedViewsLen}`,
                 viewSrc: `${_view.src.split('?')[0]}?ticket=${
                     this._basicInfo[viewName.split('.')[0]]._messageChannelTicket
-                }`, //不允许用户?传参,传递和host通信的tickets
+                }&windowId=${this.windowId}&webviewId=${id}`, //不允许用户?传参,传递和host通信的tickets
                 name: _view.name,
                 show: true,
+                uuid: id,
             };
             this._sidebarViews.value.push(viewinfo);
             // 关闭其他的webview-show
@@ -91,6 +103,7 @@ class SaltDogPlugin {
     }
     // 注册webview事件
     public registerSidebarView(webview: WebviewTag) {
+        const viewUUID = webview.dataset.uuid || '';
         webview.addEventListener('dom-ready', () => {
             console.log('[Sidebar View] Dom Ready');
             const cssPath = path
@@ -107,8 +120,10 @@ class SaltDogPlugin {
                 // 避免结构化克隆报错，加;0
                 ;0
             `);
+            this._sidebarViewsUUIDMap.set(viewUUID, webview);
             webview.openDevTools();
         });
+
         webview.addEventListener('ipc-message', (event) => {
             // console.log('[Sidebar View]', event.channel, event.args);
             ipcRenderer.send(event.channel, event.args);

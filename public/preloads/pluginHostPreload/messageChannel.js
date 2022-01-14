@@ -16,11 +16,44 @@ function invoke(api, args, callback) {
         callbackId,
     });
 }
-// 接受plugin webview请求
-function dealWebviewMessage(msg, callback) {
-    console.log('[Plugin Host] Receive from webview: ', msg);
+function on(channel, cb) {
+    bus.on(`webviewMessage:${channel}`, function (data) {
+        cb(data.data, function (cbdata) {
+            console.log('[Plugin Host] Send reply to webview: ', {
+                webviewId: data.webviewId,
+                windowId: data.windowId,
+                data: cbdata,
+                callbackId: data.callbackId,
+            });
+            process.send({
+                type: 'PLUGINWEBVIEW_INVOKE_CALLBACK',
+                webviewId: data.webviewId,
+                windowId: data.windowId,
+                data: cbdata,
+                callbackId: data.callbackId,
+            });
+        });
+    });
 }
-function on() {}
+function once(channel, cb) {
+    bus.once(`webviewMessage:${channel}`, function (data) {
+        cb(data.data, function (cbdata) {
+            process.send({
+                type: 'PLUGINWEBVIEW_INVOKE_CALLBACK',
+                webviewId: data.webviewId,
+                windowId: data.windowId,
+                data: cbdata,
+                callbackId: data.callbackId,
+            });
+        });
+    });
+}
+// 接受plugin webview请求
+function dealWebviewMessage(data) {
+    bus.emit(`webviewMessage:${data.channel}`, data);
+    console.log('[Plugin Host] Receive from webview: ', data);
+}
+
 // 订阅host事件
 function subscribe(event, callback, once = false) {
     if (once) {
@@ -30,7 +63,6 @@ function subscribe(event, callback, once = false) {
     }
 }
 // 发布插件事件
-function publish(fn, args) {}
 function initListener() {
     process.on('message', function (data) {
         console.log('[Plugin Host] message', data);
@@ -42,14 +74,8 @@ function initListener() {
         } else if (data.type === 'HOST_EVENT') {
             bus.emit(data.event, data.data);
         } else if (data.type === 'PLUGINWEBVIEW_INVOKE') {
-            dealWebviewMessage(data.data, function (r) {
-                process.send({
-                    type: 'PLUGINWEBVIEW_INVOKE_CALLBACK',
-                    data: r,
-                    callbackId: data.callbackId,
-                });
-            });
+            dealWebviewMessage(data);
         }
     });
 }
-module.exports = { invoke, on, subscribe, publish, initListener };
+module.exports = { invoke, on, once, subscribe, initListener };

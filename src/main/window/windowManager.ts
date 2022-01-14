@@ -73,6 +73,16 @@ class WindowManager implements IWindowManager {
             this.windowIdMap.delete(id);
         }
     };
+    getById = (id: number | string) => {
+        if (typeof id === 'string') {
+            id = parseInt(id);
+        }
+        const name = this.windowIdMap.get(id);
+        if (name) {
+            return this.windowMap.get(name)!;
+        } else return null;
+    };
+
     closeById = (id: number) => {
         const name = this.windowIdMap.get(id);
         console.log('close id', name);

@@ -11,20 +11,35 @@ function getQueryVariable() {
     });
     return params;
 }
-const ticket = getQueryVariable().ticket;
-contextBridge.exposeInMainWorld('__sdConfig', getQueryVariable());
+const params = getQueryVariable();
+const ticket = params.ticket;
+const webviewId = params.webviewId;
+const windowId = params.windowId;
+
+//contextBridge.exposeInMainWorld('__sdConfig', params);
 contextBridge.exposeInMainWorld('_pendingFunction', {});
 contextBridge.exposeInMainWorld('saltdog', {
-    send: (msg, callback) => {
+    init: () => {
+        window.isMessageChannelInited = false;
+        window._pendingFunction = {};
+        ipcRenderer.on('PLUGINWEBVIEW_INVOKE_CALLBACK', (e, data) => {
+            if (data.callbackId && window._pendingFunction[data.callbackId]) {
+                window._pendingFunction[data.callbackId](data.data);
+                delete window._pendingFunction[data.callbackId];
+            }
+        });
+    },
+    send: (channel, msg, callback) => {
         const id = uniqId();
-        if (!window._pendingFunction) {
-            window._pendingFunction = {};
-        }
         window._pendingFunction[id] = callback;
+        // window.isMessageChannelInited ? null : (window.isMessageChannelInited = false);
         ipcRenderer.sendToHost('PLUGINWEBVIEW_IPC', {
             type: 'PLUGINWEBVIEW_INVOKE',
+            channel: channel,
             data: msg,
-            ticket: ticket || window.__sdConfig.ticket || 'error: no ticket',
+            ticket: ticket,
+            webviewId,
+            windowId,
             callbackId: id,
         });
     },

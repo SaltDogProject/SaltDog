@@ -22,6 +22,8 @@ console.log('[SaltDog Plugin Host] messageChannelTicket: ', process.env.messageC
 console.log('[SaltDog Plugin Host] mainjs: ', process.env.mainjs);
 console.log('[SaltDog Plugin Host] sdconfig: ', process.env.sdconfig);
 
+saltdog.on = messageChannel.on;
+saltdog.once = messageChannel.once;
 const vm = new NodeVM({
     sandbox: {
         saltdog,

@@ -28,6 +28,13 @@ interface ISaltDogPluginInvoke {
     pluginInfo: ISaltDogPluginInfo;
     callbackId: string;
 }
+interface ISaltDogPluginWebviewInvokeCallback {
+    type: ISaltDogPluginMessageType;
+    webviewId: string;
+    windowId: string;
+    data: any;
+    callbackId: string;
+}
 interface ISaltDogPluginInvokeCallback {
     type: ISaltDogPluginMessageType;
     data: any;

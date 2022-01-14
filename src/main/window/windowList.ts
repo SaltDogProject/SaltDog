@@ -90,9 +90,8 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
         window.loadURL(WORKSPACE_WINDOW_URL);
         if (!process.env.IS_TEST) window.webContents.openDevTools();
         //openTranslateWeb();
-        ipcMain.on('selectText', (e: IpcMainEvent, str: string) => {
-            console.log(str);
-            //doTranslate(str);
+        ipcMain.on('getWindowId', (e: IpcMainEvent, str: string) => {
+            e.returnValue = window.id;
         });
         window.on('closed', () => {
             //closeBrowser();

@@ -11,6 +11,7 @@
                         :id="view.id"
                         :src="view.viewSrc"
                         :preload="sidebarPreload"
+                        :data-uuid="view.uuid"
                     ></webview>
                 </div>
             </div>
