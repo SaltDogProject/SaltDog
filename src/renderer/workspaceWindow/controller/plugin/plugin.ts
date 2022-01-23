@@ -1,8 +1,9 @@
 import { ipcRenderer, WebviewTag } from 'electron';
 import { getCurrentInstance, ref } from 'vue';
-import sysBus from './systemBus';
+import sysBus from '../systemBus';
 import path from 'path';
 import { uuid, extend } from 'licia';
+import api from './api';
 const TAG = '[SaltDogPlugin]';
 class SaltDogPlugin {
     private _basicInfo: any = {};
@@ -20,6 +21,18 @@ class SaltDogPlugin {
             console.log(TAG, 'PLUGINWEBVIEW_INVOKE_CALLBACK', data);
             const webview = this._sidebarViewsUUIDMap.get(data.webviewId);
             webview.send('PLUGINWEBVIEW_INVOKE_CALLBACK', data);
+        });
+        ipcRenderer.on('PLUGINHOST_INVOKE', (event: any, data: any) => {
+            console.log(TAG, 'PLUGINHOST_INVOKE', data);
+            if (api[data.api]) {
+                api[data.api](data.args, (res: any) => {
+                    if (data.callbackMainId) {
+                        ipcRenderer.send(data.callbackMainId, res);
+                    }
+                });
+            } else {
+                console.error(TAG, 'api not found', data.api);
+            }
         });
         // sysBus.on('onClickSidebarIcon', (cmd) => {
         //     this.loadSidebarViews(cmd);

@@ -1,4 +1,4 @@
-const saltdog = require('./pluginApi/index.js');
+const hostApi = require('./pluginApi/index.js');
 const messageChannel = require('./messageChannel.js');
 const { NodeVM } = require('vm2');
 const fs = require('fs');
@@ -22,8 +22,20 @@ console.log('[SaltDog Plugin Host] messageChannelTicket: ', process.env.messageC
 console.log('[SaltDog Plugin Host] mainjs: ', process.env.mainjs);
 console.log('[SaltDog Plugin Host] sdconfig: ', process.env.sdconfig);
 
-saltdog.on = messageChannel.on;
-saltdog.once = messageChannel.once;
+const saltdog = new Proxy(hostApi, {
+    get(target, key) {
+        if (target[key]) return target[key];
+        else if (key == 'on') return messageChannel.on;
+        else if (key == 'once') return messageChannel.once;
+        else {
+            console.log(`Plugin Host] Call Unknown Api "${key}" , switching to mainprocess.`);
+            return function (args, callback) {
+                messageChannel.invoke(key, args, callback);
+            };
+        }
+    },
+});
+
 const vm = new NodeVM({
     sandbox: {
         saltdog,

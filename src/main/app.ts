@@ -18,6 +18,9 @@ class LifeCycle {
         dbChecker();
         this.pluginManager.init();
         initIpc(windowManager);
+        app.on('browser-window-focus', (e, window) => {
+            windowManager.setFocusWindow(window);
+        });
     }
     onReady() {
         const readyFunction = async () => {

@@ -8,6 +8,7 @@ class WindowManager implements IWindowManager {
     private windowMap: Map<IWindowList | string, BrowserWindow> = new Map();
     private windowIdMap: Map<number, IWindowList | string> = new Map();
     private windowConfig: Map<number, any> = new Map();
+    private focusWindow: BrowserWindow | null = null;
     create(name: IWindowList, config?: any) {
         const windowConfig: IWindowListItem = windowList.get(name)!;
         if (windowConfig.isValid) {
@@ -96,6 +97,12 @@ class WindowManager implements IWindowManager {
         if (name) {
             this.windowMap.get(name)!.minimize();
         }
+    };
+    setFocusWindow = (w: BrowserWindow) => {
+        this.focusWindow = w;
+    };
+    getCurrentWindow = () => {
+        return this.focusWindow;
     };
 }
 

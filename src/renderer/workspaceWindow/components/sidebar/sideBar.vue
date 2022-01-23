@@ -24,7 +24,7 @@
 <script lang="ts">
 import { WebviewTag } from 'electron';
 import { defineComponent, DefineComponent, getCurrentInstance, onMounted, onUpdated, ref } from 'vue';
-import plugins from '../../controller/plugin';
+import plugins from '../../controller/plugin/plugin';
 const TAG = '[Sidebar]';
 export default defineComponent({
     setup() {

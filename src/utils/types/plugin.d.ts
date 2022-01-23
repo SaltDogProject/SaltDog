@@ -23,6 +23,7 @@ interface ISaltDogPluginApi {
 }
 interface ISaltDogPluginInvoke {
     type: ISaltDogPluginMessageType;
+    windowId?: string;
     api: string;
     args: any;
     pluginInfo: ISaltDogPluginInfo;

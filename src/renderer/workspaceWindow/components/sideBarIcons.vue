@@ -14,7 +14,7 @@
 import { defineComponent, getCurrentInstance, ref } from 'vue';
 import { Location, Document, Menu as IconMenu, Setting } from '@element-plus/icons';
 import sysBus from '../controller/systemBus';
-import plugins from '../controller/plugin';
+import plugins from '../controller/plugin/plugin';
 
 export default defineComponent({
     setup() {

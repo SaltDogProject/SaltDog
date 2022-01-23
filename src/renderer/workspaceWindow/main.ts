@@ -5,7 +5,7 @@ import store from './store';
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import { ipcRenderer } from 'electron';
-import pluginManager from './controller/plugin';
+import pluginManager from './controller/plugin/plugin';
 const app = createApp(Frame);
 // FIXME: debug
 //ipcRenderer.once('initWorkspace', (e, arg) => {
