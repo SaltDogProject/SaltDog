@@ -1,3 +1,6 @@
 [submodule "third_party/pdf.js"]
 	path = third_party/pdf.js
 	url = https://github.com/dorapocket/SaltDog-pdf.js.git
+[submodule "docs"]
+	path = docs
+	url = https://github.com/SaltDogProject/docs.git
