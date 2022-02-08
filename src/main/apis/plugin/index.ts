@@ -42,10 +42,13 @@ class SaltDogPlugin {
                 }
             }
         });
-        this._plugins.forEach((item) => {
+        ipcMain.once('WorkspaceWindowReady',()=>{
+this._plugins.forEach((item) => {
             // TODO: 依据激活事件激活插件
             this._activator.activatePlugin(item);
         });
+        });
+        
         ipcMain.on('saltdog-plugin-message', (event, arg) => {
             const { ticket } = arg;
             const channel = this._pluginMessageChannelTicket.get(ticket);

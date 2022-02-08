@@ -23,5 +23,7 @@ app.use(store)
         size: 'small',
     })
     .mount('#app');
+
+ipcRenderer.send('WorkspaceWindowReady');
 //});
 //app.config.globalProperties.$qs = qs;

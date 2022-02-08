@@ -14,6 +14,7 @@ function invoke(api, args, callback) {
         args: args,
         pluginInfo: global.__sdConfig,
         callbackId,
+        hostIdentity:process.env.messageChannelTicket
     });
 }
 function on(channel, cb) {

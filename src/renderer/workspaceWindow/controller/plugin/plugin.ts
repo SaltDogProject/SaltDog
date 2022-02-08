@@ -18,18 +18,16 @@ class SaltDogPlugin {
         this.windowId = windowId;
         console.log(TAG, 'basicInfo', this._basicInfo);
         ipcRenderer.on('PLUGINWEBVIEW_INVOKE_CALLBACK', (event: any, data: any) => {
-            console.log(TAG, 'PLUGINWEBVIEW_INVOKE_CALLBACK', data);
             const webview = this._sidebarViewsUUIDMap.get(data.webviewId);
             webview.send('PLUGINWEBVIEW_INVOKE_CALLBACK', data);
         });
         ipcRenderer.on('PLUGINHOST_INVOKE', (event: any, data: any) => {
-            console.log(TAG, 'PLUGINHOST_INVOKE', data);
             if (api[data.api]) {
                 api[data.api](data.args, (res: any) => {
                     if (data.callbackMainId) {
                         ipcRenderer.send(data.callbackMainId, res);
                     }
-                });
+                },data);
             } else {
                 console.error(TAG, 'api not found', data.api);
             }

@@ -14,6 +14,8 @@ class MainTabManager implements ITabManager {
     private messageHandler: any;
     private webviewMap = new Map<string, WebviewTag>();
     private webviewMessageHandler = new Map<string, MessageHandler>();
+    private webviewId2Info = new Map<string,any>();
+
     public getCurrentTabRef(): any {
         return this.currentTab;
     }
@@ -34,7 +36,7 @@ class MainTabManager implements ITabManager {
     }
     public addPdfTab(pdfPath: string) {
         const name = path.basename(pdfPath || '未命名');
-        const tabid = this.addTab(name, PDFVIEWER_WEBVIEW_URL);
+        const tabid = this.addTab(name, PDFVIEWER_WEBVIEW_URL,"saltdog-internal");
         bus.once(`${tabid}_domReady`, () => {
             const handler = this.getMessageHandler(tabid) as MessageHandler;
             handler.invokeWebview('loadPdf', { path: pdfPath }, () => {
@@ -42,17 +44,30 @@ class MainTabManager implements ITabManager {
             });
         });
     }
-    public addTab(title: string, webviewUrl: string): string {
-        const id = uniqueId(`pdfWebview-`);
+    // 插件创建页面Tab
+    public addPluginTab(pluginInfo:any,webviewUrl:string,statCallback:any){
+        const name = "Plugin"
+        const tabid = this.addTab(name, webviewUrl,"");
+        bus.once(`${tabid}_domReady`, () => {
+            statCallback(tabid);
+        });
+    }
+
+    public addTab(title: string, webviewUrl: string,owner=""): string {
+        const id = uniqueId(`MainPanelWebview-`);
         this.getTabList().push({
             title,
             name: id,
             webviewUrl,
             webviewId: id,
         });
+        this.webviewId2Info.set(id,{
+            owner
+        });
         this.setCurrentTab(id);
         return id;
     }
+
     public removeTab(name: string) {
         const tabs = this.tabList.value;
         let activeName = this.currentTab.value;

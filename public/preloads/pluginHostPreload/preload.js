@@ -21,7 +21,9 @@ messageChannel.subscribe(
 console.log('[SaltDog Plugin Host] messageChannelTicket: ', process.env.messageChannelTicket);
 console.log('[SaltDog Plugin Host] mainjs: ', process.env.mainjs);
 console.log('[SaltDog Plugin Host] sdconfig: ', process.env.sdconfig);
-
+if(process.env.sdconfig){
+    global.__sdConfig = process.env.sdconfig;
+}
 const saltdog = new Proxy(hostApi, {
     get(target, key) {
         if (target[key]) return target[key];
