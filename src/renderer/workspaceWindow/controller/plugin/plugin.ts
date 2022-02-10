@@ -23,11 +23,12 @@ class SaltDogPlugin {
         });
         ipcRenderer.on('PLUGINHOST_INVOKE', (event: any, data: any) => {
             if (api[data.api]) {
-                api[data.api](data.args, (res: any) => {
+                // 注入传来的data
+                api[data.api].call(data,data.args, (res: any) => {
                     if (data.callbackMainId) {
                         ipcRenderer.send(data.callbackMainId, res);
                     }
-                },data);
+                });
             } else {
                 console.error(TAG, 'api not found', data.api);
             }

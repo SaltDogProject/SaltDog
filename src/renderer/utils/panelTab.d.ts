@@ -3,6 +3,7 @@ export interface ITabConfig {
     name: string;
     webviewUrl: string;
     webviewId: string;
+    owner:string
 }
 
 export interface ITabManager {

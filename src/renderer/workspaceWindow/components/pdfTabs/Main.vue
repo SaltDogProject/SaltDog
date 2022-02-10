@@ -2,15 +2,26 @@
     <el-tabs class="pdftabview" v-model="editableTabsValue" type="border-card" closable @edit="handleTabsEdit">
         <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
             <keep-alive>
+                <!--disable node integration for security-->
                 <webview
                     :id="item.webviewId"
                     class="pdfWebView"
                     :src="item.webviewUrl"
                     disablewebsecurity
-                    nodeintegration
                     webpreferences="contextIsolation=false"
-                    :preload="pdfViewerPreload"
+                    :preload="item.isPdf?pdfViewerPreload:''"
                 ></webview>
+                <!--
+                    <webview
+                    :id="item.webviewId"
+                    class="pdfWebView"
+                    :src="item.webviewUrl"
+                    nodeintegration
+                    disablewebsecurity
+                    webpreferences="contextIsolation=false"
+                    :preload="item.isPdf?pdfViewerPreload:''"
+                ></webview>
+                -->
             </keep-alive>
         </el-tab-pane>
     </el-tabs>

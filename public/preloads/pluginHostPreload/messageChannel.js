@@ -20,12 +20,12 @@ function invoke(api, args, callback) {
 function on(channel, cb) {
     bus.on(`webviewMessage:${channel}`, function (data) {
         cb(data.data, function (cbdata) {
-            console.log('[Plugin Host] Send reply to webview: ', {
-                webviewId: data.webviewId,
-                windowId: data.windowId,
-                data: cbdata,
-                callbackId: data.callbackId,
-            });
+            // console.log('[Plugin Host] Send reply to webview: ', {
+            //     webviewId: data.webviewId,
+            //     windowId: data.windowId,
+            //     data: cbdata,
+            //     callbackId: data.callbackId,
+            // });
             process.send({
                 type: 'PLUGINWEBVIEW_INVOKE_CALLBACK',
                 webviewId: data.webviewId,
@@ -52,9 +52,12 @@ function once(channel, cb) {
 // 接受plugin webview请求
 function dealWebviewMessage(data) {
     bus.emit(`webviewMessage:${data.channel}`, data);
-    console.log('[Plugin Host] Receive from webview: ', data);
+    // console.log('[Plugin Host] Receive from webview: ', data);
 }
 
+function dealRendererEvents(data){
+    bus.emit(data.channel,data.data);
+}
 // 订阅host事件
 function subscribe(event, callback, once = false) {
     if (once) {
@@ -66,7 +69,7 @@ function subscribe(event, callback, once = false) {
 // 发布插件事件
 function initListener() {
     process.on('message', function (data) {
-        console.log('[Plugin Host] message', data);
+        // console.log('[Plugin Host] message', data);
         if (data.type === 'PLUGINHOST_INVOKE_CALLBACK') {
             if (data.callbackId in callbackMap) {
                 callbackMap[data.callbackId](data.data);

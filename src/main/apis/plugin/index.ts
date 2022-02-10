@@ -62,6 +62,11 @@ this._plugins.forEach((item) => {
         this._pluginMessageChannelTicket.set(ticket, channel);
         this._plugins.get(name)!.messageChannelTicket = ticket;
     }
+    public publishEventToPluginHost(target:string,event:string,data:any){
+        const messageChannel = this._pluginMessageChannelTicket.get(target);
+        messageChannel!.publishEventToPluginHost(event,data);
+    }
+
     public sendToPluginHost(data: IPluginWebviewIPC) {
         const messageChannel = this._pluginMessageChannelTicket.get(data.ticket);
         messageChannel!.sendToPluginHost(data);

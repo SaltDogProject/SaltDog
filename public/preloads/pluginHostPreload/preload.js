@@ -30,7 +30,7 @@ const saltdog = new Proxy(hostApi, {
         else if (key == 'on') return messageChannel.on;
         else if (key == 'once') return messageChannel.once;
         else {
-            console.log(`Plugin Host] Call Unknown Api "${key}" , switching to mainprocess.`);
+            console.log(`[Plugin Host] Call Unknown Api "${key}" , switching to mainprocess.`);
             return function (args, callback) {
                 messageChannel.invoke(key, args, callback);
             };

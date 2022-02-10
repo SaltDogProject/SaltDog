@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import { IWindowList } from './window/constants';
 // import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
@@ -10,6 +10,7 @@ import { dbChecker } from './apis/db/dbChecker';
 import db from './apis/db/index';
 import saltDogPlugin from './apis/plugin/index';
 import { initIpc } from './window/ipcMessage';
+import { ISaltDogPluginMessageType } from './apis/plugin/constant';
 class LifeCycle {
     private pluginManager = saltDogPlugin;
     beforeReady() {
@@ -21,6 +22,9 @@ class LifeCycle {
         app.on('browser-window-focus', (e, window) => {
             windowManager.setFocusWindow(window);
         });
+        ipcMain.on('_rendererToPluginEvents',(e,target,events,data)=>{
+            this.pluginManager.publishEventToPluginHost(target,events,data);
+        })
     }
     onReady() {
         const readyFunction = async () => {

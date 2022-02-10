@@ -7,8 +7,45 @@ import MessageHandler from './messageHandler';
 import path from 'path';
 // FIXME:
 import bus from '../../controller/systemBus';
+import pluginMsgChannel from '../../../utils/pluginMsgChannel';
 
 class MainTabManager implements ITabManager {
+    private _eventList = [
+        'load-commit',
+        'did-finish-load',
+        'did-fail-load',
+        'did-frame-finish-load',
+        'did-start-loading',
+        'did-stop-loading',
+        'did-attach',
+        'dom-ready',
+        'page-title-updated',
+        'page-favicon-updated',
+        'enter-html-full-screen',
+        'leave-html-full-screen',
+        'console-message',
+        'found-in-page',
+        'new-window',
+        'will-navigate',
+        'did-start-navigation',
+        'did-redirect-navigation',
+        'did-navigate',
+        'did-frame-navigate',
+        'did-navigate-in-page',
+        'close',
+        'ipc-message',
+        'crashed',
+        'plugin-crashed',
+        'destroyed',
+        'media-started-playing',
+        'media-paused',
+        'did-change-theme-color',
+        'update-target-url',
+        'devtools-opened',
+        'devtools-closed',
+        'devtools-focused',
+        'context-menu',
+    ];
     private currentTab = ref('');
     private tabList = ref<Array<ITabConfig>>([]);
     private messageHandler: any;
@@ -28,6 +65,10 @@ class MainTabManager implements ITabManager {
     public getTabList(): Array<any> {
         return this.tabList.value;
     }
+    public getWebviewById(id:string):WebviewTag|null {
+        if(this.webviewMap.has(id)) return this.webviewMap.get(id) as WebviewTag;
+        else return null;
+    }
     public setCurrentTab(tabName: string): void {
         this.currentTab.value = tabName;
     }
@@ -45,19 +86,23 @@ class MainTabManager implements ITabManager {
         });
     }
     // 插件创建页面Tab
-    public addPluginTab(pluginInfo:any,webviewUrl:string,statCallback:any){
-        const name = "Plugin"
-        const tabid = this.addTab(name, webviewUrl,"");
-        bus.once(`${tabid}_domReady`, () => {
-            statCallback(tabid);
-        });
+    public addPluginTab(pluginMessage:any,title:string,webviewUrl:string,statCallback:any){
+        const name = title;
+        const tabid = this.addTab(name, webviewUrl,pluginMessage.hostIdentity);
+        statCallback(tabid);
+        // bus.once(`${tabid}_domReady`, () => {
+        //     statCallback(tabid);
+        // });
     }
 
-    public addTab(title: string, webviewUrl: string,owner=""): string {
+    // 添加tab 设置owner为插件名字，只有名字一样才可以互相控制
+    public addTab(title: string, webviewUrl: string,owner="saltdog-internal"): string {
         const id = uniqueId(`MainPanelWebview-`);
         this.getTabList().push({
             title,
             name: id,
+            isPdf:webviewUrl==PDFVIEWER_WEBVIEW_URL,
+            owner,
             webviewUrl,
             webviewId: id,
         });
@@ -111,6 +156,15 @@ class MainTabManager implements ITabManager {
         const element = document.getElementById(v.webviewId) as WebviewTag;
         if (!this.webviewMap.has(v.webviewId)) {
             this.webviewMap.set(v.webviewId, element);
+            
+            // 事件转发
+            for(const e of this._eventList){
+                element.addEventListener(e,(...args)=>{
+                    pluginMsgChannel.send(v.owner,`Webview_${v.webviewId}_${e}`,args);
+                });
+            }
+            
+
             element.addEventListener('dom-ready', () => {
                 if (!this.webviewMessageHandler.has(v.webviewId)) {
                     this.webviewMessageHandler.set(v.webviewId, new MessageHandler(element));
