@@ -29,7 +29,7 @@ const webpack = require('webpack');
 //     }
 // );
 // config.entry = {
-//     pdfPreload: ['src/renderer/workspaceWindow/components/pdfTabs/preload/preload.js'],
+//     pdfPreload: ['src/renderer/workspaceWindow/components/tabs/preload/preload.js'],
 // };
 // config.output = {
 //     path: path.resolve(__dirname, 'public/compile'),

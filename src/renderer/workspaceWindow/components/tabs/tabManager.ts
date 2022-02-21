@@ -1,5 +1,4 @@
 import { ref, getCurrentInstance } from 'vue';
-import { PDFVIEWER_WEBVIEW_URL } from '@/utils/constants';
 import { WebviewTag } from 'electron';
 import { noop, uniqueId } from 'lodash';
 import { ITabConfig, ITabManager } from '@/utils/panelTab';
@@ -77,13 +76,13 @@ class MainTabManager implements ITabManager {
     }
     public addPdfTab(pdfPath: string) {
         const name = path.basename(pdfPath || '未命名');
-        const tabid = this.addTab(name, PDFVIEWER_WEBVIEW_URL,"saltdog-internal");
-        bus.once(`${tabid}_domReady`, () => {
-            const handler = this.getMessageHandler(tabid) as MessageHandler;
-            handler.invokeWebview('loadPdf', { path: pdfPath }, () => {
-                noop();
-            });
-        });
+        const tabid = this.addTab(name, "PDFVIEWER","saltdog-internal");
+        // bus.once(`${tabid}_domReady`, () => {
+        //     const handler = this.getMessageHandler(tabid) as MessageHandler;
+        //     handler.invokeWebview('loadPdf', { path: pdfPath }, () => {
+        //         noop();
+        //     });
+        // });
     }
     // 插件创建页面Tab
     public addPluginTab(pluginMessage:any,title:string,webviewUrl:string,statCallback:any){
@@ -101,7 +100,7 @@ class MainTabManager implements ITabManager {
         this.getTabList().push({
             title,
             name: id,
-            isPdf:webviewUrl==PDFVIEWER_WEBVIEW_URL,
+            isPdf:webviewUrl=="PDFVIEWER",
             owner,
             webviewUrl,
             webviewId: id,
@@ -145,7 +144,7 @@ class MainTabManager implements ITabManager {
         if (this.tabList.value.length == 0) return;
         else {
             const newWebviews = this.tabList.value.filter((item) => {
-                return !this.webviewMap.has(item.webviewId);
+                return !this.webviewMap.has(item.webviewId)&&!item.isPdf;
             });
             newWebviews.map((v) => {
                 this.addWebviewTabEventListener(v);
@@ -154,6 +153,7 @@ class MainTabManager implements ITabManager {
     }
     private addWebviewTabEventListener(v: ITabConfig) {
         const element = document.getElementById(v.webviewId) as WebviewTag;
+        if(!element) return;
         if (!this.webviewMap.has(v.webviewId)) {
             this.webviewMap.set(v.webviewId, element);
             

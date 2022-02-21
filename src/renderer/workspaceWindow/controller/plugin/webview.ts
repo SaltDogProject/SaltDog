@@ -1,5 +1,5 @@
 // @ts-nocheck
-import mainTabManager from '../../components/pdfTabs/tabManager';
+import mainTabManager from '../../components/tabs/tabManager';
 const TAG = '[SaltDogPlugin Webview]';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

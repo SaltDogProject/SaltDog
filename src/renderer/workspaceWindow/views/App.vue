@@ -22,7 +22,7 @@
                         <div id="mainPanel" class="mainPanel">
                             <!-- onePanel if only one-->
                             <div id="primaryPanel" class="primaryPanel">
-                                <pdf-tabs></pdf-tabs>
+                                <tabs></tabs>
                             </div>
                             <div id="resizer-primaryPanel2secondaryPanel" class="resizer"></div>
                             <div id="secondaryPanel" class="secondaryPanel">
@@ -42,19 +42,19 @@
 <script lang="ts">
 import { defineComponent, ref, getCurrentInstance, ComponentInternalInstance, onMounted } from 'vue';
 import pkg from 'root/package.json';
-import PdfTabs from '../components/pdfTabs/Main.vue';
+import Tabs from '../components/tabs/Main.vue';
 import panelManager from '../controller/panelManager';
-import pdfTabManager from '../components/pdfTabs/tabManager';
+import pdfTabManager from '../components/tabs/tabManager';
 // @ts-ignore
 import SidebarIcons from '../components/sideBarIcons.vue';
 // @ts-ignore
 import sidebar from '../components/sidebar/sideBar.vue';
-import tabManager from '../components/pdfTabs/tabManager';
+import tabManager from '../components/tabs/tabManager';
 import { ipcRenderer } from 'electron';
 declare var __static: string;
 
 const App = defineComponent({
-    components: { PdfTabs, SidebarIcons, sidebar },
+    components: { Tabs, SidebarIcons, sidebar },
     setup() {
         const documentName = ref('Test Document.pdf');
         const os = ref(process.platform);

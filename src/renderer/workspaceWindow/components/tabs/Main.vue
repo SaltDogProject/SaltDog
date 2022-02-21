@@ -1,36 +1,42 @@
 <template>
-    <el-tabs class="pdftabview" v-model="editableTabsValue" type="border-card" closable @edit="handleTabsEdit">
+    <el-tabs class="tabview" v-model="editableTabsValue" type="border-card" closable @edit="handleTabsEdit">
         <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
-            <keep-alive>
-                <!--disable node integration for security-->
-                <webview
-                    :id="item.webviewId"
-                    class="pdfWebView"
-                    :src="item.webviewUrl"
-                    disablewebsecurity
-                    webpreferences="contextIsolation=false"
-                    :preload="item.isPdf?pdfViewerPreload:''"
-                ></webview>
-                <!--
+            <!--disable node integration for security-->
+            <div v-if="!item.isPdf" style="width: 100%; height: 100%">
+                <keep-alive>
                     <webview
-                    :id="item.webviewId"
-                    class="pdfWebView"
-                    :src="item.webviewUrl"
+                        :id="item.webviewId"
+                        class="mainWebView"
+                        :src="item.webviewUrl"
+                        disablewebsecurity
+                        webpreferences="contextIsolation=false"
+                        :preload="item.isPdf ? pdfViewerPreload : ''"
+                    ></webview>
+                </keep-alive>
+                <!--
                     nodeintegration
                     disablewebsecurity
                     webpreferences="contextIsolation=false"
                     :preload="item.isPdf?pdfViewerPreload:''"
-                ></webview>
                 -->
-            </keep-alive>
+            </div>
+            <div v-else style="width: 100%; height: 100%">
+                <keep-alive>
+                    <viewer class="pdfViewer">
+                        
+                    </viewer>
+                </keep-alive>
+            </div>
         </el-tab-pane>
     </el-tabs>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref, onBeforeUpdate, onUpdated, getCurrentInstance } from 'vue';
 import tabManager from './tabManager';
+import Viewer from './pdfViewer/viewer.vue';
 declare const __static: any;
 export default defineComponent({
+    components: { Viewer },
     //item.webviewUrl
     setup() {
         const pdfViewerPreload = `${__static}/preloads/pdfPreload/preload.js`;
@@ -70,7 +76,7 @@ export default defineComponent({
 </script>
 <style lang="stylus">
 tabitem_height = 40px
-.pdftabview
+.tabview
     box-shadow: none!important
     border:none!important
     height: 100%
@@ -85,7 +91,7 @@ tabitem_height = 40px
         .el-tab-pane
             height:100%
             width:100%
-            .pdfWebView
+            .mainWebView
                 height:100%
                 width:100%
 </style>

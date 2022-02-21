@@ -42,6 +42,7 @@
         "lodash": "^4.17.21",
         "lodash-id": "^0.14.1",
         "lowdb": "^1.0.0",
+        "pdfjs-dist": "^2.12.313",
         "sbd": "^1.0.19",
         "stylus": "^0.55.0",
         "stylus-loader": "3.0.2",
