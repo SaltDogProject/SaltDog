@@ -2,7 +2,7 @@
     <el-tabs class="tabview" v-model="editableTabsValue" type="border-card" closable @edit="handleTabsEdit">
         <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
             <!--disable node integration for security-->
-            <div v-if="!item.isPdf" style="width: 100%; height: 100%">
+            <div style="width: 100%; height: 100%">
                 <keep-alive>
                     <webview
                         :id="item.webviewId"
@@ -20,13 +20,6 @@
                     :preload="item.isPdf?pdfViewerPreload:''"
                 -->
             </div>
-            <div v-else style="width: 100%; height: 100%">
-                <keep-alive>
-                    <viewer class="pdfViewer">
-                        
-                    </viewer>
-                </keep-alive>
-            </div>
         </el-tab-pane>
     </el-tabs>
 </template>
@@ -36,7 +29,6 @@ import tabManager from './tabManager';
 import Viewer from './pdfViewer/viewer.vue';
 declare const __static: any;
 export default defineComponent({
-    components: { Viewer },
     //item.webviewUrl
     setup() {
         const pdfViewerPreload = `${__static}/preloads/pdfPreload/preload.js`;

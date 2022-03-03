@@ -4,6 +4,7 @@ import { noop, uniqueId } from 'lodash';
 import { ITabConfig, ITabManager } from '@/utils/panelTab';
 import MessageHandler from './messageHandler';
 import path from 'path';
+import fs from 'fs';
 // FIXME:
 import bus from '../../controller/systemBus';
 import pluginMsgChannel from '../../../utils/pluginMsgChannel';
@@ -77,12 +78,12 @@ class MainTabManager implements ITabManager {
     public addPdfTab(pdfPath: string) {
         const name = path.basename(pdfPath || '未命名');
         const tabid = this.addTab(name, "PDFVIEWER","saltdog-internal");
-        // bus.once(`${tabid}_domReady`, () => {
-        //     const handler = this.getMessageHandler(tabid) as MessageHandler;
-        //     handler.invokeWebview('loadPdf', { path: pdfPath }, () => {
-        //         noop();
-        //     });
-        // });
+        bus.once(`${tabid}_domReady`, () => {
+            const handler = this.getMessageHandler(tabid) as MessageHandler;
+            handler.invokeWebview('loadPdf', { fileBlob: fs.readFileSync(path.resolve('C:/Users/Dorapocket/Desktop/Xilinx Doc/Xilinx Doc','c_ug1414-vitis-ai.pdf')) }, () => {
+                noop();
+            });
+        });
     }
     // 插件创建页面Tab
     public addPluginTab(pluginMessage:any,title:string,webviewUrl:string,statCallback:any){
@@ -102,7 +103,7 @@ class MainTabManager implements ITabManager {
             name: id,
             isPdf:webviewUrl=="PDFVIEWER",
             owner,
-            webviewUrl,
+            webviewUrl:webviewUrl=="PDFVIEWER"?`${__static}/sdpdfcore/index.html`:webviewUrl,
             webviewId: id,
         });
         this.webviewId2Info.set(id,{
@@ -144,7 +145,7 @@ class MainTabManager implements ITabManager {
         if (this.tabList.value.length == 0) return;
         else {
             const newWebviews = this.tabList.value.filter((item) => {
-                return !this.webviewMap.has(item.webviewId)&&!item.isPdf;
+                return !this.webviewMap.has(item.webviewId);
             });
             newWebviews.map((v) => {
                 this.addWebviewTabEventListener(v);

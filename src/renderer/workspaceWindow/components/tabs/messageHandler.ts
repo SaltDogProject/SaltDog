@@ -28,19 +28,19 @@ export default class MessageHandler {
             data: {},
             callbackId: 0,
         };
-        this.webview.send('HOST_INVOKE_CALLBACK', JSON.stringify(arg));
+        this.webview.send('HOST_INVOKE_CALLBACK', arg);
     }
     public webviewCallbackHandler(args: any[]): void {
-        const arg = JSON.parse(args[0]);
+        const arg = args[0];
         if (this.callbacks[arg.callbackId as string]) {
             this.callbacks[arg.callbackId as string](arg.data);
             delete this.callbacks[arg.callbackId as string];
         }
     }
     public webviewPublishHandler(args: any[]): void {
-        console.log('webviewPublish', JSON.parse(args[0]));
+        console.log('webviewPublish', args[0]);
         // TODO:
-        ipcRenderer.send(JSON.parse(args[0]).event, JSON.parse(args[0]).data);
+        ipcRenderer.send(args[0].event, args[0].data);
     }
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     public invokeWebview(method: string, data: any, callback: any): void {
@@ -54,6 +54,6 @@ export default class MessageHandler {
             method,
             callbackId: id,
         };
-        this.webview.send('HOST_INVOKE', JSON.stringify(args));
+        this.webview.send('HOST_INVOKE', args);
     }
 }
