@@ -1,20 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 var exec = require('child_process').exec;
-let buildCmd = 'cd third_party/pdfjs && gulp generic';
-console.log('[Build-pdf] Building pdf.js...');
+let buildCmd = 'cd third_party/SDPDFCore && npm run build';
+console.log('[Build-pdf] Building SDPDFCore...');
 exec(buildCmd, function (error, stdout, stderr) {
     // 打印错误堆栈
     if (error) {
         console.log(error.stack);
-        console.log('[Build-pdf error]: ' + stderr);
+        console.log('[Build-SDPDFCore error]: ' + stderr);
     }
-    console.log('[Build-pdf]: ' + stdout);
-    deleteFolder('../public/pdfviewer/build');
-    deleteFolder('../public/pdfviewer/web');
-    copyFolder('../third_party/pdfjs/build/generic/build', '../public/pdfviewer/build');
-    copyFolder('../third_party/pdfjs/build/generic/web', '../public/pdfviewer/web');
-    console.log('[Build-pdf] Success');
+    console.log('[Build-SDPDFCore]: ' + stdout);
+    copyFolder('../third_party/SDPDFCore/dist', '../public/SDPDFCore');
+    console.log('[Build-SDPDFCore] Success');
 });
 
 function copyFolder(copiedPath, resultPath, direct) {
@@ -28,21 +25,18 @@ function copyFolder(copiedPath, resultPath, direct) {
     }
 
     if (fs.existsSync(copiedPath)) {
-        createDir(resultPath);
-        /**
-         * @des 方式一：利用子进程操作命令行方式
-         */
-        // child_process.spawn('cp', ['-r', copiedPath, resultPath])
-
-        /**
-         * @des 方式二：
-         */
+        if (!fs.existsSync(resultPath)) {
+            createDir(resultPath);
+        }
         const files = fs.readdirSync(copiedPath, { withFileTypes: true });
         for (let i = 0; i < files.length; i++) {
             const cf = files[i];
             const ccp = path.join(copiedPath, cf.name);
             const crp = path.join(resultPath, cf.name);
             if (cf.isFile()) {
+                if (fs.existsSync(crp)) {
+                    fs.unlinkSync(crp); //替换
+                }
                 /**
                  * @des 创建文件,使用流的形式可以读写大文件
                  */

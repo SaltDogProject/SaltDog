@@ -1,6 +1,7 @@
 import uniqId from 'licia/uniqId';
 import { noop } from 'lodash';
 import { ipcRenderer } from 'electron';
+import bus from '../../controller/systemBus';
 export default class MessageHandler {
     private webview: Electron.WebviewTag;
     private callbacks: { [key: string]: (args: any[]) => void } = {};
@@ -40,10 +41,11 @@ export default class MessageHandler {
     public webviewPublishHandler(args: any[]): void {
         console.log('webviewPublish', args[0]);
         // TODO:
+        bus.emit(args[0].event, args[0].data);
         ipcRenderer.send(args[0].event, args[0].data);
     }
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    public invokeWebview(method: string, data: any, callback: any): void {
+    public invokeWebview(method: string, data: any, callback?: any): void {
         console.log('[invokeWebview]', method, data);
         const id = uniqId();
         if (callback && typeof callback == 'function') {

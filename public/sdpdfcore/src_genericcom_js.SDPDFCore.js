@@ -5,11 +5,11 @@
 /*!*********************************!*\
   !*** ./src/download_manager.js ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DownloadManager": () => (/* binding */ DownloadManager)
+/* harmony export */   "DownloadManager": function() { return /* binding */ DownloadManager; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -102,12 +102,12 @@ class DownloadManager {
 /*!**********************************!*\
   !*** ./src/generic_scripting.js ***!
   \**********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "docPropertiesLookup": () => (/* binding */ docPropertiesLookup),
-/* harmony export */   "GenericScripting": () => (/* binding */ GenericScripting)
+/* harmony export */   "docPropertiesLookup": function() { return /* binding */ docPropertiesLookup; },
+/* harmony export */   "GenericScripting": function() { return /* binding */ GenericScripting; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -179,11 +179,11 @@ class GenericScripting {
 /*!***************************!*\
   !*** ./src/genericcom.js ***!
   \***************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "GenericCom": () => (/* binding */ GenericCom)
+/* harmony export */   "GenericCom": function() { return /* binding */ GenericCom; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -249,11 +249,11 @@ PDFViewerApplication.externalServices = GenericExternalServices;
 /*!****************************!*\
   !*** ./src/genericl10n.js ***!
   \****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "GenericL10n": () => (/* binding */ GenericL10n)
+/* harmony export */   "GenericL10n": function() { return /* binding */ GenericL10n; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -316,7 +316,7 @@ class GenericL10n {
 /*!*********************!*\
   !*** ./src/l10n.js ***!
   \*********************/
-/***/ (() => {
+/***/ (function() {
 
 /* Copyright 2022 Mozilla Foundation
  *
@@ -1155,11 +1155,11 @@ document.webL10n = function (window, document, undefined) {
 /*!****************************!*\
   !*** ./src/preferences.js ***!
   \****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "BasePreferences": () => (/* binding */ BasePreferences)
+/* harmony export */   "BasePreferences": function() { return /* binding */ BasePreferences; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *

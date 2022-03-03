@@ -1,4 +1,4 @@
-/******/ (() => { // webpackBootstrap
+/******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./node_modules/crypto-js/aes.js":
@@ -6874,7 +6874,7 @@
 /*!************************************!*\
   !*** ./node_modules/pako/index.js ***!
   \************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
 // Top level file is just a mixin of submodules & constants
@@ -6903,7 +6903,7 @@ module.exports.constants = constants;
 /*!******************************************!*\
   !*** ./node_modules/pako/lib/deflate.js ***!
   \******************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
 
@@ -7294,7 +7294,7 @@ module.exports.constants = __webpack_require__(/*! ./zlib/constants */ "./node_m
 /*!******************************************!*\
   !*** ./node_modules/pako/lib/inflate.js ***!
   \******************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
 
@@ -7724,7 +7724,7 @@ module.exports.constants = __webpack_require__(/*! ./zlib/constants */ "./node_m
 /*!***********************************************!*\
   !*** ./node_modules/pako/lib/utils/common.js ***!
   \***********************************************/
-/***/ ((module) => {
+/***/ (function(module) {
 
 "use strict";
 
@@ -7783,7 +7783,7 @@ module.exports.flattenChunks = (chunks) => {
 /*!************************************************!*\
   !*** ./node_modules/pako/lib/utils/strings.js ***!
   \************************************************/
-/***/ ((module) => {
+/***/ (function(module) {
 
 "use strict";
 // String encode/decode helpers
@@ -7968,7 +7968,7 @@ module.exports.utf8border = (buf, max) => {
 /*!***********************************************!*\
   !*** ./node_modules/pako/lib/zlib/adler32.js ***!
   \***********************************************/
-/***/ ((module) => {
+/***/ (function(module) {
 
 "use strict";
 
@@ -8030,7 +8030,7 @@ module.exports = adler32;
 /*!*************************************************!*\
   !*** ./node_modules/pako/lib/zlib/constants.js ***!
   \*************************************************/
-/***/ ((module) => {
+/***/ (function(module) {
 
 "use strict";
 
@@ -8109,7 +8109,7 @@ module.exports = {
 /*!*********************************************!*\
   !*** ./node_modules/pako/lib/zlib/crc32.js ***!
   \*********************************************/
-/***/ ((module) => {
+/***/ (function(module) {
 
 "use strict";
 
@@ -8179,7 +8179,7 @@ module.exports = crc32;
 /*!***********************************************!*\
   !*** ./node_modules/pako/lib/zlib/deflate.js ***!
   \***********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
 
@@ -10040,7 +10040,7 @@ module.exports.deflateTune = deflateTune;
 /*!************************************************!*\
   !*** ./node_modules/pako/lib/zlib/gzheader.js ***!
   \************************************************/
-/***/ ((module) => {
+/***/ (function(module) {
 
 "use strict";
 
@@ -10109,7 +10109,7 @@ module.exports = GZheader;
 /*!***********************************************!*\
   !*** ./node_modules/pako/lib/zlib/inffast.js ***!
   \***********************************************/
-/***/ ((module) => {
+/***/ (function(module) {
 
 "use strict";
 
@@ -10464,7 +10464,7 @@ module.exports = function inflate_fast(strm, start) {
 /*!***********************************************!*\
   !*** ./node_modules/pako/lib/zlib/inflate.js ***!
   \***********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
 
@@ -12022,7 +12022,7 @@ module.exports.inflateUndermine = inflateUndermine;
 /*!************************************************!*\
   !*** ./node_modules/pako/lib/zlib/inftrees.js ***!
   \************************************************/
-/***/ ((module) => {
+/***/ (function(module) {
 
 "use strict";
 
@@ -12377,7 +12377,7 @@ module.exports = inflate_table;
 /*!************************************************!*\
   !*** ./node_modules/pako/lib/zlib/messages.js ***!
   \************************************************/
-/***/ ((module) => {
+/***/ (function(module) {
 
 "use strict";
 
@@ -12420,7 +12420,7 @@ module.exports = {
 /*!*********************************************!*\
   !*** ./node_modules/pako/lib/zlib/trees.js ***!
   \*********************************************/
-/***/ ((module) => {
+/***/ (function(module) {
 
 "use strict";
 
@@ -13660,7 +13660,7 @@ module.exports._tr_align = _tr_align;
 /*!***********************************************!*\
   !*** ./node_modules/pako/lib/zlib/zstream.js ***!
   \***********************************************/
-/***/ ((module) => {
+/***/ (function(module) {
 
 "use strict";
 
@@ -32300,7 +32300,7 @@ exports.StrikeOutAnnotationObj = StrikeOutAnnotationObj;
 /*!*******************************************!*\
   !*** ./src/annotate/appearance-stream.ts ***!
   \*******************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -32504,7 +32504,7 @@ exports.GraphicsStateParameter = GraphicsStateParameter;
 /*!************************************!*\
   !*** ./src/annotate/array-util.ts ***!
   \************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -33094,7 +33094,7 @@ exports.ContentStream = ContentStream;
 /*!*************************************!*\
   !*** ./src/annotate/crypto-util.ts ***!
   \*************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -33235,7 +33235,7 @@ exports.CryptoUtil = CryptoUtil;
 /*!********************************!*\
   !*** ./src/annotate/crypto.ts ***!
   \********************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -33437,7 +33437,7 @@ exports.RC4CryptoEngine = RC4CryptoEngine;
 /*!******************************************!*\
   !*** ./src/annotate/document-history.ts ***!
   \******************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -33985,7 +33985,7 @@ exports.DocumentHistory = DocumentHistory;
 /*!***********************************!*\
   !*** ./src/annotate/font-data.ts ***!
   \***********************************/
-/***/ ((__unused_webpack_module, exports) => {
+/***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
 
@@ -34015,7 +34015,7 @@ exports.STANDARD_FONT_DATA = {
 /*!*******************************!*\
   !*** ./src/annotate/fonts.ts ***!
   \*******************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -34627,7 +34627,7 @@ __createBinding(exports, annotation_1, "AnnotationFactory");
 /*!*************************************!*\
   !*** ./src/annotate/object-util.ts ***!
   \*************************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -35761,7 +35761,7 @@ exports.PDFDocumentParser = PDFDocumentParser;
 /*!***********************************!*\
   !*** ./src/annotate/resources.ts ***!
   \***********************************/
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
@@ -37716,12 +37716,12 @@ exports.Writer = Writer;
 /*!************************************!*\
   !*** ./src/annotate_controller.js ***!
   \************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "AnnotateController": () => (/* binding */ AnnotateController)
+/* harmony export */   "AnnotateController": function() { return /* binding */ AnnotateController; }
 /* harmony export */ });
 const {AnnotationFactory} = __webpack_require__(/*! ./annotate/index.ts */ "./src/annotate/index.ts");
 class AnnotateController{
@@ -37943,12 +37943,12 @@ class AnnotateController{
 /*!*****************************************!*\
   !*** ./src/annotation_layer_builder.js ***!
   \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "AnnotationLayerBuilder": () => (/* binding */ AnnotationLayerBuilder)
+/* harmony export */   "AnnotationLayerBuilder": function() { return /* binding */ AnnotationLayerBuilder; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -38048,14 +38048,14 @@ class AnnotationLayerBuilder {
 /*!********************!*\
   !*** ./src/app.js ***!
   \********************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DefaultExternalServices": () => (/* binding */ DefaultExternalServices),
-/* harmony export */   "PDFPrintServiceFactory": () => (/* binding */ PDFPrintServiceFactory),
-/* harmony export */   "PDFViewerApplication": () => (/* binding */ PDFViewerApplication)
+/* harmony export */   "DefaultExternalServices": function() { return /* binding */ DefaultExternalServices; },
+/* harmony export */   "PDFPrintServiceFactory": function() { return /* binding */ PDFPrintServiceFactory; },
+/* harmony export */   "PDFViewerApplication": function() { return /* binding */ PDFViewerApplication; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -38489,7 +38489,12 @@ const PDFViewerApplication = {
   this.pdfSidebarResizer = new PDFSidebarResizer(appConfig.sidebarResizer, eventBus, this.l10n);
  },
  run(config) {
-  this.initialize(config).then(webViewerInitialized);
+  this.initialize(config).then(()=>{
+    __sdJSBridge.publish(`${window._saltdogWebviewId}:SDPDFCore_Ready`);
+    this.eventBus.on('SDPDFCore_loadPDF',()=>{
+      webViewerInitialized();
+    })
+  });
  },
  get initialized() {
   return this._initializedCapability.settled;
@@ -40208,14 +40213,14 @@ const PDFPrintServiceFactory = {
 /*!****************************!*\
   !*** ./src/app_options.js ***!
   \****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "AppOptions": () => (/* binding */ AppOptions),
-/* harmony export */   "compatibilityParams": () => (/* binding */ compatibilityParams),
-/* harmony export */   "OptionKind": () => (/* binding */ OptionKind)
+/* harmony export */   "AppOptions": function() { return /* binding */ AppOptions; },
+/* harmony export */   "compatibilityParams": function() { return /* binding */ compatibilityParams; },
+/* harmony export */   "OptionKind": function() { return /* binding */ OptionKind; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -40503,12 +40508,12 @@ class AppOptions {
 /*!*********************************!*\
   !*** ./src/base_tree_viewer.js ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "BaseTreeViewer": () => (/* binding */ BaseTreeViewer)
+/* harmony export */   "BaseTreeViewer": function() { return /* binding */ BaseTreeViewer; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -40632,14 +40637,14 @@ class BaseTreeViewer {
 /*!****************************!*\
   !*** ./src/base_viewer.js ***!
   \****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "BaseViewer": () => (/* binding */ BaseViewer),
-/* harmony export */   "PagesCountLimit": () => (/* binding */ PagesCountLimit),
-/* harmony export */   "PDFPageViewBuffer": () => (/* binding */ PDFPageViewBuffer)
+/* harmony export */   "BaseViewer": function() { return /* binding */ BaseViewer; },
+/* harmony export */   "PagesCountLimit": function() { return /* binding */ PagesCountLimit; },
+/* harmony export */   "PDFPageViewBuffer": function() { return /* binding */ PDFPageViewBuffer; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -42006,15 +42011,15 @@ class BaseViewer {
 /*!****************************!*\
   !*** ./src/event_utils.js ***!
   \****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "AutomationEventBus": () => (/* binding */ AutomationEventBus),
-/* harmony export */   "EventBus": () => (/* binding */ EventBus),
-/* harmony export */   "waitOnEventOrTimeout": () => (/* binding */ waitOnEventOrTimeout),
-/* harmony export */   "WaitOnType": () => (/* binding */ WaitOnType)
+/* harmony export */   "AutomationEventBus": function() { return /* binding */ AutomationEventBus; },
+/* harmony export */   "EventBus": function() { return /* binding */ EventBus; },
+/* harmony export */   "waitOnEventOrTimeout": function() { return /* binding */ waitOnEventOrTimeout; },
+/* harmony export */   "WaitOnType": function() { return /* binding */ WaitOnType; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -42143,12 +42148,12 @@ class AutomationEventBus extends EventBus {
 /*!****************************!*\
   !*** ./src/grab_to_pan.js ***!
   \****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "GrabToPan": () => (/* binding */ GrabToPan)
+/* harmony export */   "GrabToPan": function() { return /* binding */ GrabToPan; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -42283,14 +42288,14 @@ class GrabToPan {
 /*!***************************!*\
   !*** ./src/l10n_utils.js ***!
   \***************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "fixupLangCode": () => (/* binding */ fixupLangCode),
-/* harmony export */   "getL10nFallback": () => (/* binding */ getL10nFallback),
-/* harmony export */   "NullL10n": () => (/* binding */ NullL10n)
+/* harmony export */   "fixupLangCode": function() { return /* binding */ fixupLangCode; },
+/* harmony export */   "getL10nFallback": function() { return /* binding */ getL10nFallback; },
+/* harmony export */   "NullL10n": function() { return /* binding */ NullL10n; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -42427,12 +42432,12 @@ const NullL10n = {
 /*!********************************!*\
   !*** ./src/overlay_manager.js ***!
   \********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "OverlayManager": () => (/* binding */ OverlayManager)
+/* harmony export */   "OverlayManager": function() { return /* binding */ OverlayManager; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -42542,12 +42547,12 @@ class OverlayManager {
 /*!********************************!*\
   !*** ./src/password_prompt.js ***!
   \********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PasswordPrompt": () => (/* binding */ PasswordPrompt)
+/* harmony export */   "PasswordPrompt": function() { return /* binding */ PasswordPrompt; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -42633,12 +42638,12 @@ class PasswordPrompt {
 /*!**************************************!*\
   !*** ./src/pdf_attachment_viewer.js ***!
   \**************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFAttachmentViewer": () => (/* binding */ PDFAttachmentViewer)
+/* harmony export */   "PDFAttachmentViewer": function() { return /* binding */ PDFAttachmentViewer; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -42776,13 +42781,13 @@ class PDFAttachmentViewer extends BaseTreeViewer {
 /*!*********************************!*\
   !*** ./src/pdf_cursor_tools.js ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CursorTool": () => (/* binding */ CursorTool),
-/* harmony export */   "PDFCursorTools": () => (/* binding */ PDFCursorTools)
+/* harmony export */   "CursorTool": function() { return /* binding */ CursorTool; },
+/* harmony export */   "PDFCursorTools": function() { return /* binding */ PDFCursorTools; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -42899,12 +42904,12 @@ class PDFCursorTools {
 /*!****************************************!*\
   !*** ./src/pdf_document_properties.js ***!
   \****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFDocumentProperties": () => (/* binding */ PDFDocumentProperties)
+/* harmony export */   "PDFDocumentProperties": function() { return /* binding */ PDFDocumentProperties; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -43155,12 +43160,12 @@ class PDFDocumentProperties {
 /*!*****************************!*\
   !*** ./src/pdf_find_bar.js ***!
   \*****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFFindBar": () => (/* binding */ PDFFindBar)
+/* harmony export */   "PDFFindBar": function() { return /* binding */ PDFFindBar; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -43361,13 +43366,13 @@ class PDFFindBar {
 /*!************************************!*\
   !*** ./src/pdf_find_controller.js ***!
   \************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "FindState": () => (/* binding */ FindState),
-/* harmony export */   "PDFFindController": () => (/* binding */ PDFFindController)
+/* harmony export */   "FindState": function() { return /* binding */ FindState; },
+/* harmony export */   "PDFFindController": function() { return /* binding */ PDFFindController; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -44072,13 +44077,13 @@ class PDFFindController {
 /*!*******************************!*\
   !*** ./src/pdf_find_utils.js ***!
   \*******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "CharacterType": () => (/* binding */ CharacterType),
-/* harmony export */   "getCharacterType": () => (/* binding */ getCharacterType)
+/* harmony export */   "CharacterType": function() { return /* binding */ CharacterType; },
+/* harmony export */   "getCharacterType": function() { return /* binding */ getCharacterType; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -44179,14 +44184,14 @@ function getCharacterType(charCode) {
 /*!****************************!*\
   !*** ./src/pdf_history.js ***!
   \****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "isDestArraysEqual": () => (/* binding */ isDestArraysEqual),
-/* harmony export */   "isDestHashesEqual": () => (/* binding */ isDestHashesEqual),
-/* harmony export */   "PDFHistory": () => (/* binding */ PDFHistory)
+/* harmony export */   "isDestArraysEqual": function() { return /* binding */ isDestArraysEqual; },
+/* harmony export */   "isDestHashesEqual": function() { return /* binding */ isDestHashesEqual; },
+/* harmony export */   "PDFHistory": function() { return /* binding */ PDFHistory; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -44663,12 +44668,12 @@ function isDestArraysEqual(firstDest, secondDest) {
 /*!*********************************!*\
   !*** ./src/pdf_layer_viewer.js ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFLayerViewer": () => (/* binding */ PDFLayerViewer)
+/* harmony export */   "PDFLayerViewer": function() { return /* binding */ PDFLayerViewer; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -44832,14 +44837,14 @@ class PDFLayerViewer extends BaseTreeViewer {
 /*!*********************************!*\
   !*** ./src/pdf_link_service.js ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "LinkTarget": () => (/* binding */ LinkTarget),
-/* harmony export */   "PDFLinkService": () => (/* binding */ PDFLinkService),
-/* harmony export */   "SimpleLinkService": () => (/* binding */ SimpleLinkService)
+/* harmony export */   "LinkTarget": function() { return /* binding */ LinkTarget; },
+/* harmony export */   "PDFLinkService": function() { return /* binding */ PDFLinkService; },
+/* harmony export */   "SimpleLinkService": function() { return /* binding */ SimpleLinkService; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -45289,12 +45294,12 @@ class SimpleLinkService {
 /*!***********************************!*\
   !*** ./src/pdf_outline_viewer.js ***!
   \***********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFOutlineViewer": () => (/* binding */ PDFOutlineViewer)
+/* harmony export */   "PDFOutlineViewer": function() { return /* binding */ PDFOutlineViewer; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -45559,12 +45564,12 @@ class PDFOutlineViewer extends BaseTreeViewer {
 /*!******************************!*\
   !*** ./src/pdf_page_view.js ***!
   \******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFPageView": () => (/* binding */ PDFPageView)
+/* harmony export */   "PDFPageView": function() { return /* binding */ PDFPageView; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -46214,12 +46219,12 @@ class PDFPageView {
 /*!**************************************!*\
   !*** ./src/pdf_presentation_mode.js ***!
   \**************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFPresentationMode": () => (/* binding */ PDFPresentationMode)
+/* harmony export */   "PDFPresentationMode": function() { return /* binding */ PDFPresentationMode; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -46525,12 +46530,12 @@ class PDFPresentationMode {
 /*!**********************************!*\
   !*** ./src/pdf_print_service.js ***!
   \**********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFPrintService": () => (/* binding */ PDFPrintService)
+/* harmony export */   "PDFPrintService": function() { return /* binding */ PDFPrintService; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -46808,12 +46813,12 @@ PDFPrintServiceFactory.instance = {
 /*!************************************!*\
   !*** ./src/pdf_rendering_queue.js ***!
   \************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFRenderingQueue": () => (/* binding */ PDFRenderingQueue)
+/* harmony export */   "PDFRenderingQueue": function() { return /* binding */ PDFRenderingQueue; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -46958,12 +46963,12 @@ class PDFRenderingQueue {
 /*!**************************************!*\
   !*** ./src/pdf_scripting_manager.js ***!
   \**************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFScriptingManager": () => (/* binding */ PDFScriptingManager)
+/* harmony export */   "PDFScriptingManager": function() { return /* binding */ PDFScriptingManager; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -47355,12 +47360,12 @@ class PDFScriptingManager {
 /*!****************************!*\
   !*** ./src/pdf_sidebar.js ***!
   \****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFSidebar": () => (/* binding */ PDFSidebar)
+/* harmony export */   "PDFSidebar": function() { return /* binding */ PDFSidebar; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -47656,12 +47661,12 @@ class PDFSidebar {
 /*!************************************!*\
   !*** ./src/pdf_sidebar_resizer.js ***!
   \************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFSidebarResizer": () => (/* binding */ PDFSidebarResizer)
+/* harmony export */   "PDFSidebarResizer": function() { return /* binding */ PDFSidebarResizer; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -47784,13 +47789,13 @@ class PDFSidebarResizer {
 /*!***********************************!*\
   !*** ./src/pdf_thumbnail_view.js ***!
   \***********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFThumbnailView": () => (/* binding */ PDFThumbnailView),
-/* harmony export */   "TempImageFactory": () => (/* binding */ TempImageFactory)
+/* harmony export */   "PDFThumbnailView": function() { return /* binding */ PDFThumbnailView; },
+/* harmony export */   "TempImageFactory": function() { return /* binding */ TempImageFactory; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -48113,12 +48118,12 @@ class PDFThumbnailView {
 /*!*************************************!*\
   !*** ./src/pdf_thumbnail_viewer.js ***!
   \*************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFThumbnailViewer": () => (/* binding */ PDFThumbnailViewer)
+/* harmony export */   "PDFThumbnailViewer": function() { return /* binding */ PDFThumbnailViewer; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -48351,13 +48356,13 @@ class PDFThumbnailViewer {
 /*!***************************!*\
   !*** ./src/pdf_viewer.js ***!
   \***************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFSinglePageViewer": () => (/* binding */ PDFSinglePageViewer),
-/* harmony export */   "PDFViewer": () => (/* binding */ PDFViewer)
+/* harmony export */   "PDFSinglePageViewer": function() { return /* binding */ PDFSinglePageViewer; },
+/* harmony export */   "PDFViewer": function() { return /* binding */ PDFViewer; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -48410,12 +48415,12 @@ class PDFSinglePageViewer extends BaseViewer {
 /*!****************************!*\
   !*** ./src/print_utils.js ***!
   \****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getXfaHtmlForPrinting": () => (/* binding */ getXfaHtmlForPrinting)
+/* harmony export */   "getXfaHtmlForPrinting": function() { return /* binding */ getXfaHtmlForPrinting; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -48471,7 +48476,7 @@ function getXfaHtmlForPrinting(printContainer, pdfDocument) {
 /*!**************************!*\
   !*** ./src/sdpdfcore.js ***!
   \**************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __unused_webpack_exports, __webpack_require__) {
 
 const {AppOptions} = __webpack_require__(/*! ./app_options.js */ "./src/app_options.js");
 
@@ -48570,12 +48575,12 @@ class SDPDFCore {
 /*!**********************************!*\
   !*** ./src/secondary_toolbar.js ***!
   \**********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "SecondaryToolbar": () => (/* binding */ SecondaryToolbar)
+/* harmony export */   "SecondaryToolbar": function() { return /* binding */ SecondaryToolbar; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -48861,12 +48866,12 @@ class SecondaryToolbar {
 /*!******************************************!*\
   !*** ./src/struct_tree_layer_builder.js ***!
   \******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "StructTreeLayerBuilder": () => (/* binding */ StructTreeLayerBuilder)
+/* harmony export */   "StructTreeLayerBuilder": function() { return /* binding */ StructTreeLayerBuilder; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -48989,12 +48994,12 @@ class StructTreeLayerBuilder {
 /*!*********************************!*\
   !*** ./src/text_highlighter.js ***!
   \*********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "TextHighlighter": () => (/* binding */ TextHighlighter)
+/* harmony export */   "TextHighlighter": function() { return /* binding */ TextHighlighter; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -49219,12 +49224,12 @@ class TextHighlighter {
 /*!***********************************!*\
   !*** ./src/text_layer_builder.js ***!
   \***********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "TextLayerBuilder": () => (/* binding */ TextLayerBuilder)
+/* harmony export */   "TextLayerBuilder": function() { return /* binding */ TextLayerBuilder; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -49373,12 +49378,12 @@ class TextLayerBuilder {
 /*!************************!*\
   !*** ./src/toolbar.js ***!
   \************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Toolbar": () => (/* binding */ Toolbar)
+/* harmony export */   "Toolbar": function() { return /* binding */ Toolbar; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -49619,51 +49624,51 @@ class Toolbar {
 /*!*************************!*\
   !*** ./src/ui_utils.js ***!
   \*************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "animationStarted": () => (/* binding */ animationStarted),
-/* harmony export */   "apiPageLayoutToViewerModes": () => (/* binding */ apiPageLayoutToViewerModes),
-/* harmony export */   "apiPageModeToSidebarView": () => (/* binding */ apiPageModeToSidebarView),
-/* harmony export */   "approximateFraction": () => (/* binding */ approximateFraction),
-/* harmony export */   "AutoPrintRegExp": () => (/* binding */ AutoPrintRegExp),
-/* harmony export */   "backtrackBeforeAllVisibleElements": () => (/* binding */ backtrackBeforeAllVisibleElements),
-/* harmony export */   "binarySearchFirstItem": () => (/* binding */ binarySearchFirstItem),
-/* harmony export */   "DEFAULT_SCALE": () => (/* binding */ DEFAULT_SCALE),
-/* harmony export */   "DEFAULT_SCALE_DELTA": () => (/* binding */ DEFAULT_SCALE_DELTA),
-/* harmony export */   "DEFAULT_SCALE_VALUE": () => (/* binding */ DEFAULT_SCALE_VALUE),
-/* harmony export */   "getActiveOrFocusedElement": () => (/* binding */ getActiveOrFocusedElement),
-/* harmony export */   "getOutputScale": () => (/* binding */ getOutputScale),
-/* harmony export */   "getPageSizeInches": () => (/* binding */ getPageSizeInches),
-/* harmony export */   "getVisibleElements": () => (/* binding */ getVisibleElements),
-/* harmony export */   "isPortraitOrientation": () => (/* binding */ isPortraitOrientation),
-/* harmony export */   "isValidRotation": () => (/* binding */ isValidRotation),
-/* harmony export */   "isValidScrollMode": () => (/* binding */ isValidScrollMode),
-/* harmony export */   "isValidSpreadMode": () => (/* binding */ isValidSpreadMode),
-/* harmony export */   "MAX_AUTO_SCALE": () => (/* binding */ MAX_AUTO_SCALE),
-/* harmony export */   "MAX_SCALE": () => (/* binding */ MAX_SCALE),
-/* harmony export */   "MIN_SCALE": () => (/* binding */ MIN_SCALE),
-/* harmony export */   "noContextMenuHandler": () => (/* binding */ noContextMenuHandler),
-/* harmony export */   "normalizeWheelEventDelta": () => (/* binding */ normalizeWheelEventDelta),
-/* harmony export */   "normalizeWheelEventDirection": () => (/* binding */ normalizeWheelEventDirection),
-/* harmony export */   "parseQueryString": () => (/* binding */ parseQueryString),
-/* harmony export */   "PresentationModeState": () => (/* binding */ PresentationModeState),
-/* harmony export */   "ProgressBar": () => (/* binding */ ProgressBar),
-/* harmony export */   "removeNullCharacters": () => (/* binding */ removeNullCharacters),
-/* harmony export */   "RendererType": () => (/* binding */ RendererType),
-/* harmony export */   "RenderingStates": () => (/* binding */ RenderingStates),
-/* harmony export */   "roundToDivide": () => (/* binding */ roundToDivide),
-/* harmony export */   "SCROLLBAR_PADDING": () => (/* binding */ SCROLLBAR_PADDING),
-/* harmony export */   "scrollIntoView": () => (/* binding */ scrollIntoView),
-/* harmony export */   "ScrollMode": () => (/* binding */ ScrollMode),
-/* harmony export */   "SidebarView": () => (/* binding */ SidebarView),
-/* harmony export */   "SpreadMode": () => (/* binding */ SpreadMode),
-/* harmony export */   "TextLayerMode": () => (/* binding */ TextLayerMode),
-/* harmony export */   "UNKNOWN_SCALE": () => (/* binding */ UNKNOWN_SCALE),
-/* harmony export */   "VERTICAL_PADDING": () => (/* binding */ VERTICAL_PADDING),
-/* harmony export */   "watchScroll": () => (/* binding */ watchScroll)
+/* harmony export */   "animationStarted": function() { return /* binding */ animationStarted; },
+/* harmony export */   "apiPageLayoutToViewerModes": function() { return /* binding */ apiPageLayoutToViewerModes; },
+/* harmony export */   "apiPageModeToSidebarView": function() { return /* binding */ apiPageModeToSidebarView; },
+/* harmony export */   "approximateFraction": function() { return /* binding */ approximateFraction; },
+/* harmony export */   "AutoPrintRegExp": function() { return /* binding */ AutoPrintRegExp; },
+/* harmony export */   "backtrackBeforeAllVisibleElements": function() { return /* binding */ backtrackBeforeAllVisibleElements; },
+/* harmony export */   "binarySearchFirstItem": function() { return /* binding */ binarySearchFirstItem; },
+/* harmony export */   "DEFAULT_SCALE": function() { return /* binding */ DEFAULT_SCALE; },
+/* harmony export */   "DEFAULT_SCALE_DELTA": function() { return /* binding */ DEFAULT_SCALE_DELTA; },
+/* harmony export */   "DEFAULT_SCALE_VALUE": function() { return /* binding */ DEFAULT_SCALE_VALUE; },
+/* harmony export */   "getActiveOrFocusedElement": function() { return /* binding */ getActiveOrFocusedElement; },
+/* harmony export */   "getOutputScale": function() { return /* binding */ getOutputScale; },
+/* harmony export */   "getPageSizeInches": function() { return /* binding */ getPageSizeInches; },
+/* harmony export */   "getVisibleElements": function() { return /* binding */ getVisibleElements; },
+/* harmony export */   "isPortraitOrientation": function() { return /* binding */ isPortraitOrientation; },
+/* harmony export */   "isValidRotation": function() { return /* binding */ isValidRotation; },
+/* harmony export */   "isValidScrollMode": function() { return /* binding */ isValidScrollMode; },
+/* harmony export */   "isValidSpreadMode": function() { return /* binding */ isValidSpreadMode; },
+/* harmony export */   "MAX_AUTO_SCALE": function() { return /* binding */ MAX_AUTO_SCALE; },
+/* harmony export */   "MAX_SCALE": function() { return /* binding */ MAX_SCALE; },
+/* harmony export */   "MIN_SCALE": function() { return /* binding */ MIN_SCALE; },
+/* harmony export */   "noContextMenuHandler": function() { return /* binding */ noContextMenuHandler; },
+/* harmony export */   "normalizeWheelEventDelta": function() { return /* binding */ normalizeWheelEventDelta; },
+/* harmony export */   "normalizeWheelEventDirection": function() { return /* binding */ normalizeWheelEventDirection; },
+/* harmony export */   "parseQueryString": function() { return /* binding */ parseQueryString; },
+/* harmony export */   "PresentationModeState": function() { return /* binding */ PresentationModeState; },
+/* harmony export */   "ProgressBar": function() { return /* binding */ ProgressBar; },
+/* harmony export */   "removeNullCharacters": function() { return /* binding */ removeNullCharacters; },
+/* harmony export */   "RendererType": function() { return /* binding */ RendererType; },
+/* harmony export */   "RenderingStates": function() { return /* binding */ RenderingStates; },
+/* harmony export */   "roundToDivide": function() { return /* binding */ roundToDivide; },
+/* harmony export */   "SCROLLBAR_PADDING": function() { return /* binding */ SCROLLBAR_PADDING; },
+/* harmony export */   "scrollIntoView": function() { return /* binding */ scrollIntoView; },
+/* harmony export */   "ScrollMode": function() { return /* binding */ ScrollMode; },
+/* harmony export */   "SidebarView": function() { return /* binding */ SidebarView; },
+/* harmony export */   "SpreadMode": function() { return /* binding */ SpreadMode; },
+/* harmony export */   "TextLayerMode": function() { return /* binding */ TextLayerMode; },
+/* harmony export */   "UNKNOWN_SCALE": function() { return /* binding */ UNKNOWN_SCALE; },
+/* harmony export */   "VERTICAL_PADDING": function() { return /* binding */ VERTICAL_PADDING; },
+/* harmony export */   "watchScroll": function() { return /* binding */ watchScroll; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -50164,12 +50169,12 @@ function apiPageModeToSidebarView(mode) {
 /*!*****************************!*\
   !*** ./src/view_history.js ***!
   \*****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "ViewHistory": () => (/* binding */ ViewHistory)
+/* harmony export */   "ViewHistory": function() { return /* binding */ ViewHistory; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -50266,12 +50271,12 @@ class ViewHistory {
 /*!**********************************!*\
   !*** ./src/xfa_layer_builder.js ***!
   \**********************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "XfaLayerBuilder": () => (/* binding */ XfaLayerBuilder)
+/* harmony export */   "XfaLayerBuilder": function() { return /* binding */ XfaLayerBuilder; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -50365,7 +50370,7 @@ class XfaLayerBuilder {
 /*!************************!*\
   !*** crypto (ignored) ***!
   \************************/
-/***/ (() => {
+/***/ (function() {
 
 /* (ignored) */
 
@@ -50375,7 +50380,7 @@ class XfaLayerBuilder {
 /*!************************!*\
   !*** canvas (ignored) ***!
   \************************/
-/***/ (() => {
+/***/ (function() {
 
 /* (ignored) */
 
@@ -50385,7 +50390,7 @@ class XfaLayerBuilder {
 /*!********************!*\
   !*** fs (ignored) ***!
   \********************/
-/***/ (() => {
+/***/ (function() {
 
 /* (ignored) */
 
@@ -50395,7 +50400,7 @@ class XfaLayerBuilder {
 /*!**********************!*\
   !*** http (ignored) ***!
   \**********************/
-/***/ (() => {
+/***/ (function() {
 
 /* (ignored) */
 
@@ -50405,7 +50410,7 @@ class XfaLayerBuilder {
 /*!***********************!*\
   !*** https (ignored) ***!
   \***********************/
-/***/ (() => {
+/***/ (function() {
 
 /* (ignored) */
 
@@ -50415,7 +50420,7 @@ class XfaLayerBuilder {
 /*!*********************!*\
   !*** url (ignored) ***!
   \*********************/
-/***/ (() => {
+/***/ (function() {
 
 /* (ignored) */
 
@@ -50425,7 +50430,7 @@ class XfaLayerBuilder {
 /*!**********************!*\
   !*** zlib (ignored) ***!
   \**********************/
-/***/ (() => {
+/***/ (function() {
 
 /* (ignored) */
 
@@ -50435,7 +50440,7 @@ class XfaLayerBuilder {
 /*!********************!*\
   !*** fs (ignored) ***!
   \********************/
-/***/ (() => {
+/***/ (function() {
 
 /* (ignored) */
 
@@ -50472,8 +50477,8 @@ class XfaLayerBuilder {
 /******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/create fake namespace object */
-/******/ 	(() => {
-/******/ 		var getProto = Object.getPrototypeOf ? (obj) => (Object.getPrototypeOf(obj)) : (obj) => (obj.__proto__);
+/******/ 	!function() {
+/******/ 		var getProto = Object.getPrototypeOf ? function(obj) { return Object.getPrototypeOf(obj); } : function(obj) { return obj.__proto__; };
 /******/ 		var leafPrototypes;
 /******/ 		// create a fake namespace object
 /******/ 		// mode & 1: value is a module id, require it
@@ -50493,50 +50498,50 @@ class XfaLayerBuilder {
 /******/ 			var def = {};
 /******/ 			leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
 /******/ 			for(var current = mode & 2 && value; typeof current == 'object' && !~leafPrototypes.indexOf(current); current = getProto(current)) {
-/******/ 				Object.getOwnPropertyNames(current).forEach((key) => (def[key] = () => (value[key])));
+/******/ 				Object.getOwnPropertyNames(current).forEach(function(key) { def[key] = function() { return value[key]; }; });
 /******/ 			}
-/******/ 			def['default'] = () => (value);
+/******/ 			def['default'] = function() { return value; };
 /******/ 			__webpack_require__.d(ns, def);
 /******/ 			return ns;
 /******/ 		};
-/******/ 	})();
+/******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
+/******/ 	!function() {
 /******/ 		// define getter functions for harmony exports
-/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 		__webpack_require__.d = function(exports, definition) {
 /******/ 			for(var key in definition) {
 /******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
 /******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 				}
 /******/ 			}
 /******/ 		};
-/******/ 	})();
+/******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/ensure chunk */
-/******/ 	(() => {
+/******/ 	!function() {
 /******/ 		__webpack_require__.f = {};
 /******/ 		// This file contains only the entry chunk.
 /******/ 		// The chunk loading function for additional chunks
-/******/ 		__webpack_require__.e = (chunkId) => {
-/******/ 			return Promise.all(Object.keys(__webpack_require__.f).reduce((promises, key) => {
+/******/ 		__webpack_require__.e = function(chunkId) {
+/******/ 			return Promise.all(Object.keys(__webpack_require__.f).reduce(function(promises, key) {
 /******/ 				__webpack_require__.f[key](chunkId, promises);
 /******/ 				return promises;
 /******/ 			}, []));
 /******/ 		};
-/******/ 	})();
+/******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/get javascript chunk filename */
-/******/ 	(() => {
+/******/ 	!function() {
 /******/ 		// This function allow to reference async chunks
-/******/ 		__webpack_require__.u = (chunkId) => {
+/******/ 		__webpack_require__.u = function(chunkId) {
 /******/ 			// return url for filenames based on template
 /******/ 			return "" + chunkId + ".SDPDFCore.js";
 /******/ 		};
-/******/ 	})();
+/******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
-/******/ 	(() => {
+/******/ 	!function() {
 /******/ 		__webpack_require__.g = (function() {
 /******/ 			if (typeof globalThis === 'object') return globalThis;
 /******/ 			try {
@@ -50545,19 +50550,19 @@ class XfaLayerBuilder {
 /******/ 				if (typeof window === 'object') return window;
 /******/ 			}
 /******/ 		})();
-/******/ 	})();
+/******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
+/******/ 	!function() {
+/******/ 		__webpack_require__.o = function(obj, prop) { return Object.prototype.hasOwnProperty.call(obj, prop); }
+/******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/load script */
-/******/ 	(() => {
+/******/ 	!function() {
 /******/ 		var inProgress = {};
 /******/ 		var dataWebpackPrefix = "saltdogreader:";
 /******/ 		// loadScript function to load a script via script tag
-/******/ 		__webpack_require__.l = (url, done, key, chunkId) => {
+/******/ 		__webpack_require__.l = function(url, done, key, chunkId) {
 /******/ 			if(inProgress[url]) { inProgress[url].push(done); return; }
 /******/ 			var script, needAttach;
 /******/ 			if(key !== undefined) {
@@ -50580,14 +50585,14 @@ class XfaLayerBuilder {
 /******/ 				script.src = url;
 /******/ 			}
 /******/ 			inProgress[url] = [done];
-/******/ 			var onScriptComplete = (prev, event) => {
+/******/ 			var onScriptComplete = function(prev, event) {
 /******/ 				// avoid mem leaks in IE.
 /******/ 				script.onerror = script.onload = null;
 /******/ 				clearTimeout(timeout);
 /******/ 				var doneFns = inProgress[url];
 /******/ 				delete inProgress[url];
 /******/ 				script.parentNode && script.parentNode.removeChild(script);
-/******/ 				doneFns && doneFns.forEach((fn) => (fn(event)));
+/******/ 				doneFns && doneFns.forEach(function(fn) { return fn(event); });
 /******/ 				if(prev) return prev(event);
 /******/ 			}
 /******/ 			;
@@ -50596,21 +50601,21 @@ class XfaLayerBuilder {
 /******/ 			script.onload = onScriptComplete.bind(null, script.onload);
 /******/ 			needAttach && document.head.appendChild(script);
 /******/ 		};
-/******/ 	})();
+/******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
+/******/ 	!function() {
 /******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = (exports) => {
+/******/ 		__webpack_require__.r = function(exports) {
 /******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
 /******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
 /******/ 			}
 /******/ 			Object.defineProperty(exports, '__esModule', { value: true });
 /******/ 		};
-/******/ 	})();
+/******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/publicPath */
-/******/ 	(() => {
+/******/ 	!function() {
 /******/ 		var scriptUrl;
 /******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
 /******/ 		var document = __webpack_require__.g.document;
@@ -50627,10 +50632,10 @@ class XfaLayerBuilder {
 /******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
 /******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
 /******/ 		__webpack_require__.p = scriptUrl;
-/******/ 	})();
+/******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/jsonp chunk loading */
-/******/ 	(() => {
+/******/ 	!function() {
 /******/ 		// no baseURI
 /******/ 		
 /******/ 		// object to store loaded and loading chunks
@@ -50640,7 +50645,7 @@ class XfaLayerBuilder {
 /******/ 			"main": 0
 /******/ 		};
 /******/ 		
-/******/ 		__webpack_require__.f.j = (chunkId, promises) => {
+/******/ 		__webpack_require__.f.j = function(chunkId, promises) {
 /******/ 				// JSONP chunk loading for javascript
 /******/ 				var installedChunkData = __webpack_require__.o(installedChunks, chunkId) ? installedChunks[chunkId] : undefined;
 /******/ 				if(installedChunkData !== 0) { // 0 means "already installed".
@@ -50651,14 +50656,14 @@ class XfaLayerBuilder {
 /******/ 					} else {
 /******/ 						if(true) { // all chunks have JS
 /******/ 							// setup Promise in chunk cache
-/******/ 							var promise = new Promise((resolve, reject) => (installedChunkData = installedChunks[chunkId] = [resolve, reject]));
+/******/ 							var promise = new Promise(function(resolve, reject) { installedChunkData = installedChunks[chunkId] = [resolve, reject]; });
 /******/ 							promises.push(installedChunkData[2] = promise);
 /******/ 		
 /******/ 							// start chunk loading
 /******/ 							var url = __webpack_require__.p + __webpack_require__.u(chunkId);
 /******/ 							// create error before stack unwound to get useful stacktrace later
 /******/ 							var error = new Error();
-/******/ 							var loadingEnded = (event) => {
+/******/ 							var loadingEnded = function(event) {
 /******/ 								if(__webpack_require__.o(installedChunks, chunkId)) {
 /******/ 									installedChunkData = installedChunks[chunkId];
 /******/ 									if(installedChunkData !== 0) installedChunks[chunkId] = undefined;
@@ -50690,12 +50695,14 @@ class XfaLayerBuilder {
 /******/ 		// no on chunks loaded
 /******/ 		
 /******/ 		// install a JSONP callback for chunk loading
-/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
-/******/ 			var [chunkIds, moreModules, runtime] = data;
+/******/ 		var webpackJsonpCallback = function(parentChunkLoadingFunction, data) {
+/******/ 			var chunkIds = data[0];
+/******/ 			var moreModules = data[1];
+/******/ 			var runtime = data[2];
 /******/ 			// add "moreModules" to the modules object,
 /******/ 			// then flag all "chunkIds" as loaded and fire callback
 /******/ 			var moduleId, chunkId, i = 0;
-/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 			if(chunkIds.some(function(id) { return installedChunks[id] !== 0; })) {
 /******/ 				for(moduleId in moreModules) {
 /******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
 /******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
@@ -50717,20 +50724,20 @@ class XfaLayerBuilder {
 /******/ 		var chunkLoadingGlobal = self["webpackChunksaltdogreader"] = self["webpackChunksaltdogreader"] || [];
 /******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
-/******/ 	})();
+/******/ 	}();
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
+!function() {
 "use strict";
 /*!**********************!*\
   !*** ./src/index.js ***!
   \**********************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFViewerApplication": () => (/* binding */ PDFViewerApplication),
-/* harmony export */   "PDFViewerApplicationOptions": () => (/* binding */ AppOptions)
+/* harmony export */   "PDFViewerApplication": function() { return /* binding */ PDFViewerApplication; },
+/* harmony export */   "PDFViewerApplicationOptions": function() { return /* binding */ AppOptions; }
 /* harmony export */ });
 /* Copyright 2022 Mozilla Foundation
  *
@@ -50891,17 +50898,17 @@ function getViewerConfiguration() {
   debuggerScriptPath: "./debugger.js"
  };
 }
-window.viewerConfiguration = getViewerConfiguration();
+
 function webViewerLoad() {
     console.log(`webViewerLoad`);
- const config = viewerConfiguration;
+ const config = getViewerConfiguration();
  Promise.all([
   __webpack_require__.e(/*! import() */ "src_genericcom_js").then(__webpack_require__.bind(__webpack_require__, /*! ./genericcom.js */ "./src/genericcom.js")),
   Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! ./pdf_print_service.js */ "./src/pdf_print_service.js"))
  ]).then(function ([genericCom, pdfPrintService]) {
   console.log(`SDPDFCore Ready`);
   // wait to run app
-  
+    PDFViewerApplication.run(config)
  });
 }
 if (document.blockUnblockOnload) {
@@ -50914,8 +50921,7 @@ if (document.readyState === "interactive" || document.readyState === "complete")
 }
 
 
-})();
-
+}();
 /******/ })()
 ;
 //# sourceMappingURL=SDPDFCore.js.map

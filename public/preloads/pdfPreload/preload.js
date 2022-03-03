@@ -28,23 +28,20 @@ const __sdJSBridge = {
         if (api[method]) {
             api[method](args, (res) => {
                 if (callbackId) {
-                    electron.ipcRenderer.sendToHost(
-                        'WEBVIEW_INVOKE_CALLBACK',
-                        {
-                            callbackId: callbackId,
-                            data: res,
-                        }
-                    );
+                    electron.ipcRenderer.sendToHost('WEBVIEW_INVOKE_CALLBACK', {
+                        callbackId: callbackId,
+                        data: res,
+                    });
                 }
             });
-        } else{
+        } else {
             console.warn('[SaltDog] Method not found', method);
         }
     },
     // webview向host发送事件
     publish: function (event, data) {
         console.log('sendtohost!');
-        electron.ipcRenderer.sendToHost('WEBVIEW_PUBLISH',{ event, data });
+        electron.ipcRenderer.sendToHost('WEBVIEW_PUBLISH', { event, data });
     },
     // webview向host订阅事件
     subscribe: function (event, callback) {
@@ -52,7 +49,19 @@ const __sdJSBridge = {
         noop();
     },
 };
-window.__sdJSBridge = __sdJSBridge
+window.__sdJSBridge = __sdJSBridge;
+function getQueryVariable() {
+    let query = window.location.search.substring(1);
+    let key_values = query.split('&');
+    let params = {};
+    key_values.map((key_val) => {
+        let key_val_arr = key_val.split('=');
+        params[key_val_arr[0]] = key_val_arr[1];
+    });
+    return params;
+}
+const params = getQueryVariable();
+window._saltdogWebviewId = params.webviewId;
 electron.ipcRenderer.on('HOST_INVOKE', (e, args) => {
     const arg = args;
     window.__sdJSBridge.on(arg.method, arg.data, arg.callbackId);

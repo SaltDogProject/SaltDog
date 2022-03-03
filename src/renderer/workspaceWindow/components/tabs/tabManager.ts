@@ -51,7 +51,7 @@ class MainTabManager implements ITabManager {
     private messageHandler: any;
     private webviewMap = new Map<string, WebviewTag>();
     private webviewMessageHandler = new Map<string, MessageHandler>();
-    private webviewId2Info = new Map<string,any>();
+    private webviewId2Info = new Map<string, any>();
 
     public getCurrentTabRef(): any {
         return this.currentTab;
@@ -65,8 +65,8 @@ class MainTabManager implements ITabManager {
     public getTabList(): Array<any> {
         return this.tabList.value;
     }
-    public getWebviewById(id:string):WebviewTag|null {
-        if(this.webviewMap.has(id)) return this.webviewMap.get(id) as WebviewTag;
+    public getWebviewById(id: string): WebviewTag | null {
+        if (this.webviewMap.has(id)) return this.webviewMap.get(id) as WebviewTag;
         else return null;
     }
     public setCurrentTab(tabName: string): void {
@@ -77,18 +77,28 @@ class MainTabManager implements ITabManager {
     }
     public addPdfTab(pdfPath: string) {
         const name = path.basename(pdfPath || '未命名');
-        const tabid = this.addTab(name, "PDFVIEWER","saltdog-internal");
-        bus.once(`${tabid}_domReady`, () => {
+        const tabid = this.addTab(name, 'PDFVIEWER', 'saltdog-internal');
+        bus.once(`${tabid}:SDPDFCore_Ready`, () => {
             const handler = this.getMessageHandler(tabid) as MessageHandler;
-            handler.invokeWebview('loadPdf', { fileBlob: fs.readFileSync(path.resolve('C:/Users/Dorapocket/Desktop/Xilinx Doc/Xilinx Doc','c_ug1414-vitis-ai.pdf')) }, () => {
-                noop();
+            handler.invokeWebview(
+                'loadPdf',
+                {
+                    filePath: 'C:/Users/dorap/Desktop/Xilinx Doc/ug1399-vitis-hls.pdf',
+                },
+                (msg: any) => {
+                    console.log(`Load PDF Result:${msg}`);
+                }
+            );
+            handler.invokeWebview('getOutline', {}, (outline: any) => {
+                console.log(`PDF Outline:`, outline);
             });
+            // handler.invokeWebview('jumpToTarget', '_OPENTOPIC_TOC_PROCESSING_d114e60114');
         });
     }
     // 插件创建页面Tab
-    public addPluginTab(pluginMessage:any,title:string,webviewUrl:string,statCallback:any){
+    public addPluginTab(pluginMessage: any, title: string, webviewUrl: string, statCallback: any) {
         const name = title;
-        const tabid = this.addTab(name, webviewUrl,pluginMessage.hostIdentity);
+        const tabid = this.addTab(name, webviewUrl, pluginMessage.hostIdentity);
         statCallback(tabid);
         // bus.once(`${tabid}_domReady`, () => {
         //     statCallback(tabid);
@@ -96,18 +106,18 @@ class MainTabManager implements ITabManager {
     }
 
     // 添加tab 设置owner为插件名字，只有名字一样才可以互相控制
-    public addTab(title: string, webviewUrl: string,owner="saltdog-internal"): string {
+    public addTab(title: string, webviewUrl: string, owner = 'saltdog-internal'): string {
         const id = uniqueId(`MainPanelWebview-`);
         this.getTabList().push({
             title,
             name: id,
-            isPdf:webviewUrl=="PDFVIEWER",
+            isPdf: webviewUrl == 'PDFVIEWER',
             owner,
-            webviewUrl:webviewUrl=="PDFVIEWER"?`${__static}/sdpdfcore/index.html`:webviewUrl,
+            webviewUrl: webviewUrl == 'PDFVIEWER' ? `${__static}/sdpdfcore/index.html?webviewId=${id}` : webviewUrl,
             webviewId: id,
         });
-        this.webviewId2Info.set(id,{
-            owner
+        this.webviewId2Info.set(id, {
+            owner,
         });
         this.setCurrentTab(id);
         return id;
@@ -154,17 +164,16 @@ class MainTabManager implements ITabManager {
     }
     private addWebviewTabEventListener(v: ITabConfig) {
         const element = document.getElementById(v.webviewId) as WebviewTag;
-        if(!element) return;
+        if (!element) return;
         if (!this.webviewMap.has(v.webviewId)) {
             this.webviewMap.set(v.webviewId, element);
-            
+
             // 事件转发
-            for(const e of this._eventList){
-                element.addEventListener(e,(...args)=>{
-                    pluginMsgChannel.send(v.owner,`Webview_${v.webviewId}_${e}`,args);
+            for (const e of this._eventList) {
+                element.addEventListener(e, (...args) => {
+                    pluginMsgChannel.send(v.owner, `Webview_${v.webviewId}_${e}`, args);
                 });
             }
-            
 
             element.addEventListener('dom-ready', () => {
                 if (!this.webviewMessageHandler.has(v.webviewId)) {
