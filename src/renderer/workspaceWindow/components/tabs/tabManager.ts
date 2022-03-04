@@ -9,6 +9,7 @@ import fs from 'fs';
 import bus from '../../controller/systemBus';
 import pluginMsgChannel from '../../../utils/pluginMsgChannel';
 
+const TAG = '[TabManager]'
 class MainTabManager implements ITabManager {
     private _eventList = [
         'load-commit',
@@ -52,6 +53,8 @@ class MainTabManager implements ITabManager {
     private webviewMap = new Map<string, WebviewTag>();
     private webviewMessageHandler = new Map<string, MessageHandler>();
     private webviewId2Info = new Map<string, any>();
+    private webviewPendingFunction = {}; // {"MainPanelWebview-1":[fn1,fn2]}
+    private pdfTabReadyState = {}; // {"MainPanelWebview-1":false}
 
     public getCurrentTabRef(): any {
         return this.currentTab;
@@ -75,23 +78,43 @@ class MainTabManager implements ITabManager {
     public getMessageHandler(id: string): MessageHandler | undefined {
         return this.webviewMessageHandler.get(id);
     }
-    public addPdfTab(pdfPath: string) {
-        const name = path.basename(pdfPath || '未命名');
+    public whenPdfTabReady(tabid:string,fn:any){
+        if(!tabid||!fn||typeof fn !='function') return;
+        if(this.pdfTabReadyState[tabid]&&this.pdfTabReadyState){
+            fn();
+        }else{
+            this.webviewPendingFunction[tabid] = fn;
+        }
+    }
+    public addPdfTab(tabName:string,pdfPath: string) {
+        if(!pdfPath){
+            console.error(TAG,'Can not create pdf tab: No pdfPath,check proxy.__workspaceInfo.pdfPath');
+        }
+    const name=tabName;        
         const tabid = this.addTab(name, 'PDFVIEWER', 'saltdog-internal');
+        this.pdfTabReadyState[tabid]=false;
         bus.once(`${tabid}:SDPDFCore_Ready`, () => {
             const handler = this.getMessageHandler(tabid) as MessageHandler;
+            
             handler.invokeWebview(
                 'loadPdf',
                 {
-                    filePath: 'C:/Users/dorap/Desktop/Xilinx Doc/ug1399-vitis-hls.pdf',
+                    filePath: pdfPath,
                 },
                 (msg: any) => {
                     console.log(`Load PDF Result:${msg}`);
                 }
             );
-            handler.invokeWebview('getOutline', {}, (outline: any) => {
-                console.log(`PDF Outline:`, outline);
-            });
+            if(this.webviewPendingFunction[tabid]&&this.webviewPendingFunction[tabid].length!=0){
+                for(const i in this.webviewPendingFunction[tabid]){
+                    if(this.webviewPendingFunction[tabid][i]&&typeof this.webviewPendingFunction[tabid][i]=='function'){
+                        this.webviewPendingFunction[tabid][i]();
+                        delete this.webviewPendingFunction[tabid][i];
+                    }
+                }
+                delete this.webviewPendingFunction[tabid]
+            }
+            this.pdfTabReadyState[tabid]=true;
             // handler.invokeWebview('jumpToTarget', '_OPENTOPIC_TOC_PROCESSING_d114e60114');
         });
     }

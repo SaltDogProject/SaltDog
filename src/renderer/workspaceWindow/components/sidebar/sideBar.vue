@@ -85,11 +85,12 @@ sidebar-title-margin-left = 10px
         height:calc(100% - 45px)
         margin:sidebar-content-margin 0 sidebar-content-margin sidebar-content-margin
         overflow-x:hidden
+        overflow-y: overlay
         &::-webkit-scrollbar
             width: 0px;
     .sidebar-content:hover
         &::-webkit-scrollbar
-            width: 6px;
+            width: 4px;
         &::-webkit-scrollbar-thumb
             background: var(--saltdog-scrollbar-thumb-background-color);
         &::-webkit-scrollbar-track

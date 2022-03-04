@@ -27,6 +27,7 @@
 import { defineComponent, onMounted, ref, onBeforeUpdate, onUpdated, getCurrentInstance } from 'vue';
 import tabManager from './tabManager';
 import Viewer from './pdfViewer/viewer.vue';
+import path from 'path';
 declare const __static: any;
 export default defineComponent({
     //item.webviewUrl
@@ -48,7 +49,7 @@ export default defineComponent({
         onMounted(() => {
             tabManager.onMounted();
             // @ts-ignore
-            tabManager.addPdfTab(proxy.__workspaceInfo.pdfPath);
+            tabManager.addPdfTab(path.basename(proxy.__workspaceInfo.pdfPath||'未命名'),proxy.__workspaceInfo.pdfPath);
         });
         onBeforeUpdate(() => {
             tabManager.onBeforeUpdate();

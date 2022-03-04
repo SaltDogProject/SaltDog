@@ -11,6 +11,7 @@
         "skipLibCheck": true,
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
+        "suppressImplicitAnyIndexErrors":true,
         "allowJs": true,
         "sourceMap": true,
         "baseUrl": ".",
