@@ -17,6 +17,7 @@ export default {
     --saltdog-titlebar-background-color: #eaeaeb;
     --saltdog-tabheader-background-color: #eaeaeb;
     --saltdog-sidebar-background-color:#eaeaeb;
+    --saltdog-sidebar-treeview-background-color:#eaeaeb;
     --saltdog-sidebar-title-font-color:#616161;
     --saltdog-bottombar-background-color: #eaeaeb;
     --saltdog-sidebaricon-background-color:#fafafa;
@@ -24,7 +25,13 @@ export default {
     --saltdog-sidebaricon-icon-color:#9d9e9f;
     --saltdog-panel-background-color:#fafafa;
 
+
     --saltdog-scrollbar-thumb-background-color:#a2a7b0
+    --el-tree-font-color:var(--saltdog-sidebar-title-font-color);
+    --el-tree-node-hover-background-color: #f5f7fa;
+    --el-tree-expand-icon-color: var(--saltdog-sidebar-title-font-color);
+
+
 body,html
     padding 0
     margin 0

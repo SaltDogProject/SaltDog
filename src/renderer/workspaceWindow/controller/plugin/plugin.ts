@@ -24,7 +24,7 @@ class SaltDogPlugin {
         ipcRenderer.on('PLUGINHOST_INVOKE', (event: any, data: any) => {
             if (api[data.api]) {
                 // 注入传来的data
-                api[data.api].call(data,data.args, (res: any) => {
+                api[data.api].call(data, data.args, (res: any) => {
                     if (data.callbackMainId) {
                         ipcRenderer.send(data.callbackMainId, res);
                     }
@@ -44,7 +44,7 @@ class SaltDogPlugin {
                 iconImg: `${buildinIconPath}/content.svg`,
                 description: '目录',
                 active: false,
-                command: 'onClickSidebarIcon:saltdog.content',
+                command: 'onClickSidebarIcon:saltdog.outline',
             },
             {
                 iconImg: `${buildinIconPath}/search.svg`,
@@ -73,6 +73,39 @@ class SaltDogPlugin {
     public getSidebarViewsRef() {
         return this._sidebarViews;
     }
+    private _buildInPluginSidebarGenerator(viewName: string) {
+        const knownBuildInPlugins = {
+            'saltdog.outline': '目录',
+        };
+        // @ts-ignore
+        if (!knownBuildInPlugins[viewName]) {
+            // 安全检查
+            console.error(`[Sidebar Plugin] Invalid build in plugin ${viewName}`);
+            return false;
+        }
+        const alreadyLoadedViewsLen = this._sidebarViews.value.length;
+        console.log(`[Sidebar Plugin] Generate Buildin Plugins ${viewName}`);
+
+        this._sidebarViewsMap.set(viewName, alreadyLoadedViewsLen); // 记录下标
+        const id = uuid();
+        const viewinfo = {
+            id: `sidebarView_${alreadyLoadedViewsLen}`,
+            isBuildIn: true,
+            viewName,
+            viewSrc: ``,
+            // @ts-ignore
+            name: knownBuildInPlugins[viewName],
+            show: true,
+            uuid: id,
+        };
+        this._sidebarViews.value.push(viewinfo);
+        // 关闭其他的webview-show
+        // show出webview
+        for (let i = 0; i < this._sidebarViews.value.length; i++) {
+            this._sidebarViews.value[i].show = i == alreadyLoadedViewsLen;
+        }
+        console.log(`[Sidebar Plugin] Sidebar views info`, viewinfo);
+    }
     // 新增webview（插件激活时）
     public loadSidebarViews(viewName: string) {
         if (!viewName.startsWith('onClickSidebarIcon:')) {
@@ -90,13 +123,21 @@ class SaltDogPlugin {
             }
             return true;
         } else {
+            const alreadyLoadedViewsLen = this._sidebarViews.value.length;
+            if (viewName.split('.')[0] == 'saltdog') {
+                // BuildIn Plugins
+                this._buildInPluginSidebarGenerator(viewName);
+                return true;
+            }
             console.log(`[Sidebar Plugin] First load sidebar views ${viewName}`);
             const _view = this._basicInfo[viewName.split('.')[0]].views[viewName.split('.')[1]][0]; // TODO: 可能有多个view,暂时只支持一个
-            const alreadyLoadedViewsLen = this._sidebarViews.value.length;
+
             this._sidebarViewsMap.set(viewName, alreadyLoadedViewsLen); // 记录下标
             const id = uuid();
             const viewinfo = {
                 id: `sidebarView_${alreadyLoadedViewsLen}`,
+                isBuildIn: false,
+                viewName,
                 viewSrc: `${_view.src.split('?')[0]}?ticket=${
                     this._basicInfo[viewName.split('.')[0]]._messageChannelTicket
                 }&windowId=${this.windowId}&webviewId=${id}`, //不允许用户?传参,传递和host通信的tickets

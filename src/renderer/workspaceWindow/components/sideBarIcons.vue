@@ -21,7 +21,7 @@ export default defineComponent({
         const iconList = plugins.getSidebarIconListRef();
         function iconClick(index: number) {
             if (iconList.value[index].active) {
-                // TODO:本来就是打开的，再次点击关闭sidebar
+                // 本来就是打开的，再次点击关闭sidebar
                 iconList.value[index].active = false;
                 sysBus.emit('saltdog:closeSidebar');
             } else {

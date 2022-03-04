@@ -6,7 +6,9 @@
                     <div class="sidebar-title">{{ view.name }}</div>
                 </div>
                 <div class="sidebar-content">
+                    <outline v-if="view.isBuildIn && view.viewName == 'saltdog.outline'"></outline>
                     <webview
+                        v-else
                         class="sidebar-webview"
                         :id="view.id"
                         :src="view.viewSrc"
@@ -22,11 +24,13 @@
     </div> -->
 </template>
 <script lang="ts">
+import Outline from './outline.vue';
 import { WebviewTag } from 'electron';
 import { defineComponent, DefineComponent, getCurrentInstance, onMounted, onUpdated, ref } from 'vue';
 import plugins from '../../controller/plugin/plugin';
 const TAG = '[Sidebar]';
 export default defineComponent({
+    components: { Outline },
     setup() {
         // eslint-disable-next-line no-undef
         const staticPath = __static;
