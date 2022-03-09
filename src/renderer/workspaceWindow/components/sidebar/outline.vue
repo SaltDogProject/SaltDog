@@ -13,6 +13,7 @@
 import { defineComponent, DefineComponent, getCurrentInstance, onMounted, onUpdated, ref } from 'vue';
 import bus from '../../controller/systemBus';
 import mainTabManager from '../tabs/tabManager';
+import {PDFAPISTAT} from '@/utils/constants';
 const TAG = '[Sidebar/Outline]'
 interface Tree {
     dest: string;
@@ -44,7 +45,11 @@ export default defineComponent({
                 const handler = mainTabManager.getMessageHandler(currentTab);
                 if(!handler) {console.error(TAG,'Get tab messageHandler failed');return;}
                 handler.invokeWebview('getOutline', {}, (outline: any) => {
-                outlineTree.value = outline;
+                    if(outline.status==PDFAPISTAT.SUCCESS){
+                        outlineTree.value = outline.outline;
+                    }else{
+                        console.error(TAG,'Get Outline error:',outline.msg);
+                    }
             });
             })
         })

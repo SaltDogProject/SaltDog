@@ -1,3 +1,3 @@
 const { loadPdf } = require('./loadPdf');
-const { getOutline, jumpToTarget } = require('./outline');
-module.exports = { loadPdf, getOutline, jumpToTarget };
+const pdfApis = require('./pdfApi');
+module.exports = { loadPdf, ...pdfApis };

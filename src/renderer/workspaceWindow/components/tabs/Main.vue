@@ -28,6 +28,7 @@ import { defineComponent, onMounted, ref, onBeforeUpdate, onUpdated, getCurrentI
 import tabManager from './tabManager';
 import Viewer from './pdfViewer/viewer.vue';
 import path from 'path';
+
 declare const __static: any;
 export default defineComponent({
     //item.webviewUrl

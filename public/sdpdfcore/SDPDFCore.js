@@ -38080,7 +38080,7 @@ __webpack_require__.r(__webpack_exports__);
 // THIS FILE IS GENERATED AUTOMATICALLY, DO NOT EDIT MANUALLY!
 //
 
-const {animationStarted, apiPageLayoutToViewerModes, apiPageModeToSidebarView, AutoPrintRegExp, DEFAULT_SCALE_VALUE, getActiveOrFocusedElement, isValidRotation, isValidScrollMode, isValidSpreadMode, noContextMenuHandler, normalizeWheelEventDirection, parseQueryString, ProgressBar, RendererType, RenderingStates, ScrollMode, SidebarView, SpreadMode, TextLayerMode} = __webpack_require__(/*! ./ui_utils.js */ "./src/ui_utils.js");
+const {animationStarted, apiPageLayoutToViewerModes, /*apiPageModeToSidebarView,*/ AutoPrintRegExp, DEFAULT_SCALE_VALUE, getActiveOrFocusedElement, isValidRotation, isValidScrollMode, isValidSpreadMode, noContextMenuHandler, normalizeWheelEventDirection, parseQueryString, ProgressBar, RendererType, RenderingStates, ScrollMode,/* SidebarView,*/ SpreadMode, TextLayerMode} = __webpack_require__(/*! ./ui_utils.js */ "./src/ui_utils.js");
 const {AppOptions, OptionKind} = __webpack_require__(/*! ./app_options.js */ "./src/app_options.js");
 const {AutomationEventBus, EventBus} = __webpack_require__(/*! ./event_utils.js */ "./src/event_utils.js");
 const {build, createPromiseCapability, getDocument, getFilenameFromUrl, getPdfFilenameFromUrl, GlobalWorkerOptions, InvalidPDFException, isPdfFile, loadScript, MissingPDFException, OPS, PDFWorker, shadow, UnexpectedResponseException, UNSUPPORTED_FEATURES, version} = __webpack_require__(/*! pdfjs-dist */ "./node_modules/pdfjs-dist/build/pdf.js");
@@ -38088,19 +38088,22 @@ const {CursorTool, PDFCursorTools} = __webpack_require__(/*! ./pdf_cursor_tools.
 const {LinkTarget, PDFLinkService} = __webpack_require__(/*! ./pdf_link_service.js */ "./src/pdf_link_service.js");
 const {OverlayManager} = __webpack_require__(/*! ./overlay_manager.js */ "./src/overlay_manager.js");
 const {PasswordPrompt} = __webpack_require__(/*! ./password_prompt.js */ "./src/password_prompt.js");
-const {PDFAttachmentViewer} = __webpack_require__(/*! ./pdf_attachment_viewer.js */ "./src/pdf_attachment_viewer.js");
+// sdpdfcore disable sidebar
+// const {PDFAttachmentViewer} = require("./pdf_attachment_viewer.js");
 const {PDFDocumentProperties} = __webpack_require__(/*! ./pdf_document_properties.js */ "./src/pdf_document_properties.js");
 const {PDFFindBar} = __webpack_require__(/*! ./pdf_find_bar.js */ "./src/pdf_find_bar.js");
 const {PDFFindController} = __webpack_require__(/*! ./pdf_find_controller.js */ "./src/pdf_find_controller.js");
 const {PDFHistory} = __webpack_require__(/*! ./pdf_history.js */ "./src/pdf_history.js");
-const {PDFLayerViewer} = __webpack_require__(/*! ./pdf_layer_viewer.js */ "./src/pdf_layer_viewer.js");
-const {PDFOutlineViewer} = __webpack_require__(/*! ./pdf_outline_viewer.js */ "./src/pdf_outline_viewer.js");
+// const {PDFLayerViewer} = require("./pdf_layer_viewer.js");
+// sdpdfcore disable sidebar
+// const {PDFOutlineViewer} = require("./pdf_outline_viewer.js");
 const {PDFPresentationMode} = __webpack_require__(/*! ./pdf_presentation_mode.js */ "./src/pdf_presentation_mode.js");
 const {PDFRenderingQueue} = __webpack_require__(/*! ./pdf_rendering_queue.js */ "./src/pdf_rendering_queue.js");
 const {PDFScriptingManager} = __webpack_require__(/*! ./pdf_scripting_manager.js */ "./src/pdf_scripting_manager.js");
-const {PDFSidebar} = __webpack_require__(/*! ./pdf_sidebar.js */ "./src/pdf_sidebar.js");
-const {PDFSidebarResizer} = __webpack_require__(/*! ./pdf_sidebar_resizer.js */ "./src/pdf_sidebar_resizer.js");
-const {PDFThumbnailViewer} = __webpack_require__(/*! ./pdf_thumbnail_viewer.js */ "./src/pdf_thumbnail_viewer.js");
+// sdpdfcore disable sidebar
+// const {PDFSidebar} = require("./pdf_sidebar.js");
+// const {PDFSidebarResizer} = require("./pdf_sidebar_resizer.js");
+// const {PDFThumbnailViewer} = require("./pdf_thumbnail_viewer.js");
 const {PDFViewer} = __webpack_require__(/*! ./pdf_viewer.js */ "./src/pdf_viewer.js");
 const {SecondaryToolbar} = __webpack_require__(/*! ./secondary_toolbar.js */ "./src/secondary_toolbar.js");
 const {Toolbar} = __webpack_require__(/*! ./toolbar.js */ "./src/toolbar.js");
@@ -38212,17 +38215,18 @@ const PDFViewerApplication = {
  pdfLoadingTask: null,
  printService: null,
  pdfViewer: null,
- pdfThumbnailViewer: null,
+//  pdfThumbnailViewer: null,
  pdfRenderingQueue: null,
  pdfPresentationMode: null,
  pdfDocumentProperties: null,
  pdfLinkService: null,
  pdfHistory: null,
- pdfSidebar: null,
- pdfSidebarResizer: null,
- pdfOutlineViewer: null,
- pdfAttachmentViewer: null,
- pdfLayerViewer: null,
+// sdpdfcore disable sidebar
+//  pdfSidebar: null,
+//  pdfSidebarResizer: null,
+//  pdfOutlineViewer: null,
+//  pdfAttachmentViewer: null,
+//  pdfLayerViewer: null,
  pdfCursorTools: null,
  pdfScriptingManager: null,
  store: null,
@@ -38429,14 +38433,15 @@ const PDFViewerApplication = {
   pdfRenderingQueue.setViewer(this.pdfViewer);
   pdfLinkService.setViewer(this.pdfViewer);
   pdfScriptingManager.setViewer(this.pdfViewer);
-  this.pdfThumbnailViewer = new PDFThumbnailViewer({
-   container: appConfig.sidebar.thumbnailView,
-   eventBus,
-   renderingQueue: pdfRenderingQueue,
-   linkService: pdfLinkService,
-   l10n: this.l10n
-  });
-  pdfRenderingQueue.setThumbnailViewer(this.pdfThumbnailViewer);
+  // sdpdfcore disable sidebar
+  // this.pdfThumbnailViewer = new PDFThumbnailViewer({
+  //  container: appConfig.sidebar.thumbnailView,
+  //  eventBus,
+  //  renderingQueue: pdfRenderingQueue,
+  //  linkService: pdfLinkService,
+  //  l10n: this.l10n
+  // });
+  // pdfRenderingQueue.setThumbnailViewer(this.pdfThumbnailViewer);
   if (!this.isViewerEmbedded && !AppOptions.get("disableHistory")) {
    this.pdfHistory = new PDFHistory({
     linkService: pdfLinkService,
@@ -38463,30 +38468,32 @@ const PDFViewerApplication = {
    });
   }
   this.passwordPrompt = new PasswordPrompt(appConfig.passwordOverlay, this.overlayManager, this.l10n, this.isViewerEmbedded);
-  this.pdfOutlineViewer = new PDFOutlineViewer({
-   container: appConfig.sidebar.outlineView,
-   eventBus,
-   linkService: pdfLinkService
-  });
-  this.pdfAttachmentViewer = new PDFAttachmentViewer({
-   container: appConfig.sidebar.attachmentsView,
-   eventBus,
-   downloadManager
-  });
-  this.pdfLayerViewer = new PDFLayerViewer({
-   container: appConfig.sidebar.layersView,
-   eventBus,
-   l10n: this.l10n
-  });
-  this.pdfSidebar = new PDFSidebar({
-   elements: appConfig.sidebar,
-   pdfViewer: this.pdfViewer,
-   pdfThumbnailViewer: this.pdfThumbnailViewer,
-   eventBus,
-   l10n: this.l10n
-  });
-  this.pdfSidebar.onToggled = this.forceRendering.bind(this);
-  this.pdfSidebarResizer = new PDFSidebarResizer(appConfig.sidebarResizer, eventBus, this.l10n);
+  // sdpdfcore disable sidebar
+  // this.pdfOutlineViewer = new PDFOutlineViewer({
+  //  container: appConfig.sidebar.outlineView,
+  //  eventBus,
+  //  linkService: pdfLinkService
+  // });
+  // this.pdfAttachmentViewer = new PDFAttachmentViewer({
+  //  container: appConfig.sidebar.attachmentsView,
+  //  eventBus,
+  //  downloadManager
+  // });
+  // this.pdfLayerViewer = new PDFLayerViewer({
+  //  container: appConfig.sidebar.layersView,
+  //  eventBus,
+  //  l10n: this.l10n
+  // });
+  // sdpdfcore disable sidebar
+  // this.pdfSidebar = new PDFSidebar({
+  //  elements: appConfig.sidebar,
+  //  pdfViewer: this.pdfViewer,
+  //  pdfThumbnailViewer: this.pdfThumbnailViewer,
+  //  eventBus,
+  //  l10n: this.l10n
+  // });
+  // this.pdfSidebar.onToggled = this.forceRendering.bind(this);
+  // this.pdfSidebarResizer = new PDFSidebarResizer(appConfig.sidebarResizer, eventBus, this.l10n);
  },
  run(config) {
   this.initialize(config).then(()=>{
@@ -38609,7 +38616,8 @@ const PDFViewerApplication = {
   this.pdfLoadingTask = null;
   if (this.pdfDocument) {
    this.pdfDocument = null;
-   this.pdfThumbnailViewer.setDocument(null);
+   // sdpdfcore disable sidebar
+  //  this.pdfThumbnailViewer.setDocument(null);
    this.pdfViewer.setDocument(null);
    this.pdfLinkService.setDocument(null);
    this.pdfDocumentProperties.setDocument(null);
@@ -38630,10 +38638,11 @@ const PDFViewerApplication = {
   this._docStats = null;
   this._cancelIdleCallbacks();
   promises.push(this.pdfScriptingManager.destroyPromise);
-  this.pdfSidebar.reset();
-  this.pdfOutlineViewer.reset();
-  this.pdfAttachmentViewer.reset();
-  this.pdfLayerViewer.reset();
+  // sdpdfcore disable sidebar
+  // this.pdfSidebar.reset();
+  // this.pdfOutlineViewer.reset();
+  // this.pdfAttachmentViewer.reset();
+  // this.pdfLayerViewer.reset();
   this.pdfHistory?.reset();
   this.findBar?.reset();
   this.toolbar.reset();
@@ -38886,15 +38895,17 @@ const PDFViewerApplication = {
   const pdfViewer = this.pdfViewer;
   pdfViewer.setDocument(pdfDocument);
   const {firstPagePromise, onePageRendered, pagesPromise} = pdfViewer;
-  const pdfThumbnailViewer = this.pdfThumbnailViewer;
-  pdfThumbnailViewer.setDocument(pdfDocument);
+  // sdpdfcore disable sidebar
+  // const pdfThumbnailViewer = this.pdfThumbnailViewer;
+  // pdfThumbnailViewer.setDocument(pdfDocument);
   const storedPromise = (this.store = new ViewHistory(pdfDocument.fingerprints[0])).getMultiple({
    page: null,
    zoom: DEFAULT_SCALE_VALUE,
    scrollLeft: "0",
    scrollTop: "0",
    rotation: null,
-   sidebarView: SidebarView.UNKNOWN,
+   // sdpdfcore disable sidebar
+  //  sidebarView: SidebarView.UNKNOWN,
    scrollMode: ScrollMode.UNKNOWN,
    spreadMode: SpreadMode.UNKNOWN
   }).catch(() => {
@@ -38920,15 +38931,17 @@ const PDFViewerApplication = {
     const zoom = AppOptions.get("defaultZoomValue");
     let hash = zoom ? `zoom=${ zoom }` : null;
     let rotation = null;
-    let sidebarView = AppOptions.get("sidebarViewOnLoad");
+    // sdpdfcore disable sidebar
+    // let sidebarView = AppOptions.get("sidebarViewOnLoad");
     let scrollMode = AppOptions.get("scrollModeOnLoad");
     let spreadMode = AppOptions.get("spreadModeOnLoad");
     if (stored.page && viewOnLoad !== ViewOnLoad.INITIAL) {
      hash = `page=${ stored.page }&zoom=${ zoom || stored.zoom },` + `${ stored.scrollLeft },${ stored.scrollTop }`;
      rotation = parseInt(stored.rotation, 10);
-     if (sidebarView === SidebarView.UNKNOWN) {
-      sidebarView = stored.sidebarView | 0;
-     }
+     // sdpdfcore disable sidebar
+    //  if (sidebarView === SidebarView.UNKNOWN) {
+    //   sidebarView = stored.sidebarView | 0;
+    //  }
      if (scrollMode === ScrollMode.UNKNOWN) {
       scrollMode = stored.scrollMode | 0;
      }
@@ -38936,16 +38949,18 @@ const PDFViewerApplication = {
       spreadMode = stored.spreadMode | 0;
      }
     }
-    if (pageMode && sidebarView === SidebarView.UNKNOWN) {
-     sidebarView = apiPageModeToSidebarView(pageMode);
-    }
+    // sdpdfcore disable sidebar
+    // if (pageMode && sidebarView === SidebarView.UNKNOWN) {
+    //  sidebarView = apiPageModeToSidebarView(pageMode);
+    // }
     if (pageLayout && scrollMode === ScrollMode.UNKNOWN && spreadMode === SpreadMode.UNKNOWN) {
      const modes = apiPageLayoutToViewerModes(pageLayout);
      spreadMode = modes.spreadMode;
     }
     this.setInitialView(hash, {
      rotation,
-     sidebarView,
+     // sdpdfcore disable sidebar
+    //  sidebarView,
      scrollMode,
      spreadMode
     });
@@ -38987,30 +39002,31 @@ const PDFViewerApplication = {
     type: "pageInfo",
     timestamp: data.timestamp
    });
-   pdfDocument.getOutline().then(outline => {
-    if (pdfDocument !== this.pdfDocument) {
-     return;
-    }
-    this.pdfOutlineViewer.render({
-     outline,
-     pdfDocument
-    });
-   });
-   pdfDocument.getAttachments().then(attachments => {
-    if (pdfDocument !== this.pdfDocument) {
-     return;
-    }
-    this.pdfAttachmentViewer.render({ attachments });
-   });
-   pdfViewer.optionalContentConfigPromise.then(optionalContentConfig => {
-    if (pdfDocument !== this.pdfDocument) {
-     return;
-    }
-    this.pdfLayerViewer.render({
-     optionalContentConfig,
-     pdfDocument
-    });
-   });
+   // sdpdfcore disable sidebar
+  //  pdfDocument.getOutline().then(outline => {
+  //   if (pdfDocument !== this.pdfDocument) {
+  //    return;
+  //   }
+  //   this.pdfOutlineViewer.render({
+  //    outline,
+  //    pdfDocument
+  //   });
+  //  });
+  //  pdfDocument.getAttachments().then(attachments => {
+  //   if (pdfDocument !== this.pdfDocument) {
+  //    return;
+  //   }
+  //   this.pdfAttachmentViewer.render({ attachments });
+  //  });
+  //  pdfViewer.optionalContentConfigPromise.then(optionalContentConfig => {
+  //   if (pdfDocument !== this.pdfDocument) {
+  //    return;
+  //   }
+  //   this.pdfLayerViewer.render({
+  //    optionalContentConfig,
+  //    pdfDocument
+  //   });
+  //  });
    if ("requestIdleCallback" in window) {
     const callback = window.requestIdleCallback(() => {
      this._collectTelemetry(pdfDocument);
@@ -39184,9 +39200,10 @@ const PDFViewerApplication = {
   if (standardLabels >= numLabels || emptyLabels >= numLabels) {
    return;
   }
-  const {pdfViewer, pdfThumbnailViewer, toolbar} = this;
+  // sdpdfcore disable sidebar
+  const {pdfViewer, /*pdfThumbnailViewer,*/ toolbar} = this;
   pdfViewer.setPageLabels(labels);
-  pdfThumbnailViewer.setPageLabels(labels);
+  // pdfThumbnailViewer.setPageLabels(labels);
   toolbar.setPagesCount(numLabels, true);
   toolbar.setPageNumber(pdfViewer.currentPageNumber, pdfViewer.currentPageLabel);
  },
@@ -39225,7 +39242,8 @@ const PDFViewerApplication = {
    delete this._annotationStorageModified;
   };
  },
- setInitialView(storedHash, {rotation, sidebarView, scrollMode, spreadMode} = {}) {
+ // sdpdfcore disable sidebar
+ setInitialView(storedHash, {rotation, /*sidebarView,*/ scrollMode, spreadMode} = {}) {
   const setRotation = angle => {
    if (isValidRotation(angle)) {
     this.pdfViewer.pagesRotation = angle;
@@ -39240,7 +39258,8 @@ const PDFViewerApplication = {
    }
   };
   this.isInitialViewSet = true;
-  this.pdfSidebar.setInitialView(sidebarView);
+  // sdpdfcore disable sidebar
+  // this.pdfSidebar.setInitialView(sidebarView);
   setViewerModes(scrollMode, spreadMode);
   if (this.initialBookmark) {
    setRotation(this.initialRotation);
@@ -39262,12 +39281,14 @@ const PDFViewerApplication = {
    return;
   }
   this.pdfViewer.cleanup();
-  this.pdfThumbnailViewer.cleanup();
+  // sdpdfcore disable sidebar
+  // this.pdfThumbnailViewer.cleanup();
   this.pdfDocument.cleanup(this.pdfViewer.renderer === RendererType.SVG);
  },
  forceRendering() {
   this.pdfRenderingQueue.printing = !!this.printService;
-  this.pdfRenderingQueue.isThumbnailViewEnabled = this.pdfSidebar.isThumbnailViewVisible;
+  // sdpdfcore disable sidebar
+  // this.pdfRenderingQueue.isThumbnailViewEnabled = this.pdfSidebar.isThumbnailViewVisible;
   this.pdfRenderingQueue.renderHighestPriority();
  },
  beforePrint() {
@@ -39331,8 +39352,9 @@ const PDFViewerApplication = {
   eventBus._on("pagechanging", webViewerPageChanging);
   eventBus._on("scalechanging", webViewerScaleChanging);
   eventBus._on("rotationchanging", webViewerRotationChanging);
-  eventBus._on("sidebarviewchanged", webViewerSidebarViewChanged);
-  eventBus._on("pagemode", webViewerPageMode);
+  // eventBus._on("sidebarviewchanged", webViewerSidebarViewChanged);
+  // sdpdfcore disable sidebar
+  // eventBus._on("pagemode", webViewerPageMode);
   eventBus._on("namedaction", webViewerNamedAction);
   eventBus._on("presentationmodechanged", webViewerPresentationModeChanged);
   eventBus._on("presentationmode", webViewerPresentationMode);
@@ -39412,8 +39434,9 @@ const PDFViewerApplication = {
   eventBus._off("pagechanging", webViewerPageChanging);
   eventBus._off("scalechanging", webViewerScaleChanging);
   eventBus._off("rotationchanging", webViewerRotationChanging);
-  eventBus._off("sidebarviewchanged", webViewerSidebarViewChanged);
-  eventBus._off("pagemode", webViewerPageMode);
+  // eventBus._off("sidebarviewchanged", webViewerSidebarViewChanged);
+  // sdpdfcore disable sidebar
+  // eventBus._off("pagemode", webViewerPageMode);
   eventBus._off("namedaction", webViewerNamedAction);
   eventBus._off("presentationmodechanged", webViewerPresentationModeChanged);
   eventBus._off("presentationmode", webViewerPresentationMode);
@@ -39635,13 +39658,14 @@ function webViewerPageRendered({pageNumber, error}) {
  if (pageNumber === PDFViewerApplication.page) {
   PDFViewerApplication.toolbar.updateLoadingIndicatorState(false);
  }
- if (PDFViewerApplication.pdfSidebar.isThumbnailViewVisible) {
-  const pageView = PDFViewerApplication.pdfViewer.getPageView(pageNumber - 1);
-  const thumbnailView = PDFViewerApplication.pdfThumbnailViewer.getThumbnail(pageNumber - 1);
-  if (pageView && thumbnailView) {
-   thumbnailView.setImage(pageView);
-  }
- }
+ // sdpdfcore disable sidebar
+//  if (PDFViewerApplication.pdfSidebar.isThumbnailViewVisible) {
+//   const pageView = PDFViewerApplication.pdfViewer.getPageView(pageNumber - 1);
+//   const thumbnailView = PDFViewerApplication.pdfThumbnailViewer.getThumbnail(pageNumber - 1);
+//   if (pageView && thumbnailView) {
+//    thumbnailView.setImage(pageView);
+//   }
+//  }
  if (error) {
   PDFViewerApplication.l10n.get("rendering_error").then(msg => {
    PDFViewerApplication._otherError(msg, error);
@@ -39649,31 +39673,31 @@ function webViewerPageRendered({pageNumber, error}) {
  }
  PDFViewerApplication._reportDocumentStatsTelemetry();
 }
-function webViewerPageMode({mode}) {
- let view;
- switch (mode) {
- case "thumbs":
-  view = SidebarView.THUMBS;
-  break;
- case "bookmarks":
- case "outline":
-  view = SidebarView.OUTLINE;
-  break;
- case "attachments":
-  view = SidebarView.ATTACHMENTS;
-  break;
- case "layers":
-  view = SidebarView.LAYERS;
-  break;
- case "none":
-  view = SidebarView.NONE;
-  break;
- default:
-  console.error('Invalid "pagemode" hash parameter: ' + mode);
-  return;
- }
- PDFViewerApplication.pdfSidebar.switchView(view, true);
-}
+// function webViewerPageMode({mode}) {
+//  let view;
+//  switch (mode) {
+//  case "thumbs":
+//   view = SidebarView.THUMBS;
+//   break;
+//  case "bookmarks":
+//  case "outline":
+//   view = SidebarView.OUTLINE;
+//   break;
+//  case "attachments":
+//   view = SidebarView.ATTACHMENTS;
+//   break;
+//  case "layers":
+//   view = SidebarView.LAYERS;
+//   break;
+//  case "none":
+//   view = SidebarView.NONE;
+//   break;
+//  default:
+//   console.error('Invalid "pagemode" hash parameter: ' + mode);
+//   return;
+//  }
+//  PDFViewerApplication.pdfSidebar.switchView(view, true);
+// }
 function webViewerNamedAction(evt) {
  switch (evt.action) {
  case "GoToPage":
@@ -39695,13 +39719,14 @@ function webViewerNamedAction(evt) {
 function webViewerPresentationModeChanged(evt) {
  PDFViewerApplication.pdfViewer.presentationModeState = evt.state;
 }
-function webViewerSidebarViewChanged(evt) {
- PDFViewerApplication.pdfRenderingQueue.isThumbnailViewEnabled = PDFViewerApplication.pdfSidebar.isThumbnailViewVisible;
- if (PDFViewerApplication.isInitialViewSet) {
-  PDFViewerApplication.store?.set("sidebarView", evt.view).catch(() => {
-  });
- }
-}
+// sdpdfcore disable sidebar
+// function webViewerSidebarViewChanged(evt) {
+//  PDFViewerApplication.pdfRenderingQueue.isThumbnailViewEnabled = PDFViewerApplication.pdfSidebar.isThumbnailViewVisible;
+//  if (PDFViewerApplication.isInitialViewSet) {
+//   PDFViewerApplication.store?.set("sidebarView", evt.view).catch(() => {
+//   });
+//  }
+// }
 function webViewerUpdateViewarea(evt) {
  const location = evt.location;
  if (PDFViewerApplication.isInitialViewSet) {
@@ -39880,16 +39905,18 @@ function webViewerScaleChanging(evt) {
  PDFViewerApplication.pdfViewer.update();
 }
 function webViewerRotationChanging(evt) {
- PDFViewerApplication.pdfThumbnailViewer.pagesRotation = evt.pagesRotation;
+  // sdpdfcore disable sidebar
+//  PDFViewerApplication.pdfThumbnailViewer.pagesRotation = evt.pagesRotation;
  PDFViewerApplication.forceRendering();
  PDFViewerApplication.pdfViewer.currentPageNumber = evt.pageNumber;
 }
 function webViewerPageChanging({pageNumber, pageLabel}) {
  PDFViewerApplication.toolbar.setPageNumber(pageNumber, pageLabel);
  PDFViewerApplication.secondaryToolbar.setPageNumber(pageNumber);
- if (PDFViewerApplication.pdfSidebar.isThumbnailViewVisible) {
-  PDFViewerApplication.pdfThumbnailViewer.scrollThumbnailIntoView(pageNumber);
- }
+ // sdpdfcore disable sidebar
+//  if (PDFViewerApplication.pdfSidebar.isThumbnailViewVisible) {
+//   PDFViewerApplication.pdfThumbnailViewer.scrollThumbnailIntoView(pageNumber);
+//  }
 }
 function webViewerVisibilityChange(evt) {
  if (document.visibilityState === "visible") {
@@ -40152,7 +40179,8 @@ function webViewerKeyDown(evt) {
    PDFViewerApplication.rotatePages(90);
    break;
   case 115:
-   PDFViewerApplication.pdfSidebar.toggle();
+    // sdpdfcore disable sidebar
+  //  PDFViewerApplication.pdfSidebar.toggle();
    break;
   }
   if (turnPage !== 0 && (!turnOnlyIfPageFit || pdfViewer.currentScaleValue === "page-fit")) {
@@ -40497,135 +40525,6 @@ class AppOptions {
  }
  static _hasUserOptions() {
   return Object.keys(userOptions).length > 0;
- }
-}
-
-
-
-/***/ }),
-
-/***/ "./src/base_tree_viewer.js":
-/*!*********************************!*\
-  !*** ./src/base_tree_viewer.js ***!
-  \*********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "BaseTreeViewer": function() { return /* binding */ BaseTreeViewer; }
-/* harmony export */ });
-/* Copyright 2022 Mozilla Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Edited 2022 SaltDog Project
- */
-/* eslint-disable */
-
-//
-// THIS FILE IS GENERATED AUTOMATICALLY, DO NOT EDIT MANUALLY!
-//
-
-const {removeNullCharacters} = __webpack_require__(/*! ./ui_utils.js */ "./src/ui_utils.js");
-const TREEITEM_OFFSET_TOP = -100;
-const TREEITEM_SELECTED_CLASS = "selected";
-class BaseTreeViewer {
- constructor(options) {
-  if (this.constructor === BaseTreeViewer) {
-   throw new Error("Cannot initialize BaseTreeViewer.");
-  }
-  this.container = options.container;
-  this.eventBus = options.eventBus;
-  this.reset();
- }
- reset() {
-  this._pdfDocument = null;
-  this._lastToggleIsShow = true;
-  this._currentTreeItem = null;
-  this.container.textContent = "";
-  this.container.classList.remove("treeWithDeepNesting");
- }
- _dispatchEvent(count) {
-  throw new Error("Not implemented: _dispatchEvent");
- }
- _bindLink(element, params) {
-  throw new Error("Not implemented: _bindLink");
- }
- _normalizeTextContent(str) {
-  return removeNullCharacters(str, true) || "\u2013";
- }
- _addToggleButton(div, hidden = false) {
-  const toggler = document.createElement("div");
-  toggler.className = "treeItemToggler";
-  if (hidden) {
-   toggler.classList.add("treeItemsHidden");
-  }
-  toggler.onclick = evt => {
-   evt.stopPropagation();
-   toggler.classList.toggle("treeItemsHidden");
-   if (evt.shiftKey) {
-    const shouldShowAll = !toggler.classList.contains("treeItemsHidden");
-    this._toggleTreeItem(div, shouldShowAll);
-   }
-  };
-  div.insertBefore(toggler, div.firstChild);
- }
- _toggleTreeItem(root, show = false) {
-  this._lastToggleIsShow = show;
-  for (const toggler of root.querySelectorAll(".treeItemToggler")) {
-   toggler.classList.toggle("treeItemsHidden", !show);
-  }
- }
- _toggleAllTreeItems() {
-  this._toggleTreeItem(this.container, !this._lastToggleIsShow);
- }
- _finishRendering(fragment, count, hasAnyNesting = false) {
-  if (hasAnyNesting) {
-   this.container.classList.add("treeWithDeepNesting");
-   this._lastToggleIsShow = !fragment.querySelector(".treeItemsHidden");
-  }
-  this.container.appendChild(fragment);
-  this._dispatchEvent(count);
- }
- render(params) {
-  throw new Error("Not implemented: render");
- }
- _updateCurrentTreeItem(treeItem = null) {
-  if (this._currentTreeItem) {
-   this._currentTreeItem.classList.remove(TREEITEM_SELECTED_CLASS);
-   this._currentTreeItem = null;
-  }
-  if (treeItem) {
-   treeItem.classList.add(TREEITEM_SELECTED_CLASS);
-   this._currentTreeItem = treeItem;
-  }
- }
- _scrollToCurrentTreeItem(treeItem) {
-  if (!treeItem) {
-   return;
-  }
-  let currentNode = treeItem.parentNode;
-  while (currentNode && currentNode !== this.container) {
-   if (currentNode.classList.contains("treeItem")) {
-    const toggler = currentNode.firstElementChild;
-    toggler?.classList.remove("treeItemsHidden");
-   }
-   currentNode = currentNode.parentNode;
-  }
-  this._updateCurrentTreeItem(treeItem);
-  this.container.scrollTo(treeItem.offsetLeft, treeItem.offsetTop + TREEITEM_OFFSET_TOP);
  }
 }
 
@@ -42634,149 +42533,6 @@ class PasswordPrompt {
 
 /***/ }),
 
-/***/ "./src/pdf_attachment_viewer.js":
-/*!**************************************!*\
-  !*** ./src/pdf_attachment_viewer.js ***!
-  \**************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFAttachmentViewer": function() { return /* binding */ PDFAttachmentViewer; }
-/* harmony export */ });
-/* Copyright 2022 Mozilla Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Edited 2022 SaltDog Project
- */
-/* eslint-disable */
-
-//
-// THIS FILE IS GENERATED AUTOMATICALLY, DO NOT EDIT MANUALLY!
-//
-
-const {createPromiseCapability, getFilenameFromUrl} = __webpack_require__(/*! pdfjs-dist */ "./node_modules/pdfjs-dist/build/pdf.js");
-const {BaseTreeViewer} = __webpack_require__(/*! ./base_tree_viewer.js */ "./src/base_tree_viewer.js");
-class PDFAttachmentViewer extends BaseTreeViewer {
- constructor(options) {
-  super(options);
-  this.downloadManager = options.downloadManager;
-  this.eventBus._on("fileattachmentannotation", this._appendAttachment.bind(this));
- }
- reset(keepRenderedCapability = false) {
-  super.reset();
-  this._attachments = null;
-  if (!keepRenderedCapability) {
-   this._renderedCapability = createPromiseCapability();
-  }
-  if (this._pendingDispatchEvent) {
-   clearTimeout(this._pendingDispatchEvent);
-  }
-  this._pendingDispatchEvent = null;
- }
- _dispatchEvent(attachmentsCount) {
-  this._renderedCapability.resolve();
-  if (this._pendingDispatchEvent) {
-   clearTimeout(this._pendingDispatchEvent);
-   this._pendingDispatchEvent = null;
-  }
-  if (attachmentsCount === 0) {
-   this._pendingDispatchEvent = setTimeout(() => {
-    this.eventBus.dispatch("attachmentsloaded", {
-     source: this,
-     attachmentsCount: 0
-    });
-    this._pendingDispatchEvent = null;
-   });
-   return;
-  }
-  this.eventBus.dispatch("attachmentsloaded", {
-   source: this,
-   attachmentsCount
-  });
- }
- _bindLink(element, {content, filename}) {
-  element.onclick = () => {
-   this.downloadManager.openOrDownloadData(element, content, filename);
-   return false;
-  };
- }
- render({attachments, keepRenderedCapability = false}) {
-  if (this._attachments) {
-   this.reset(keepRenderedCapability);
-  }
-  this._attachments = attachments || null;
-  if (!attachments) {
-   this._dispatchEvent(0);
-   return;
-  }
-  const names = Object.keys(attachments).sort(function (a, b) {
-   return a.toLowerCase().localeCompare(b.toLowerCase());
-  });
-  const fragment = document.createDocumentFragment();
-  let attachmentsCount = 0;
-  for (const name of names) {
-   const item = attachments[name];
-   const content = item.content, filename = getFilenameFromUrl(item.filename);
-   const div = document.createElement("div");
-   div.className = "treeItem";
-   const element = document.createElement("a");
-   this._bindLink(element, {
-    content,
-    filename
-   });
-   element.textContent = this._normalizeTextContent(filename);
-   div.appendChild(element);
-   fragment.appendChild(div);
-   attachmentsCount++;
-  }
-  this._finishRendering(fragment, attachmentsCount);
- }
- _appendAttachment({id, filename, content}) {
-  const renderedPromise = this._renderedCapability.promise;
-  renderedPromise.then(() => {
-   if (renderedPromise !== this._renderedCapability.promise) {
-    return;
-   }
-   let attachments = this._attachments;
-   if (!attachments) {
-    attachments = Object.create(null);
-   } else {
-    for (const name in attachments) {
-     if (id === name) {
-      return;
-     }
-    }
-   }
-   attachments[id] = {
-    filename,
-    content
-   };
-   this.render({
-    attachments,
-    keepRenderedCapability: true
-   });
-  });
- }
-}
-
-
-
-/***/ }),
-
 /***/ "./src/pdf_cursor_tools.js":
 /*!*********************************!*\
   !*** ./src/pdf_cursor_tools.js ***!
@@ -44664,175 +44420,6 @@ function isDestArraysEqual(firstDest, secondDest) {
 
 /***/ }),
 
-/***/ "./src/pdf_layer_viewer.js":
-/*!*********************************!*\
-  !*** ./src/pdf_layer_viewer.js ***!
-  \*********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFLayerViewer": function() { return /* binding */ PDFLayerViewer; }
-/* harmony export */ });
-/* Copyright 2022 Mozilla Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Edited 2022 SaltDog Project
- */
-/* eslint-disable */
-
-//
-// THIS FILE IS GENERATED AUTOMATICALLY, DO NOT EDIT MANUALLY!
-//
-
-const {BaseTreeViewer} = __webpack_require__(/*! ./base_tree_viewer.js */ "./src/base_tree_viewer.js");
-class PDFLayerViewer extends BaseTreeViewer {
- constructor(options) {
-  super(options);
-  this.l10n = options.l10n;
-  this.eventBus._on("resetlayers", this._resetLayers.bind(this));
-  this.eventBus._on("togglelayerstree", this._toggleAllTreeItems.bind(this));
- }
- reset() {
-  super.reset();
-  this._optionalContentConfig = null;
- }
- _dispatchEvent(layersCount) {
-  this.eventBus.dispatch("layersloaded", {
-   source: this,
-   layersCount
-  });
- }
- _bindLink(element, {groupId, input}) {
-  const setVisibility = () => {
-   this._optionalContentConfig.setVisibility(groupId, input.checked);
-   this.eventBus.dispatch("optionalcontentconfig", {
-    source: this,
-    promise: Promise.resolve(this._optionalContentConfig)
-   });
-  };
-  element.onclick = evt => {
-   if (evt.target === input) {
-    setVisibility();
-    return true;
-   } else if (evt.target !== element) {
-    return true;
-   }
-   input.checked = !input.checked;
-   setVisibility();
-   return false;
-  };
- }
- async _setNestedName(element, {
-  name = null
- }) {
-  if (typeof name === "string") {
-   element.textContent = this._normalizeTextContent(name);
-   return;
-  }
-  element.textContent = await this.l10n.get("additional_layers");
-  element.style.fontStyle = "italic";
- }
- _addToggleButton(div, {
-  name = null
- }) {
-  super._addToggleButton(div, name === null);
- }
- _toggleAllTreeItems() {
-  if (!this._optionalContentConfig) {
-   return;
-  }
-  super._toggleAllTreeItems();
- }
- render({optionalContentConfig, pdfDocument}) {
-  if (this._optionalContentConfig) {
-   this.reset();
-  }
-  this._optionalContentConfig = optionalContentConfig || null;
-  this._pdfDocument = pdfDocument || null;
-  const groups = optionalContentConfig?.getOrder();
-  if (!groups) {
-   this._dispatchEvent(0);
-   return;
-  }
-  const fragment = document.createDocumentFragment(), queue = [{
-     parent: fragment,
-     groups
-    }];
-  let layersCount = 0, hasAnyNesting = false;
-  while (queue.length > 0) {
-   const levelData = queue.shift();
-   for (const groupId of levelData.groups) {
-    const div = document.createElement("div");
-    div.className = "treeItem";
-    const element = document.createElement("a");
-    div.appendChild(element);
-    if (typeof groupId === "object") {
-     hasAnyNesting = true;
-     this._addToggleButton(div, groupId);
-     this._setNestedName(element, groupId);
-     const itemsDiv = document.createElement("div");
-     itemsDiv.className = "treeItems";
-     div.appendChild(itemsDiv);
-     queue.push({
-      parent: itemsDiv,
-      groups: groupId.order
-     });
-    } else {
-     const group = optionalContentConfig.getGroup(groupId);
-     const input = document.createElement("input");
-     this._bindLink(element, {
-      groupId,
-      input
-     });
-     input.type = "checkbox";
-     input.id = groupId;
-     input.checked = group.visible;
-     const label = document.createElement("label");
-     label.setAttribute("for", groupId);
-     label.textContent = this._normalizeTextContent(group.name);
-     element.appendChild(input);
-     element.appendChild(label);
-     layersCount++;
-    }
-    levelData.parent.appendChild(div);
-   }
-  }
-  this._finishRendering(fragment, layersCount, hasAnyNesting);
- }
- async _resetLayers() {
-  if (!this._optionalContentConfig) {
-   return;
-  }
-  const optionalContentConfig = await this._pdfDocument.getOptionalContentConfig();
-  this.eventBus.dispatch("optionalcontentconfig", {
-   source: this,
-   promise: Promise.resolve(optionalContentConfig)
-  });
-  this.render({
-   optionalContentConfig,
-   pdfDocument: this._pdfDocument
-  });
- }
-}
-
-
-
-/***/ }),
-
 /***/ "./src/pdf_link_service.js":
 /*!*********************************!*\
   !*** ./src/pdf_link_service.js ***!
@@ -45283,276 +44870,6 @@ class SimpleLinkService {
  }
  isPageCached(pageNumber) {
   return true;
- }
-}
-
-
-
-/***/ }),
-
-/***/ "./src/pdf_outline_viewer.js":
-/*!***********************************!*\
-  !*** ./src/pdf_outline_viewer.js ***!
-  \***********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFOutlineViewer": function() { return /* binding */ PDFOutlineViewer; }
-/* harmony export */ });
-/* Copyright 2022 Mozilla Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Edited 2022 SaltDog Project
- */
-/* eslint-disable */
-
-//
-// THIS FILE IS GENERATED AUTOMATICALLY, DO NOT EDIT MANUALLY!
-//
-
-const {BaseTreeViewer} = __webpack_require__(/*! ./base_tree_viewer.js */ "./src/base_tree_viewer.js");
-const {createPromiseCapability} = __webpack_require__(/*! pdfjs-dist */ "./node_modules/pdfjs-dist/build/pdf.js");
-const {SidebarView} = __webpack_require__(/*! ./ui_utils.js */ "./src/ui_utils.js");
-class PDFOutlineViewer extends BaseTreeViewer {
- constructor(options) {
-  super(options);
-  this.linkService = options.linkService;
-  this.eventBus._on("toggleoutlinetree", this._toggleAllTreeItems.bind(this));
-  this.eventBus._on("currentoutlineitem", this._currentOutlineItem.bind(this));
-  this.eventBus._on("pagechanging", evt => {
-   this._currentPageNumber = evt.pageNumber;
-  });
-  this.eventBus._on("pagesloaded", evt => {
-   this._isPagesLoaded = !!evt.pagesCount;
-   if (this._currentOutlineItemCapability && !this._currentOutlineItemCapability.settled) {
-    this._currentOutlineItemCapability.resolve(this._isPagesLoaded);
-   }
-  });
-  this.eventBus._on("sidebarviewchanged", evt => {
-   this._sidebarView = evt.view;
-  });
- }
- reset() {
-  super.reset();
-  this._outline = null;
-  this._pageNumberToDestHashCapability = null;
-  this._currentPageNumber = 1;
-  this._isPagesLoaded = null;
-  if (this._currentOutlineItemCapability && !this._currentOutlineItemCapability.settled) {
-   this._currentOutlineItemCapability.resolve(false);
-  }
-  this._currentOutlineItemCapability = null;
- }
- _dispatchEvent(outlineCount) {
-  this._currentOutlineItemCapability = createPromiseCapability();
-  if (outlineCount === 0 || this._pdfDocument?.loadingParams.disableAutoFetch) {
-   this._currentOutlineItemCapability.resolve(false);
-  } else if (this._isPagesLoaded !== null) {
-   this._currentOutlineItemCapability.resolve(this._isPagesLoaded);
-  }
-  this.eventBus.dispatch("outlineloaded", {
-   source: this,
-   outlineCount,
-   currentOutlineItemPromise: this._currentOutlineItemCapability.promise
-  });
- }
-
- // sdpdfcore 跳转到链接所使用的参考代码
- // PDFViewerApplication.pdfLinkService.goToDestination("_OPENTOPIC_TOC_PROCESSING_d101e2337")
- // dest是用PDFViewerApplication.pdfDocument.getOutline().then((o)=>{console.log(o)}那个o结构体里面的
-
- _bindLink(element, {url, newWindow, dest}) {
-  const {linkService} = this;
-  if (url) {
-   linkService.addLinkAttributes(element, url, newWindow);
-   return;
-  }
-  element.href = linkService.getDestinationHash(dest);
-  element.onclick = evt => {
-   this._updateCurrentTreeItem(evt.target.parentNode);
-   if (dest) {
-    linkService.goToDestination(dest);
-   }
-   return false;
-  };
- }
- _setStyles(element, {bold, italic}) {
-  if (bold) {
-   element.style.fontWeight = "bold";
-  }
-  if (italic) {
-   element.style.fontStyle = "italic";
-  }
- }
- _addToggleButton(div, {count, items}) {
-  let hidden = false;
-  if (count < 0) {
-   let totalCount = items.length;
-   if (totalCount > 0) {
-    const queue = [...items];
-    while (queue.length > 0) {
-     const {
-      count: nestedCount,
-      items: nestedItems
-     } = queue.shift();
-     if (nestedCount > 0 && nestedItems.length > 0) {
-      totalCount += nestedItems.length;
-      queue.push(...nestedItems);
-     }
-    }
-   }
-   if (Math.abs(count) === totalCount) {
-    hidden = true;
-   }
-  }
-  super._addToggleButton(div, hidden);
- }
- _toggleAllTreeItems() {
-  if (!this._outline) {
-   return;
-  }
-  super._toggleAllTreeItems();
- }
- render({outline, pdfDocument}) {
-  if (this._outline) {
-   this.reset();
-  }
-  this._outline = outline || null;
-  this._pdfDocument = pdfDocument || null;
-  if (!outline) {
-   this._dispatchEvent(0);
-   return;
-  }
-  const fragment = document.createDocumentFragment();
-  const queue = [{
-    parent: fragment,
-    items: outline
-   }];
-  let outlineCount = 0, hasAnyNesting = false;
-  while (queue.length > 0) {
-   const levelData = queue.shift();
-   for (const item of levelData.items) {
-    const div = document.createElement("div");
-    div.className = "treeItem";
-    const element = document.createElement("a");
-    this._bindLink(element, item);
-    this._setStyles(element, item);
-    element.textContent = this._normalizeTextContent(item.title);
-    div.appendChild(element);
-    if (item.items.length > 0) {
-     hasAnyNesting = true;
-     this._addToggleButton(div, item);
-     const itemsDiv = document.createElement("div");
-     itemsDiv.className = "treeItems";
-     div.appendChild(itemsDiv);
-     queue.push({
-      parent: itemsDiv,
-      items: item.items
-     });
-    }
-    levelData.parent.appendChild(div);
-    outlineCount++;
-   }
-  }
-  this._finishRendering(fragment, outlineCount, hasAnyNesting);
- }
- async _currentOutlineItem() {
-  if (!this._isPagesLoaded) {
-   throw new Error("_currentOutlineItem: All pages have not been loaded.");
-  }
-  if (!this._outline || !this._pdfDocument) {
-   return;
-  }
-  const pageNumberToDestHash = await this._getPageNumberToDestHash(this._pdfDocument);
-  if (!pageNumberToDestHash) {
-   return;
-  }
-  this._updateCurrentTreeItem(null);
-  if (this._sidebarView !== SidebarView.OUTLINE) {
-   return;
-  }
-  for (let i = this._currentPageNumber; i > 0; i--) {
-   const destHash = pageNumberToDestHash.get(i);
-   if (!destHash) {
-    continue;
-   }
-   const linkElement = this.container.querySelector(`a[href="${ destHash }"]`);
-   if (!linkElement) {
-    continue;
-   }
-   this._scrollToCurrentTreeItem(linkElement.parentNode);
-   break;
-  }
- }
- async _getPageNumberToDestHash(pdfDocument) {
-  if (this._pageNumberToDestHashCapability) {
-   return this._pageNumberToDestHashCapability.promise;
-  }
-  this._pageNumberToDestHashCapability = createPromiseCapability();
-  const pageNumberToDestHash = new Map(), pageNumberNesting = new Map();
-  const queue = [{
-    nesting: 0,
-    items: this._outline
-   }];
-  while (queue.length > 0) {
-   const levelData = queue.shift(), currentNesting = levelData.nesting;
-   for (const {dest, items} of levelData.items) {
-    let explicitDest, pageNumber;
-    if (typeof dest === "string") {
-     explicitDest = await pdfDocument.getDestination(dest);
-     if (pdfDocument !== this._pdfDocument) {
-      return null;
-     }
-    } else {
-     explicitDest = dest;
-    }
-    if (Array.isArray(explicitDest)) {
-     const [destRef] = explicitDest;
-     if (typeof destRef === "object" && destRef !== null) {
-      pageNumber = this.linkService._cachedPageNumber(destRef);
-      if (!pageNumber) {
-       try {
-        pageNumber = await pdfDocument.getPageIndex(destRef) + 1;
-        if (pdfDocument !== this._pdfDocument) {
-         return null;
-        }
-        this.linkService.cachePageRef(pageNumber, destRef);
-       } catch (ex) {
-       }
-      }
-     } else if (Number.isInteger(destRef)) {
-      pageNumber = destRef + 1;
-     }
-     if (Number.isInteger(pageNumber) && (!pageNumberToDestHash.has(pageNumber) || currentNesting > pageNumberNesting.get(pageNumber))) {
-      const destHash = this.linkService.getDestinationHash(dest);
-      pageNumberToDestHash.set(pageNumber, destHash);
-      pageNumberNesting.set(pageNumber, currentNesting);
-     }
-    }
-    if (items.length > 0) {
-     queue.push({
-      nesting: currentNesting + 1,
-      items
-     });
-    }
-   }
-  }
-  this._pageNumberToDestHashCapability.resolve(pageNumberToDestHash.size > 0 ? pageNumberToDestHash : null);
-  return this._pageNumberToDestHashCapability.promise;
  }
 }
 
@@ -47349,1002 +46666,6 @@ class PDFScriptingManager {
   delete this._mouseState.isDown;
   this._ready = false;
   this._destroyCapability?.resolve();
- }
-}
-
-
-
-/***/ }),
-
-/***/ "./src/pdf_sidebar.js":
-/*!****************************!*\
-  !*** ./src/pdf_sidebar.js ***!
-  \****************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFSidebar": function() { return /* binding */ PDFSidebar; }
-/* harmony export */ });
-/* Copyright 2022 Mozilla Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Edited 2022 SaltDog Project
- */
-/* eslint-disable */
-
-//
-// THIS FILE IS GENERATED AUTOMATICALLY, DO NOT EDIT MANUALLY!
-//
-
-const {PresentationModeState, RenderingStates, SidebarView} = __webpack_require__(/*! ./ui_utils.js */ "./src/ui_utils.js");
-const UI_NOTIFICATION_CLASS = "pdfSidebarNotification";
-class PDFSidebar {
- constructor({elements, pdfViewer, pdfThumbnailViewer, eventBus, l10n}) {
-  this.isOpen = false;
-  this.active = SidebarView.THUMBS;
-  this.isInitialViewSet = false;
-  this.onToggled = null;
-  this.pdfViewer = pdfViewer;
-  this.pdfThumbnailViewer = pdfThumbnailViewer;
-  this.outerContainer = elements.outerContainer;
-  this.viewerContainer = elements.viewerContainer;
-  this.toggleButton = elements.toggleButton;
-  this.thumbnailButton = elements.thumbnailButton;
-  this.outlineButton = elements.outlineButton;
-  this.attachmentsButton = elements.attachmentsButton;
-  this.layersButton = elements.layersButton;
-  this.thumbnailView = elements.thumbnailView;
-  this.outlineView = elements.outlineView;
-  this.attachmentsView = elements.attachmentsView;
-  this.layersView = elements.layersView;
-  this._outlineOptionsContainer = elements.outlineOptionsContainer;
-  this._currentOutlineItemButton = elements.currentOutlineItemButton;
-  this.eventBus = eventBus;
-  this.l10n = l10n;
-  this._addEventListeners();
- }
- reset() {
-  this.isInitialViewSet = false;
-  this._hideUINotification(true);
-  this.switchView(SidebarView.THUMBS);
-  this.outlineButton.disabled = false;
-  this.attachmentsButton.disabled = false;
-  this.layersButton.disabled = false;
-  this._currentOutlineItemButton.disabled = true;
- }
- get visibleView() {
-  return this.isOpen ? this.active : SidebarView.NONE;
- }
- get isThumbnailViewVisible() {
-  return this.isOpen && this.active === SidebarView.THUMBS;
- }
- get isOutlineViewVisible() {
-  return this.isOpen && this.active === SidebarView.OUTLINE;
- }
- get isAttachmentsViewVisible() {
-  return this.isOpen && this.active === SidebarView.ATTACHMENTS;
- }
- get isLayersViewVisible() {
-  return this.isOpen && this.active === SidebarView.LAYERS;
- }
- setInitialView(view = SidebarView.NONE) {
-  if (this.isInitialViewSet) {
-   return;
-  }
-  this.isInitialViewSet = true;
-  if (view === SidebarView.NONE || view === SidebarView.UNKNOWN) {
-   this._dispatchEvent();
-   return;
-  }
-  if (!this._switchView(view, true)) {
-   this._dispatchEvent();
-  }
- }
- switchView(view, forceOpen = false) {
-  this._switchView(view, forceOpen);
- }
- _switchView(view, forceOpen = false) {
-  const isViewChanged = view !== this.active;
-  let shouldForceRendering = false;
-  switch (view) {
-  case SidebarView.NONE:
-   if (this.isOpen) {
-    this.close();
-    return true;
-   }
-   return false;
-  case SidebarView.THUMBS:
-   if (this.isOpen && isViewChanged) {
-    shouldForceRendering = true;
-   }
-   break;
-  case SidebarView.OUTLINE:
-   if (this.outlineButton.disabled) {
-    return false;
-   }
-   break;
-  case SidebarView.ATTACHMENTS:
-   if (this.attachmentsButton.disabled) {
-    return false;
-   }
-   break;
-  case SidebarView.LAYERS:
-   if (this.layersButton.disabled) {
-    return false;
-   }
-   break;
-  default:
-   console.error(`PDFSidebar._switchView: "${ view }" is not a valid view.`);
-   return false;
-  }
-  this.active = view;
-  this.thumbnailButton.classList.toggle("toggled", view === SidebarView.THUMBS);
-  this.outlineButton.classList.toggle("toggled", view === SidebarView.OUTLINE);
-  this.attachmentsButton.classList.toggle("toggled", view === SidebarView.ATTACHMENTS);
-  this.layersButton.classList.toggle("toggled", view === SidebarView.LAYERS);
-  this.thumbnailView.classList.toggle("hidden", view !== SidebarView.THUMBS);
-  this.outlineView.classList.toggle("hidden", view !== SidebarView.OUTLINE);
-  this.attachmentsView.classList.toggle("hidden", view !== SidebarView.ATTACHMENTS);
-  this.layersView.classList.toggle("hidden", view !== SidebarView.LAYERS);
-  this._outlineOptionsContainer.classList.toggle("hidden", view !== SidebarView.OUTLINE);
-  if (forceOpen && !this.isOpen) {
-   this.open();
-   return true;
-  }
-  if (shouldForceRendering) {
-   this._updateThumbnailViewer();
-   this._forceRendering();
-  }
-  if (isViewChanged) {
-   this._dispatchEvent();
-  }
-  return isViewChanged;
- }
- open() {
-  if (this.isOpen) {
-   return;
-  }
-  this.isOpen = true;
-  this.toggleButton.classList.add("toggled");
-  this.toggleButton.setAttribute("aria-expanded", "true");
-  this.outerContainer.classList.add("sidebarMoving", "sidebarOpen");
-  if (this.active === SidebarView.THUMBS) {
-   this._updateThumbnailViewer();
-  }
-  this._forceRendering();
-  this._dispatchEvent();
-  this._hideUINotification();
- }
- close() {
-  if (!this.isOpen) {
-   return;
-  }
-  this.isOpen = false;
-  this.toggleButton.classList.remove("toggled");
-  this.toggleButton.setAttribute("aria-expanded", "false");
-  this.outerContainer.classList.add("sidebarMoving");
-  this.outerContainer.classList.remove("sidebarOpen");
-  this._forceRendering();
-  this._dispatchEvent();
- }
- toggle() {
-  if (this.isOpen) {
-   this.close();
-  } else {
-   this.open();
-  }
- }
- _dispatchEvent() {
-  this.eventBus.dispatch("sidebarviewchanged", {
-   source: this,
-   view: this.visibleView
-  });
- }
- _forceRendering() {
-  if (this.onToggled) {
-   this.onToggled();
-  } else {
-   this.pdfViewer.forceRendering();
-   this.pdfThumbnailViewer.forceRendering();
-  }
- }
- _updateThumbnailViewer() {
-  const {pdfViewer, pdfThumbnailViewer} = this;
-  const pagesCount = pdfViewer.pagesCount;
-  for (let pageIndex = 0; pageIndex < pagesCount; pageIndex++) {
-   const pageView = pdfViewer.getPageView(pageIndex);
-   if (pageView?.renderingState === RenderingStates.FINISHED) {
-    const thumbnailView = pdfThumbnailViewer.getThumbnail(pageIndex);
-    thumbnailView.setImage(pageView);
-   }
-  }
-  pdfThumbnailViewer.scrollThumbnailIntoView(pdfViewer.currentPageNumber);
- }
- _showUINotification() {
-  this.l10n.get("toggle_sidebar_notification2.title").then(msg => {
-   this.toggleButton.title = msg;
-  });
-  if (!this.isOpen) {
-   this.toggleButton.classList.add(UI_NOTIFICATION_CLASS);
-  }
- }
- _hideUINotification(reset = false) {
-  if (this.isOpen || reset) {
-   this.toggleButton.classList.remove(UI_NOTIFICATION_CLASS);
-  }
-  if (reset) {
-   this.l10n.get("toggle_sidebar.title").then(msg => {
-    this.toggleButton.title = msg;
-   });
-  }
- }
- _addEventListeners() {
-  this.viewerContainer.addEventListener("transitionend", evt => {
-   if (evt.target === this.viewerContainer) {
-    this.outerContainer.classList.remove("sidebarMoving");
-   }
-  });
-  this.toggleButton.addEventListener("click", () => {
-   this.toggle();
-  });
-  this.thumbnailButton.addEventListener("click", () => {
-   this.switchView(SidebarView.THUMBS);
-  });
-  this.outlineButton.addEventListener("click", () => {
-   this.switchView(SidebarView.OUTLINE);
-  });
-  this.outlineButton.addEventListener("dblclick", () => {
-   this.eventBus.dispatch("toggleoutlinetree", { source: this });
-  });
-  this.attachmentsButton.addEventListener("click", () => {
-   this.switchView(SidebarView.ATTACHMENTS);
-  });
-  this.layersButton.addEventListener("click", () => {
-   this.switchView(SidebarView.LAYERS);
-  });
-  this.layersButton.addEventListener("dblclick", () => {
-   this.eventBus.dispatch("resetlayers", { source: this });
-  });
-  this._currentOutlineItemButton.addEventListener("click", () => {
-   this.eventBus.dispatch("currentoutlineitem", { source: this });
-  });
-  const onTreeLoaded = (count, button, view) => {
-   button.disabled = !count;
-   if (count) {
-    this._showUINotification();
-   } else if (this.active === view) {
-    this.switchView(SidebarView.THUMBS);
-   }
-  };
-  this.eventBus._on("outlineloaded", evt => {
-   onTreeLoaded(evt.outlineCount, this.outlineButton, SidebarView.OUTLINE);
-   evt.currentOutlineItemPromise.then(enabled => {
-    if (!this.isInitialViewSet) {
-     return;
-    }
-    this._currentOutlineItemButton.disabled = !enabled;
-   });
-  });
-  this.eventBus._on("attachmentsloaded", evt => {
-   onTreeLoaded(evt.attachmentsCount, this.attachmentsButton, SidebarView.ATTACHMENTS);
-  });
-  this.eventBus._on("layersloaded", evt => {
-   onTreeLoaded(evt.layersCount, this.layersButton, SidebarView.LAYERS);
-  });
-  this.eventBus._on("presentationmodechanged", evt => {
-   if (evt.state === PresentationModeState.NORMAL && this.isThumbnailViewVisible) {
-    this._updateThumbnailViewer();
-   }
-  });
- }
-}
-
-
-
-/***/ }),
-
-/***/ "./src/pdf_sidebar_resizer.js":
-/*!************************************!*\
-  !*** ./src/pdf_sidebar_resizer.js ***!
-  \************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFSidebarResizer": function() { return /* binding */ PDFSidebarResizer; }
-/* harmony export */ });
-/* Copyright 2022 Mozilla Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Edited 2022 SaltDog Project
- */
-/* eslint-disable */
-
-//
-// THIS FILE IS GENERATED AUTOMATICALLY, DO NOT EDIT MANUALLY!
-//
-
-const SIDEBAR_WIDTH_VAR = "--sidebar-width";
-const SIDEBAR_MIN_WIDTH = 200;
-const SIDEBAR_RESIZING_CLASS = "sidebarResizing";
-class PDFSidebarResizer {
- constructor(options, eventBus, l10n) {
-  this.isRTL = false;
-  this.sidebarOpen = false;
-  this.doc = document.documentElement;
-  this._width = null;
-  this._outerContainerWidth = null;
-  this._boundEvents = Object.create(null);
-  this.outerContainer = options.outerContainer;
-  this.resizer = options.resizer;
-  this.eventBus = eventBus;
-  l10n.getDirection().then(dir => {
-   this.isRTL = dir === "rtl";
-  });
-  this._addEventListeners();
- }
- get outerContainerWidth() {
-  return this._outerContainerWidth ||= this.outerContainer.clientWidth;
- }
- _updateWidth(width = 0) {
-  const maxWidth = Math.floor(this.outerContainerWidth / 2);
-  if (width > maxWidth) {
-   width = maxWidth;
-  }
-  if (width < SIDEBAR_MIN_WIDTH) {
-   width = SIDEBAR_MIN_WIDTH;
-  }
-  if (width === this._width) {
-   return false;
-  }
-  this._width = width;
-  this.doc.style.setProperty(SIDEBAR_WIDTH_VAR, `${ width }px`);
-  return true;
- }
- _mouseMove(evt) {
-  let width = evt.clientX;
-  if (this.isRTL) {
-   width = this.outerContainerWidth - width;
-  }
-  this._updateWidth(width);
- }
- _mouseUp(evt) {
-  this.outerContainer.classList.remove(SIDEBAR_RESIZING_CLASS);
-  this.eventBus.dispatch("resize", { source: this });
-  const _boundEvents = this._boundEvents;
-  window.removeEventListener("mousemove", _boundEvents.mouseMove);
-  window.removeEventListener("mouseup", _boundEvents.mouseUp);
- }
- _addEventListeners() {
-  const _boundEvents = this._boundEvents;
-  _boundEvents.mouseMove = this._mouseMove.bind(this);
-  _boundEvents.mouseUp = this._mouseUp.bind(this);
-  this.resizer.addEventListener("mousedown", evt => {
-   if (evt.button !== 0) {
-    return;
-   }
-   this.outerContainer.classList.add(SIDEBAR_RESIZING_CLASS);
-   window.addEventListener("mousemove", _boundEvents.mouseMove);
-   window.addEventListener("mouseup", _boundEvents.mouseUp);
-  });
-  this.eventBus._on("sidebarviewchanged", evt => {
-   this.sidebarOpen = !!evt?.view;
-  });
-  this.eventBus._on("resize", evt => {
-   if (evt?.source !== window) {
-    return;
-   }
-   this._outerContainerWidth = null;
-   if (!this._width) {
-    return;
-   }
-   if (!this.sidebarOpen) {
-    this._updateWidth(this._width);
-    return;
-   }
-   this.outerContainer.classList.add(SIDEBAR_RESIZING_CLASS);
-   const updated = this._updateWidth(this._width);
-   Promise.resolve().then(() => {
-    this.outerContainer.classList.remove(SIDEBAR_RESIZING_CLASS);
-    if (updated) {
-     this.eventBus.dispatch("resize", { source: this });
-    }
-   });
-  });
- }
-}
-
-
-
-/***/ }),
-
-/***/ "./src/pdf_thumbnail_view.js":
-/*!***********************************!*\
-  !*** ./src/pdf_thumbnail_view.js ***!
-  \***********************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFThumbnailView": function() { return /* binding */ PDFThumbnailView; },
-/* harmony export */   "TempImageFactory": function() { return /* binding */ TempImageFactory; }
-/* harmony export */ });
-/* Copyright 2022 Mozilla Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Edited 2022 SaltDog Project
- */
-/* eslint-disable */
-
-//
-// THIS FILE IS GENERATED AUTOMATICALLY, DO NOT EDIT MANUALLY!
-//
-
-const {getOutputScale, RenderingStates} = __webpack_require__(/*! ./ui_utils.js */ "./src/ui_utils.js");
-const {RenderingCancelledException} = __webpack_require__(/*! pdfjs-dist */ "./node_modules/pdfjs-dist/build/pdf.js");
-const DRAW_UPSCALE_FACTOR = 2;
-const MAX_NUM_SCALING_STEPS = 3;
-const THUMBNAIL_CANVAS_BORDER_WIDTH = 1;
-const THUMBNAIL_WIDTH = 98;
-class TempImageFactory {
- static #tempCanvas = null;
- static getCanvas(width, height) {
-  const tempCanvas = this.#tempCanvas ||= document.createElement("canvas");
-  tempCanvas.width = width;
-  tempCanvas.height = height;
-  tempCanvas.mozOpaque = true;
-  const ctx = tempCanvas.getContext("2d", { alpha: false });
-  ctx.save();
-  ctx.fillStyle = "rgb(255, 255, 255)";
-  ctx.fillRect(0, 0, width, height);
-  ctx.restore();
-  return [
-   tempCanvas,
-   tempCanvas.getContext("2d")
-  ];
- }
- static destroyCanvas() {
-  const tempCanvas = this.#tempCanvas;
-  if (tempCanvas) {
-   tempCanvas.width = 0;
-   tempCanvas.height = 0;
-  }
-  this.#tempCanvas = null;
- }
-}
-class PDFThumbnailView {
- constructor({container, id, defaultViewport, optionalContentConfigPromise, linkService, renderingQueue, checkSetImageDisabled, l10n}) {
-  this.id = id;
-  this.renderingId = "thumbnail" + id;
-  this.pageLabel = null;
-  this.pdfPage = null;
-  this.rotation = 0;
-  this.viewport = defaultViewport;
-  this.pdfPageRotate = defaultViewport.rotation;
-  this._optionalContentConfigPromise = optionalContentConfigPromise || null;
-  this.linkService = linkService;
-  this.renderingQueue = renderingQueue;
-  this.renderTask = null;
-  this.renderingState = RenderingStates.INITIAL;
-  this.resume = null;
-  this._checkSetImageDisabled = checkSetImageDisabled || function () {
-   return false;
-  };
-  const pageWidth = this.viewport.width, pageHeight = this.viewport.height, pageRatio = pageWidth / pageHeight;
-  this.canvasWidth = THUMBNAIL_WIDTH;
-  this.canvasHeight = this.canvasWidth / pageRatio | 0;
-  this.scale = this.canvasWidth / pageWidth;
-  this.l10n = l10n;
-  const anchor = document.createElement("a");
-  anchor.href = linkService.getAnchorUrl("#page=" + id);
-  this._thumbPageTitle.then(msg => {
-   anchor.title = msg;
-  });
-  anchor.onclick = function () {
-   linkService.goToPage(id);
-   return false;
-  };
-  this.anchor = anchor;
-  const div = document.createElement("div");
-  div.className = "thumbnail";
-  div.setAttribute("data-page-number", this.id);
-  this.div = div;
-  const ring = document.createElement("div");
-  ring.className = "thumbnailSelectionRing";
-  const borderAdjustment = 2 * THUMBNAIL_CANVAS_BORDER_WIDTH;
-  ring.style.width = this.canvasWidth + borderAdjustment + "px";
-  ring.style.height = this.canvasHeight + borderAdjustment + "px";
-  this.ring = ring;
-  div.appendChild(ring);
-  anchor.appendChild(div);
-  container.appendChild(anchor);
- }
- setPdfPage(pdfPage) {
-  this.pdfPage = pdfPage;
-  this.pdfPageRotate = pdfPage.rotate;
-  const totalRotation = (this.rotation + this.pdfPageRotate) % 360;
-  this.viewport = pdfPage.getViewport({
-   scale: 1,
-   rotation: totalRotation
-  });
-  this.reset();
- }
- reset() {
-  this.cancelRendering();
-  this.renderingState = RenderingStates.INITIAL;
-  const pageWidth = this.viewport.width, pageHeight = this.viewport.height, pageRatio = pageWidth / pageHeight;
-  this.canvasHeight = this.canvasWidth / pageRatio | 0;
-  this.scale = this.canvasWidth / pageWidth;
-  this.div.removeAttribute("data-loaded");
-  const ring = this.ring;
-  ring.textContent = "";
-  const borderAdjustment = 2 * THUMBNAIL_CANVAS_BORDER_WIDTH;
-  ring.style.width = this.canvasWidth + borderAdjustment + "px";
-  ring.style.height = this.canvasHeight + borderAdjustment + "px";
-  if (this.canvas) {
-   this.canvas.width = 0;
-   this.canvas.height = 0;
-   delete this.canvas;
-  }
-  if (this.image) {
-   this.image.removeAttribute("src");
-   delete this.image;
-  }
- }
- update({
-  rotation = null
- }) {
-  if (typeof rotation === "number") {
-   this.rotation = rotation;
-  }
-  const totalRotation = (this.rotation + this.pdfPageRotate) % 360;
-  this.viewport = this.viewport.clone({
-   scale: 1,
-   rotation: totalRotation
-  });
-  this.reset();
- }
- cancelRendering() {
-  if (this.renderTask) {
-   this.renderTask.cancel();
-   this.renderTask = null;
-  }
-  this.resume = null;
- }
- _getPageDrawContext(upscaleFactor = 1) {
-  const canvas = document.createElement("canvas");
-  canvas.mozOpaque = true;
-  const ctx = canvas.getContext("2d", { alpha: false });
-  const outputScale = getOutputScale(ctx);
-  canvas.width = upscaleFactor * this.canvasWidth * outputScale.sx | 0;
-  canvas.height = upscaleFactor * this.canvasHeight * outputScale.sy | 0;
-  const transform = outputScale.scaled ? [
-   outputScale.sx,
-   0,
-   0,
-   outputScale.sy,
-   0,
-   0
-  ] : null;
-  return {
-   ctx,
-   canvas,
-   transform
-  };
- }
- _convertCanvasToImage(canvas) {
-  if (this.renderingState !== RenderingStates.FINISHED) {
-   throw new Error("_convertCanvasToImage: Rendering has not finished.");
-  }
-  const reducedCanvas = this._reduceImage(canvas);
-  const image = document.createElement("img");
-  image.className = "thumbnailImage";
-  this._thumbPageCanvas.then(msg => {
-   image.setAttribute("aria-label", msg);
-  });
-  image.style.width = this.canvasWidth + "px";
-  image.style.height = this.canvasHeight + "px";
-  image.src = reducedCanvas.toDataURL();
-  this.image = image;
-  this.div.setAttribute("data-loaded", true);
-  this.ring.appendChild(image);
-  reducedCanvas.width = 0;
-  reducedCanvas.height = 0;
- }
- draw() {
-  if (this.renderingState !== RenderingStates.INITIAL) {
-   console.error("Must be in new state before drawing");
-   return Promise.resolve();
-  }
-  const {pdfPage} = this;
-  if (!pdfPage) {
-   this.renderingState = RenderingStates.FINISHED;
-   return Promise.reject(new Error("pdfPage is not loaded"));
-  }
-  this.renderingState = RenderingStates.RUNNING;
-  const finishRenderTask = async (error = null) => {
-   if (renderTask === this.renderTask) {
-    this.renderTask = null;
-   }
-   if (error instanceof RenderingCancelledException) {
-    return;
-   }
-   this.renderingState = RenderingStates.FINISHED;
-   this._convertCanvasToImage(canvas);
-   if (error) {
-    throw error;
-   }
-  };
-  const {ctx, canvas, transform} = this._getPageDrawContext(DRAW_UPSCALE_FACTOR);
-  const drawViewport = this.viewport.clone({ scale: DRAW_UPSCALE_FACTOR * this.scale });
-  const renderContinueCallback = cont => {
-   if (!this.renderingQueue.isHighestPriority(this)) {
-    this.renderingState = RenderingStates.PAUSED;
-    this.resume = () => {
-     this.renderingState = RenderingStates.RUNNING;
-     cont();
-    };
-    return;
-   }
-   cont();
-  };
-  const renderContext = {
-   canvasContext: ctx,
-   transform,
-   viewport: drawViewport,
-   optionalContentConfigPromise: this._optionalContentConfigPromise
-  };
-  const renderTask = this.renderTask = pdfPage.render(renderContext);
-  renderTask.onContinue = renderContinueCallback;
-  const resultPromise = renderTask.promise.then(function () {
-   return finishRenderTask(null);
-  }, function (error) {
-   return finishRenderTask(error);
-  });
-  resultPromise.finally(() => {
-   canvas.width = 0;
-   canvas.height = 0;
-   const pageCached = this.linkService.isPageCached(this.id);
-   if (!pageCached) {
-    this.pdfPage?.cleanup();
-   }
-  });
-  return resultPromise;
- }
- setImage(pageView) {
-  if (this._checkSetImageDisabled()) {
-   return;
-  }
-  if (this.renderingState !== RenderingStates.INITIAL) {
-   return;
-  }
-  const {canvas, pdfPage} = pageView;
-  if (!canvas) {
-   return;
-  }
-  if (!this.pdfPage) {
-   this.setPdfPage(pdfPage);
-  }
-  this.renderingState = RenderingStates.FINISHED;
-  this._convertCanvasToImage(canvas);
- }
- _reduceImage(img) {
-  const {ctx, canvas} = this._getPageDrawContext();
-  if (img.width <= 2 * canvas.width) {
-   ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvas.width, canvas.height);
-   return canvas;
-  }
-  let reducedWidth = canvas.width << MAX_NUM_SCALING_STEPS;
-  let reducedHeight = canvas.height << MAX_NUM_SCALING_STEPS;
-  const [reducedImage, reducedImageCtx] = TempImageFactory.getCanvas(reducedWidth, reducedHeight);
-  while (reducedWidth > img.width || reducedHeight > img.height) {
-   reducedWidth >>= 1;
-   reducedHeight >>= 1;
-  }
-  reducedImageCtx.drawImage(img, 0, 0, img.width, img.height, 0, 0, reducedWidth, reducedHeight);
-  while (reducedWidth > 2 * canvas.width) {
-   reducedImageCtx.drawImage(reducedImage, 0, 0, reducedWidth, reducedHeight, 0, 0, reducedWidth >> 1, reducedHeight >> 1);
-   reducedWidth >>= 1;
-   reducedHeight >>= 1;
-  }
-  ctx.drawImage(reducedImage, 0, 0, reducedWidth, reducedHeight, 0, 0, canvas.width, canvas.height);
-  return canvas;
- }
- get _thumbPageTitle() {
-  return this.l10n.get("thumb_page_title", { page: this.pageLabel ?? this.id });
- }
- get _thumbPageCanvas() {
-  return this.l10n.get("thumb_page_canvas", { page: this.pageLabel ?? this.id });
- }
- setPageLabel(label) {
-  this.pageLabel = typeof label === "string" ? label : null;
-  this._thumbPageTitle.then(msg => {
-   this.anchor.title = msg;
-  });
-  if (this.renderingState !== RenderingStates.FINISHED) {
-   return;
-  }
-  this._thumbPageCanvas.then(msg => {
-   this.image?.setAttribute("aria-label", msg);
-  });
- }
-}
-
-
-
-/***/ }),
-
-/***/ "./src/pdf_thumbnail_viewer.js":
-/*!*************************************!*\
-  !*** ./src/pdf_thumbnail_viewer.js ***!
-  \*************************************/
-/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "PDFThumbnailViewer": function() { return /* binding */ PDFThumbnailViewer; }
-/* harmony export */ });
-/* Copyright 2022 Mozilla Foundation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Edited 2022 SaltDog Project
- */
-/* eslint-disable */
-
-//
-// THIS FILE IS GENERATED AUTOMATICALLY, DO NOT EDIT MANUALLY!
-//
-
-const {getVisibleElements, isValidRotation, RenderingStates, scrollIntoView, watchScroll} = __webpack_require__(/*! ./ui_utils.js */ "./src/ui_utils.js");
-const {PDFThumbnailView, TempImageFactory} = __webpack_require__(/*! ./pdf_thumbnail_view.js */ "./src/pdf_thumbnail_view.js");
-const THUMBNAIL_SCROLL_MARGIN = -19;
-const THUMBNAIL_SELECTED_CLASS = "selected";
-class PDFThumbnailViewer {
- constructor({container, eventBus, linkService, renderingQueue, l10n}) {
-  this.container = container;
-  this.linkService = linkService;
-  this.renderingQueue = renderingQueue;
-  this.l10n = l10n;
-  this.scroll = watchScroll(this.container, this._scrollUpdated.bind(this));
-  this._resetView();
-  eventBus._on("optionalcontentconfigchanged", () => {
-   this._setImageDisabled = true;
-  });
- }
- _scrollUpdated() {
-  this.renderingQueue.renderHighestPriority();
- }
- getThumbnail(index) {
-  return this._thumbnails[index];
- }
- _getVisibleThumbs() {
-  return getVisibleElements({
-   scrollEl: this.container,
-   views: this._thumbnails
-  });
- }
- scrollThumbnailIntoView(pageNumber) {
-  if (!this.pdfDocument) {
-   return;
-  }
-  const thumbnailView = this._thumbnails[pageNumber - 1];
-  if (!thumbnailView) {
-   console.error('scrollThumbnailIntoView: Invalid "pageNumber" parameter.');
-   return;
-  }
-  if (pageNumber !== this._currentPageNumber) {
-   const prevThumbnailView = this._thumbnails[this._currentPageNumber - 1];
-   prevThumbnailView.div.classList.remove(THUMBNAIL_SELECTED_CLASS);
-   thumbnailView.div.classList.add(THUMBNAIL_SELECTED_CLASS);
-  }
-  const {first, last, views} = this._getVisibleThumbs();
-  if (views.length > 0) {
-   let shouldScroll = false;
-   if (pageNumber <= first.id || pageNumber >= last.id) {
-    shouldScroll = true;
-   } else {
-    for (const {id, percent} of views) {
-     if (id !== pageNumber) {
-      continue;
-     }
-     shouldScroll = percent < 100;
-     break;
-    }
-   }
-   if (shouldScroll) {
-    scrollIntoView(thumbnailView.div, { top: THUMBNAIL_SCROLL_MARGIN });
-   }
-  }
-  this._currentPageNumber = pageNumber;
- }
- get pagesRotation() {
-  return this._pagesRotation;
- }
- set pagesRotation(rotation) {
-  if (!isValidRotation(rotation)) {
-   throw new Error("Invalid thumbnails rotation angle.");
-  }
-  if (!this.pdfDocument) {
-   return;
-  }
-  if (this._pagesRotation === rotation) {
-   return;
-  }
-  this._pagesRotation = rotation;
-  const updateArgs = { rotation };
-  for (const thumbnail of this._thumbnails) {
-   thumbnail.update(updateArgs);
-  }
- }
- cleanup() {
-  for (let i = 0, ii = this._thumbnails.length; i < ii; i++) {
-   if (this._thumbnails[i] && this._thumbnails[i].renderingState !== RenderingStates.FINISHED) {
-    this._thumbnails[i].reset();
-   }
-  }
-  TempImageFactory.destroyCanvas();
- }
- _resetView() {
-  this._thumbnails = [];
-  this._currentPageNumber = 1;
-  this._pageLabels = null;
-  this._pagesRotation = 0;
-  this._optionalContentConfigPromise = null;
-  this._setImageDisabled = false;
-  this.container.textContent = "";
- }
- setDocument(pdfDocument) {
-     
-  if (this.pdfDocument) {
-   this._cancelRendering();
-   this._resetView();
-  }
-  this.pdfDocument = pdfDocument;
-  if (!pdfDocument) {
-   return;
-  }
-  const firstPagePromise = pdfDocument.getPage(1);
-  const optionalContentConfigPromise = pdfDocument.getOptionalContentConfig();
-  firstPagePromise.then(firstPdfPage => {
-   this._optionalContentConfigPromise = optionalContentConfigPromise;
-   const pagesCount = pdfDocument.numPages;
-   const viewport = firstPdfPage.getViewport({ scale: 1 });
-   const checkSetImageDisabled = () => {
-    return this._setImageDisabled;
-   };
-   for (let pageNum = 1; pageNum <= pagesCount; ++pageNum) {
-    const thumbnail = new PDFThumbnailView({
-     container: this.container,
-     id: pageNum,
-     defaultViewport: viewport.clone(),
-     optionalContentConfigPromise,
-     linkService: this.linkService,
-     renderingQueue: this.renderingQueue,
-     checkSetImageDisabled,
-     l10n: this.l10n
-    });
-    this._thumbnails.push(thumbnail);
-   }
-   const firstThumbnailView = this._thumbnails[0];
-   if (firstThumbnailView) {
-    firstThumbnailView.setPdfPage(firstPdfPage);
-   }
-   const thumbnailView = this._thumbnails[this._currentPageNumber - 1];
-   thumbnailView.div.classList.add(THUMBNAIL_SELECTED_CLASS);
-  }).catch(reason => {
-   console.error("Unable to initialize thumbnail viewer", reason);
-  });
- }
- _cancelRendering() {
-  for (let i = 0, ii = this._thumbnails.length; i < ii; i++) {
-   if (this._thumbnails[i]) {
-    this._thumbnails[i].cancelRendering();
-   }
-  }
- }
- setPageLabels(labels) {
-  if (!this.pdfDocument) {
-   return;
-  }
-  if (!labels) {
-   this._pageLabels = null;
-  } else if (!(Array.isArray(labels) && this.pdfDocument.numPages === labels.length)) {
-   this._pageLabels = null;
-   console.error("PDFThumbnailViewer_setPageLabels: Invalid page labels.");
-  } else {
-   this._pageLabels = labels;
-  }
-  for (let i = 0, ii = this._thumbnails.length; i < ii; i++) {
-   this._thumbnails[i].setPageLabel(this._pageLabels?.[i] ?? null);
-  }
- }
- async #ensurePdfPageLoaded(thumbView) {
-  if (thumbView.pdfPage) {
-   return thumbView.pdfPage;
-  }
-  try {
-   const pdfPage = await this.pdfDocument.getPage(thumbView.id);
-   if (!thumbView.pdfPage) {
-    thumbView.setPdfPage(pdfPage);
-   }
-   return pdfPage;
-  } catch (reason) {
-   console.error("Unable to get page for thumb view", reason);
-   return null;
-  }
- }
- #getScrollAhead(visible) {
-  if (visible.first?.id === 1) {
-   return true;
-  } else if (visible.last?.id === this._thumbnails.length) {
-   return false;
-  }
-  return this.scroll.down;
- }
- forceRendering() {
-  const visibleThumbs = this._getVisibleThumbs();
-  const scrollAhead = this.#getScrollAhead(visibleThumbs);
-  const thumbView = this.renderingQueue.getHighestPriority(visibleThumbs, this._thumbnails, scrollAhead);
-  if (thumbView) {
-   this.#ensurePdfPageLoaded(thumbView).then(() => {
-    this.renderingQueue.renderView(thumbView);
-   });
-   return true;
-  }
-  return false;
  }
 }
 
@@ -50828,25 +49149,26 @@ function getViewerConfiguration() {
    spreadEvenButton: document.getElementById("spreadEven"),
    documentPropertiesButton: document.getElementById("documentProperties")
   },
-  sidebar: {
-   outerContainer: document.getElementById("outerContainer"),
-   viewerContainer: document.getElementById("viewerContainer"),
-   toggleButton: document.getElementById("sidebarToggle"),
-   thumbnailButton: document.getElementById("viewThumbnail"),
-   outlineButton: document.getElementById("viewOutline"),
-   attachmentsButton: document.getElementById("viewAttachments"),
-   layersButton: document.getElementById("viewLayers"),
-   thumbnailView: document.getElementById("thumbnailView"),
-   outlineView: document.getElementById("outlineView"),
-   attachmentsView: document.getElementById("attachmentsView"),
-   layersView: document.getElementById("layersView"),
-   outlineOptionsContainer: document.getElementById("outlineOptionsContainer"),
-   currentOutlineItemButton: document.getElementById("currentOutlineItem")
-  },
-  sidebarResizer: {
-   outerContainer: document.getElementById("outerContainer"),
-   resizer: document.getElementById("sidebarResizer")
-  },
+  // sdpdfcore disable sidebar
+//   sidebar: {
+//    outerContainer: document.getElementById("outerContainer"),
+//    viewerContainer: document.getElementById("viewerContainer"),
+//    toggleButton: document.getElementById("sidebarToggle"),
+//    thumbnailButton: document.getElementById("viewThumbnail"),
+//    outlineButton: document.getElementById("viewOutline"),
+//    attachmentsButton: document.getElementById("viewAttachments"),
+//    layersButton: document.getElementById("viewLayers"),
+//    thumbnailView: document.getElementById("thumbnailView"),
+//    outlineView: document.getElementById("outlineView"),
+//    attachmentsView: document.getElementById("attachmentsView"),
+//    layersView: document.getElementById("layersView"),
+//    outlineOptionsContainer: document.getElementById("outlineOptionsContainer"),
+//    currentOutlineItemButton: document.getElementById("currentOutlineItem")
+//   },
+//   sidebarResizer: {
+//    outerContainer: document.getElementById("outerContainer"),
+//    resizer: document.getElementById("sidebarResizer")
+//   },
   findBar: {
    bar: document.getElementById("findbar"),
    toggleButton: document.getElementById("viewFind"),

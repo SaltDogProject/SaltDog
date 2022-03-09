@@ -93,7 +93,7 @@ class MainTabManager implements ITabManager {
     const name=tabName;        
         const tabid = this.addTab(name, 'PDFVIEWER', 'saltdog-internal');
         this.pdfTabReadyState[tabid]=false;
-        bus.once(`${tabid}:SDPDFCore_Ready`, () => {
+        bus.once(`PDFVIEW_${tabid}:SDPDFCore_Ready`, () => {
             const handler = this.getMessageHandler(tabid) as MessageHandler;
             
             handler.invokeWebview(
