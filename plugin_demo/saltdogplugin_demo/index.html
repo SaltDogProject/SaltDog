@@ -3,4 +3,10 @@
 </head>
 <body>
     Demo Plugin
+    <script>
+        saltdog.send('ping');
+        saltdog.on('pong',()=>{
+            console.log("Message Channel Test OK");
+        });
+    </script>
 </body>

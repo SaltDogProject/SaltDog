@@ -1,6 +1,7 @@
 const { EventEmitter } = require('eventemitter3');
 const messageChannel = require('../messageChannel.js');
 const bus = require('../bus');
+const uniqId = require('licia/uniqId');
 const TAG = '[WebviewAgent]'
 var eventList = [
     'load-commit',
@@ -38,12 +39,48 @@ var eventList = [
     'devtools-focused',
     'context-menu',
 ];
-class WebviewAgent extends EventEmitter {
-    // public webviewId = "";
-    constructor(id) {
-        super();
+
+class WebviewContent { 
+    webviewId;
+    registeredEventName = {};
+    constructor(id){
         this.webviewId = id;
     }
+    // 监听webview内部 dom的EventListener事件（直接映射）
+    addEventListener(selector,event,cb,invokeTime){
+            messageChannel.invoke('_registerWebviewContentListener',{
+                webviewId:this.webviewId,
+                selector,
+                eventName:event,
+                invokeTime
+            },(msg)=>{
+                if(msg.status!=0){
+                    console.error(TAG,`addEventListener ${event} failed: ${msg.msg}`);
+                }else{
+                    bus.on(`Webview_${this.webviewId}_contentEvent:${msg.id}/${event}`,cb);
+                    return msg.id;
+                }
+            }); 
+        
+    }
+    removeEventListener(id){
+        messageChannel.invoke('_removeWebviewContentListener',{
+            webviewId:this.webviewId,
+            id
+        },(msg)=>{
+            if(msg.status!=0){
+                console.error(TAG,`removeEventListener ${event} failed: ${msg.msg}`);
+            }
+        }); 
+    }
+}
+class WebviewAgent {
+    webviewId = "";
+    content;
+    constructor(id) {
+        this.webviewId = id;
+        this.content = new WebviewContent(id);
+    };
     on(event,cb){
         if(eventList.indexOf(event)!=-1){
             bus.on(`Webview_${this.webviewId}_${event}`,(args)=>{

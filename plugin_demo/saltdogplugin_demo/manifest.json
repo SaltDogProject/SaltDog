@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "A demo for developers",
     "author": "dorapocket",
+    "main":"background.js",
     "contributes": {
         "viewsContainers": {
             "activitybar": [

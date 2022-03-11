@@ -1,5 +1,9 @@
 # [WIP]SaltDog 
 
+## Not Test Functions
+- pdfPreloads/pdfApi
+- pluginHostPreload/pluginApi/webview add/removeEventListener
+
 ## Project setup
 ```
 yarn install

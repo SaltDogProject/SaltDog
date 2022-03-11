@@ -8,7 +8,6 @@ import fs from 'fs';
 // FIXME:
 import bus from '../../controller/systemBus';
 import pluginMsgChannel from '../../../utils/pluginMsgChannel';
-
 const TAG = '[TabManager]'
 class MainTabManager implements ITabManager {
     private _eventList = [
@@ -117,6 +116,10 @@ class MainTabManager implements ITabManager {
             this.pdfTabReadyState[tabid]=true;
             // handler.invokeWebview('jumpToTarget', '_OPENTOPIC_TOC_PROCESSING_d114e60114');
         });
+        //
+        bus.on(`PDFVIEW_${tabid}_WebviewContentEvent`,(args)=>{
+            pluginMsgChannel.send(args.owner,`Webview_${tabid}_contentEvent:${args.id}/${args.eventName}`,args.data);
+        })
     }
     // 插件创建页面Tab
     public addPluginTab(pluginMessage: any, title: string, webviewUrl: string, statCallback: any) {
@@ -197,7 +200,6 @@ class MainTabManager implements ITabManager {
                     pluginMsgChannel.send(v.owner, `Webview_${v.webviewId}_${e}`, args);
                 });
             }
-
             element.addEventListener('dom-ready', () => {
                 if (!this.webviewMessageHandler.has(v.webviewId)) {
                     this.webviewMessageHandler.set(v.webviewId, new MessageHandler(element));
@@ -208,6 +210,7 @@ class MainTabManager implements ITabManager {
             element.addEventListener('console-message', (e) => {
                 console.log('[webview]: ' + e.message);
             });
+            
         }
     }
 }

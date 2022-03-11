@@ -2,6 +2,7 @@ import uniqId from 'licia/uniqId';
 import { noop } from 'lodash';
 import { ipcRenderer } from 'electron';
 import bus from '../../controller/systemBus';
+import pluginMsgChannel from '../../../utils/pluginMsgChannel';
 export default class MessageHandler {
     private webview: Electron.WebviewTag;
     private callbacks: { [key: string]: (args: any[]) => void } = {};
@@ -36,11 +37,12 @@ export default class MessageHandler {
         if (this.callbacks[arg.callbackId as string]) {
             this.callbacks[arg.callbackId as string](arg.data);
             delete this.callbacks[arg.callbackId as string];
-        }
+        } 
     }
     public webviewPublishHandler(args: any[]): void {
         console.log('webviewPublish', args[0]);
         // TODO:
+        // 原封不动发送到系统bus
         bus.emit(args[0].event, args[0].data);
         ipcRenderer.send(args[0].event, args[0].data);
     }

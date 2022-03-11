@@ -27,7 +27,35 @@ function _handleWebviewMethod(arg:any,callback:any):void{
     }
 }
 
+function _registerWebviewContentEvent(arg:any,callback?:any):void{
+    const {webviewId} = arg;
+    const handler = mainTabManager.getMessageHandler(webviewId);
+    if(handler){
+    console.log(TAG,"_registerWebviewContentEvent",arg);
+    arg.owner = this.hostIdentity;
+    handler.invokeWebview('_requestAddEventListener',arg,(msg)=>{
+        callback(msg)
+    });
+    }else{
+        console.error(TAG,'No such webview');
+    }
+}
+
+function _removeWebviewContentEvent(arg:any,callback?:any):void{
+    const {webviewId} = arg;
+    const handler = mainTabManager.getMessageHandler(webviewId);
+    if(handler){
+    console.log(TAG,"_registerWebviewContentEvent",arg);
+    handler.invokeWebview('_requestRemoveAddEventListener',arg,(msg)=>{
+        callback(msg)
+    });
+    }else{
+        console.error(TAG,'No such webview');
+    }
+}
 export default {
 createWebview,
-_handleWebviewMethod
+_handleWebviewMethod,
+_registerWebviewContentEvent,
+_removeWebviewContentEvent
 }
