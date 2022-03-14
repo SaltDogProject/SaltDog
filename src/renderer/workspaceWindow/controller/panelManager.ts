@@ -208,7 +208,8 @@ class viewsManager {
                 this.resizers!.sideBar2mainPanel.resizer.style.display = 'none';
             }
             this.sideBar.size = {
-                width: this.sideBar.htmlElement.getBoundingClientRect().width,
+                // -4 给resizer留空间
+                width: this.sideBar.htmlElement.getBoundingClientRect().width - 4,
                 height: this.sideBar.htmlElement.getBoundingClientRect().height,
             };
             this.mainPanel = panels.mainPanel;

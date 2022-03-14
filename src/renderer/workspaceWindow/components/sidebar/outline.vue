@@ -13,14 +13,13 @@
 import { defineComponent, DefineComponent, getCurrentInstance, onMounted, onUpdated, ref } from 'vue';
 import bus from '../../controller/systemBus';
 import mainTabManager from '../tabs/tabManager';
-import {PDFAPISTAT} from '@/utils/constants';
-const TAG = '[Sidebar/Outline]'
+import { PDFAPISTAT } from '@/utils/constants';
+const TAG = '[Sidebar/Outline]';
 interface Tree {
     dest: string;
-    title:string;
+    title: string;
     items?: Tree[];
 }
-
 
 const defaultProps = {
     children: 'items',
@@ -31,28 +30,34 @@ export default defineComponent({
         const outlineTree = ref<Tree[]>([]);
         const handleNodeClick = (data: Tree) => {
             const currentTab = mainTabManager.getCurrentTab();
-            mainTabManager.whenPdfTabReady(currentTab,()=>{
+            mainTabManager.whenPdfTabReady(currentTab, () => {
                 const handler = mainTabManager.getMessageHandler(currentTab);
-                if(!handler) {console.error(TAG,'Get tab messageHandler failed');return;}
-                handler.invokeWebview('jumpToTarget',data.dest, (msg:any) => {
-                    console.log(TAG,`Jump to target ${data.title}:`,msg);
+                if (!handler) {
+                    console.error(TAG, 'Get tab messageHandler failed');
+                    return;
+                }
+                handler.invokeWebview('jumpToTarget', data.dest, (msg: any) => {
+                    console.log(TAG, `Jump to target ${data.title}:`, msg);
+                });
             });
-            })
         };
-        onMounted(()=>{
+        onMounted(() => {
             const currentTab = mainTabManager.getCurrentTab();
-            mainTabManager.whenPdfTabReady(currentTab,()=>{
+            mainTabManager.whenPdfTabReady(currentTab, () => {
                 const handler = mainTabManager.getMessageHandler(currentTab);
-                if(!handler) {console.error(TAG,'Get tab messageHandler failed');return;}
+                if (!handler) {
+                    console.error(TAG, 'Get tab messageHandler failed');
+                    return;
+                }
                 handler.invokeWebview('getOutline', {}, (outline: any) => {
-                    if(outline.status==PDFAPISTAT.SUCCESS){
+                    if (outline.status == PDFAPISTAT.SUCCESS) {
                         outlineTree.value = outline.outline;
-                    }else{
-                        console.error(TAG,'Get Outline error:',outline.msg);
+                    } else {
+                        console.error(TAG, 'Get Outline error:', outline.msg);
                     }
+                });
             });
-            })
-        })
+        });
         return {
             outlineTree,
             defaultProps,

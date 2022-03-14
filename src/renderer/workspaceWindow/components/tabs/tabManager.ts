@@ -8,7 +8,7 @@ import fs from 'fs';
 // FIXME:
 import bus from '../../controller/systemBus';
 import pluginMsgChannel from '../../../utils/pluginMsgChannel';
-const TAG = '[TabManager]'
+const TAG = '[TabManager]';
 class MainTabManager implements ITabManager {
     private _eventList = [
         'load-commit',
@@ -74,27 +74,30 @@ class MainTabManager implements ITabManager {
     public setCurrentTab(tabName: string): void {
         this.currentTab.value = tabName;
     }
+    public getTabInfo(id: string): any {
+        return this.webviewId2Info.get(id);
+    }
     public getMessageHandler(id: string): MessageHandler | undefined {
         return this.webviewMessageHandler.get(id);
     }
-    public whenPdfTabReady(tabid:string,fn:any){
-        if(!tabid||!fn||typeof fn !='function') return;
-        if(this.pdfTabReadyState[tabid]&&this.pdfTabReadyState){
+    public whenPdfTabReady(tabid: string, fn: any) {
+        if (!tabid || !fn || typeof fn != 'function') return;
+        if (this.pdfTabReadyState[tabid] && this.pdfTabReadyState) {
             fn();
-        }else{
+        } else {
             this.webviewPendingFunction[tabid] = fn;
         }
     }
-    public addPdfTab(tabName:string,pdfPath: string) {
-        if(!pdfPath){
-            console.error(TAG,'Can not create pdf tab: No pdfPath,check proxy.__workspaceInfo.pdfPath');
+    public addPdfTab(tabName: string, pdfPath: string) {
+        if (!pdfPath) {
+            console.error(TAG, 'Can not create pdf tab: No pdfPath,check proxy.__workspaceInfo.pdfPath');
         }
-    const name=tabName;        
+        const name = tabName;
         const tabid = this.addTab(name, 'PDFVIEWER', 'saltdog-internal');
-        this.pdfTabReadyState[tabid]=false;
+        this.pdfTabReadyState[tabid] = false;
         bus.once(`PDFVIEW_${tabid}:SDPDFCore_Ready`, () => {
             const handler = this.getMessageHandler(tabid) as MessageHandler;
-            
+
             handler.invokeWebview(
                 'loadPdf',
                 {
@@ -104,22 +107,25 @@ class MainTabManager implements ITabManager {
                     console.log(`Load PDF Result:${msg}`);
                 }
             );
-            if(this.webviewPendingFunction[tabid]&&this.webviewPendingFunction[tabid].length!=0){
-                for(const i in this.webviewPendingFunction[tabid]){
-                    if(this.webviewPendingFunction[tabid][i]&&typeof this.webviewPendingFunction[tabid][i]=='function'){
+            if (this.webviewPendingFunction[tabid] && this.webviewPendingFunction[tabid].length != 0) {
+                for (const i in this.webviewPendingFunction[tabid]) {
+                    if (
+                        this.webviewPendingFunction[tabid][i] &&
+                        typeof this.webviewPendingFunction[tabid][i] == 'function'
+                    ) {
                         this.webviewPendingFunction[tabid][i]();
                         delete this.webviewPendingFunction[tabid][i];
                     }
                 }
-                delete this.webviewPendingFunction[tabid]
+                delete this.webviewPendingFunction[tabid];
             }
-            this.pdfTabReadyState[tabid]=true;
+            this.pdfTabReadyState[tabid] = true;
             // handler.invokeWebview('jumpToTarget', '_OPENTOPIC_TOC_PROCESSING_d114e60114');
         });
         //
-        bus.on(`PDFVIEW_${tabid}_WebviewContentEvent`,(args)=>{
-            pluginMsgChannel.send(args.owner,`Webview_${tabid}_contentEvent:${args.id}/${args.eventName}`,args.data);
-        })
+        bus.on(`PDFVIEW_${tabid}_WebviewContentEvent`, (args) => {
+            pluginMsgChannel.send(args.owner, `Webview_${tabid}_contentEvent:${args.id}/${args.eventName}`, args.data);
+        });
     }
     // 插件创建页面Tab
     public addPluginTab(pluginMessage: any, title: string, webviewUrl: string, statCallback: any) {
@@ -134,17 +140,16 @@ class MainTabManager implements ITabManager {
     // 添加tab 设置owner为插件名字，只有名字一样才可以互相控制
     public addTab(title: string, webviewUrl: string, owner = 'saltdog-internal'): string {
         const id = uniqueId(`MainPanelWebview-`);
-        this.getTabList().push({
+        const baseInfo = {
             title,
             name: id,
             isPdf: webviewUrl == 'PDFVIEWER',
             owner,
             webviewUrl: webviewUrl == 'PDFVIEWER' ? `${__static}/sdpdfcore/index.html?webviewId=${id}` : webviewUrl,
             webviewId: id,
-        });
-        this.webviewId2Info.set(id, {
-            owner,
-        });
+        };
+        this.getTabList().push(baseInfo);
+        this.webviewId2Info.set(id, baseInfo);
         this.setCurrentTab(id);
         return id;
     }
@@ -210,7 +215,6 @@ class MainTabManager implements ITabManager {
             element.addEventListener('console-message', (e) => {
                 console.log('[webview]: ' + e.message);
             });
-            
         }
     }
 }

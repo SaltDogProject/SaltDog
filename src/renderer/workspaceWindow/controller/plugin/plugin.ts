@@ -76,6 +76,7 @@ class SaltDogPlugin {
     private _buildInPluginSidebarGenerator(viewName: string) {
         const knownBuildInPlugins = {
             'saltdog.outline': '目录',
+            'saltdog.search': '搜索',
         };
         // @ts-ignore
         if (!knownBuildInPlugins[viewName]) {
