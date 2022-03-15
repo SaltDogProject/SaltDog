@@ -4,9 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsc index.ts && node ./index.js",
+    "dev": "tsc ./index.ts && node ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "dorapocket",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "got": "^12.0.1",
+    "licia": "^1.34.0"
+  }
 }

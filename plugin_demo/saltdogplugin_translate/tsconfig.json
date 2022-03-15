@@ -1,0 +1,20 @@
+{
+    "allowSyntheticDefaultImports": true,
+    "compilerOptions": {
+        "target": "es2020",
+        "module": "esnext",
+        "strict": true,
+        "jsx": "preserve",
+        "importHelpers": true,
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "suppressImplicitAnyIndexErrors":true,
+        "allowJs": true,
+        "sourceMap": true,
+        "baseUrl": ".",
+    }
+}
