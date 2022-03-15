@@ -16,5 +16,7 @@
         "allowJs": true,
         "sourceMap": true,
         "baseUrl": ".",
-    }
+    },
+    "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx", "src/**/*.d.ts"],
+    "exclude": ["node_modules"]
 }
