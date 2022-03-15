@@ -1,0 +1,23 @@
+{
+    "name": "SaltDogTranslate",
+    "version": "1.0.0",
+    "description": "Translate Plugin for SaltDog",
+    "author": "dorapocket",
+    "main":"main.js",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "icon": "images/icon.svg",
+                    "id": "translateView"
+                }
+            ]
+        },
+        "views": {
+            "translateView":{
+                "name": "翻译",
+                "src": "index.html"
+            }
+        }
+    }
+}

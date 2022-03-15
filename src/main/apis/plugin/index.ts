@@ -2,7 +2,7 @@ import { SaltDogPluginActivator } from './activator';
 import { app, ipcMain } from 'electron';
 import { existsSync, readdirSync, readJsonSync, mkdirSync } from 'fs-extra';
 import { startsWith, extend, set, has } from 'lodash';
-import { normalize } from 'path';
+import path from 'path';
 import { ChildProcess } from 'child_process';
 import SaltDogMessageChannel from './api/messageChannel';
 const TAG = 'SaltDogPlugin';
@@ -11,7 +11,9 @@ class SaltDogPlugin {
     private _pluginHosts: Map<string, ChildProcess> = new Map();
     private _pluginMessageChannelTicket: Map<string, SaltDogMessageChannel> = new Map(); // string为ticket
     private _activator: SaltDogPluginActivator;
-    public pluginPath = normalize(app.getPath('userData') + '/SaltDogPlugins');
+    private isDevelopment = process.env.NODE_ENV !== 'production';
+    // 开发模式下加载文件路径内的插件，方便调试
+    public pluginPath = path.normalize(this.isDevelopment?path.join(__static,'../plugin_demo'):app.getPath('userData') + '/SaltDogPlugins');
     constructor() {
         this._activator = new SaltDogPluginActivator(this);
     }
@@ -31,12 +33,12 @@ class SaltDogPlugin {
                     const pluginInfo = readJsonSync(this.pluginPath + '/' + item + '/manifest.json');
                     this._plugins.set(
                         pluginInfo.name,
-                        extend(pluginInfo, { rootDir: normalize(this.pluginPath + '/' + item) })
+                        extend(pluginInfo, { rootDir: path.normalize(this.pluginPath + '/' + item) })
                     );
                 } catch (e) {
                     console.log(
                         'Read plugin manifest.json error, path:',
-                        normalize(this.pluginPath + '/' + item + '/manifest.json'),
+                        path.normalize(this.pluginPath + '/' + item + '/manifest.json'),
                         e
                     );
                 }
@@ -83,7 +85,7 @@ this._plugins.forEach((item) => {
                     try {
                         // @ts-ignore
                         info.sidebarIcon.push({
-                            iconPath: normalize(plugin.rootDir + '/' + item.icon),
+                            iconPath: path.normalize(plugin.rootDir + '/' + item.icon),
                             command: `${plugin.name}.${item.id}`,
                         });
                     } catch (e) {
@@ -95,13 +97,14 @@ this._plugins.forEach((item) => {
             if (has(plugin, 'contributes.views')) {
                 set(info, 'views', {});
                 // @ts-ignore
-                for (const key in plugin.contributes.views) {
+                for (const key of Object.keys(plugin.contributes.views)) {
                     set(info, `views.${key}`, []);
+                    // @ts-ignore
                     const views = plugin.contributes!.views[key];
                     try {
                         // @ts-ignore
                         info.views[key].push({
-                            src: normalize(plugin.rootDir + '/' + views.src),
+                            src: path.normalize(plugin.rootDir + '/' + views.src),
                             name: views.name,
                             // command: `${plugin.name}.${item.id}`,
                         });
