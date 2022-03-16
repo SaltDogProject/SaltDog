@@ -88,12 +88,12 @@ class MainTabManager implements ITabManager {
             this.webviewPendingFunction[tabid] = fn;
         }
     }
-    public addPdfTab(tabName: string, pdfPath: string) {
+    public addPdfTab(tabName: string, pdfPath: string,owner='saltdog-internal') {
         if (!pdfPath) {
             console.error(TAG, 'Can not create pdf tab: No pdfPath,check proxy.__workspaceInfo.pdfPath');
         }
         const name = tabName;
-        const tabid = this.addTab(name, 'PDFVIEWER', 'saltdog-internal');
+        const tabid = this.addTab(name, 'PDFVIEWER', owner);
         this.pdfTabReadyState[tabid] = false;
         bus.once(`PDFVIEW_${tabid}:SDPDFCore_Ready`, () => {
             const handler = this.getMessageHandler(tabid) as MessageHandler;
@@ -126,6 +126,7 @@ class MainTabManager implements ITabManager {
         bus.on(`PDFVIEW_${tabid}_WebviewContentEvent`, (args) => {
             pluginMsgChannel.send(args.owner, `Webview_${tabid}_contentEvent:${args.id}/${args.eventName}`, args.data);
         });
+        return tabid;
     }
     // 插件创建页面Tab
     public addPluginTab(pluginMessage: any, title: string, webviewUrl: string, statCallback: any) {

@@ -3,6 +3,7 @@ import { app, ipcMain } from 'electron';
 import { existsSync, readdirSync, readJsonSync, mkdirSync } from 'fs-extra';
 import { startsWith, extend, set, has } from 'lodash';
 import path from 'path';
+import process from 'process';
 import { ChildProcess } from 'child_process';
 import SaltDogMessageChannel from './api/messageChannel';
 const TAG = 'SaltDogPlugin';
@@ -46,8 +47,10 @@ class SaltDogPlugin {
         });
         ipcMain.once('WorkspaceWindowReady',()=>{
 this._plugins.forEach((item) => {
-            // TODO: 依据激活事件激活插件
-            this._activator.activatePlugin(item);
+            // TODO: 依据激活事件激活插件 延迟激活
+            process.nextTick(()=>{
+                this._activator.activatePlugin(item);
+            })
         });
         });
         

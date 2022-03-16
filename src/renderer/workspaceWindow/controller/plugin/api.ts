@@ -5,6 +5,7 @@ const testRendererApi = (arg: any, callback: any,rawData:any) => {
     callback('From Renderer: OK!');
 };
 export default {
+    
     testRendererApi,
     ...webviewApi,
     showNotification,
