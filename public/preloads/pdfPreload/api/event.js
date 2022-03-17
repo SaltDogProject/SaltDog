@@ -14,11 +14,12 @@
 /**
  * Event:  
  */
-
+const TAG = '[pdfView/event]'
 const uniqId = require('licia/uniqId');
 const listenerIdMap = {};
 const listenerInfo = {};
 function _requestAddEventListener(args,callback){
+    console.log(TAG,'_requestAddEventListener',args);
     const {selector,eventName,invokeTime} = args;
     let ele;
     if(selector=='document'||selector==''){
@@ -37,6 +38,7 @@ function _requestAddEventListener(args,callback){
     listenerInfo[id]={
         target:ele,eventName,invokeTime
     }
+    console.log(TAG,'_requestAddEventListener res:',ele,args.owner);
     if(ele){
         ele.addEventListener(eventName,listenerIdMap[id],invokeTime);
         callback({
@@ -55,7 +57,7 @@ function _requestAddEventListener(args,callback){
 function _requestRemoveAddEventListener(args,callback){
     const {id} = args;
     if(listenerInfo[id]){
-        listenerInfo[id].removeEventListener(listenerInfo[id].eventName,listenerIdMap[id],listenerInfo[id].invokeTime);
+        listenerInfo[id].target.removeEventListener(listenerInfo[id].eventName,listenerIdMap[id],listenerInfo[id].invokeTime);
     }
     callback({
         status:0,

@@ -1,6 +1,19 @@
 const bus = require('./bus');
 const uniqId = require('licia/uniqId');
 const callbackMap = {};
+function send(event,data){
+    process.send({
+        type: 'PLUGINHOST_INVOKE',
+        api:'_hostToSidebarMsg',
+        args: {
+            event,data,
+            ticket:process.env.messageChannelTicket
+        },
+        pluginInfo: global.__sdConfig,
+        callbackId:-1,
+        hostIdentity:process.env.messageChannelTicket
+    });
+}
 // plugin向host发请求
 function invoke(api, args, callback) {
     let callbackId = -1;
@@ -26,6 +39,7 @@ function on(channel, cb) {
             //     data: cbdata,
             //     callbackId: data.callbackId,
             // });
+            if(cbdata)
             process.send({
                 type: 'PLUGINWEBVIEW_INVOKE_CALLBACK',
                 webviewId: data.webviewId,
@@ -82,4 +96,4 @@ function initListener() {
         }
     });
 }
-module.exports = { invoke, on, once, subscribe, initListener };
+module.exports = { invoke, on, once, subscribe, initListener,send };

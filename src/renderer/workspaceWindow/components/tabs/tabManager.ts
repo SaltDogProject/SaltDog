@@ -123,8 +123,9 @@ class MainTabManager implements ITabManager {
             // handler.invokeWebview('jumpToTarget', '_OPENTOPIC_TOC_PROCESSING_d114e60114');
         });
         //
-        bus.on(`PDFVIEW_${tabid}_WebviewContentEvent`, (args) => {
-            pluginMsgChannel.send(args.owner, `Webview_${tabid}_contentEvent:${args.id}/${args.eventName}`, args.data);
+        bus.on(`PDFVIEW_${tabid}:_WebviewContentEvent`, (args) => {
+            console.log(TAG, 'Custom Event dispatch',args);
+            pluginMsgChannel.send(args.owner, `Webview_${tabid}_contentEvent:${args.id}`, args.data);
         });
         return tabid;
     }

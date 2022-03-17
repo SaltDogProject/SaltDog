@@ -1,1 +1,10 @@
 <h1>HelloWorld!</h1>
+<script>
+    saltdog.init();
+    saltdog.send('panelOpen','',(msg)=>{
+        console.log('From Host:',msg);
+    })
+    saltdog.on('translate_result',txt=>{
+        console.log('Got Result!',txt);
+    })
+</script>

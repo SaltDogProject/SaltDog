@@ -1,5 +1,7 @@
 const { ipcRenderer, contextBridge } = require('electron');
 const uniqId = require('licia/uniqId');
+const {EventEmitter} = require('eventemitter3');
+const bus = new EventEmitter();
 ipcRenderer.sendToHost('_getSidebarInfo');
 function getQueryVariable() {
     let query = window.location.search.substring(1);
@@ -16,11 +18,17 @@ const ticket = params.ticket;
 const webviewId = params.webviewId;
 const windowId = params.windowId;
 
+ipcRenderer.on('PLUGINHOST_TO_SIDEBAR_MESSAGE', (e,msg) => {
+    // msg={data,event,ticket}
+    console.log('Receive Message from Host',msg);
+    bus.emit(msg.event,msg.data);
+});
+
 //contextBridge.exposeInMainWorld('__sdConfig', params);
 contextBridge.exposeInMainWorld('_pendingFunction', {});
 contextBridge.exposeInMainWorld('saltdog', {
     init: () => {
-        window.isMessageChannelInited = false;
+        // window.isMessageChannelInited = false;
         window._pendingFunction = {};
         ipcRenderer.on('PLUGINWEBVIEW_INVOKE_CALLBACK', (e, data) => {
             if (data.callbackId && window._pendingFunction[data.callbackId]) {
@@ -44,8 +52,6 @@ contextBridge.exposeInMainWorld('saltdog', {
         });
     },
     on: (event, callback) => {
-        ipcRenderer.on('PLUGINHOST_TO_SIDEBAR_MESSAGE', (msg) => {
-            callback(msg);
-        });
+        bus.on(event,callback);
     },
 });
