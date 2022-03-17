@@ -3,6 +3,7 @@ import { app, ipcMain } from 'electron';
 import { existsSync, readdirSync, readJsonSync, mkdirSync } from 'fs-extra';
 import { startsWith, extend, set, has } from 'lodash';
 import path from 'path';
+import process from 'process';
 import { ChildProcess } from 'child_process';
 import SaltDogMessageChannel from './api/messageChannel';
 const TAG = 'SaltDogPlugin';
@@ -44,17 +45,16 @@ class SaltDogPlugin {
                 }
             }
         });
-        ipcMain.once('WorkspaceWindowReady',()=>{
+        //FIXME: 懒加载，workspace初始化的时候就要msgchannel了，而msgchannel实在activate生成的，应该提出来
+        //ipcMain.once('WorkspaceWindowReady',()=>{
 this._plugins.forEach((item) => {
-            // TODO: 依据激活事件激活插件
-            this._activator.activatePlugin(item);
+            // TODO: 依据激活事件激活插件 延迟激活(现在的问题是延迟激活以后会出现messageChannelTicket undefined)
+            //process.nextTick(()=>{
+                this._activator.activatePlugin(item);
+            //})
         });
-        });
+        //});
         
-        ipcMain.on('saltdog-plugin-message', (event, arg) => {
-            const { ticket } = arg;
-            const channel = this._pluginMessageChannelTicket.get(ticket);
-        });
     }
     public setPluginHost(name: string, host: ChildProcess): void {
         this._pluginHosts.set(name, host);

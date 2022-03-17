@@ -11,6 +11,7 @@ class SaltDogPlugin {
     private _sidebarViews: any = ref([]);
     private _sidebarViewsMap: Map<string, any> = new Map(); // plugin.view--->index in _sidebarViews
     private _sidebarViewsUUIDMap: Map<string, any> = new Map();
+    private _ticketSidebarMap:Map<string,any> = new Map(); // ticket/hostIdentity->webview
     // @ts-ignore
     private windowId;
     public init(basicInfo: any, windowId: any): void {
@@ -145,6 +146,7 @@ class SaltDogPlugin {
                 name: _view.name,
                 show: true,
                 uuid: id,
+                ticket:this._basicInfo[viewName.split('.')[0]]._messageChannelTicket
             };
             this._sidebarViews.value.push(viewinfo);
             // 关闭其他的webview-show
@@ -174,6 +176,9 @@ class SaltDogPlugin {
                 // 避免结构化克隆报错，加;0
                 ;0
             `);
+            const viewInfo = this._sidebarViews.value.filter((v:any)=>{return v.uuid=viewUUID})[0];
+
+            this._ticketSidebarMap.set(viewInfo.ticket,webview);
             this._sidebarViewsUUIDMap.set(viewUUID, webview);
             webview.openDevTools();
         });
@@ -182,6 +187,10 @@ class SaltDogPlugin {
             // console.log('[Sidebar View]', event.channel, event.args);
             ipcRenderer.send(event.channel, event.args);
         });
+    }
+
+    public getSidebarByTicket(ticket:string):WebviewTag|null{
+        return this._ticketSidebarMap.get(ticket);
     }
 }
 export default new SaltDogPlugin();

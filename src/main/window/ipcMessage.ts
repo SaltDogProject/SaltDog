@@ -41,7 +41,7 @@ export function initIpc(windowManager: IWindowManager): void {
     });
     // plugin webview->plugin host
     ipcMain.on('PLUGINWEBVIEW_IPC', (e, msg) => {
-        //console.log('[MAIN] PLUGINWEBVIEW_IPC', msg);
+        // console.log('[MAIN] PLUGINWEBVIEW_IPC', msg);
         pluginManager.sendToPluginHost(msg[0]);
     });
 }

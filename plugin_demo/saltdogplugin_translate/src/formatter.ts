@@ -1,4 +1,4 @@
-import { trimEnd } from "lodash";
+import lodash from "lodash";
 
 const patterns: Array<RegExp> = [/([?!.])[ ]?\n/g, /([？！。])[ ]?\n/g]; //The first one is English like, the second is for Chinese like.
 export const sentenceEnds = /#([?？！!.。])#/g;
@@ -26,7 +26,7 @@ export function checkIsWord(text: string) {
   }
 }
 function  isWord(text: string) {
-  text = trimEnd(text.trim(), ",.!?. ");
+  text = lodash.trimEnd(text.trim(), ",.!?. ");
   if (
     !checkIsWord(text)
   ) {
@@ -37,7 +37,7 @@ function  isWord(text: string) {
 export function normalizeText(text: string) {
     text = normalizeAppend(text, true);
     if (isWord(text)) {
-      text = trimEnd(text.trim(), ",.!?. \n\r");
+      text = lodash.trimEnd(text.trim(), ",.!?. \n\r");
     }
     return text;
 }
