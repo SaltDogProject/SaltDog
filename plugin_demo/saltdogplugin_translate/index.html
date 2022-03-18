@@ -1,10 +1,18 @@
-<h1>HelloWorld!</h1>
-<script>
-    saltdog.init();
-    saltdog.send('panelOpen','',(msg)=>{
-        console.log('From Host:',msg);
-    })
-    saltdog.on('translate_result',txt=>{
-        console.log('Got Result!',txt);
-    })
-</script>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="google" content="notranslate" />
+    <title>Sidebar Frame</title>
+</head>
+<body>
+    <h1>HelloWorld!</h1>
+    <script>
+        saltdog.init();
+        saltdog.send('panelOpen', '', (msg) => {
+            console.log('From Host:', msg);
+        });
+        saltdog.on('translate_result', (txt) => {
+            console.log('Got Result!', txt);
+        });
+    </script>
+</body>

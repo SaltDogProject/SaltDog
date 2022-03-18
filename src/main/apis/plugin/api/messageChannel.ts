@@ -49,9 +49,9 @@ class SaltDogMessageChannel {
                         data,
                     } as ISaltDogPluginInvokeCallback);
                 });
-                console.log(
-                    `${TAG} api not found in mainProcess: ${msg.api}, call to rendererProcess with windowId: ${id}`
-                );
+                // console.log(
+                //     `${TAG} api not found in mainProcess: ${msg.api}, call to rendererProcess with windowId: ${id}`
+                // );
             } else {
                 console.error(
                     `${this.pluginInfo.name}插件接口调用失败：尝试调用${msg.api}，参数为${JSON.stringify(

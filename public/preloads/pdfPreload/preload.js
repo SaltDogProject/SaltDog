@@ -40,9 +40,12 @@ const __sdJSBridge = {
     },
     // webview向host发送事件
     publish: function (event, data) {
-        console.log('sendtohost!',window._saltdogWebviewId,event,data);
+        console.log('sendtohost!', window._saltdogWebviewId, event, data);
 
-        electron.ipcRenderer.sendToHost('WEBVIEW_PUBLISH', { event:`PDFVIEW_${window._saltdogWebviewId}:${event}`, data:data?JSON.parse(JSON.stringify(data)):'' });
+        electron.ipcRenderer.sendToHost('WEBVIEW_PUBLISH', {
+            event: `PDFVIEW_${window._saltdogWebviewId}:${event}`,
+            data,
+        });
     },
     // webview向host订阅事件
     subscribe: function (event, callback) {
