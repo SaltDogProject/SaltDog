@@ -12,15 +12,21 @@ export class SaltDogPluginActivator {
     constructor(_plugin: typeof SaltDogPlugin) {
         this._pluginManager = _plugin;
     }
-    activatePlugin(pluginInfo: ISaltDogPluginInfo): void {
+    activatePlugin(pluginInfo: ISaltDogPluginInfo, isReload = false): void {
         const processConfig = {
             env: {
                 pluginManifest: JSON.stringify(pluginInfo),
             },
             serialization: 'advanced',
         };
-        const newApi = apiFactory.createApi(pluginInfo);
-        const messageChannel = new SaltDogMessageChannel(pluginInfo, newApi);
+        const newApi = (
+            isReload ? apiFactory.getApi(pluginInfo.name) : apiFactory.createApi(pluginInfo)
+        ) as ISaltDogPluginApi;
+        const messageChannel = (
+            isReload
+                ? this._pluginManager.getMessageChannel(pluginInfo.name)
+                : new SaltDogMessageChannel(pluginInfo, newApi)
+        ) as SaltDogMessageChannel;
         if (process.env.NODE_ENV === 'development') {
             const port = 18044 + Math.floor(Math.random() * 1000);
             extend(processConfig, {

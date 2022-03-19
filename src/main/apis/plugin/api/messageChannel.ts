@@ -77,7 +77,7 @@ class SaltDogMessageChannel {
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     public sendToRenderer(data: any, callback?: any): void {
         if (windowManager.getById(data.windowId)) {
-            console.log(TAG, 'sendToRenderer', data);
+            // console.log(TAG, 'sendToRenderer', data);
             if (callback) {
                 if (this.pendingCallbackId >= 65535) this.pendingCallbackId = 0;
                 const callbackIdIfExist = 'rdcb_' + this.getTicket() + '_' + this.pendingCallbackId;

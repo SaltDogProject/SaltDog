@@ -3,7 +3,21 @@
         <keep-alive>
             <div style="width: 100%; height: 100%">
                 <div class="sidebar-titlebar">
-                    <div class="sidebar-title">{{ view.name }}</div>
+                    <div class="sidebar-title">
+                        <div class="sidebar-title__title">
+                            {{ view.name }}
+                        </div>
+                        <div style="flex-grow: 1"></div>
+                        <div class="sidebar-title__icon">
+                            <i
+                                v-if="isDev"
+                                class="el-icon-refresh"
+                                :data-pluginname="view.viewName"
+                                :data-uuid="view.uuid"
+                                @click="restartPlugin"
+                            ></i>
+                        </div>
+                    </div>
                 </div>
                 <div class="sidebar-content">
                     <outline v-if="view.isBuildIn && view.viewName == 'saltdog.outline'"></outline>
@@ -39,6 +53,8 @@ export default defineComponent({
         const sidebarPreload = ref(`${staticPath}/preloads/pluginWebviewPreload/preload.js`);
         const sidebarViews = ref(plugins.getSidebarViewsRef());
         const mountedViews = new Map<string, boolean>();
+        const isDev = ref(false);
+        isDev.value = process.env.NOCE_ENV !== 'production';
         onMounted(() => {
             const views = document.getElementsByClassName('sidebar-webview');
             for (let i = 0; i < views.length; i++) {
@@ -58,9 +74,15 @@ export default defineComponent({
                 }
             }
         });
+        function restartPlugin(e: any) {
+            console.log(`Restart plugin `, e.target.dataset.pluginname);
+            plugins.restartPlugin(e.target.dataset.pluginname);
+        }
         return {
             sidebarViews,
             sidebarPreload,
+            restartPlugin,
+            isDev,
         };
     },
 });
@@ -80,9 +102,18 @@ sidebar-title-margin-left = 10px
         display: grid;
         height: 40px
         width: 100%
+        box-shadow: 0px 0px 17px -12px rgba(0,0,0,100);
         .sidebar-title
-            margin-left:sidebar-title-margin-left
-            align-self: center;
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            align-self: center
+            .sidebar-title__title
+                display: inline-block;
+                padding-left: sidebar-title-margin-left
+            .sidebar-title__icon
+                display: inline-block;
+                align-self: flex-end;
     .sidebar-content
         height:calc(100% - 45px)
         margin:sidebar-content-margin 0 sidebar-content-margin sidebar-content-margin

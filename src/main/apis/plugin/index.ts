@@ -1,5 +1,5 @@
 import { SaltDogPluginActivator } from './activator';
-import { app, ipcMain } from 'electron';
+import { app, ipcMain, IpcMainEvent } from 'electron';
 import { existsSync, readdirSync, readJsonSync, mkdirSync } from 'fs-extra';
 import { startsWith, extend, set, has } from 'lodash';
 import path from 'path';
@@ -11,12 +11,20 @@ class SaltDogPlugin {
     private _plugins: Map<string, ISaltDogPluginInfo> = new Map();
     private _pluginHosts: Map<string, ChildProcess> = new Map();
     private _pluginMessageChannelTicket: Map<string, SaltDogMessageChannel> = new Map(); // string为ticket
+    private _pluginMessageChannel: Map<string, SaltDogMessageChannel> = new Map(); // string为plugin.name
     private _activator: SaltDogPluginActivator;
     private isDevelopment = process.env.NODE_ENV !== 'production';
     // 开发模式下加载文件路径内的插件，方便调试
-    public pluginPath = path.normalize(this.isDevelopment?path.join(__static,'../plugin_demo'):app.getPath('userData') + '/SaltDogPlugins');
+    public pluginPath = path.normalize(
+        this.isDevelopment ? path.join(__static, '../plugin_demo') : app.getPath('userData') + '/SaltDogPlugins'
+    );
     constructor() {
         this._activator = new SaltDogPluginActivator(this);
+        ipcMain.on('restartPlugin', (e: IpcMainEvent, data: any) => {
+            // {name}
+            const res = this.restartPluginHost(data.name);
+            e.returnValue = res;
+        });
     }
     // 加载appdata/SaltDogPlugins下的所有插件
     // TODO: 禁用插件
@@ -47,26 +55,44 @@ class SaltDogPlugin {
         });
         //FIXME: 懒加载，workspace初始化的时候就要msgchannel了，而msgchannel实在activate生成的，应该提出来
         //ipcMain.once('WorkspaceWindowReady',()=>{
-this._plugins.forEach((item) => {
+        this._plugins.forEach((item) => {
             // TODO: 依据激活事件激活插件 延迟激活(现在的问题是延迟激活以后会出现messageChannelTicket undefined)
             //process.nextTick(()=>{
-                this._activator.activatePlugin(item);
+            this._activator.activatePlugin(item);
             //})
         });
         //});
-        
     }
     public setPluginHost(name: string, host: ChildProcess): void {
         this._pluginHosts.set(name, host);
+    }
+    public restartPluginHost(name: string): boolean {
+        const pluginHost = this._pluginHosts.get(name);
+        if (!pluginHost) {
+            console.error(TAG, `Cannot restart ${name}:PluginHost not activated yet.`);
+            return false;
+        }
+        pluginHost!.kill();
+        const targetPlugin = this._plugins.get(name);
+        if (!targetPlugin) {
+            console.error(TAG, `Cannot restart ${name}:No such plugin`);
+            return false;
+        }
+        this._activator.activatePlugin(targetPlugin, true);
+        return true;
     }
     public setMessageChannel(name: string, channel: SaltDogMessageChannel): void {
         const ticket = channel.getTicket();
         this._pluginMessageChannelTicket.set(ticket, channel);
         this._plugins.get(name)!.messageChannelTicket = ticket;
+        this._pluginMessageChannel.set(name, channel);
     }
-    public publishEventToPluginHost(target:string,event:string,data:any){
+    public getMessageChannel(name: string): SaltDogMessageChannel | undefined {
+        return this._pluginMessageChannel.get(name);
+    }
+    public publishEventToPluginHost(target: string, event: string, data: any) {
         const messageChannel = this._pluginMessageChannelTicket.get(target);
-        messageChannel!.publishEventToPluginHost(event,data);
+        messageChannel!.publishEventToPluginHost(event, data);
     }
 
     public sendToPluginHost(data: IPluginWebviewIPC) {

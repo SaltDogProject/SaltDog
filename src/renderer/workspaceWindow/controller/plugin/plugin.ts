@@ -1,9 +1,11 @@
 import { ipcRenderer, WebviewTag } from 'electron';
-import { getCurrentInstance, ref } from 'vue';
+import { getCurrentInstance, ref, nextTick } from 'vue';
 import sysBus from '../systemBus';
 import path from 'path';
 import { uuid, extend } from 'licia';
 import api from './api';
+import panelManager from '../panelManager';
+import { ElMessage } from 'element-plus';
 const TAG = '[SaltDogPlugin]';
 class SaltDogPlugin {
     private _basicInfo: any = {};
@@ -11,7 +13,7 @@ class SaltDogPlugin {
     private _sidebarViews: any = ref([]);
     private _sidebarViewsMap: Map<string, any> = new Map(); // plugin.view--->index in _sidebarViews
     private _sidebarViewsUUIDMap: Map<string, any> = new Map();
-    private _ticketSidebarMap:Map<string,any> = new Map(); // ticket/hostIdentity->webview
+    private _ticketSidebarMap: Map<string, any> = new Map(); // ticket/hostIdentity->webview
     // @ts-ignore
     private windowId;
     public init(basicInfo: any, windowId: any): void {
@@ -109,14 +111,14 @@ class SaltDogPlugin {
         console.log(`[Sidebar Plugin] Sidebar views info`, viewinfo);
     }
     // 新增webview（插件激活时）
-    public loadSidebarViews(viewName: string) {
+    public loadSidebarViews(viewName: string, isReload = false) {
         if (!viewName.startsWith('onClickSidebarIcon:')) {
             console.warn(`[Sidebar Plugin] load sidebar without 'onCLickSidebarIcon',cmd:${viewName}`);
         } else {
             viewName = viewName.replace('onClickSidebarIcon:', '');
         }
         //viewname = pluginName.viewName
-        if (this._sidebarViewsMap.has(viewName)) {
+        if (!isReload && this._sidebarViewsMap.has(viewName)) {
             console.log(`[Sidebar Plugin] Already has sidebar views ${viewName}`);
             // show出webview
             const thisview = this._sidebarViewsMap.get(viewName);
@@ -146,7 +148,7 @@ class SaltDogPlugin {
                 name: _view.name,
                 show: true,
                 uuid: id,
-                ticket:this._basicInfo[viewName.split('.')[0]]._messageChannelTicket
+                ticket: this._basicInfo[viewName.split('.')[0]]._messageChannelTicket,
             };
             this._sidebarViews.value.push(viewinfo);
             // 关闭其他的webview-show
@@ -176,9 +178,11 @@ class SaltDogPlugin {
                 // 避免结构化克隆报错，加;0
                 ;0
             `);
-            const viewInfo = this._sidebarViews.value.filter((v:any)=>{return v.uuid=viewUUID})[0];
+            const viewInfo = this._sidebarViews.value.filter((v: any) => {
+                return (v.uuid = viewUUID);
+            })[0];
 
-            this._ticketSidebarMap.set(viewInfo.ticket,webview);
+            this._ticketSidebarMap.set(viewInfo.ticket, webview);
             this._sidebarViewsUUIDMap.set(viewUUID, webview);
             webview.openDevTools();
         });
@@ -189,8 +193,26 @@ class SaltDogPlugin {
         });
     }
 
-    public getSidebarByTicket(ticket:string):WebviewTag|null{
+    public getSidebarByTicket(ticket: string): WebviewTag | null {
         return this._ticketSidebarMap.get(ticket);
+    }
+
+    public restartPlugin(name: string): void {
+        // 重启pluginHost
+        name = name.split('.')[0];
+        const result = ipcRenderer.sendSync('restartPlugin', { name });
+        if (!result) {
+            ElMessage({
+                message: `插件[${name}]宿主重启失败`,
+                type: 'error',
+            });
+            console.error(`MainProcess restartPlugin failed, see main process log for more info.`);
+            return;
+        }
+        ElMessage({
+            message: `插件[${name}]宿主重启成功`,
+            type: 'success',
+        });
     }
 }
 export default new SaltDogPlugin();

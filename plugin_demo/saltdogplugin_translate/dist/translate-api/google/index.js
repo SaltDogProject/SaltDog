@@ -21,7 +21,7 @@ function translate(text, opts, gotopts) {
         if (lang && !languages.isSupported(lang)) {
             e = new Error();
             e.code = 400;
-            e.message = 'The language \'' + lang + '\' is not supported';
+            e.message = "The language '" + lang + "' is not supported";
         }
     });
     if (e) {
@@ -42,28 +42,42 @@ function translate(text, opts, gotopts) {
     // * AVdN8 - return suggest
     // * exi25c - return some technical info
     const rpcids = opts.rpcId;
-    return got(url, gotopts).then(function (res) {
+    return got(url, gotopts)
+        .then(function (res) {
         const data = {
-            'rpcids': rpcids,
+            rpcids: rpcids,
             'source-path': '/',
             'f.sid': extract('FdrFJe', res),
-            'bl': extract('cfb2h', res),
-            'hl': 'zh-CN',
+            bl: extract('cfb2h', res),
+            hl: 'zh-CN',
             'soc-app': 1,
             'soc-platform': 1,
             'soc-device': 1,
-            '_reqid': Math.floor(1000 + (Math.random() * 9000)),
-            'rt': 'c'
+            _reqid: Math.floor(1000 + Math.random() * 9000),
+            rt: 'c',
         };
+        console.log('reqData：', data);
         return data;
-    }).then(function (data) {
+    })
+        .then(function (data) {
         url = url + '/_/TranslateWebserverUi/data/batchexecute?' + querystring.stringify(data);
         // === format for freq below is only for rpcids = MkEWBc ===
-        const freq = [[[rpcids, JSON.stringify([[text, opts.from, opts.to, opts.autoCorrect], [null]]), null, 'generic']]];
-        gotopts.body = 'f.req=' + encodeURIComponent(JSON.stringify(freq)) + '&';
+        const freq = [[[rpcids, JSON.stringify([[text, 'en', 'zh-CN', true], [null]]), null, 'generic']]];
+        gotopts.body = 'f.req=' + JSON.stringify(freq) + '&';
         gotopts.headers['content-type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
-        return got.post(url, gotopts).then(function (res) {
-            return res.body[0][2];
+        gotopts.headers['origin'] = 'https://translate.google.cn';
+        gotopts.headers['referer'] = 'https://translate.google.cn/';
+        gotopts.headers['accept'] = '*/*';
+        gotopts.headers['accept-encoding'] = 'gzip, deflate, br';
+        gotopts.headers['accept-language'] = 'zh-CN,zh;q=0.9';
+        gotopts.headers['dnt'] = 1;
+        gotopts.headers['user-agent'] =
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36';
+        console.log(url, gotopts);
+        return got
+            .post(url, gotopts)
+            .then(function (res) {
+            return res.body;
             // let json = res.body.slice(6);
             // let length = '';
             // let result = {
@@ -127,7 +141,8 @@ function translate(text, opts, gotopts) {
             //     }
             // }
             // return result;
-        }).catch(function (err) {
+        })
+            .catch(function (err) {
             err.message += `\nUrl: ${url}`;
             if (err.statusCode !== undefined && err.statusCode !== 200) {
                 err.code = 'BAD_REQUEST';
