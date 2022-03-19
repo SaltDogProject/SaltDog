@@ -11,7 +11,13 @@
   "author": "dorapocket",
   "license": "MIT",
   "dependencies": {
+    "@vitalets/google-translate-api": "^8.0.0",
     "axios": "^0.26.1",
-    "licia": "^1.34.0"
+    "licia": "^1.34.0",
+    "sbd": "^1.0.19"
+  },
+  "devDependencies": {
+    "@types/got": "^9.6.12",
+    "@types/sbd": "^1.0.3"
   }
 }

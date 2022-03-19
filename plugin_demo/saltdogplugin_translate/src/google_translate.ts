@@ -10,30 +10,23 @@ import axios from 'axios';
 // • bd
 // • rm
 // http://translate.google.cn/translate_a/single?client=gtx&sl=en&tl=zh-CN&dt=t&q=google
+// http://translate.google.cn/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=auto&tl=zh_TW&q=calculate
 // http://translate.google.cn/translate_a/t?client=gtx&sl=en&tl=zh-CN&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&ie=UTF-8&oe=UTF-8&otf=2&ssel=0&tsel=0&kc=1&tk=
 export async function google_translate(text: string) {
     text = normalizeText(text);
+    // const targetUrl = `https://translate.google.cn/translate_a/single?client=gtx&sl=en&tl=zh-CN&dt=at&dt=bd&dt=ex&dt=ss&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&tk=${new Date().getTime()}&q=${encodeURI(
+    //     text
+    // )}`
+    // const targetUrl = `http://translate.google.cn/translate_a/single?client=gtx&dt=at&dt=bd&dt=ex&dt=ss&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&dj=1&ie=UTF-8&sl=auto&tl=zh_CN&q=${encodeURI(
+    //         text
+    //     )}`;
+    const targetUrl =  `http://translate.google.cn/translate_a/single?client=gtx&sl=en&tl=zh-CN&dt=t&q=google`
+    console.log('URL',targetUrl);
     const req = await axios.get(
-        `https://translate.google.cn/translate_a/single?client=gtx&sl=en&tl=zh-CN&dt=at&dt=bd&dt=ex&dt=ss&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&q=${encodeURI(
-            text
-        )}`,
+        targetUrl,
         {
             headers: {
-                referer: 'https://translate.google.cn',
-                accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                'accept-encoding': 'gzip, deflate, br',
-                'accept-language': 'zh-CN,zh;q=0.9',
-                dnt: 1,
-                'sec-ch-ua': ' " Not A;Brand";v="99", "Chromium";v="99", "Google Chrome";v="99"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-ch-ua-platform': '"Windows"',
-                'sec-fetch-dest': 'document',
-                'sec-fetch-mode': 'navigate',
-                'sec-fetch-site': 'none',
-                'sec-fetch-user': '?1',
-                'upgrade-insecure-requests': 1,
-                'user-agent':
-                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36',
+        
             },
         }
     );

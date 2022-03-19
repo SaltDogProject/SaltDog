@@ -42,7 +42,6 @@
         "lodash": "^4.17.21",
         "lodash-id": "^0.14.1",
         "lowdb": "^1.0.0",
-        "sbd": "^1.0.19",
         "stylus": "^0.55.0",
         "stylus-loader": "3.0.2",
         "utf-8-validate": "^5.0.7",

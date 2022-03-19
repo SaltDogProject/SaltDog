@@ -5849,7 +5849,7 @@ html-webpack-plugin@^3.2.0:
     toposort "^1.0.0"
     util.promisify "1.0.0"
 
-htmlparser2@^6.0.0, htmlparser2@^6.1.0:
+htmlparser2@^6.1.0:
   version "6.1.0"
   resolved "https://registry.nlark.com/htmlparser2/download/htmlparser2-6.1.0.tgz"
   integrity sha1-xNditsM3GgXb5l6UrkOp+EX7j7c=
@@ -6481,11 +6481,6 @@ is-plain-object@^2.0.3, is-plain-object@^2.0.4:
   integrity sha1-LBY7P6+xtgbZ0Xko8FwqHDjgdnc=
   dependencies:
     isobject "^3.0.1"
-
-is-plain-object@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.npmmirror.com/is-plain-object/download/is-plain-object-5.0.0.tgz"
-  integrity sha1-RCf1CrNCnpAl6n1S6QQ6nvQVk0Q=
 
 is-promise@^2.1.0:
   version "2.2.2"
@@ -8087,11 +8082,6 @@ parse-json@^5.0.0:
     json-parse-even-better-errors "^2.3.0"
     lines-and-columns "^1.1.6"
 
-parse-srcset@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmmirror.com/parse-srcset/download/parse-srcset-1.0.2.tgz"
-  integrity sha1-8r0iH2zJcKk42IVWq8WJyqqiveE=
-
 parse5-htmlparser2-tree-adapter@^6.0.0:
   version "6.0.1"
   resolved "https://registry.npm.taobao.org/parse5-htmlparser2-tree-adapter/download/parse5-htmlparser2-tree-adapter-6.0.1.tgz"
@@ -8648,15 +8638,6 @@ postcss@^8.1.10:
     nanoid "^3.1.30"
     picocolors "^1.0.0"
     source-map-js "^0.6.2"
-
-postcss@^8.3.11:
-  version "8.4.5"
-  resolved "https://registry.npmmirror.com/postcss/download/postcss-8.4.5.tgz"
-  integrity sha512-jBDboWM8qpaqwkMwItqTQTiFikhs/67OYVvblFFTM7MrZjt6yMKd6r2kgXizEbTTljacm4NldIlZnhbjr84QYg==
-  dependencies:
-    nanoid "^3.1.30"
-    picocolors "^1.0.0"
-    source-map-js "^1.0.1"
 
 prelude-ls@^1.2.1:
   version "1.2.1"
@@ -9298,29 +9279,10 @@ sanitize-filename@^1.6.3:
   dependencies:
     truncate-utf8-bytes "^1.0.0"
 
-sanitize-html@^2.3.2:
-  version "2.6.1"
-  resolved "https://registry.npmmirror.com/sanitize-html/download/sanitize-html-2.6.1.tgz"
-  integrity sha512-DzjSz3H5qDntD7s1TcWCSoRPmNR8UmA+y+xZQOvWgjATe2Br9ZW73+vD3Pj6Snrg0RuEuJdXgrKvnYuiuixRkA==
-  dependencies:
-    deepmerge "^4.2.2"
-    escape-string-regexp "^4.0.0"
-    htmlparser2 "^6.0.0"
-    is-plain-object "^5.0.0"
-    parse-srcset "^1.0.2"
-    postcss "^8.3.11"
-
 sax@^1.2.4, sax@~1.2.4:
   version "1.2.4"
   resolved "https://registry.nlark.com/sax/download/sax-1.2.4.tgz"
   integrity sha1-KBYjTiN4vdxOU1T6tcqold9xANk=
-
-sbd@^1.0.19:
-  version "1.0.19"
-  resolved "https://registry.npmmirror.com/sbd/download/sbd-1.0.19.tgz"
-  integrity sha1-XNy16CEOP8eRcLYqYeuFswoLh8E=
-  dependencies:
-    sanitize-html "^2.3.2"
 
 schema-utils@2.7.0:
   version "2.7.0"
@@ -9654,11 +9616,6 @@ source-map-js@^0.6.2:
   version "0.6.2"
   resolved "https://registry.npm.taobao.org/source-map-js/download/source-map-js-0.6.2.tgz"
   integrity sha1-C7XeYxtBz72mz7qL0FqA79/SOF4=
-
-source-map-js@^1.0.1:
-  version "1.0.2"
-  resolved "https://registry.npmmirror.com/source-map-js/download/source-map-js-1.0.2.tgz"
-  integrity sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==
 
 source-map-resolve@^0.5.0:
   version "0.5.3"
