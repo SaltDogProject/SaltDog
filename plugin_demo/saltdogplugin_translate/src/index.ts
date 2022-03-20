@@ -31,6 +31,6 @@ export function activate(saltdog: any) {
 export function deactivate(saltdog: any) {
     console.log('deactivate');
 }
-google_translate('can').then((res) => {
-    console.log(JSON.stringify(res));
-});
+// google_translate('can').then((res) => {
+//     console.log(JSON.stringify(res));
+// });

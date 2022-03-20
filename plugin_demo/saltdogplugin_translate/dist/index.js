@@ -29,6 +29,6 @@ function deactivate(saltdog) {
     console.log('deactivate');
 }
 exports.deactivate = deactivate;
-(0, google_translate_js_1.google_translate)('can').then((res) => {
-    console.log(JSON.stringify(res));
-});
+// google_translate('can').then((res) => {
+//     console.log(JSON.stringify(res));
+// });

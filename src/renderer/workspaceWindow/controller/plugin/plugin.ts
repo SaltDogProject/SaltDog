@@ -206,7 +206,7 @@ class SaltDogPlugin {
                 message: `插件[${name}]宿主重启失败`,
                 type: 'error',
             });
-            console.error(`MainProcess restartPlugin failed, see main process log for more info.`);
+            console.error(TAG, `MainProcess restartPlugin failed, see main process log for more info.`);
             return;
         }
         ElMessage({
