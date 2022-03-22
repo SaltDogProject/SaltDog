@@ -25,12 +25,12 @@ const config = {
         //     title: 'SaltDog-Viewer',
         // },
     },
-    configureWebpack: (config) => {
-        // FIXME: debug mode
-        config.devtool = 'cheap-module-eval-source-map';
+    // configureWebpack: (config) => {
+    //     // FIXME: debug mode 不去掉build会出错
+    //     config.devtool = 'cheap-module-eval-source-map';
 
-        return config;
-    },
+    //     return config;
+    // },
     chainWebpack: (config) => {
         config.resolve.alias
             .set('@', resolve('src/renderer'))
@@ -47,6 +47,7 @@ const config = {
     },
     pluginOptions: {
         electronBuilder: {
+
             customFileProtocol: 'saltdog://./',
             externals: ['saltdog'],
             chainWebpackMainProcess: (config) => {
@@ -70,37 +71,37 @@ const config = {
                         provider: 'github',
                         owner: 'Dorapocket',
                         repo: 'SaltDog',
-                        // FIXME: "draft" | "prerelease" | "release" | null
-                        releaseType: 'draft',
+                        // FIXME: "draft" | "prerelease" | "release" | null build时候去掉
+                        releaseType: 'prerelease',
                     },
                 ],
                 directories: {
                     output: './saltdog_dist',
                 },
                 // FIXME: icons
-                dmg: {
-                    contents: [
-                        {
-                            x: 410,
-                            y: 150,
-                            type: 'link',
-                            path: '/Applications',
-                        },
-                        {
-                            x: 130,
-                            y: 150,
-                            type: 'file',
-                        },
-                    ],
-                },
-                mac: {
-                    icon: 'build/icons/icon.icns',
-                    extendInfo: {
-                        LSUIElement: 1,
-                    },
-                },
+                // dmg: {
+                //     contents: [
+                //         {
+                //             x: 410,
+                //             y: 150,
+                //             type: 'link',
+                //             path: '/Applications',
+                //         },
+                //         {
+                //             x: 130,
+                //             y: 150,
+                //             type: 'file',
+                //         },
+                //     ],
+                // },
+                // mac: {
+                //     icon: 'build/icons/icon.icns',
+                //     extendInfo: {
+                //         LSUIElement: 1,
+                //     },
+                // },
                 win: {
-                    icon: './electron/ico/install 256x256.ico',
+                    icon: './public/images/logo.ico',
                     artifactName: `SaltDog Setup \${version}-${arch}.exe`,
                     target: [
                         {
@@ -122,9 +123,9 @@ const config = {
                     createStartMenuShortcut: true,
                     shortcutName: 'SaltDog',
                 },
-                linux: {
-                    icon: 'build/icons/',
-                },
+                // linux: {
+                //     icon: 'build/icons/',
+                // },
                 snap: {
                     publish: ['github'],
                 },
