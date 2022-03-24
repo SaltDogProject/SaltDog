@@ -6,18 +6,17 @@
     <link rel="stylesheet" href="./index.css">
     <script defer src="./index.js"></script>
 </head>
-
 <body class="bodyMain">
     <!-- <h1>HelloWorld!</h1> -->
         <div class="mainContainer">
             <div class="sentenceContainer">
                 <div class="srcLanguage">
                     <div class="srcText">
-                        <textarea id="srcTextArea" autocapitalize="off" autocomplete="off" autocorrect="off" role="combobox" rows="1" placeholder="" spellcheck="false" ></textarea>
+                        <textarea id="srcTextArea" autocapitalize="off" autocomplete="off" autocorrect="off" role="combobox" rows="1" placeholder="选择文字以翻译" spellcheck="false" ></textarea>
                     </div>
-                    <div class="closeBtnContainer">
+                    <!-- <div class="closeBtnContainer">
                         <button>清除</button>
-                    </div>
+                    </div> -->
                     <div id="src_speechTextContainer" class="speechText">
                         <div id="src_speechText" class="speechText1">
                             
@@ -26,7 +25,7 @@
                 </div>
                 <div class="dstLanguage">
                     <div id="dstTextHtmlContainer" class="dstTextContainer">
-                        
+                        选择文字以翻译
                     </div>
                     <div id="dst_speechTextContainer" class="speechText" style="color:#fff">
                         <div id="dst_speechText" class="speechText1">
@@ -35,86 +34,25 @@
                     </div>
                 </div>
             </div>
-            <div id="defContainer" class="defContainer">
+            <div id="defContainer" style="display:none" class="defContainer">
                 <div class="defTrans">
                     <h3 style="font: inherit;color:#5f6368;font-family: 'Google Sans',sans-serif;padding-bottom: 20px;">
                         <span id="deftransspan" style="color:#222"></span> 的翻译
                     </h3>
                     <div id="deftables">
-                    <table style="position:relative;width:100%;margin-top:10px;
-                        ">
-                        <thead></thead>
-                        <tbody>
-                            <tr style="height:1px">
-                        
-                                <div style="color: #1a73e8;font-size: 14px;font-weight: 500;line-height: 20px;">感叹词</div>
-                                <th style="white-space: nowrap;vertical-align: top;">
-                                    <div style="margin-top: 4px;">
-                                        <span style="cursor: pointer;line-height: 24px;">你好！</span>
-                                        
-                                    </div>
-                                </th>
-                                <td style="color: #5f6368;width: 100%;vertical-align: top;">
-                                    <ul role="list" style="direction: ltr;margin: 4px 8px 4px 12px;">
-                                        <li style="display:inline">
-                                            <span class="defexmword">Hello!</span>
-                                        </li>
-                                        <li style="display:inline">
-                                            <span class="defexmword">hola!</span>
-                                        </li>
-                                    </ul>
-                                </td>
-                                <td style="white-space: nowrap;vertical-align: top;">
-                                    <span style="padding: 12px 0;display: inline-flex;">
-                                        <div class="freqDot"></div>
-                                        <div class="freqDot"></div>
-                                        <div class="freqDot_gray"></div>
-                                    </span>
-                                </td>
-                            </tr>
-                            
-                        </tbody>
-                    </table>
                 </div>
                 </div>
-                <div class="defTrans">
+                <div id="TransContainer" style="display:none" class="defTrans">
                     <h3 style="font: inherit;color:#5f6368;font-family: 'Google Sans',sans-serif;padding-bottom: 20px;">
-                        <span style="color:#222">hello</span> 的定义
-                    </h3>
-
-                    <!-- 词性组 -->
-                    <div style="display: flex;padding-bottom: 12px;">
-                        <div style="color: #1a73e8;font-size: 14px;font-weight: 500;line-height: 20px;">
-                            惊叹词
-                        </div>
-                    </div>
-                    <!-- 分项解释 -->
-                    <div style="display: flex;margin-bottom: 12px;">
-                        <div style="flex:0 0 56px;">
-                            <div class="defnum">
-                                1
-                            </div>
-                        </div>
-                        <div style="flex-grow: 1;word-break: break-word;">
-                            <div>wowowowowowowowowowowowowowowow</div>
-                            <div class="defsub">dsaddsadsadas</div>
-                        </div>
-                    </div>
-                    <!-- 分项解释结束 -->
-                    <!-- 词性组结束 -->
-
-                    
+                        <span id="transspan" style="color:#222"></span> 的定义
+                    </h3> 
+                    <div id="transList"></div>
                 </div>
-                <div class="defTrans">
+                <div id="exampleContainer" style="display:none" class="defTrans">
                     <h3 style="font: inherit;color:#5f6368;font-family: 'Google Sans',sans-serif;padding-bottom: 20px;">
-                        <span style="color:#222">hello</span> 的示例
+                        <span id="exspan" style="color:#222"></span> 的示例
                     </h3>
-                    <div style="margin: 8px 0;">
-                        <b>Hello!</b> my name is lgyaaaaaaaaaaaaaaaaaaaaaaaaaaa
-                    </div>
-                    <div style="margin: 8px 0;">
-                        <b>Hello!</b> my name is lgy
-                    </div>
+                    <div id="exampleList"></div>
                 </div>
             </div>
         </div>

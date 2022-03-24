@@ -16,10 +16,16 @@ export function activate(saltdog: any) {
                 (e: any) => {
                     pdfView.getSelectText({}, (txt: any) => {
                         console.log('Get Select Text!', txt);
+                        if(txt.trim().length==0) return;
                         const text = normalizeAppend(txt);
+                        saltdog.send('translate_getText',txt);
                         if (text && text.trim().length != 0)
                             google_translate(text).then((res) => {
-                                saltdog.send('translate_result', res);
+                                if(!res||res.error){
+                                    saltdog.send('translate_error',res.error);
+                                }else{
+                                    saltdog.send('translate_result', res);
+                                }
                             });
                     });
                 },

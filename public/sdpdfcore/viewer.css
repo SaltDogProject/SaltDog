@@ -169,6 +169,7 @@
 * {
   padding: 0;
   margin: 0;
+  transition: background-color .25s ease;
 }
 
 html {
@@ -291,7 +292,7 @@ html[dir="rtl"] #sidebarContent {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   position: absolute;
-  top: 36px;
+  top: 82px;
   right: 0;
   bottom: 0;
   left: 0;
@@ -371,6 +372,7 @@ html[dir="rtl"] #sidebarResizer {
 
 #toolbarViewer {
   height: 32px;
+  margin:5px;
 }
 
 #loadingBar {
@@ -581,13 +583,7 @@ html[dir="rtl"] .secondaryToolbar {
   left: 4px;
 }
 
-#secondaryToolbarButtonContainer {
-  max-width: 220px;
-  max-height: 400px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  margin-bottom: -4px;
-}
+
 
 .doorHanger,
 .doorHangerRight {
@@ -1872,7 +1868,6 @@ html[dir="rtl"] .treeItemToggler::before {
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background-color: #adb5bd;
-  background-color: var(--scrollbar-color);
   border-top: 2px solid transparent;
 }
 ::-webkit-scrollbar-track {
@@ -1922,13 +1917,12 @@ html[dir="rtl"] .treeItemToggler::before {
   overflow: auto;
 }
 .Header {
-  height: 52px;
   width: 100%;
   box-sizing: content-box !important;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 36px;
+  height: 42px;
   background: #f8f9fa;
   z-index: 71;
 }
@@ -1972,7 +1966,8 @@ html[dir="rtl"] .treeItemToggler::before {
   color: #868e96;
 }
 .HeaderItems .divider {
-  margin-left: 0;
+  margin-left: 16px;
+  margin-right: 16px;
   width: 1px;
   height: 20px;
   margin: 0 6px;
@@ -2160,6 +2155,9 @@ html[dir="rtl"] .treeItemToggler::before {
 .FlyoutMenu .divider {
   margin: 8px;
 }
+.FlyoutMenu .row:hover {
+  background: #e7edf3;
+}
 .FlyoutMenu .divider,
 .FlyoutMenu .dividerSmall {
   height: 1px;
@@ -2173,7 +2171,7 @@ html[dir="rtl"] .treeItemToggler::before {
   margin-left: 4px;
 }
 .FlyoutMenu .row {
-  width: 100%;
+  width: calc(100% - 12px - 18px);
   margin: 2px 0;
   height: 32px;
   display: flex;
@@ -2181,6 +2179,9 @@ html[dir="rtl"] .treeItemToggler::before {
   padding-left: 12px;
   padding-right: 18px;
   cursor: pointer;
+}
+.cls-1 {
+  fill: currentColor;
 }
 .closed.FlyoutMenu {
   visibility: hidden;
@@ -2326,4 +2327,150 @@ width: 16px;
   top: 12px;
   right: 15px;
   cursor: pointer;
+}
+.HeaderToolsContainer {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  z-index: 70;
+  height: 40px;
+}
+.Header.Tools {
+  background: #e7ebee;
+  height: 40px;
+}
+.HeaderItems .spacer {
+  flex: 1;
+  height: 100%;
+}
+.tool-group-buttons-container {
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.tool-group-buttons-scroll {
+  display: flex;
+  overflow: auto;
+  scroll-behavior: smooth;
+  height: 100%;
+  align-items: center;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.tool-group-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.tool-group-buttons-scroll :last-child {
+  margin-right: 0;
+}
+
+.ToolsOverlayContainer {
+  margin-right: 12px;
+}
+.ToolsOverlay {
+  box-shadow: none;
+  padding: 0;
+  flex-wrap: nowrap;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  position: relative;
+  border-radius: 4px 4px 0 0;
+  height: 32px;
+  align-items: center;
+  width: 220px;
+  z-index:95;
+}
+.ToolsOverlay .tools-container {
+  border-radius: 4px;
+  background: #f8f9fa;
+  height: 100%;
+}
+.ToolsOverlay .no-presets, .ToolsOverlay .tools-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.ToolsOverlay .no-presets, .ToolsOverlay .tools-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.ToolsOverlay .no-presets {
+  color: #adb5bd;
+}
+.Button.disabled {
+  background: none!important;
+  cursor: default;
+}
+.HeaderItems>.Button, .HeaderItems>.toggle-element-button {
+  margin: 0 6px;
+}
+.HeaderItems .tool-group-button, .HeaderItems>.Button {
+  width: 32px;
+  height: 32px;
+}
+
+.Button.disabled .Icon, .Button.disabled span {
+  color: #cfd4da;
+}
+.Icon.disabled, .Icon.disabled path {
+  fill: #cfd4da;
+}
+.custom-ribbons-container .ribbons-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.custom-ribbons-container .ribbons-container .ribbons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e7ebee;
+  border-radius: 4px;
+  height: 28px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+html:not([data-tabbing=true]) .custom-ribbons-container .ribbons-container .ribbons .ribbon-group {
+  outline: none;
+}
+.custom-ribbons-container .ribbons-container .ribbons .ribbon-group {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  margin: 0 22px;
+  cursor: pointer;
+  color: var(--faded-text);
+  white-space: nowrap;
+}
+.custom-ribbons-container .ribbons-container .ribbons .ribbon-group.active {
+  color: #3183c8;
+}
+.HeaderItems .Button:not(.disabled).active {
+  border-radius: 4px;
+  background: #c7d2dd;
+}
+
+.Button.active path[fill=default] {
+  fill: #485056
+}
+.AnnotationBtns .Icon {
+  color:#abb0c4;
 }

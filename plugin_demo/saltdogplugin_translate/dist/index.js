@@ -14,10 +14,18 @@ function activate(saltdog) {
             pdfView.content.addEventListener('body', 'mouseup', (e) => {
                 pdfView.getSelectText({}, (txt) => {
                     console.log('Get Select Text!', txt);
+                    if (txt.trim().length == 0)
+                        return;
                     const text = (0, formatter_js_1.normalizeAppend)(txt);
+                    saltdog.send('translate_getText', txt);
                     if (text && text.trim().length != 0)
                         (0, google_translate_js_1.google_translate)(text).then((res) => {
-                            saltdog.send('translate_result', res);
+                            if (!res || res.error) {
+                                saltdog.send('translate_error', res.error);
+                            }
+                            else {
+                                saltdog.send('translate_result', res);
+                            }
                         });
                 });
             }, true);

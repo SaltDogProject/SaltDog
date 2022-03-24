@@ -9,3 +9,33 @@ body {
     overflow-x: hidden;
     word-wrap: break-word;
 }
+
+/* 滚动条 */
+*::-webkit-scrollbar{
+    width: 4px;
+    height: 4px;
+  }
+   
+  *::-webkit-scrollbar-thumb{
+    background: #aaaaaa;
+    border-radius: 4px;
+    cursor:pointer;
+  }
+  
+  *::-webkit-scrollbar-thumb:hover{
+    opacity: 1;
+    display: block!important;
+  }
+  
+  *::-webkit-scrollbar-track{
+    background-color: transparent;
+  }
+  .hideScroll::-webkit-scrollbar-thumb{
+    display:none;
+  }
+  .showScroll::-webkit-scrollbar-thumb{
+    display:block; 
+  }
+  html {
+    overflow-y: overlay;
+  }

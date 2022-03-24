@@ -11,8 +11,12 @@ exec(buildCmd, function (error, stdout, stderr) {
     }
     console.log('[Build-SDPDFCore]: ' + stdout);
     copyFolder('../third_party/SDPDFCore/dist', '../public/SDPDFCore');
+    fs.unlinkSync(path.join(__dirname,'../public/sdpdfcore/viewer.css'));
+    // 主css
+    fs.copyFileSync(path.join(__dirname,'../third_party/SDPDFCore/public/viewer.css'), path.join(__dirname,'../public/sdpdfcore/viewer.css'));
     console.log('[Build-SDPDFCore] Success');
 });
+
 
 function copyFolder(copiedPath, resultPath, direct) {
     if (!direct) {

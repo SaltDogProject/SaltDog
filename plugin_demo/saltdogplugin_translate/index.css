@@ -28,12 +28,11 @@
 }
 .srcText{
     padding:16px;
-    padding-right:50px;
     display:flex;
 }
 .srcText>textarea {
     direction: ltr;
-    font-size: 23px;
+    font-size: 15px;
     background: transparent;
     border: none;
     color: #3c4043;
@@ -46,6 +45,7 @@
     min-height: 49px;
     width: 100%;
     z-index: 1;
+    line-height: 20px;
 }
 .srcText>textarea:focus {
     outline:none;
@@ -119,9 +119,8 @@
     color: #fff;
     direction: ltr;
     padding: 16px;
-    padding-right: 48px;
-    font-size: 23px;
-    line-height: 27px;
+    font-size: 15px;
+    line-height: 20px;
 }
 .defContainer{
     background: transparent;
@@ -194,3 +193,49 @@ ol, ul {
     font-size: 14px;
     margin-top: 4px;
 }
+
+i.loading {
+    height: 1em;
+    width: 1em;
+    border-radius: 100%;
+    background: #fff;
+    display: block;
+    margin: 1em auto;
+    position: relative;
+    /* left: 50%; */
+    /* top: 90px; */
+    margin-top: 40px;
+    margin-bottom: 10px;
+    animation: spin 2s ease infinite;
+  }
+  i.loading:before, i.loading:after {
+    content: '';
+    display: block;
+    position: absolute;
+    height: inherit;
+    width: inherit;
+    background: inherit;
+    border-radius: inherit;
+    animation: spin 2s ease infinite;
+  }
+  i.loading:before {
+    left: -1.15em;
+  }
+  i.loading:after {
+    left: 1.15em;
+  }
+  
+  @keyframes spin {
+    0% {
+      top: 0;
+      transform: rotate(0deg);
+    }
+    50% {
+      top: -2em;
+      transform: rotate(-180deg);
+    }
+    100% {
+      top: 0;
+      transform: rotate(-360deg);
+    }
+  }

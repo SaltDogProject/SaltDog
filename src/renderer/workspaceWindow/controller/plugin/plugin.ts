@@ -178,6 +178,18 @@ class SaltDogPlugin {
                 // 避免结构化克隆报错，加;0
                 ;0
             `);
+            const jsPath = path
+            .normalize(__static + '/preloads/pluginWebviewPreload/sidebar.js')
+            .replaceAll('\\', '/');
+            console.log('Inject JS', jsPath);
+            webview.executeJavaScript(`
+                const js=document.createElement('script');
+                js.src='${jsPath}';
+                document.head.appendChild(js);
+                // 避免结构化克隆报错，加;0
+                ;0
+            `);
+
             const viewInfo = this._sidebarViews.value.filter((v: any) => {
                 return (v.uuid = viewUUID);
             })[0];

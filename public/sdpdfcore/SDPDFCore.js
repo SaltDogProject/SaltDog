@@ -6870,6 +6870,353 @@
 
 /***/ }),
 
+/***/ "./node_modules/eventemitter3/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/eventemitter3/index.js ***!
+  \*********************************************/
+/***/ (function(module) {
+
+"use strict";
+
+
+var has = Object.prototype.hasOwnProperty
+  , prefix = '~';
+
+/**
+ * Constructor to create a storage for our `EE` objects.
+ * An `Events` instance is a plain object whose properties are event names.
+ *
+ * @constructor
+ * @private
+ */
+function Events() {}
+
+//
+// We try to not inherit from `Object.prototype`. In some engines creating an
+// instance in this way is faster than calling `Object.create(null)` directly.
+// If `Object.create(null)` is not supported we prefix the event names with a
+// character to make sure that the built-in object properties are not
+// overridden or used as an attack vector.
+//
+if (Object.create) {
+  Events.prototype = Object.create(null);
+
+  //
+  // This hack is needed because the `__proto__` property is still inherited in
+  // some old browsers like Android 4, iPhone 5.1, Opera 11 and Safari 5.
+  //
+  if (!new Events().__proto__) prefix = false;
+}
+
+/**
+ * Representation of a single event listener.
+ *
+ * @param {Function} fn The listener function.
+ * @param {*} context The context to invoke the listener with.
+ * @param {Boolean} [once=false] Specify if the listener is a one-time listener.
+ * @constructor
+ * @private
+ */
+function EE(fn, context, once) {
+  this.fn = fn;
+  this.context = context;
+  this.once = once || false;
+}
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} context The context to invoke the listener with.
+ * @param {Boolean} once Specify if the listener is a one-time listener.
+ * @returns {EventEmitter}
+ * @private
+ */
+function addListener(emitter, event, fn, context, once) {
+  if (typeof fn !== 'function') {
+    throw new TypeError('The listener must be a function');
+  }
+
+  var listener = new EE(fn, context || emitter, once)
+    , evt = prefix ? prefix + event : event;
+
+  if (!emitter._events[evt]) emitter._events[evt] = listener, emitter._eventsCount++;
+  else if (!emitter._events[evt].fn) emitter._events[evt].push(listener);
+  else emitter._events[evt] = [emitter._events[evt], listener];
+
+  return emitter;
+}
+
+/**
+ * Clear event by name.
+ *
+ * @param {EventEmitter} emitter Reference to the `EventEmitter` instance.
+ * @param {(String|Symbol)} evt The Event name.
+ * @private
+ */
+function clearEvent(emitter, evt) {
+  if (--emitter._eventsCount === 0) emitter._events = new Events();
+  else delete emitter._events[evt];
+}
+
+/**
+ * Minimal `EventEmitter` interface that is molded against the Node.js
+ * `EventEmitter` interface.
+ *
+ * @constructor
+ * @public
+ */
+function EventEmitter() {
+  this._events = new Events();
+  this._eventsCount = 0;
+}
+
+/**
+ * Return an array listing the events for which the emitter has registered
+ * listeners.
+ *
+ * @returns {Array}
+ * @public
+ */
+EventEmitter.prototype.eventNames = function eventNames() {
+  var names = []
+    , events
+    , name;
+
+  if (this._eventsCount === 0) return names;
+
+  for (name in (events = this._events)) {
+    if (has.call(events, name)) names.push(prefix ? name.slice(1) : name);
+  }
+
+  if (Object.getOwnPropertySymbols) {
+    return names.concat(Object.getOwnPropertySymbols(events));
+  }
+
+  return names;
+};
+
+/**
+ * Return the listeners registered for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Array} The registered listeners.
+ * @public
+ */
+EventEmitter.prototype.listeners = function listeners(event) {
+  var evt = prefix ? prefix + event : event
+    , handlers = this._events[evt];
+
+  if (!handlers) return [];
+  if (handlers.fn) return [handlers.fn];
+
+  for (var i = 0, l = handlers.length, ee = new Array(l); i < l; i++) {
+    ee[i] = handlers[i].fn;
+  }
+
+  return ee;
+};
+
+/**
+ * Return the number of listeners listening to a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Number} The number of listeners.
+ * @public
+ */
+EventEmitter.prototype.listenerCount = function listenerCount(event) {
+  var evt = prefix ? prefix + event : event
+    , listeners = this._events[evt];
+
+  if (!listeners) return 0;
+  if (listeners.fn) return 1;
+  return listeners.length;
+};
+
+/**
+ * Calls each of the listeners registered for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @returns {Boolean} `true` if the event had listeners, else `false`.
+ * @public
+ */
+EventEmitter.prototype.emit = function emit(event, a1, a2, a3, a4, a5) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return false;
+
+  var listeners = this._events[evt]
+    , len = arguments.length
+    , args
+    , i;
+
+  if (listeners.fn) {
+    if (listeners.once) this.removeListener(event, listeners.fn, undefined, true);
+
+    switch (len) {
+      case 1: return listeners.fn.call(listeners.context), true;
+      case 2: return listeners.fn.call(listeners.context, a1), true;
+      case 3: return listeners.fn.call(listeners.context, a1, a2), true;
+      case 4: return listeners.fn.call(listeners.context, a1, a2, a3), true;
+      case 5: return listeners.fn.call(listeners.context, a1, a2, a3, a4), true;
+      case 6: return listeners.fn.call(listeners.context, a1, a2, a3, a4, a5), true;
+    }
+
+    for (i = 1, args = new Array(len -1); i < len; i++) {
+      args[i - 1] = arguments[i];
+    }
+
+    listeners.fn.apply(listeners.context, args);
+  } else {
+    var length = listeners.length
+      , j;
+
+    for (i = 0; i < length; i++) {
+      if (listeners[i].once) this.removeListener(event, listeners[i].fn, undefined, true);
+
+      switch (len) {
+        case 1: listeners[i].fn.call(listeners[i].context); break;
+        case 2: listeners[i].fn.call(listeners[i].context, a1); break;
+        case 3: listeners[i].fn.call(listeners[i].context, a1, a2); break;
+        case 4: listeners[i].fn.call(listeners[i].context, a1, a2, a3); break;
+        default:
+          if (!args) for (j = 1, args = new Array(len -1); j < len; j++) {
+            args[j - 1] = arguments[j];
+          }
+
+          listeners[i].fn.apply(listeners[i].context, args);
+      }
+    }
+  }
+
+  return true;
+};
+
+/**
+ * Add a listener for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.on = function on(event, fn, context) {
+  return addListener(this, event, fn, context, false);
+};
+
+/**
+ * Add a one-time listener for a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn The listener function.
+ * @param {*} [context=this] The context to invoke the listener with.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.once = function once(event, fn, context) {
+  return addListener(this, event, fn, context, true);
+};
+
+/**
+ * Remove the listeners of a given event.
+ *
+ * @param {(String|Symbol)} event The event name.
+ * @param {Function} fn Only remove the listeners that match this function.
+ * @param {*} context Only remove the listeners that have this context.
+ * @param {Boolean} once Only remove one-time listeners.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.removeListener = function removeListener(event, fn, context, once) {
+  var evt = prefix ? prefix + event : event;
+
+  if (!this._events[evt]) return this;
+  if (!fn) {
+    clearEvent(this, evt);
+    return this;
+  }
+
+  var listeners = this._events[evt];
+
+  if (listeners.fn) {
+    if (
+      listeners.fn === fn &&
+      (!once || listeners.once) &&
+      (!context || listeners.context === context)
+    ) {
+      clearEvent(this, evt);
+    }
+  } else {
+    for (var i = 0, events = [], length = listeners.length; i < length; i++) {
+      if (
+        listeners[i].fn !== fn ||
+        (once && !listeners[i].once) ||
+        (context && listeners[i].context !== context)
+      ) {
+        events.push(listeners[i]);
+      }
+    }
+
+    //
+    // Reset the array, or remove it completely if we have no more listeners.
+    //
+    if (events.length) this._events[evt] = events.length === 1 ? events[0] : events;
+    else clearEvent(this, evt);
+  }
+
+  return this;
+};
+
+/**
+ * Remove all listeners, or those of the specified event.
+ *
+ * @param {(String|Symbol)} [event] The event name.
+ * @returns {EventEmitter} `this`.
+ * @public
+ */
+EventEmitter.prototype.removeAllListeners = function removeAllListeners(event) {
+  var evt;
+
+  if (event) {
+    evt = prefix ? prefix + event : event;
+    if (this._events[evt]) clearEvent(this, evt);
+  } else {
+    this._events = new Events();
+    this._eventsCount = 0;
+  }
+
+  return this;
+};
+
+//
+// Alias methods names because people roll like that.
+//
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+//
+// Expose the prefix.
+//
+EventEmitter.prefixed = prefix;
+
+//
+// Allow `EventEmitter` to be imported as module namespace.
+//
+EventEmitter.EventEmitter = EventEmitter;
+
+//
+// Expose the module.
+//
+if (true) {
+  module.exports = EventEmitter;
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/pako/index.js":
 /*!************************************!*\
   !*** ./node_modules/pako/index.js ***!
@@ -37731,7 +38078,8 @@ class AnnotateController{
 
         this.AnnotationFactory = new AnnotationFactory(data,up,op);
         PDFViewerApplication.pdfAnnotator = this.AnnotationFactory;
-        this._init();
+        // 暂时禁用这部分代码，专注于onlineAnnotation
+        // this._init();
     }
     getSelectionObject(r){
         const outBounding = JSON.parse(JSON.stringify(r.getRangeAt(0).getBoundingClientRect())); // deep copy
@@ -37743,7 +38091,7 @@ class AnnotateController{
                 innerBounding:null
             }
         }
-        console.log('Select Node',contentNode)
+        //console.log('Select Node',contentNode)
         for(let nodeIndex in contentNode){
             if(contentNode[nodeIndex].tagName!='SPAN') continue;
             let basePos = JSON.parse(JSON.stringify(document.querySelector(`span[style='${contentNode[nodeIndex].getAttribute('style')}']`).getBoundingClientRect()));
@@ -37799,10 +38147,10 @@ class AnnotateController{
                 innerBounding.push(this.selectionCoordinates(basePos,true));
             }
         }
-        console.log(`Results `,{
-            outBounding,
-            innerBounding
-        })
+        // console.log(`Results `,{
+        //     outBounding,
+        //     innerBounding
+        // })
         return {
             outBounding,
             innerBounding
@@ -37844,7 +38192,7 @@ class AnnotateController{
             that._lastMouseDown = {x:e.x,y:e.y};
         })
         const {annotationButton} = this.PDFViewerApplication.appConfig;
-        console.log(annotationButton);
+        //console.log(annotationButton);
         if(annotationButton.highLightAnnotation){
             annotationButton.highLightAnnotation.addEventListener('click',this._doHighLightAnnotation)
         }
@@ -37870,14 +38218,14 @@ class AnnotateController{
         this.annotateTip=outer;
         document.body.appendChild(outer);
         document.getElementById('highLightHere').addEventListener('click',()=>{
-            console.log("highLight!",this._lastSelection);
+            //console.log("highLight!",this._lastSelection);
             this._doHighLightAnnotation(this._lastSelection);
             this._removeAnnotateTip();
         },true);
         return outer;
     }
     computePageOffset() {
-        console.log("compute Offset Page",this.pdfViewer.currentPageNumber);
+        //console.log("compute Offset Page",this.pdfViewer.currentPageNumber);
         
         // 获取相对坐标
         let pg = document.querySelector(`.page[data-page-number="${this.pdfViewer.currentPageNumber}"]`).getElementsByTagName('canvas')[0];
@@ -37920,7 +38268,7 @@ class AnnotateController{
         
 }
     _doHighLightAnnotation(selection){
-        console.log("Request HighLight",selection);
+        //console.log("Request HighLight",selection);
 
         this.AnnotationFactory.createHighlightAnnotation({
             page: this.pdfViewer.currentPageNumber - 1,
@@ -37994,6 +38342,7 @@ class AnnotationLayerBuilder {
   this._mouseState = mouseState;
   this._annotationCanvasMap = annotationCanvasMap;
   this.div = null;
+  this.onlineSvg =null;
   this._cancelled = false;
  }
  async render(viewport, intent = "display") {
@@ -38002,7 +38351,7 @@ class AnnotationLayerBuilder {
    this._hasJSActionsPromise,
    this._fieldObjectsPromise
   ]);
-  if (this._cancelled || annotations.length === 0) {
+  if (this._cancelled){//|| annotations.length === 0) {
    return;
   }
   const parameters = {
@@ -38031,6 +38380,16 @@ class AnnotationLayerBuilder {
    AnnotationLayer.render(parameters);
    this.l10n.translate(this.div);
   }
+       // 巨坑SVG要用NS创建
+    this.onlineSvg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+    this.onlineSvg.setAttribute("class","onlineAnnotationLayer");
+    this.onlineSvg.setAttribute("version","1.1");
+    this.onlineSvg.setAttribute("x","0");
+    this.onlineSvg.setAttribute("y","0");
+    this.onlineSvg.style.position = 'absolute';
+    this.onlineSvg.style.top = '0';
+    this.onlineSvg.style.display = 'block';
+    this.pageDiv.insertBefore(this.onlineSvg,this.pageDiv.children[1]);
  }
  cancel() {
   this._cancelled = true;
@@ -38196,7 +38555,8 @@ class DefaultExternalServices {
   throw new Error("Not implemented: createScripting");
  }
  static get supportsIntegratedFind() {
-  return shadow(this, "supportsIntegratedFind", false);
+   // sdpdfcore disable intergrated find
+  return shadow(this, "supportsIntegratedFind", true);
  }
  static get supportsDocumentFonts() {
   return shadow(this, "supportsDocumentFonts", true);
@@ -38508,7 +38868,7 @@ const PDFViewerApplication = {
   this.initialize(config).then(()=>{
     webViewerInitialized();
     // debuglgy
-    __sdJSBridge.publish(`SDPDFCore_Ready`);
+    window.__sdJSBridge&&window.__sdJSBridge.publish(`SDPDFCore_Ready`);
     this.eventBus.on('SDPDFCore_loadPDF',()=>{
       webViewerInitialized();
     })
@@ -38712,6 +39072,8 @@ const PDFViewerApplication = {
   loadingTask.onUnsupportedFeature = this.fallback.bind(this);
   return loadingTask.promise.then(pdfDocument => {
    this.load(pdfDocument);
+   // 注入在线批注模块
+   window.__initPDFJSAnnotate&&window.__initPDFJSAnnotate(pdfDocument);
    // sdpdfcore 加入实例化批注模块 TODO: 密码
    pdfDocument.getData().then( (data) => {
     PDFViewerApplication.pdfAnnotateController = new AnnotateController(PDFViewerApplication,data);
@@ -40380,7 +40742,7 @@ const defaultOptions = {
   kind: OptionKind.VIEWER
  },
  renderer: {
-  value: "canvas",
+  value: "canvas", // sdpdfcore pdfjsannotation
   kind: OptionKind.VIEWER
  },
  sidebarViewOnLoad: {
@@ -42321,6 +42683,5227 @@ const NullL10n = {
 
 /***/ }),
 
+/***/ "./src/online_annotate.js":
+/*!********************************!*\
+  !*** ./src/online_annotate.js ***!
+  \********************************/
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+const PDFJSAnnotate = (__webpack_require__(/*! ./online_annotate/PDFJSAnnotate.js */ "./src/online_annotate/PDFJSAnnotate.js")["default"]);
+const initColorPicker = (__webpack_require__(/*! ./online_annotate/initColorPicker */ "./src/online_annotate/initColorPicker.js")["default"]);
+
+function initOnlineAnnotation(){
+window.PDFJSAnnotate = PDFJSAnnotate;
+function htmlEscape(text) {
+    return text
+      .replace('&', '&amp;')
+      .replace('>', '&gt;')
+      .replace('<', '&lt;')
+      .replace('"', '&quot;')
+      .replace("'", '&#39;');
+  }
+  
+  const { UI } = PDFJSAnnotate;
+  // FIXME: docid;
+  const documentId = 'example.pdf';
+  window._PAGE_HEIGHT;
+  window._RENDER_OPTIONS = {
+    documentId: documentId,
+    pdfDocument: null,
+    scale: 1,
+    rotate: 0
+  };
+  
+  PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
+  // Render stuff
+  let NUM_PAGES = 0;
+  function setScaleRotate(scale, rotate) {
+    scale = parseFloat(scale, 10);
+    rotate = parseInt(rotate, 10);
+  
+    if (window._RENDER_OPTIONS.scale !== scale || window._RENDER_OPTIONS.rotate !== rotate) {
+      window._RENDER_OPTIONS.scale = scale;
+      window._RENDER_OPTIONS.rotate = rotate;
+    }
+  }
+  
+  function handleScaleChange(scale) {
+    setScaleRotate(scale, window._RENDER_OPTIONS.rotate);
+  }
+  
+  function handleRotateCWClick() {
+    setScaleRotate(window._RENDER_OPTIONS.scale, window._RENDER_OPTIONS.rotate + 90);
+  }
+  
+  function handleRotateCCWClick() {
+    setScaleRotate(window._RENDER_OPTIONS.scale, window._RENDER_OPTIONS.rotate - 90);
+  }
+  
+  
+  window.__initPDFJSAnnotate = function(pdfDocument){
+    window._RENDER_OPTIONS.pdfDocument = pdfDocument;
+  
+    // window._RENDER_OPTIONS.scale = window.PDFViewerApplication.pdfViewer._currentScale || 1;
+    // window._RENDER_OPTIONS.rotate = window.PDFViewerApplication.pdfViewer._pagesRotation || 0;
+    window.PDFViewerApplication.eventBus._on('scalechanging',(e)=>{
+      handleScaleChange(e.scale);
+    })
+    window.PDFViewerApplication.eventBus._on('rotatecw',(e)=>{
+      handleRotateCWClick();
+    })
+    window.PDFViewerApplication.eventBus._on('rotateccw',(e)=>{
+      handleRotateCCWClick();
+    })
+      // let viewer = document.getElementById('viewer');
+      // viewer.innerHTML = '';
+      NUM_PAGES = pdfDocument.numPages;
+      // for (let i = 0; i < NUM_PAGES; i++) {
+      //   // let page = UI.createPage(i + 1);
+      //   viewer.appendChild(page);
+      // }
+  };
+  // Hotspot color stuff
+  (function() {
+    let hotspotColor = localStorage.getItem(`${window._RENDER_OPTIONS.documentId}/hotspot/color`) || 'darkgoldenrod';
+    let currentTarget;
+  
+    function handleAnnotationClick(target) {
+      let type = target.getAttribute('data-pdf-annotate-type');
+      if (['fillcircle', 'arrow'].indexOf(type) === -1) {
+        return; // nothing to do
+      }
+      currentTarget = target;
+      hotspotColor = currentTarget.getAttribute('stroke');
+  
+      UI.setArrow(10, hotspotColor);
+      UI.setCircle(10, hotspotColor);
+  
+      let a = document.querySelector('.hotspot-color .color');
+      if (a) {
+        a.setAttribute('data-color', hotspotColor);
+        a.style.background = hotspotColor;
+      }
+    }
+  
+    function handleAnnotationBlur(target) {
+      if (currentTarget === target) {
+        currentTarget = undefined;
+      }
+    }
+  
+    // initColorPicker(document.querySelector('.hotspot-color'), hotspotColor, function(value) {
+    //   if (value === hotspotColor) {
+    //     return; // nothing to do
+    //   }
+    //   localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/hotspot/color`, value);
+    //   hotspotColor = value;
+  
+    //   UI.setArrow(10, hotspotColor);
+    //   UI.setCircle(10, hotspotColor);
+  
+    //   if (!currentTarget) {
+    //     return; // nothing to do
+    //   }
+  
+    //   let type = currentTarget.getAttribute('data-pdf-annotate-type');
+    //   let annotationId = currentTarget.getAttribute('data-pdf-annotate-id');
+    //   if (['fillcircle', 'arrow'].indexOf(type) === -1) {
+    //     return; // nothing to do
+    //   }
+  
+    //   // update target
+    //   currentTarget.setAttribute('stroke', hotspotColor);
+    //   currentTarget.setAttribute('fill', hotspotColor);
+  
+    //   // update annotation
+    //   PDFJSAnnotate.getStoreAdapter().getAnnotation(documentId, annotationId).then((annotation) => {
+    //     annotation.color = hotspotColor;
+    //     PDFJSAnnotate.getStoreAdapter().editAnnotation(documentId, annotationId, annotation);
+    //   });
+    // });
+  
+    UI.addEventListener('annotation:click', handleAnnotationClick);
+    UI.addEventListener('annotation:blur', handleAnnotationBlur);
+  })();
+  
+  // // Text stuff
+  // (function() {
+  //   let textSize;
+  //   let textColor;
+  
+  //   function initText() {
+  //     // let size = document.querySelector('.AnnotationBtns .text-size');
+  //     // [8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96].forEach((s) => {
+  //     //   size.appendChild(new Option(s, s));
+  //     // });
+  //     // setText(
+  //     //   localStorage.getItem(`${window._RENDER_OPTIONS.documentId}/text/size`) || 10,
+  //     //   localStorage.getItem(`${window._RENDER_OPTIONS.documentId}/text/color`) || '#000000'
+  //     // );
+  
+  //     // initColorPicker(document.querySelector('.text-color'), textColor, function(value) {
+  //     //   setText(textSize, value);
+  //     // });
+  //   }
+  
+  //   function setText(size, color) {
+  //     let modified = false;
+  
+  //     if (textSize !== size) {
+  //       modified = true;
+  //       textSize = size;
+  //       localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/text/size`, textSize);
+        
+  //       document.querySelector('.AnnotationBtns .text-size').value = textSize;
+  //     }
+  
+  //     if (textColor !== color) {
+  //       modified = true;
+  //       textColor = color;
+  //       localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/text/color`, textColor);
+  
+  //       let selected = document.querySelector('.AnnotationBtns .text-color.color-selected');
+  //       if (selected) {
+  //         selected.classList.remove('color-selected');
+  //         selected.removeAttribute('aria-selected');
+  //       }
+  
+  //       selected = document.querySelector(`.AnnotationBtns .text-color[data-color="${color}"]`);
+  //       if (selected) {
+  //         selected.classList.add('color-selected');
+  //         selected.setAttribute('aria-selected', true);
+  //       }
+  //     }
+  
+  //     if (modified) {
+  //       UI.setText(textSize, textColor);
+  //     }
+  //   }
+  
+  //   function handleTextSizeChange(e) {
+  //     setText(e.target.value, textColor);
+  //   }
+  
+  //   //document.querySelector('.AnnotationBtns .text-size').addEventListener('change', handleTextSizeChange);
+  
+  //   initText();
+  // })();
+  
+  // Pen stuff
+  // (function() {
+  //   let penSize;
+  //   let penColor;
+  
+  //   function initPen() {
+  //     let size = document.querySelector('.AnnotationBtns .pen-size');
+  //     for (let i = 0; i < 20; i++) {
+  //       size.appendChild(new Option(i + 1, i + 1));
+  //     }
+  
+  //     setPen(
+  //       localStorage.getItem(`${window._RENDER_OPTIONS.documentId}/pen/size`) || 1,
+  //       localStorage.getItem(`${window._RENDER_OPTIONS.documentId}/pen/color`) || '#000000'
+  //     );
+  
+  //     initColorPicker(document.querySelector('.pen-color'), penColor, function(value) {
+  //       setPen(penSize, value);
+  //     });
+  //   }
+  
+  //   function setPen(size, color) {
+  //     let modified = false;
+  
+  //     if (penSize !== size) {
+  //       modified = true;
+  //       penSize = size;
+  //       localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/pen/size`, penSize);
+  //       document.querySelector('.AnnotationBtns .pen-size').value = penSize;
+  //     }
+  
+  //     if (penColor !== color) {
+  //       modified = true;
+  //       penColor = color;
+  //       localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/pen/color`, penColor);
+  
+  //       let selected = document.querySelector('.AnnotationBtns .pen-color.color-selected');
+  //       if (selected) {
+  //         selected.classList.remove('color-selected');
+  //         selected.removeAttribute('aria-selected');
+  //       }
+  
+  //       selected = document.querySelector(`.AnnotationBtns .pen-color[data-color="${color}"]`);
+  //       if (selected) {
+  //         selected.classList.add('color-selected');
+  //         selected.setAttribute('aria-selected', true);
+  //       }
+  //     }
+  
+  //     if (modified) {
+  //       UI.setPen(penSize, penColor);
+  //     }
+  //   }
+  
+  //   function handlePenSizeChange(e) {
+  //     setPen(e.target.value, penColor);
+  //   }
+  
+  //   //document.querySelector('.AnnotationBtns .pen-size').addEventListener('change', handlePenSizeChange);
+  
+  //   initPen();
+  // })();
+  
+  // Toolbar buttons
+(function(){
+    let tooltype = 'cursor';
+    setActiveToolbarItem(tooltype, document.querySelector(`.AnnotationBtns button[data-tooltype=${tooltype}]`));
+
+  
+    function setActiveToolbarItem(type, button) {
+      // 取消pdfjs的工具选择
+      if(type!='cursor'){
+      document.getElementById(`cursorSelectTool`).classList.remove(`active`);
+      document.getElementById(`cursorHandTool`).classList.remove(`active`);
+      }
+      let active = document.querySelector('.AnnotationBtns button.active');
+      if (active) {
+        active.classList.remove('active');
+        switch (tooltype) {
+          case 'cursor':
+            UI.disableEdit();
+            break;
+          case 'eraser':
+            UI.disableEraser();
+            break;
+          case 'draw':
+            UI.disablePen();
+            break;
+          case 'arrow':
+            UI.disableArrow();
+            break;
+          case 'text':
+            UI.disableText();
+            break;
+          case 'point':
+            UI.disablePoint();
+            break;
+          case 'area':
+          case 'highlight':
+          case 'strikeout':
+            case 'underline':
+            UI.disableRect();
+            break;
+          case 'circle':
+          case 'emptycircle':
+          case 'fillcircle':
+            UI.disableCircle();
+            break;
+        }
+      }
+      if(tooltype==type){
+        // 再次点击回归curser模式
+        tooltype='cursor';
+        UI.enableEdit();
+        return
+      }
+      if (button) {
+        button.classList.add('active');
+      }
+      if (tooltype !== type) {
+        localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/tooltype`, type);
+      }
+      tooltype = type;
+  
+      switch (type) {
+        case 'cursor':
+          UI.enableEdit();
+          break;
+        case 'eraser':
+          UI.enableEraser();
+          break;
+        case 'draw':
+          UI.enablePen();
+          break;
+        case 'arrow':
+          UI.enableArrow();
+          break;
+        case 'text':
+          UI.enableText();
+          break;
+        case 'point':
+          UI.enablePoint();
+          break;
+        case 'area':
+        case 'highlight':
+        case 'strikeout':
+          case 'underline':
+          UI.enableRect(type);
+          break;
+        case 'circle':
+        case 'emptycircle':
+        case 'fillcircle':
+          UI.enableCircle(type);
+          break;
+      }
+    }
+    window._setActiveToolbarItem = setActiveToolbarItem;
+    function handleToolbarClick(e) {
+      if (e.target.nodeName === 'BUTTON') {
+        setActiveToolbarItem(e.target.getAttribute('data-tooltype'), e.target);
+      }
+    }
+  
+    document.querySelector('.AnnotationBtns').addEventListener('click', handleToolbarClick);
+})();
+  
+  
+  
+  // Clear toolbar button
+  (function() {
+    function handleClearClick(e) {
+      if (confirm('Are you sure you want to clear annotations?')) {
+        for (let i = 0; i < NUM_PAGES; i++) {
+          document.querySelector(`div#page${i + 1} svg.onlineAnnotationLayer`).innerHTML = '';
+        }
+  
+        localStorage.removeItem(`${window._RENDER_OPTIONS.documentId}/annotations`);
+      }
+    }
+    //document.querySelector('a.clear').addEventListener('click', handleClearClick);
+  })();
+  
+  // Comment stuff
+//   (function(window, document) {
+//     let commentList = document.querySelector('#comment-wrapper .comment-list-container');
+//     let commentForm = document.querySelector('#comment-wrapper .comment-list-form');
+//     let commentText = commentForm.querySelector('input[type="text"]');
+  
+//     function supportsComments(target) {
+//       let type = target.getAttribute('data-pdf-annotate-type');
+//       return ['point', 'highlight', 'area'].indexOf(type) > -1;
+//     }
+  
+//     function insertComment(comment) {
+//       let child = document.createElement('div');
+//       child.className = 'comment-list-item';
+//       child.innerHTML = htmlEscape(comment.content);
+  
+//       commentList.appendChild(child);
+//     }
+  
+//     function handleAnnotationClick(target) {
+//       if (supportsComments(target)) {
+//         let documentId = target.parentNode.getAttribute('data-pdf-annotate-document');
+//         let annotationId = target.getAttribute('data-pdf-annotate-id');
+  
+//         PDFJSAnnotate.getStoreAdapter().getComments(documentId, annotationId).then((comments) => {
+//           commentList.innerHTML = '';
+//           commentForm.style.display = '';
+//           commentText.focus();
+  
+//           commentForm.onsubmit = function() {
+//             PDFJSAnnotate.getStoreAdapter().addComment(documentId, annotationId, commentText.value.trim())
+//               .then(insertComment)
+//               .then(() => {
+//                 commentText.value = '';
+//                 commentText.focus();
+//               });
+  
+//             return false;
+//           };
+  
+//           comments.forEach(insertComment);
+//         });
+//       }
+//     }
+  
+//     function handleAnnotationBlur(target) {
+//       if (supportsComments(target)) {
+//         commentList.innerHTML = '';
+//         commentForm.style.display = 'none';
+//         commentForm.onsubmit = null;
+  
+//         insertComment({content: 'No comments'});
+//       }
+//     }
+  
+//     UI.addEventListener('annotation:click', handleAnnotationClick);
+//     UI.addEventListener('annotation:blur', handleAnnotationBlur);
+  
+//     UI.setArrow(10, 'darkgoldenrod');
+//     UI.setCircle(10, 'darkgoldenrod');
+//   })(window, document);
+}
+
+
+module.exports = {initOnlineAnnotation}
+
+/***/ }),
+
+/***/ "./src/online_annotate/PDFJSAnnotate.js":
+/*!**********************************************!*\
+  !*** ./src/online_annotate/PDFJSAnnotate.js ***!
+  \**********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _adapter_StoreAdapter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./adapter/StoreAdapter */ "./src/online_annotate/adapter/StoreAdapter.js");
+/* harmony import */ var _adapter_LocalStoreAdapter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./adapter/LocalStoreAdapter */ "./src/online_annotate/adapter/LocalStoreAdapter.js");
+/* harmony import */ var _adapter_LocalUserStoreAdapter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./adapter/LocalUserStoreAdapter */ "./src/online_annotate/adapter/LocalUserStoreAdapter.js");
+/* harmony import */ var _render__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./render */ "./src/online_annotate/render/index.js");
+/* harmony import */ var _UI__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./UI */ "./src/online_annotate/UI/index.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./config */ "./src/online_annotate/config.js");
+/* harmony import */ var _utils_uuid__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./utils/uuid */ "./src/online_annotate/utils/uuid.js");
+/* harmony import */ var _UI_utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./UI/utils */ "./src/online_annotate/UI/utils.js");
+
+
+
+
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  findAnnotationAtPoint: _UI_utils__WEBPACK_IMPORTED_MODULE_7__.findAnnotationAtPoint,
+  findSVGContainer: _UI_utils__WEBPACK_IMPORTED_MODULE_7__.findSVGContainer,
+  convertToScreenPoint: _UI_utils__WEBPACK_IMPORTED_MODULE_7__.convertToScreenPoint,
+
+  /**
+   * Abstract class that needs to be defined so PDFJSAnnotate
+   * knows how to communicate with your server.
+   */
+  StoreAdapter: _adapter_StoreAdapter__WEBPACK_IMPORTED_MODULE_0__["default"],
+
+  /**
+   * Implementation of StoreAdapter that stores annotation data to localStorage.
+   */
+  LocalStoreAdapter: _adapter_LocalStoreAdapter__WEBPACK_IMPORTED_MODULE_1__["default"],
+
+  /**
+   * Implementation of StoreAdapter that stores annotation data to localStorage particular
+   * to a specific user
+   */
+  LocalUserStoreAdapter: _adapter_LocalUserStoreAdapter__WEBPACK_IMPORTED_MODULE_2__["default"],
+
+  /**
+   * Abstract instance of StoreAdapter
+   */
+  __storeAdapter: new _adapter_StoreAdapter__WEBPACK_IMPORTED_MODULE_0__["default"](),
+
+  /**
+   * Getter for the underlying StoreAdapter property
+   *
+   * @return {StoreAdapter}
+   */
+  getStoreAdapter() {
+    return this.__storeAdapter;
+  },
+
+  /**
+   * Setter for the underlying StoreAdapter property
+   *
+   * @param {StoreAdapter} adapter The StoreAdapter implementation to be used.
+   */
+  setStoreAdapter(adapter) {
+    // TODO this throws an error when bundled
+    // if (!(adapter instanceof StoreAdapter)) {
+    //   throw new Error('adapter must be an instance of StoreAdapter');
+    // }
+
+    this.__storeAdapter = adapter;
+  },
+
+  /**
+   * UI is a helper for instrumenting UI interactions for creating,
+   * editing, and deleting annotations in the browser.
+   */
+  UI: _UI__WEBPACK_IMPORTED_MODULE_4__["default"],
+
+  /**
+   * Render the annotations for a page in the PDF Document
+   *
+   * @param {SVGElement} svg The SVG element that annotations should be rendered to
+   * @param {PageViewport} viewport The PDFPage.getViewport data
+   * @param {Object} data The StoreAdapter.getAnnotations data
+   * @return {Promise}
+   */
+  render: _render__WEBPACK_IMPORTED_MODULE_3__["default"],
+
+  /**
+   * Convenience method for getting annotation data
+   *
+   * @alias StoreAdapter.getAnnotations
+   * @param {String} documentId The ID of the document
+   * @param {String} pageNumber The page number
+   * @return {Promise}
+   */
+  getAnnotations(documentId, pageNumber) {
+    return this.getStoreAdapter().getAnnotations(...arguments);
+  },
+
+  config: _config__WEBPACK_IMPORTED_MODULE_5__["default"],
+
+  uuid: _utils_uuid__WEBPACK_IMPORTED_MODULE_6__["default"]
+});
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/UI/arrow.js":
+/*!*****************************************!*\
+  !*** ./src/online_annotate/UI/arrow.js ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "setArrow": function() { return /* binding */ setArrow; },
+/* harmony export */   "enableArrow": function() { return /* binding */ enableArrow; },
+/* harmony export */   "disableArrow": function() { return /* binding */ disableArrow; }
+/* harmony export */ });
+/* harmony import */ var _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../PDFJSAnnotate */ "./src/online_annotate/PDFJSAnnotate.js");
+/* harmony import */ var _render_appendChild__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../render/appendChild */ "./src/online_annotate/render/appendChild.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/online_annotate/UI/utils.js");
+
+
+
+
+let _enabled = false;
+let _penSize;
+let _penColor;
+let path;
+let lines;
+let originY;
+let originX;
+
+/**
+ * Handle document.mousedown event
+ */
+function handleDocumentMousedown(e) {
+  if((0,_utils__WEBPACK_IMPORTED_MODULE_2__.hasButton)(e)) return;
+  let target = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.findAnnotationAtPoint)(e.clientX, e.clientY);
+  if (target === null) {
+    return;
+  }
+
+  let type = target.getAttribute('data-pdf-annotate-type');
+  if (type !== 'circle' && type !== 'fillcircle' && type !== 'emptycircle') {
+    return;
+  }
+
+  let svg = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGContainer)(target);
+  let { documentId } = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getMetadata)(svg);
+  let annotationId = target.getAttribute('data-pdf-annotate-id');
+
+  _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().getAnnotation(documentId, annotationId).then((annotation) => {
+    if (annotation) {
+      path = null;
+      lines = [];
+
+      let point = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.convertToScreenPoint)([
+        annotation.cx,
+        annotation.cy
+      ], svg);
+
+      let rect = svg.getBoundingClientRect();
+
+      originX = point[0] + rect.left;
+      originY = point[1] + rect.top;
+
+      document.addEventListener('mousemove', handleDocumentMousemove);
+      document.addEventListener('mouseup', handleDocumentMouseup);
+    }
+  });
+}
+
+/**
+ * Handle document.mouseup event
+ *
+ * @param {Event} e The DOM event to be handled
+ */
+function handleDocumentMouseup(e) {
+  if((0,_utils__WEBPACK_IMPORTED_MODULE_2__.hasButton)(e)) return;
+  let svg;
+  if (lines.length > 1 && (svg = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(e.clientX, e.clientY))) {
+    let { documentId, pageNumber } = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getMetadata)(svg);
+
+    _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().addAnnotation(documentId, pageNumber, {
+      type: 'arrow',
+      width: _penSize,
+      color: _penColor,
+      lines
+    }).then((annotation) => {
+      if (path) {
+        svg.removeChild(path);
+      }
+
+      (0,_render_appendChild__WEBPACK_IMPORTED_MODULE_1__.appendChild)(svg, annotation);
+    });
+  }
+
+  document.removeEventListener('mousemove', handleDocumentMousemove);
+  document.removeEventListener('mouseup', handleDocumentMouseup);
+}
+
+/**
+ * Handle document.mousemove event
+ *
+ * @param {Event} e The DOM event to be handled
+ */
+function handleDocumentMousemove(e) {
+  
+  let x = lines.length === 0 ? originX : e.clientX;
+  let y = lines.length === 0 ? originY : e.clientY;
+
+  savePoint(x, y);
+}
+
+/**
+ * Handle document.keyup event
+ *
+ * @param {Event} e The DOM event to be handled
+ */
+function handleDocumentKeyup(e) {
+  // Cancel rect if Esc is pressed
+  if (e.keyCode === 27) {
+    lines = null;
+    path.parentNode.removeChild(path);
+    document.removeEventListener('mousemove', handleDocumentMousemove);
+    document.removeEventListener('mouseup', handleDocumentMouseup);
+  }
+}
+
+/**
+ * Save a point to the line being drawn.
+ *
+ * @param {Number} x The x coordinate of the point
+ * @param {Number} y The y coordinate of the point
+ */
+function savePoint(x, y) {
+  let svg = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(x, y);
+  if (!svg) {
+    return;
+  }
+
+  let rect = svg.getBoundingClientRect();
+  let point = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.convertToSvgPoint)([
+    x - rect.left,
+    y - rect.top
+  ], svg);
+
+  if (lines.length < 2) {
+    lines.push(point);
+    return;
+  }
+  else {
+    lines[1] = point; // update end point
+  }
+
+  if (path) {
+    svg.removeChild(path);
+  }
+
+  path = (0,_render_appendChild__WEBPACK_IMPORTED_MODULE_1__.appendChild)(svg, {
+    type: 'arrow',
+    color: _penColor,
+    width: _penSize,
+    lines
+  });
+}
+
+/**
+ * Set the attributes of the pen.
+ *
+ * @param {Number} penSize The size of the lines drawn by the pen
+ * @param {String} penColor The color of the lines drawn by the pen
+ */
+function setArrow(penSize = 10, penColor = '0000FF') {
+  _penSize = parseInt(penSize, 10);
+  _penColor = penColor;
+}
+
+/**
+ * Enable the pen behavior
+ */
+function enableArrow() {
+  if (_enabled) { return; }
+
+  _enabled = true;
+  document.addEventListener('mousedown', handleDocumentMousedown);
+  document.addEventListener('keyup', handleDocumentKeyup);
+  (0,_utils__WEBPACK_IMPORTED_MODULE_2__.disableUserSelect)();
+}
+
+/**
+ * Disable the pen behavior
+ */
+function disableArrow() {
+  if (!_enabled) { return; }
+
+  _enabled = false;
+  document.removeEventListener('mousedown', handleDocumentMousedown);
+  document.removeEventListener('keyup', handleDocumentKeyup);
+  (0,_utils__WEBPACK_IMPORTED_MODULE_2__.enableUserSelect)();
+}
+
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/UI/circle.js":
+/*!******************************************!*\
+  !*** ./src/online_annotate/UI/circle.js ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "setCircle": function() { return /* binding */ setCircle; },
+/* harmony export */   "enableCircle": function() { return /* binding */ enableCircle; },
+/* harmony export */   "disableCircle": function() { return /* binding */ disableCircle; },
+/* harmony export */   "addCircle": function() { return /* binding */ addCircle; }
+/* harmony export */ });
+/* harmony import */ var _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../PDFJSAnnotate */ "./src/online_annotate/PDFJSAnnotate.js");
+/* harmony import */ var _render_appendChild__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../render/appendChild */ "./src/online_annotate/render/appendChild.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/online_annotate/UI/utils.js");
+
+
+
+
+let _enabled = false;
+let _type;
+let _circleRadius = 10;
+let _circleColor = '0000FF';
+
+/**
+ * Set the attributes of the pen.
+ *
+ * @param {Number} circleRadius The radius of the circle
+ * @param {String} circleColor The color of the circle
+ */
+function setCircle(circleRadius = 10, circleColor = '0000FF') {
+  _circleRadius = parseInt(circleRadius, 10);
+  _circleColor = circleColor;
+}
+
+/**
+ * Handle document.mouseup event
+ *
+ * @param {Event} e The DOM event to handle
+ */
+function handleDocumentMouseup(e) {
+  let svg = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(e.clientX, e.clientY);
+  if (!svg) {
+    return;
+  }
+  let rect = svg.getBoundingClientRect();
+  saveCircle(svg, _type, {
+    x: e.clientX - rect.left,
+    y: e.clientY - rect.top
+  }, _circleRadius, _circleColor);
+}
+
+/**
+ * Save a circle annotation
+ *
+ * @param {SVGElement} svg
+ * @param {String} type The type of circle (circle, emptycircle, fillcircle)
+ * @param {Object} pt The point to use for annotation
+ * @param {float} radius
+ * @param {String} color The color of the rects
+ */
+function saveCircle(svg, type, pt, radius, color) {
+  // Initialize the annotation
+  let svg_pt = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.convertToSvgPoint)([ pt.x, pt.y ], svg);
+  let annotation = {
+    type,
+    color,
+    cx: svg_pt[0],
+    cy: svg_pt[1],
+    r: radius
+  };
+
+  let { documentId, pageNumber } = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getMetadata)(svg);
+
+  // Add the annotation
+  _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().addAnnotation(documentId, pageNumber, annotation)
+    .then((annotation) => {
+      (0,_render_appendChild__WEBPACK_IMPORTED_MODULE_1__.appendChild)(svg, annotation);
+    });
+}
+
+/**
+ * Enable circle behavior
+ */
+function enableCircle(type) {
+  _type = type;
+
+  if (_enabled) { return; }
+
+  _enabled = true;
+  document.addEventListener('mouseup', handleDocumentMouseup);
+}
+
+/**
+ * Disable circle behavior
+ */
+function disableCircle() {
+  if (!_enabled) { return; }
+
+  _enabled = false;
+  document.removeEventListener('mouseup', handleDocumentMouseup);
+}
+
+function addCircle(type, e) {
+  let oldType = _type;
+  _type = type;
+  handleDocumentMouseup(e);
+  _type = oldType;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/UI/edit.js":
+/*!****************************************!*\
+  !*** ./src/online_annotate/UI/edit.js ***!
+  \****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "enableEdit": function() { return /* binding */ enableEdit; },
+/* harmony export */   "disableEdit": function() { return /* binding */ disableEdit; }
+/* harmony export */ });
+/* harmony import */ var _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../PDFJSAnnotate */ "./src/online_annotate/PDFJSAnnotate.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../config */ "./src/online_annotate/config.js");
+/* harmony import */ var _event__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./event */ "./src/online_annotate/UI/event.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./src/online_annotate/UI/utils.js");
+/* harmony import */ var _render_renderPath__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../render/renderPath */ "./src/online_annotate/render/renderPath.js");
+
+
+
+
+
+
+let _enabled = false;
+let isDragging = false;
+let overlay;
+let dragOffsetX, dragOffsetY, dragStartX, dragStartY;
+const OVERLAY_BORDER_SIZE = 3;
+
+/**
+ * Create an overlay for editing an annotation.
+ *
+ * @param {Element} target The annotation element to apply overlay for
+ */
+function createEditOverlay(target) {
+  destroyEditOverlay();
+
+  overlay = document.createElement('div');
+  let anchor = document.createElement('a');
+  let parentNode = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.findSVGContainer)(target).parentNode;
+  let id = target.getAttribute('data-pdf-annotate-id');
+  let rect = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getOffsetAnnotationRect)(target);
+  let styleLeft = rect.left - OVERLAY_BORDER_SIZE;
+  let styleTop = rect.top - OVERLAY_BORDER_SIZE;
+
+  overlay.setAttribute('id', 'pdf-annotate-edit-overlay');
+  overlay.setAttribute('data-target-id', id);
+  overlay.style.boxSizing = 'content-box';
+  overlay.style.position = 'absolute';
+  overlay.style.top = `${styleTop}px`;
+  overlay.style.left = `${styleLeft}px`;
+  overlay.style.width = `${rect.width}px`;
+  overlay.style.height = `${rect.height}px`;
+  overlay.style.border = `${OVERLAY_BORDER_SIZE}px solid ${_utils__WEBPACK_IMPORTED_MODULE_3__.BORDER_COLOR}`;
+  overlay.style.borderRadius = `${OVERLAY_BORDER_SIZE}px`;
+  overlay.style.zIndex = 20100;
+  // overlay.style.transform =  `scale(${window._RENDER_OPTIONS.scale})`
+
+  anchor.innerHTML = '×';
+  anchor.setAttribute('href', 'javascript://');
+  anchor.style.background = '#fff';
+  anchor.style.borderRadius = '20px';
+  anchor.style.border = '1px solid #bbb';
+  anchor.style.color = '#bbb';
+  anchor.style.fontSize = '16px';
+  anchor.style.padding = '2px';
+  anchor.style.textAlign = 'center';
+  anchor.style.textDecoration = 'none';
+  anchor.style.position = 'absolute';
+  anchor.style.top = '-13px';
+  anchor.style.right = '-13px';
+  anchor.style.width = '25px';
+  anchor.style.height = '25px';
+  anchor.style.transform = `scale(0.5)`;
+
+  overlay.appendChild(anchor);
+  parentNode.appendChild(overlay);
+  document.addEventListener('click', handleDocumentClick);
+  document.addEventListener('keyup', handleDocumentKeyup);
+  document.addEventListener('mousedown', handleDocumentMousedown);
+  anchor.addEventListener('click', deleteAnnotation);
+  anchor.addEventListener('mouseover', () => {
+    anchor.style.color = '#35A4DC';
+    anchor.style.borderColor = '#999';
+    anchor.style.boxShadow = '0 1px 1px #ccc';
+  });
+  anchor.addEventListener('mouseout', () => {
+    anchor.style.color = '#bbb';
+    anchor.style.borderColor = '#bbb';
+    anchor.style.boxShadow = '';
+  });
+  overlay.addEventListener('mouseover', () => {
+    if (!isDragging) { anchor.style.display = ''; }
+  });
+  overlay.addEventListener('mouseout', () => {
+    anchor.style.display = 'none';
+  });
+}
+
+/**
+ * Destroy the edit overlay if it exists.
+ */
+function destroyEditOverlay() {
+  if (overlay) {
+    try{
+    overlay.parentNode.removeChild(overlay);
+    }catch(e){}
+    overlay = null;
+  }
+
+  document.removeEventListener('click', handleDocumentClick);
+  document.removeEventListener('keyup', handleDocumentKeyup);
+  document.removeEventListener('mousedown', handleDocumentMousedown);
+  document.removeEventListener('mousemove', handleDocumentMousemove);
+  document.removeEventListener('mouseup', handleDocumentMouseup);
+  (0,_utils__WEBPACK_IMPORTED_MODULE_3__.enableUserSelect)();
+}
+
+/**
+ * Delete currently selected annotation
+ */
+function deleteAnnotation() {
+  if (!overlay) {
+    return;
+  }
+
+  let annotationId = overlay.getAttribute('data-target-id');
+  let svg = overlay.parentNode.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationSvgQuery());
+  let { documentId } = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getMetadata)(svg);
+
+  _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().deleteAnnotation(documentId, annotationId).then(() => {
+    let nodes = document.querySelectorAll(`[data-pdf-annotate-id="${annotationId}"]`);
+
+    [...nodes].forEach((n) => {
+      n.parentNode.removeChild(n);
+    });
+  });
+
+  destroyEditOverlay();
+}
+
+/**
+ * Handle document.click event
+ *
+ * @param {Event} e The DOM event that needs to be handled
+ */
+function handleDocumentClick(e) {
+  if (!(0,_utils__WEBPACK_IMPORTED_MODULE_3__.findSVGAtPoint)(e.clientX, e.clientY)) { return; }
+  // Remove current overlay
+  let overlay = document.getElementById('pdf-annotate-edit-overlay');
+  if (overlay) {
+    if (isDragging || e.target === overlay) {
+      return;
+    }
+
+    destroyEditOverlay();
+  }
+}
+
+/**
+ * Handle document.keyup event
+ *
+ * @param {KeyboardEvent} e The DOM event that needs to be handled
+ */
+function handleDocumentKeyup(e) {
+  // keyCode is deprecated, so prefer the newer "key" method if possible
+  let keyTest;
+  if (e.key) {
+    keyTest = e.key.toLowerCase() === 'delete' || e.key.toLowerCase() === 'backspace';
+  }
+  else {
+    keyTest = e.keyCode === 8 || e.keyCode === 46;
+  }
+  if (overlay && keyTest &&
+      e.target.nodeName.toLowerCase() !== 'textarea' &&
+      e.target.nodeName.toLowerCase() !== 'input') {
+    e.preventDefault();
+    deleteAnnotation();
+  }
+}
+
+/**
+ * Handle document.mousedown event
+ *
+ * @param {Event} e The DOM event that needs to be handled
+ */
+function handleDocumentMousedown(e) {
+  if (e.target !== overlay) {
+    return;
+  }
+
+  // Highlight and strikeout annotations are bound to text within the document.
+  // It doesn't make sense to allow repositioning these types of annotations.
+  let annotationId = overlay.getAttribute('data-target-id');
+  let target = document.querySelector(`[data-pdf-annotate-id="${annotationId}"]`);
+  let type = target.getAttribute('data-pdf-annotate-type');
+
+  if (type === 'highlight' || type === 'strikeout'|| type === 'underline') { return; }
+
+  isDragging = true;
+  dragOffsetX = e.clientX;
+  dragOffsetY = e.clientY;
+  dragStartX = overlay.offsetLeft;
+  dragStartY = overlay.offsetTop;
+
+  overlay.style.background = 'rgba(255, 255, 255, 0.7)';
+  overlay.style.cursor = 'move';
+  overlay.querySelector('a').style.display = 'none';
+
+  document.addEventListener('mousemove', handleDocumentMousemove);
+  document.addEventListener('mouseup', handleDocumentMouseup);
+  (0,_utils__WEBPACK_IMPORTED_MODULE_3__.disableUserSelect)();
+}
+
+/**
+ * Handle document.mousemove event
+ *
+ * @param {Event} e The DOM event that needs to be handled
+ */
+function handleDocumentMousemove(e) {
+  let parentNode = overlay.parentNode;
+  let rect = parentNode.getBoundingClientRect();
+  let y = (dragStartY + (e.clientY - dragOffsetY));
+  let x = (dragStartX + (e.clientX - dragOffsetX));
+  let minY = 0;
+  let maxY = rect.height;
+  let minX = 0;
+  let maxX = rect.width;
+
+  if (y > minY && y + overlay.offsetHeight < maxY) {
+    overlay.style.top = `${y}px`;
+  }
+
+  if (x > minX && x + overlay.offsetWidth < maxX) {
+    overlay.style.left = `${x}px`;
+  }
+}
+
+/**
+ * Handle document.mouseup event
+ *
+ * @param {Event} e The DOM event that needs to be handled
+ */
+function handleDocumentMouseup(e) {
+  let annotationId = overlay.getAttribute('data-target-id');
+  let target = document.querySelectorAll(`[data-pdf-annotate-id="${annotationId}"]`);
+  let type = target[0].getAttribute('data-pdf-annotate-type');
+  let svg = overlay.parentNode.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationSvgQuery());
+  let { documentId } = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getMetadata)(svg);
+
+  overlay.querySelector('a').style.display = '';
+
+  _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().getAnnotation(documentId, annotationId).then((annotation) => {
+    let attribX = 'x';
+    let attribY = 'y';
+    if (['circle', 'fillcircle', 'emptycircle'].indexOf(type) > -1) {
+      attribX = 'cx';
+      attribY = 'cy';
+    }
+
+    if (type === 'point') {
+      // Broken
+      /*
+      [...target].forEach((t, i) => {
+        let moveTo = {
+          x: overlay.offsetLeft + 3,
+          y: overlay.offsetTop + 3
+        };
+        t.setAttribute(attribX, moveTo.x);
+        t.setAttribute(attribY, moveTo.y);
+        annotation[attribX] = moveTo.x;
+        annotation[attribY] = moveTo.y;
+      });
+      */
+      return;
+    }
+    else if (['area', 'highlight', 'textbox', 'circle', 'fillcircle', 'emptycircle'].indexOf(type) > -1) {
+      let modelStart = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.convertToSvgPoint)([dragStartX, dragStartY], svg);
+      let modelEnd = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.convertToSvgPoint)([overlay.offsetLeft, overlay.offsetTop], svg);
+      let modelDelta = {
+        x: modelEnd[0] - modelStart[0],
+        y: modelEnd[1] - modelStart[1]
+      };
+
+      if (type === 'textbox') {
+        target = [target[0].firstChild];
+      }
+
+      [...target].forEach((t, i) => {
+        let modelX = parseInt(t.getAttribute(attribX), 10);
+        let modelY = parseInt(t.getAttribute(attribY), 10);
+        if (modelDelta.y !== 0) {
+          modelY = modelY + modelDelta.y;
+
+          t.setAttribute(attribY, modelY);
+          if (annotation.rectangles && i < annotation.rectangles.length) {
+            annotation.rectangles[i].y = modelY;
+          }
+          else if (annotation[attribY]) {
+            annotation[attribY] = modelY;
+          }
+          // 循环给下面的子元素偏移
+          for(const child of t.children){
+            let cy = child.getAttribute('y');
+            if(cy){
+              cy = parseInt(cy,10)+modelDelta.y;
+              child.setAttribute('y',cy);
+            }
+          }
+        }
+        if (modelDelta.x !== 0) {
+          modelX = modelX + modelDelta.x;
+
+          t.setAttribute(attribX, modelX);
+          if (annotation.rectangles && i < annotation.rectangles.length) {
+            annotation.rectangles[i].x = modelX;
+          }
+          else if (annotation[attribX]) {
+            annotation[attribX] = modelX;
+          }
+          // 循环给下面的子元素偏移
+          for(const child of t.children){
+            let cx = child.getAttribute('x');
+            if(cx){
+              cx = parseInt(cx,10) + modelDelta.x;
+              child.setAttribute('x',cx);
+            }
+          }
+        }
+      });
+    }
+    else if (type === 'strikeout' || type === 'underline') {
+      return;
+    //   let { deltaX, deltaY } = getDelta('x1', 'y1');
+    //   [...target].forEach(target, (t, i) => {
+    //     if (deltaY !== 0) {
+    //       t.setAttribute('y1', parseInt(t.getAttribute('y1'), 10) + deltaY);
+    //       t.setAttribute('y2', parseInt(t.getAttribute('y2'), 10) + deltaY);
+    //       annotation.rectangles[i].y = parseInt(t.getAttribute('y1'), 10);
+    //     }
+    //     if (deltaX !== 0) {
+    //       t.setAttribute('x1', parseInt(t.getAttribute('x1'), 10) + deltaX);
+    //       t.setAttribute('x2', parseInt(t.getAttribute('x2'), 10) + deltaX);
+    //       annotation.rectangles[i].x = parseInt(t.getAttribute('x1'), 10);
+    //     }
+    //   });
+    }
+    else if (type === 'drawing' || type === 'arrow') {
+      // Do nothing as currently broken
+      let modelStart = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.convertToSvgPoint)([dragStartX, dragStartY], svg);
+      let modelEnd = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.convertToSvgPoint)([overlay.offsetLeft, overlay.offsetTop], svg);
+      let modelDelta = {
+        x: modelEnd[0] - modelStart[0],
+        y: modelEnd[1] - modelStart[1]
+      };
+      annotation.lines.forEach((line, i) => {
+        let [x, y] = annotation.lines[i];
+        annotation.lines[i][0] = parseInt(x,10) + modelDelta.x;
+        annotation.lines[i][1] = parseInt(y,10) + modelDelta.y;
+      });
+      const path = (0,_render_renderPath__WEBPACK_IMPORTED_MODULE_4__["default"])(annotation);
+      const td = path.getAttribute('d');
+      target[0].setAttribute('d',td);
+    }
+
+    _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().editAnnotation(documentId, annotationId, annotation);
+  });
+
+  setTimeout(() => {
+    isDragging = false;
+  }, 0);
+
+  overlay.style.background = '';
+  overlay.style.cursor = '';
+
+  document.removeEventListener('mousemove', handleDocumentMousemove);
+  document.removeEventListener('mouseup', handleDocumentMouseup);
+  (0,_utils__WEBPACK_IMPORTED_MODULE_3__.enableUserSelect)();
+}
+
+/**
+ * Handle annotation.click event
+ *
+ * @param {Element} e The annotation element that was clicked
+ */
+function handleAnnotationClick(target) {
+  createEditOverlay(target);
+}
+
+/**
+ * Enable edit mode behavior.
+ */
+function enableEdit() {
+  if (_enabled) {
+    return;
+  }
+
+  _enabled = true;
+  (0,_event__WEBPACK_IMPORTED_MODULE_2__.addEventListener)('annotation:click', handleAnnotationClick);
+};
+
+/**
+ * Disable edit mode behavior.
+ */
+function disableEdit() {
+  destroyEditOverlay();
+
+  if (!_enabled) {
+    return;
+  }
+
+  _enabled = false;
+  (0,_event__WEBPACK_IMPORTED_MODULE_2__.removeEventListener)('annotation:click', handleAnnotationClick);
+};
+
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/UI/eraser.js":
+/*!******************************************!*\
+  !*** ./src/online_annotate/UI/eraser.js ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "enableEraser": function() { return /* binding */ enableEraser; },
+/* harmony export */   "disableEraser": function() { return /* binding */ disableEraser; }
+/* harmony export */ });
+/* harmony import */ var _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../PDFJSAnnotate */ "./src/online_annotate/PDFJSAnnotate.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./src/online_annotate/UI/utils.js");
+
+
+
+let _canerase = false;
+let previousPoint = null;
+
+/**
+ *
+ * @param {PointerEvent} e DOM event to handle
+ */
+function handleDocumentDown(e) {
+  _canerase = true;
+  previousPoint = [e.clientX, e.clientY];
+}
+
+/**
+ *
+ * @param {PointerEvent} e DOM event to handle
+ */
+function handleDocumentUp(e) {
+  _canerase = false;
+  erase((0,_utils__WEBPACK_IMPORTED_MODULE_1__.findAnnotationAtPoint)(e.clientX, e.clientY));
+}
+
+/**
+ *
+ * @param {PointerEvent} e DOM event to handle
+ */
+function handleDocumentMouseMove(e) {
+  if (!_canerase) {
+    return;
+  }
+
+  // This algorithm attempts to get the various points between the last
+  // PointerEvent and this one
+  let check = [];
+  let diffX = Math.abs(previousPoint[0] - e.clientX);
+  let diffY = Math.abs(previousPoint[1] - e.clientY);
+  if (diffX >= 1 || diffY >= 1) {
+    let maxSteps = Math.round(Math.max(diffX, diffY));
+    let subStepSize = Math.min(diffX, diffY) / maxSteps;
+    let smallerTest = diffX < diffY;
+    let startPoint = [
+      Math.min(previousPoint[0], e.clientX),
+      Math.min(previousPoint[1], e.clientY)
+    ];
+    for (let i = 0; i < maxSteps; i++) {
+      if (smallerTest) {
+        check.push([Math.round(startPoint[0] + (subStepSize * i)), Math.round(startPoint[1] + i)]);
+      }
+      else {
+        check.push([Math.round(startPoint[0] + i), Math.round(startPoint[1] + (subStepSize * i))]);
+      }
+    }
+  }
+  for (let point of check) {
+    erase((0,_utils__WEBPACK_IMPORTED_MODULE_1__.findAnnotationAtPoint)(point[0], point[1]));
+  }
+  previousPoint = [e.clientX, e.clientY];
+}
+
+function erase(target) {
+  if (!_canerase) {
+    return;
+  }
+
+  if (target) {
+    let { documentId } = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.getMetadata)(target.parentElement);
+    let annotationId = target.getAttribute('data-pdf-annotate-id');
+    _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().deleteAnnotation(documentId, annotationId).then(() => {
+      let nodes = document.querySelectorAll(`[data-pdf-annotate-id="${annotationId}"]`);
+      [...nodes].forEach((n) => {
+        n.parentNode.removeChild(n);
+      });
+    });
+  }
+}
+
+function enableEraser() {
+  document.addEventListener('pointermove', handleDocumentMouseMove);
+  document.addEventListener('pointerdown', handleDocumentDown);
+  document.addEventListener('pointerup', handleDocumentUp);
+}
+
+function disableEraser() {
+  document.removeEventListener('pointermove', handleDocumentMouseMove);
+  document.removeEventListener('pointerdown', handleDocumentDown);
+  document.removeEventListener('pointerup', handleDocumentUp);
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/UI/event.js":
+/*!*****************************************!*\
+  !*** ./src/online_annotate/UI/event.js ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "fireEvent": function() { return /* binding */ fireEvent; },
+/* harmony export */   "addEventListener": function() { return /* binding */ addEventListener; },
+/* harmony export */   "removeEventListener": function() { return /* binding */ removeEventListener; }
+/* harmony export */ });
+/* harmony import */ var eventemitter3__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! eventemitter3 */ "./node_modules/eventemitter3/index.js");
+/* harmony import */ var eventemitter3__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(eventemitter3__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./src/online_annotate/UI/utils.js");
+
+
+
+const emitter = new (eventemitter3__WEBPACK_IMPORTED_MODULE_0___default())();
+
+let clickNode;
+
+/**
+ * Handle document.click event
+ *
+ * @param {Event} e The DOM event to be handled
+ */
+document.addEventListener('click', function handleDocumentClick(e) {
+  if (!(0,_utils__WEBPACK_IMPORTED_MODULE_1__.findSVGAtPoint)(e.clientX, e.clientY)) {
+    return;
+  }
+  let target = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.findAnnotationAtPoint)(e.clientX, e.clientY);
+  // Emit annotation:blur if clickNode is no longer clicked
+  if (clickNode && clickNode !== target) {
+    emitter.emit('annotation:blur', clickNode);
+  }
+
+  // Emit annotation:click if target was clicked
+  if (target) {
+    emitter.emit('annotation:click', target);
+  }
+
+  clickNode = target;
+});
+
+// let mouseOverNode;
+// document.addEventListener('mousemove', function handleDocumentMousemove(e) {
+//   let target = findAnnotationAtPoint(e.clientX, e.clientY);
+//
+//   // Emit annotation:mouseout if target was mouseout'd
+//   if (mouseOverNode && !target) {
+//     emitter.emit('annotation:mouseout', mouseOverNode);
+//   }
+//
+//   // Emit annotation:mouseover if target was mouseover'd
+//   if (target && mouseOverNode !== target) {
+//     emitter.emit('annotation:mouseover', target);
+//   }
+//
+//   mouseOverNode = target;
+// });
+
+function fireEvent() { emitter.emit(...arguments); };
+function addEventListener() { emitter.on(...arguments); };
+function removeEventListener() { emitter.removeListener(...arguments); };
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/UI/index.js":
+/*!*****************************************!*\
+  !*** ./src/online_annotate/UI/index.js ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _event__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./event */ "./src/online_annotate/UI/event.js");
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./edit */ "./src/online_annotate/UI/edit.js");
+/* harmony import */ var _pen__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pen */ "./src/online_annotate/UI/pen.js");
+/* harmony import */ var _arrow__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./arrow */ "./src/online_annotate/UI/arrow.js");
+/* harmony import */ var _eraser__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./eraser */ "./src/online_annotate/UI/eraser.js");
+/* harmony import */ var _point__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./point */ "./src/online_annotate/UI/point.js");
+/* harmony import */ var _rect__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./rect */ "./src/online_annotate/UI/rect.js");
+/* harmony import */ var _circle__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./circle */ "./src/online_annotate/UI/circle.js");
+/* harmony import */ var _text__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./text */ "./src/online_annotate/UI/text.js");
+/* harmony import */ var _page__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./page */ "./src/online_annotate/UI/page.js");
+
+
+
+
+
+
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  addEventListener: _event__WEBPACK_IMPORTED_MODULE_0__.addEventListener,
+  removeEventListener: _event__WEBPACK_IMPORTED_MODULE_0__.removeEventListener,
+  fireEvent: _event__WEBPACK_IMPORTED_MODULE_0__.fireEvent,
+
+  disableEdit: _edit__WEBPACK_IMPORTED_MODULE_1__.disableEdit,
+  enableEdit: _edit__WEBPACK_IMPORTED_MODULE_1__.enableEdit,
+
+  disablePen: _pen__WEBPACK_IMPORTED_MODULE_2__.disablePen,
+  enablePen: _pen__WEBPACK_IMPORTED_MODULE_2__.enablePen,
+  setPen: _pen__WEBPACK_IMPORTED_MODULE_2__.setPen,
+
+  disablePoint: _point__WEBPACK_IMPORTED_MODULE_5__.disablePoint,
+  enablePoint: _point__WEBPACK_IMPORTED_MODULE_5__.enablePoint,
+
+  disableRect: _rect__WEBPACK_IMPORTED_MODULE_6__.disableRect,
+  enableRect: _rect__WEBPACK_IMPORTED_MODULE_6__.enableRect,
+
+  disableCircle: _circle__WEBPACK_IMPORTED_MODULE_7__.disableCircle,
+  enableCircle: _circle__WEBPACK_IMPORTED_MODULE_7__.enableCircle,
+  setCircle: _circle__WEBPACK_IMPORTED_MODULE_7__.setCircle,
+  addCircle: _circle__WEBPACK_IMPORTED_MODULE_7__.addCircle,
+
+  disableArrow: _arrow__WEBPACK_IMPORTED_MODULE_3__.disableArrow,
+  enableArrow: _arrow__WEBPACK_IMPORTED_MODULE_3__.enableArrow,
+  setArrow: _arrow__WEBPACK_IMPORTED_MODULE_3__.setArrow,
+
+  disableEraser: _eraser__WEBPACK_IMPORTED_MODULE_4__.disableEraser,
+  enableEraser: _eraser__WEBPACK_IMPORTED_MODULE_4__.enableEraser,
+
+  disableText: _text__WEBPACK_IMPORTED_MODULE_8__.disableText,
+  enableText: _text__WEBPACK_IMPORTED_MODULE_8__.enableText,
+  setText: _text__WEBPACK_IMPORTED_MODULE_8__.setText,
+
+  createPage: _page__WEBPACK_IMPORTED_MODULE_9__.createPage,
+  renderPage: _page__WEBPACK_IMPORTED_MODULE_9__.renderPage
+});
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/UI/page.js":
+/*!****************************************!*\
+  !*** ./src/online_annotate/UI/page.js ***!
+  \****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "createPage": function() { return /* binding */ createPage; },
+/* harmony export */   "renderPage": function() { return /* binding */ renderPage; }
+/* harmony export */ });
+/* harmony import */ var _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../PDFJSAnnotate */ "./src/online_annotate/PDFJSAnnotate.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../config */ "./src/online_annotate/config.js");
+/* harmony import */ var _a11y_renderScreenReaderHints__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../a11y/renderScreenReaderHints */ "./src/online_annotate/a11y/renderScreenReaderHints.js");
+/* harmony import */ var _event_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../event_utils */ "./src/event_utils.js");
+
+
+
+
+// Template for creating a new page
+const PAGE_TEMPLATE = `
+  <div style="visibility: hidden;" class="page" data-loaded="false">
+    <div class="canvasWrapper">
+      <canvas></canvas>
+    </div>
+    <div class="` + _config__WEBPACK_IMPORTED_MODULE_1__["default"].textLayerName + `"></div>
+    <svg class="` + _config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationLayerName + `"></svg>
+  </div>
+`;
+
+/**
+ * Create a new page to be appended to the DOM.
+ *
+ * @param {Number} pageNumber The page number that is being created
+ * @return {HTMLElement}
+ */
+function createPage(pageNumber) {
+  let temp = document.createElement('div');
+  temp.innerHTML = PAGE_TEMPLATE;
+
+  let page = temp.children[0];
+  let canvas = page.querySelector('canvas');
+
+  page.setAttribute('id', `page${pageNumber}`);
+  page.setAttribute('data-page-number', pageNumber);
+
+  canvas.mozOpaque = true;
+  canvas.setAttribute('id', `page${pageNumber}`);
+
+  return page;
+}
+
+/**
+ * Render a page that has already been created.
+ *
+ * @param {Number} pageNumber The page number to be rendered
+ * @param {Object} renderOptions The options for rendering
+ * @return {Promise} Settled once rendering has completed
+ *  A settled Promise will be either:
+ *    - fulfilled: [pdfPage, annotations]
+ *    - rejected: Error
+ */
+function renderPage(pageNumber, renderOptions,pdfPage) {
+  
+  let {
+    documentId,
+    pdfDocument,
+    scale,
+    rotate
+  } = renderOptions;
+
+  const eventBus = window.PDFViewerApplication.eventBus;
+  // Load the page and annotations
+  return Promise.all([
+    _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getAnnotations(documentId, pageNumber)
+  ]).then(([annotations]) => {
+    let page = document.getElementById(`page${pageNumber}`);
+    let svg = page.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationClassQuery());
+    let canvas = page.querySelector('.canvasWrapper canvas');
+    let canvasContext = canvas.getContext('2d', {alpha: false});
+    let totalRotation = rotate//(rotate + pdfPage.rotate) % 360;
+    let viewport = pdfPage.getViewport({scale: scale, rotation: totalRotation});
+    let transform = scalePage(pageNumber, viewport, canvasContext);
+    // Render the page
+    return Promise.all([
+      // pdfPage.render({ canvasContext, viewport, transform }).promise,
+      _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].render(svg, viewport, annotations)
+    ]).then(() => {
+      // Text content is needed for a11y, but is also necessary for creating
+      // highlight and strikeout annotations which require selecting text.
+        return new Promise((resolve, reject) => {
+          //Render text layer for a11y of text content
+          // let textLayer = page.querySelector(config.textClassQuery());
+          // let textLayerFactory = new pdfjsViewer.DefaultTextLayerFactory();
+          // let textLayerBuilder = textLayerFactory.createTextLayerBuilder(
+          //   textLayer,
+          //   pageNumber - 1,
+          //   viewport,
+          //   false,
+          //   eventBus
+          // );
+          // textLayerBuilder.setTextContent(textContent);
+          // textLayerBuilder.render();
+
+          //Enable a11y for annotations
+          //Timeout is needed to wait for `textLayerBuilder.render`
+          setTimeout(() => {
+            try {
+              (0,_a11y_renderScreenReaderHints__WEBPACK_IMPORTED_MODULE_2__["default"])(annotations.annotations);
+              resolve();
+            }
+            catch (e) {
+              reject(e);
+            }
+          });
+        });
+    }).then(() => {
+      // Indicate that the page was loaded
+      page.setAttribute('data-anno-loaded', 'true');
+
+      return [pdfPage, annotations];
+    });
+  });
+}
+
+/**
+ * Scale the elements of a page.
+ *
+ * @param {Number} pageNumber The page number to be scaled
+ * @param {Object} viewport The viewport of the PDF page (see pdfPage.getViewport(scale, rotate))
+ * @param {Object} context The canvas context that the PDF page is rendered to
+ * @return {Array} The transform data for rendering the PDF page
+ */
+function scalePage(pageNumber, viewport, context) {
+  let page = document.getElementById(`page${pageNumber}`);
+  let svg = page.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationClassQuery());
+  let wrapper = page.querySelector('.canvasWrapper');
+  let textLayer = page.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].textClassQuery());
+  let outputScale = getOutputScale(context);
+  let transform = !outputScale.scaled ? null : [outputScale.sx, 0, 0, outputScale.sy, 0, 0];
+  let sfx = approximateFraction(outputScale.sx);
+  let sfy = approximateFraction(outputScale.sy);
+
+  // Adjust width/height for scale
+  page.style.visibility = '';
+  // canvas.width = roundToDivide(viewport.width * outputScale.sx, sfx[0]);
+  // canvas.height = roundToDivide(viewport.height * outputScale.sy, sfy[0]);
+  // canvas.style.width = roundToDivide(viewport.width, sfx[1]) + 'px';
+  // canvas.style.height = roundToDivide(viewport.height, sfx[1]) + 'px';
+  svg.setAttribute('width', viewport.width);
+  svg.setAttribute('height', viewport.height);
+  svg.style.width = `${viewport.width}px`;
+  svg.style.height = `${viewport.height}px`;
+  page.style.width = `${viewport.width}px`;
+  page.style.height = `${viewport.height}px`;
+  wrapper.style.width = `${viewport.width}px`;
+  wrapper.style.height = `${viewport.height}px`;
+  textLayer.style.width = `${viewport.width}px`;
+  textLayer.style.height = `${viewport.height}px`;
+
+  return transform;
+}
+
+/**
+ * Approximates a float number as a fraction using Farey sequence (max order of 8).
+ *
+ * @param {Number} x Positive float number
+ * @return {Array} Estimated fraction: the first array item is a numerator,
+ *                 the second one is a denominator.
+ */
+function approximateFraction(x) {
+  // Fast path for int numbers or their inversions.
+  if (Math.floor(x) === x) {
+    return [x, 1];
+  }
+
+  const xinv = 1 / x;
+  const limit = 8;
+  if (xinv > limit) {
+    return [1, limit];
+  }
+  else if (Math.floor(xinv) === xinv) {
+    return [1, xinv];
+  }
+
+  const x_ = x > 1 ? xinv : x;
+
+  // a/b and c/d are neighbours in Farey sequence.
+  let a = 0; let b = 1; let c = 1; let d = 1;
+
+  // Limit search to order 8.
+  while (true) {
+    // Generating next term in sequence (order of q).
+    let p = a + c; let q = b + d;
+    if (q > limit) {
+      break;
+    }
+    if (x_ <= p / q) {
+      c = p; d = q;
+    }
+    else {
+      a = p; b = q;
+    }
+  }
+
+  // Select closest of neighbours to x.
+  if (x_ - a / b < c / d - x_) {
+    return x_ === x ? [a, b] : [b, a];
+  }
+  else {
+    return x_ === x ? [c, d] : [d, c];
+  }
+}
+
+function getOutputScale(ctx) {
+  let devicePixelRatio = window.devicePixelRatio || 1;
+  let backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
+                          ctx.mozBackingStorePixelRatio ||
+                          ctx.msBackingStorePixelRatio ||
+                          ctx.oBackingStorePixelRatio ||
+                          ctx.backingStorePixelRatio || 1;
+  let pixelRatio = devicePixelRatio / backingStoreRatio;
+  return {
+    sx: pixelRatio,
+    sy: pixelRatio,
+    scaled: pixelRatio !== 1
+  };
+}
+
+function roundToDivide(x, div) {
+  let r = x % div;
+  return r === 0 ? x : Math.round(x - r + div);
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/UI/pen.js":
+/*!***************************************!*\
+  !*** ./src/online_annotate/UI/pen.js ***!
+  \***************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "setPen": function() { return /* binding */ setPen; },
+/* harmony export */   "getPen": function() { return /* binding */ getPen; },
+/* harmony export */   "enablePen": function() { return /* binding */ enablePen; },
+/* harmony export */   "disablePen": function() { return /* binding */ disablePen; }
+/* harmony export */ });
+/* harmony import */ var _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../PDFJSAnnotate */ "./src/online_annotate/PDFJSAnnotate.js");
+/* harmony import */ var _render_appendChild__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../render/appendChild */ "./src/online_annotate/render/appendChild.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/online_annotate/UI/utils.js");
+
+
+
+
+let _enabled = false;
+let _candraw = false;
+let _penSize;
+let _penColor;
+let path;
+let lines = [];
+
+/**
+ * Handle document.touchdown or document.pointerdown event
+ * @param {PointerEvent} e The DOM event to be handled
+ */
+function handleDocumentPointerdown(e) {
+  path = null;
+  lines = [];
+  if (!(0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(e.clientX, e.clientY)) {
+    return;
+  }
+  _candraw = true;
+  e.preventDefault();
+}
+
+/**
+ * Handle document.pointerup event
+ *
+ * @param {PointerEvent} e The DOM event to be handled
+ */
+function handleDocumentPointerup(e) {
+  saveToStorage(e.clientX, e.clientY);
+}
+
+function saveToStorage(x, y) {
+  if (!_candraw) {
+    return;
+  }
+  _candraw = false;
+  let svg;
+  if (lines.length > 1 && (svg = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(x, y))) {
+    let { documentId, pageNumber } = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getMetadata)(svg);
+    _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().addAnnotation(documentId, pageNumber, {
+      type: 'drawing',
+      width: _penSize,
+      color: _penColor,
+      lines
+    }).then((annotation) => {
+      if (path) {
+        svg.removeChild(path);
+      }
+
+      (0,_render_appendChild__WEBPACK_IMPORTED_MODULE_1__.appendChild)(svg, annotation);
+    });
+  }
+}
+
+/**
+ * Handle document.mousemove event
+ *
+ * @param {PointerEvent} e The DOM event to be handled
+ */
+function handleDocumentPointermove(e) {
+  if (!(0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(e.clientX, e.clientY) || !_candraw) {
+    return;
+  }
+  savePoint(e.clientX, e.clientY);
+}
+
+/**
+ * Handle document.keyup event
+ *
+ * @param {KeyboardEvent} e The DOM event to be handled
+ * } e The DOM event to be handled
+ */
+function handleDocumentKeyup(e) {
+  // Cancel rect if Esc is pressed
+  if (e.keyCode === 27) {
+    lines = null;
+    path.parentNode.removeChild(path);
+    document.removeEventListener('pointermove', handleDocumentPointermove);
+    document.removeEventListener('pointerup', handleDocumentPointerup);
+  }
+}
+
+/**
+ * Save a point to the line being drawn.
+ *
+ * @param {Number} x The x coordinate of the point
+ * @param {Number} y The y coordinate of the point
+ */
+function savePoint(x, y) {
+  let svg = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(x, y);
+  if (!svg) {
+    return;
+  }
+
+  let rect = svg.getBoundingClientRect();
+  let point = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.convertToSvgPoint)([
+    x - rect.left,
+    y - rect.top
+  ], svg);
+  point[0] = point[0].toFixed(2);
+  point[1] = point[1].toFixed(2);
+  lines.push(point);
+
+  if (lines.length <= 1) {
+    return;
+  }
+
+  if (path) {
+    svg.removeChild(path);
+  }
+
+  path = (0,_render_appendChild__WEBPACK_IMPORTED_MODULE_1__.appendChild)(svg, {
+    type: 'drawing',
+    color: _penColor,
+    width: _penSize,
+    lines
+  });
+}
+
+/**
+ * Set the attributes of the pen.
+ *
+ * @param {Number} penSize The size of the lines drawn by the pen, rounded to 2 decimal places
+ * @param {String} penColor The color of the lines drawn by the pen
+ */
+function setPen(penSize = 1, penColor = '000000') {
+  _penSize = Math.round(parseFloat(penSize) * 1e2) / 1e2;
+  _penColor = penColor;
+}
+
+/**
+ * Return pen attributes of the pen
+ *
+ * @return {Object} Object with size and color
+ */
+function getPen() {
+  return {
+    size: _penSize,
+    color: _penColor
+  };
+}
+
+/**
+ * Enable the pen behavior
+ */
+function enablePen() {
+  if (_enabled) {
+    return;
+  }
+
+  _enabled = true;
+  // Chrome and Firefox has different behaviors with how pen works, so we need different events.
+  document.addEventListener('pointerdown', handleDocumentPointerdown);
+  document.addEventListener('pointermove', handleDocumentPointermove);
+  document.addEventListener('pointerup', handleDocumentPointerup);
+
+  document.addEventListener('keyup', handleDocumentKeyup);
+  (0,_utils__WEBPACK_IMPORTED_MODULE_2__.disableUserSelect)();
+}
+
+/**
+ * Disable the pen behavior
+ */
+function disablePen() {
+  if (!_enabled) {
+    return;
+  }
+
+  _enabled = false;
+  document.removeEventListener('pointerdown', handleDocumentPointerdown);
+  document.removeEventListener('pointermove', handleDocumentPointermove);
+  document.removeEventListener('pointerup', handleDocumentPointerup);
+
+  document.removeEventListener('keyup', handleDocumentKeyup);
+  (0,_utils__WEBPACK_IMPORTED_MODULE_2__.enableUserSelect)();
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/UI/point.js":
+/*!*****************************************!*\
+  !*** ./src/online_annotate/UI/point.js ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "enablePoint": function() { return /* binding */ enablePoint; },
+/* harmony export */   "disablePoint": function() { return /* binding */ disablePoint; }
+/* harmony export */ });
+/* harmony import */ var _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../PDFJSAnnotate */ "./src/online_annotate/PDFJSAnnotate.js");
+/* harmony import */ var _render_appendChild__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../render/appendChild */ "./src/online_annotate/render/appendChild.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/online_annotate/UI/utils.js");
+
+
+
+
+let _enabled = false;
+let input;
+
+/**
+ * Handle document.mouseup event
+ *
+ * @param {Event} The DOM event to be handled
+ */
+function handleDocumentMouseup(e) {
+  if (input || !(0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(e.clientX, e.clientY)) {
+    return;
+  }
+
+  input = document.createElement('input');
+  input.setAttribute('id', 'pdf-annotate-point-input');
+  input.setAttribute('placeholder', 'Enter comment');
+  input.style.border = `3px solid ${_utils__WEBPACK_IMPORTED_MODULE_2__.BORDER_COLOR}`;
+  input.style.borderRadius = '3px';
+  input.style.position = 'absolute';
+  input.style.top = `${e.clientY}px`;
+  input.style.left = `${e.clientX}px`;
+
+  input.addEventListener('blur', handleInputBlur);
+  input.addEventListener('keyup', handleInputKeyup);
+
+  document.body.appendChild(input);
+  input.focus();
+}
+
+/**
+ * Handle input.blur event
+ */
+function handleInputBlur() {
+  savePoint();
+}
+
+/**
+ * Handle input.keyup event
+ *
+ * @param {Event} e The DOM event to handle
+ */
+function handleInputKeyup(e) {
+  if (e.keyCode === 27) {
+    closeInput();
+  }
+  else if (e.keyCode === 13) {
+    savePoint();
+  }
+}
+
+/**
+ * Save a new point annotation from input
+ */
+function savePoint() {
+  if (input.value.trim().length > 0) {
+    let clientX = parseInt(input.style.left, 10);
+    let clientY = parseInt(input.style.top, 10);
+    let content = input.value.trim();
+    let svg = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(clientX, clientY);
+    if (!svg) {
+      return;
+    }
+
+    let rect = svg.getBoundingClientRect();
+    let { documentId, pageNumber } = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getMetadata)(svg);
+    let annotation = Object.assign({
+      type: 'point'
+    }, (0,_utils__WEBPACK_IMPORTED_MODULE_2__.scaleDown)(svg, {
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    }));
+
+    _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().addAnnotation(documentId, pageNumber, annotation)
+      .then((annotation) => {
+        _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().addComment(
+          documentId,
+          annotation.uuid,
+          content
+        );
+
+        (0,_render_appendChild__WEBPACK_IMPORTED_MODULE_1__.appendChild)(svg, annotation);
+      });
+  }
+
+  closeInput();
+}
+
+/**
+ * Close the input element
+ */
+function closeInput() {
+  input.removeEventListener('blur', handleInputBlur);
+  input.removeEventListener('keyup', handleInputKeyup);
+  document.body.removeChild(input);
+  input = null;
+}
+
+/**
+ * Enable point annotation behavior
+ */
+function enablePoint() {
+  if (_enabled) { return; }
+
+  _enabled = true;
+  document.addEventListener('mouseup', handleDocumentMouseup);
+}
+
+/**
+ * Disable point annotation behavior
+ */
+function disablePoint() {
+  if (!_enabled) { return; }
+
+  _enabled = false;
+  document.removeEventListener('mouseup', handleDocumentMouseup);
+}
+
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/UI/rect.js":
+/*!****************************************!*\
+  !*** ./src/online_annotate/UI/rect.js ***!
+  \****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "enableRect": function() { return /* binding */ enableRect; },
+/* harmony export */   "disableRect": function() { return /* binding */ disableRect; }
+/* harmony export */ });
+/* harmony import */ var _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../PDFJSAnnotate */ "./src/online_annotate/PDFJSAnnotate.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../config */ "./src/online_annotate/config.js");
+/* harmony import */ var _render_appendChild__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../render/appendChild */ "./src/online_annotate/render/appendChild.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./utils */ "./src/online_annotate/UI/utils.js");
+
+
+
+
+
+let _enabled = false;
+let _type;
+let overlay;
+let originY;
+let originX;
+
+/**
+ * Get the current window selection as rects
+ *
+ * @return {Array} An Array of rects
+ */
+function getSelectionRects() {
+  try {
+    let selection = window.getSelection();
+    let range = selection.getRangeAt(0);
+    let rects = range.getClientRects();
+
+    if (rects.length > 0 &&
+        rects[0].width > 0 &&
+        rects[0].height > 0) {
+      return rects;
+    }
+  }
+  catch (e) {}
+
+  return null;
+}
+
+/**
+ * Handle document.mousedown event
+ *
+ * @param {Event} e The DOM event to handle
+ */
+function handleDocumentMousedown(e) {
+  if((0,_utils__WEBPACK_IMPORTED_MODULE_3__.hasButton)(e)) return;
+  let svg;
+  if (_type !== 'area' || !(svg = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.findSVGAtPoint)(e.clientX, e.clientY))) {
+    return;
+  }
+
+  let rect = svg.getBoundingClientRect();
+  originY = e.clientY;
+  originX = e.clientX;
+
+  overlay = document.createElement('div');
+  overlay.style.position = 'absolute';
+  overlay.style.top = `${originY - rect.top}px`;
+  overlay.style.left = `${originX - rect.left}px`;
+  overlay.style.border = `3px solid ${_utils__WEBPACK_IMPORTED_MODULE_3__.BORDER_COLOR}`;
+  overlay.style.borderRadius = '3px';
+  svg.parentNode.appendChild(overlay);
+
+  document.addEventListener('mousemove', handleDocumentMousemove);
+  (0,_utils__WEBPACK_IMPORTED_MODULE_3__.disableUserSelect)();
+}
+
+/**
+ * Handle document.mousemove event
+ *
+ * @param {Event} e The DOM event to handle
+ */
+function handleDocumentMousemove(e) {
+  let svg = overlay.parentNode.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationSvgQuery());
+  let rect = svg.getBoundingClientRect();
+
+  if (originX + (e.clientX - originX) < rect.right) {
+    overlay.style.width = `${e.clientX - originX}px`;
+  }
+
+  if (originY + (e.clientY - originY) < rect.bottom) {
+    overlay.style.height = `${e.clientY - originY}px`;
+  }
+}
+
+/**
+ * Handle document.mouseup event
+ *
+ * @param {Event} e The DOM event to handle
+ */
+function handleDocumentMouseup(e) {
+  if((0,_utils__WEBPACK_IMPORTED_MODULE_3__.hasButton)(e)) return;
+  let rects;
+  if (_type !== 'area' && (rects = getSelectionRects())) {
+    saveRect(_type, [...rects].map((r) => {
+      return {
+        top: r.top,
+        left: r.left,
+        width: r.width,
+        height: r.height
+      };
+    }));
+  }
+  else if (_type === 'area' && overlay) {
+    let svg = overlay.parentNode.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationSvgQuery());
+    let rect = svg.getBoundingClientRect();
+    saveRect(_type, [{
+      top: parseInt(overlay.style.top, 10) + rect.top,
+      left: parseInt(overlay.style.left, 10) + rect.left,
+      width: parseInt(overlay.style.width, 10),
+      height: parseInt(overlay.style.height, 10)
+    }]);
+
+    overlay.parentNode.removeChild(overlay);
+    overlay = null;
+
+    document.removeEventListener('mousemove', handleDocumentMousemove);
+    (0,_utils__WEBPACK_IMPORTED_MODULE_3__.enableUserSelect)();
+  }
+}
+
+/**
+ * Handle document.keyup event
+ *
+ * @param {Event} e The DOM event to handle
+ */
+function handleDocumentKeyup(e) {
+  // Cancel rect if Esc is pressed
+  if (e.keyCode === 27) {
+    let selection = window.getSelection();
+    selection.removeAllRanges();
+    if (overlay && overlay.parentNode) {
+      overlay.parentNode.removeChild(overlay);
+      overlay = null;
+      document.removeEventListener('mousemove', handleDocumentMousemove);
+    }
+  }
+}
+
+/**
+ * Save a rect annotation
+ *
+ * @param {String} type The type of rect (area, highlight, strikeout,underline)
+ * @param {Array} rects The rects to use for annotation
+ * @param {String} color The color of the rects
+ */
+function saveRect(type, rects, color) {
+  let svg = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.findSVGAtPoint)(rects[0].left, rects[0].top);
+  let annotation;
+
+  if (!svg) {
+    return;
+  }
+
+  let boundingRect = svg.getBoundingClientRect();
+
+  if (!color) {
+    if (type === 'highlight') {
+      color = 'FFFF00';
+    }
+    else if (type === 'strikeout') {
+      color = 'FF0000';
+    }
+    else if (type === 'underline') {
+      color = '00FFFF';
+    }
+  }
+
+  // Initialize the annotation
+  annotation = {
+    type,
+    color,
+    rectangles: [...rects].map((r) => {
+      let offset = 0;
+
+      if (type === 'strikeout') {
+        offset = r.height / 2;
+      }else if(type === 'underline') {
+        offset = r.height;
+      }
+
+      return (0,_utils__WEBPACK_IMPORTED_MODULE_3__.convertToSvgRect)({
+        y: (r.top + offset) - boundingRect.top,
+        x: r.left - boundingRect.left,
+        width: r.width,
+        height: r.height
+      }, svg);
+    }).filter((r) => r.width > 0 && r.height > 0 && r.x > -1 && r.y > -1)
+  };
+
+  // Short circuit if no rectangles exist
+  if (annotation.rectangles.length === 0) {
+    return;
+  }
+
+  // Special treatment for area as it only supports a single rect
+  if (type === 'area') {
+    let rect = annotation.rectangles[0];
+    delete annotation.rectangles;
+    annotation.x = rect.x;
+    annotation.y = rect.y;
+    annotation.width = rect.width;
+    annotation.height = rect.height;
+  }
+
+  let { documentId, pageNumber } = (0,_utils__WEBPACK_IMPORTED_MODULE_3__.getMetadata)(svg);
+
+  // Add the annotation
+  _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().addAnnotation(documentId, pageNumber, annotation)
+    .then((annotation) => {
+      (0,_render_appendChild__WEBPACK_IMPORTED_MODULE_2__.appendChild)(svg, annotation);
+    });
+}
+
+/**
+ * Enable rect behavior
+ */
+function enableRect(type) {
+  _type = type;
+
+  if (_enabled) { return; }
+
+  _enabled = true;
+  document.addEventListener('mouseup', handleDocumentMouseup);
+  document.addEventListener('mousedown', handleDocumentMousedown);
+  document.addEventListener('keyup', handleDocumentKeyup);
+}
+
+/**
+ * Disable rect behavior
+ */
+function disableRect() {
+  if (!_enabled) { return; }
+
+  _enabled = false;
+  document.removeEventListener('mouseup', handleDocumentMouseup);
+  document.removeEventListener('mousedown', handleDocumentMousedown);
+  document.removeEventListener('keyup', handleDocumentKeyup);
+}
+
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/UI/text.js":
+/*!****************************************!*\
+  !*** ./src/online_annotate/UI/text.js ***!
+  \****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "setText": function() { return /* binding */ setText; },
+/* harmony export */   "enableText": function() { return /* binding */ enableText; },
+/* harmony export */   "disableText": function() { return /* binding */ disableText; }
+/* harmony export */ });
+/* harmony import */ var _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../PDFJSAnnotate */ "./src/online_annotate/PDFJSAnnotate.js");
+/* harmony import */ var _render_appendChild__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../render/appendChild */ "./src/online_annotate/render/appendChild.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils */ "./src/online_annotate/UI/utils.js");
+
+
+
+
+let _enabled = false;
+let input;
+let _textSize;
+let _textColor;
+
+/**
+ * Handle document.mouseup event
+ *
+ * @param {Event} e The DOM event to handle
+ */
+function handleDocumentMouseup(e) {
+  if (input || !(0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(e.clientX, e.clientY)) {
+    return;
+  }
+  if (!e.srcElement.classList.contains('onlineAnnotationLayer')) {
+    return;
+  }
+  input = document.createElement('textarea');
+  input.setAttribute('id', 'pdf-annotate-text-input');
+  input.setAttribute('placeholder', 'Enter text... SHIFT + ENTER for new line');
+  input.style.border = `3px solid ${_utils__WEBPACK_IMPORTED_MODULE_2__.BORDER_COLOR}`;
+  input.style.borderRadius = '3px';
+  input.style.position = 'absolute';
+  input.style.top = `${e.clientY}px`;
+  input.style.left = `${e.clientX}px`;
+  input.style.fontSize = `${_textSize}px`;
+  input.style.zIndex = '41';
+  input.addEventListener('blur', handleInputBlur);
+  input.addEventListener('keyup', handleInputKeyup);
+
+  document.body.appendChild(input);
+  input.focus();
+}
+
+/**
+ * Handle input.blur event
+ */
+function handleInputBlur() {
+  saveText();
+}
+
+/**
+ * Handle input.keyup event
+ *
+ * @param {Event} e The DOM event to handle
+ */
+function handleInputKeyup(e) {
+  if (e.keyCode === 27) {
+    closeInput();
+  }
+  else if (e.keyCode === 13 && !e.shiftKey) {
+    saveText();
+  }
+}
+
+/**
+ * Save a text annotation from input
+ */
+function saveText() {
+  let value = (input.value) ? input.value.replace(/ +$/, '') : '';
+  if (value.length > 0) {
+    let clientX = parseInt(input.style.left, 10);
+    let clientY = parseInt(input.style.top, 10);
+    let svg = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(clientX, clientY);
+    if (!svg) {
+      return;
+    }
+    let height = _textSize;
+    let { documentId, pageNumber, viewport } = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getMetadata)(svg);
+    let scale = 1 / viewport.scale;
+    let rect = svg.getBoundingClientRect();
+    let pt = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.convertToSvgPoint)([
+      clientX - rect.left,
+      clientY - rect.top + height], svg, viewport);
+    let annotation = {
+      type: 'textbox',
+      size: _textSize * scale,
+      color: _textColor,
+      content: value,
+      x: pt[0],
+      y: pt[1],
+      rotation: -viewport.rotation
+    };
+
+    _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().addAnnotation(documentId, pageNumber, annotation)
+      .then((annotation) => {
+        (0,_render_appendChild__WEBPACK_IMPORTED_MODULE_1__.appendChild)(svg, annotation);
+      });
+  }
+
+  closeInput();
+}
+
+/**
+ * Close the input
+ */
+function closeInput() {
+  if (input) {
+    input.removeEventListener('blur', handleInputBlur);
+    input.removeEventListener('keyup', handleInputKeyup);
+    document.body.removeChild(input);
+    input = null;
+  }
+}
+
+/**
+ * Set the text attributes
+ *
+ * @param {Number} textSize The size of the text
+ * @param {String} textColor The color of the text
+ */
+function setText(textSize = 12, textColor = '000000') {
+  _textSize = parseInt(textSize, 10);
+  _textColor = textColor;
+}
+
+/**
+ * Enable text behavior
+ */
+function enableText() {
+  if (_enabled) {
+    return;
+  }
+  (0,_utils__WEBPACK_IMPORTED_MODULE_2__.disableTextPointerEvent)();
+  _enabled = true;
+  document.addEventListener('mouseup', handleDocumentMouseup);
+}
+
+/**
+ * Disable text behavior
+ */
+function disableText() {
+  if (!_enabled) { return; }
+  (0,_utils__WEBPACK_IMPORTED_MODULE_2__.enableTextPointerEvent)();
+  _enabled = false;
+  document.removeEventListener('mouseup', handleDocumentMouseup);
+}
+
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/UI/utils.js":
+/*!*****************************************!*\
+  !*** ./src/online_annotate/UI/utils.js ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "BORDER_COLOR": function() { return /* binding */ BORDER_COLOR; },
+/* harmony export */   "findSVGContainer": function() { return /* binding */ findSVGContainer; },
+/* harmony export */   "hasButton": function() { return /* binding */ hasButton; },
+/* harmony export */   "findSVGAtPoint": function() { return /* binding */ findSVGAtPoint; },
+/* harmony export */   "findAnnotationAtPoint": function() { return /* binding */ findAnnotationAtPoint; },
+/* harmony export */   "pointIntersectsRect": function() { return /* binding */ pointIntersectsRect; },
+/* harmony export */   "getOffsetAnnotationRect": function() { return /* binding */ getOffsetAnnotationRect; },
+/* harmony export */   "scaleUp": function() { return /* binding */ scaleUp; },
+/* harmony export */   "convertToSvgRect": function() { return /* binding */ convertToSvgRect; },
+/* harmony export */   "convertToSvgPoint": function() { return /* binding */ convertToSvgPoint; },
+/* harmony export */   "convertToScreenPoint": function() { return /* binding */ convertToScreenPoint; },
+/* harmony export */   "scaleDown": function() { return /* binding */ scaleDown; },
+/* harmony export */   "getScroll": function() { return /* binding */ getScroll; },
+/* harmony export */   "getOffset": function() { return /* binding */ getOffset; },
+/* harmony export */   "disableUserSelect": function() { return /* binding */ disableUserSelect; },
+/* harmony export */   "enableUserSelect": function() { return /* binding */ enableUserSelect; },
+/* harmony export */   "disableTextPointerEvent": function() { return /* binding */ disableTextPointerEvent; },
+/* harmony export */   "enableTextPointerEvent": function() { return /* binding */ enableTextPointerEvent; },
+/* harmony export */   "getMetadata": function() { return /* binding */ getMetadata; }
+/* harmony export */ });
+/* harmony import */ var _render_appendChild__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../render/appendChild */ "./src/online_annotate/render/appendChild.js");
+/* harmony import */ var _utils_mathUtils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/mathUtils */ "./src/online_annotate/utils/mathUtils.js");
+
+
+
+const BORDER_COLOR = '#00BFFF';
+
+const userSelectStyleSheet = document.createElement('style');
+userSelectStyleSheet.innerHTML = `
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+`;
+
+userSelectStyleSheet.setAttribute('data-pdf-annotate-user-select', 'true');
+
+const disaplePointStyleSheet = document.createElement('style');
+disaplePointStyleSheet.innerHTML = `
+.textLayer {
+  pointer-events:none;
+}
+`;
+
+disaplePointStyleSheet.setAttribute('data-pdf-annotate-pointer', 'true');
+
+/**
+ * Find the SVGElement that contains all the annotations for a page
+ *
+ * @param {Element} node An annotation within that container
+ * @return {SVGElement} The container SVG or null if it can't be found
+ */
+function findSVGContainer(node) {
+  let parentNode = node;
+
+  while ((parentNode = parentNode.parentNode) &&
+          parentNode !== document) {
+    if (parentNode.nodeName.toUpperCase() === 'SVG' &&
+        parentNode.getAttribute('data-pdf-annotate-container') === 'true') {
+      return parentNode;
+    }
+  }
+
+  return null;
+}
+
+function hasButton(evt){
+  const path = evt.path;
+  for(let i=0;i<path.length;i++){
+    if(path[i].tagName=='BUTTON')
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Find an SVGElement container at a given point
+ *
+ * @param {Number} x The x coordinate of the point
+ * @param {Number} y The y coordinate of the point
+ * @return {SVGElement} The container SVG or null if one can't be found
+ */
+function findSVGAtPoint(x, y) {
+  let elements = document.querySelectorAll('svg[data-pdf-annotate-container="true"]');
+
+  for (let i = 0, l = elements.length; i < l; i++) {
+    let el = elements[i];
+    let rect = el.getBoundingClientRect();
+    if (pointIntersectsRect(x, y, rect)) {
+      return el;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Find an Element that represents an annotation at a given point.
+ *
+ * IMPORTANT: Requires the annotation layer to be the top most element so
+ *            either use z-ordering or make it the leaf container.
+ *
+ * @param {Number} x The x coordinate of the point
+ * @param {Number} y The y coordinate of the point
+ * @return {Element} The annotation element or null if one can't be found
+ */
+function findAnnotationAtPoint(x, y) {
+  let candidates = document.elementsFromPoint(x, y);
+  for(let candidate of candidates){
+    while (candidate && candidate !== document) {
+      let type = candidate.getAttribute('data-pdf-annotate-type');
+      if (type) {
+        return candidate;
+      }
+      candidate = candidate.parentNode;
+    }
+  }
+  return null;
+}
+
+/**
+ * Determine if a point intersects a rect
+ *
+ * @param {Number} x The x coordinate of the point
+ * @param {Number} y The y coordinate of the point
+ * @param {Object} rect The points of a rect (likely from getBoundingClientRect)
+ * @return {Boolean} True if a collision occurs, otherwise false
+ */
+function pointIntersectsRect(x, y, rect) {
+  return y >= rect.top && y <= rect.bottom && x >= rect.left && x <= rect.right;
+}
+
+/**
+ * Get the rect of an annotation element accounting for offset.
+ *
+ * @param {Element} el The element to get the rect of
+ * @return {Object} The dimensions of the element
+ */
+function getOffsetAnnotationRect(el) {
+  let rect = el.getBoundingClientRect();
+  let { width, height } = rect;
+  let extraOffsetWidth = 0;
+  let extraOffsetHeight = 0;
+  if (['line', 'path'].indexOf(el.tagName.toLowerCase()) > -1 && el.getBBox) {
+    let bbox = el.getBBox();
+    extraOffsetWidth = (rect.width - bbox.width) / 2;
+    extraOffsetHeight = (rect.height - bbox.height) / 2;
+    width = bbox.width;
+    height = bbox.height;
+  }
+  let { offsetLeft, offsetTop } = getOffset(el);
+  return {
+    top: rect.top - offsetTop + extraOffsetHeight,
+    left: rect.left - offsetLeft + extraOffsetWidth,
+    bottom: rect.bottom - offsetTop - extraOffsetHeight,
+    right: rect.right - offsetLeft - extraOffsetWidth,
+    width: width,
+    height: height
+  };
+}
+
+/**
+ * Adjust scale from normalized scale (100%) to rendered scale.
+ *
+ * @param {SVGElement} svg The SVG to gather metadata from
+ * @param {Object} rect A map of numeric values to scale
+ * @return {Object} A copy of `rect` with values scaled up
+ */
+function scaleUp(svg, rect) {
+  let result = {};
+  let { viewport } = getMetadata(svg);
+
+  Object.keys(rect).forEach((key) => {
+    result[key] = rect[key] * viewport.scale;
+  });
+
+  return result;
+}
+
+function convertToSvgRect(rect, svg, viewport) {
+  let pt1 = [rect.x, rect.y];
+  let pt2 = [rect.x + rect.width, rect.y + rect.height];
+
+  pt1 = convertToSvgPoint(pt1, svg, viewport);
+  pt2 = convertToSvgPoint(pt2, svg, viewport);
+
+  return {
+    x: Math.min(pt1[0], pt2[0]),
+    y: Math.min(pt1[1], pt2[1]),
+    width: Math.abs(pt2[0] - pt1[0]),
+    height: Math.abs(pt2[1] - pt1[1])
+  };
+}
+
+function convertToSvgPoint(pt, svg, viewport) {
+  viewport = viewport || getMetadata(svg).viewport;
+
+  let xform = [ 1, 0, 0, 1, 0, 0 ];
+  xform = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_1__.scale)(xform, viewport.scale, viewport.scale);
+  xform = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_1__.rotate)(xform, viewport.rotation);
+
+  let offset = (0,_render_appendChild__WEBPACK_IMPORTED_MODULE_0__.getTranslation)(viewport);
+  xform = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_1__.translate)(xform, offset.x, offset.y);
+
+  return (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_1__.applyInverseTransform)(pt, xform);
+}
+
+function convertToScreenPoint(pt, svg, viewport) {
+  viewport = viewport || getMetadata(svg).viewport;
+
+  let xform = [ 1, 0, 0, 1, 0, 0 ];
+  xform = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_1__.scale)(xform, viewport.scale, viewport.scale);
+  xform = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_1__.rotate)(xform, viewport.rotation);
+
+  let offset = (0,_render_appendChild__WEBPACK_IMPORTED_MODULE_0__.getTranslation)(viewport);
+  xform = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_1__.translate)(xform, offset.x, offset.y);
+
+  return (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_1__.applyTransform)(pt, xform);
+}
+
+/**
+ * Adjust scale from rendered scale to a normalized scale (100%).
+ *
+ * @param {SVGElement} svg The SVG to gather metadata from
+ * @param {Object} rect A map of numeric values to scale
+ * @return {Object} A copy of `rect` with values scaled down
+ */
+function scaleDown(svg, rect) {
+  let result = {};
+  let { viewport } = getMetadata(svg);
+
+  Object.keys(rect).forEach((key) => {
+    result[key] = rect[key] / viewport.scale;
+  });
+
+  return result;
+}
+
+/**
+ * Get the scroll position of an element, accounting for parent elements
+ *
+ * @param {Element} el The element to get the scroll position for
+ * @return {Object} The scrollTop and scrollLeft position
+ */
+function getScroll(el) {
+  let scrollTop = 0;
+  let scrollLeft = 0;
+  let parentNode = el;
+
+  while ((parentNode = parentNode.parentNode) &&
+          parentNode !== document) {
+    scrollTop += parentNode.scrollTop;
+    scrollLeft += parentNode.scrollLeft;
+  }
+
+  return { scrollTop, scrollLeft };
+}
+
+/**
+ * Get the offset position of an element, accounting for parent elements
+ *
+ * @param {Element} el The element to get the offset position for
+ * @return {Object} The offsetTop and offsetLeft position
+ */
+function getOffset(el) {
+  let parentNode = el;
+
+  while ((parentNode = parentNode.parentNode) &&
+          parentNode !== document) {
+    if (parentNode.nodeName.toUpperCase() === 'SVG') {
+      break;
+    }
+  }
+
+  let rect = parentNode.getBoundingClientRect();
+
+  return { offsetLeft: rect.left, offsetTop: rect.top };
+}
+
+/**
+ * Disable user ability to select text on page
+ */
+function disableUserSelect() {
+  if (!userSelectStyleSheet.parentNode) {
+    document.head.appendChild(userSelectStyleSheet);
+  }
+}
+
+/**
+ * Enable user ability to select text on page
+ */
+function enableUserSelect() {
+  if (userSelectStyleSheet.parentNode) {
+    userSelectStyleSheet.parentNode.removeChild(userSelectStyleSheet);
+  }
+}
+
+/**
+ * Disable user ability to select text on page
+ */
+ function disableTextPointerEvent() {
+  if (!disaplePointStyleSheet.parentNode) {
+    document.head.appendChild(disaplePointStyleSheet);
+  }
+}
+
+/**
+ * Enable user ability to select text on page
+ */
+function enableTextPointerEvent() {
+  if (disaplePointStyleSheet.parentNode) {
+    disaplePointStyleSheet.parentNode.removeChild(disaplePointStyleSheet);
+  }
+}
+
+/**
+ * Get the metadata for a SVG container
+ *
+ * @param {SVGElement} svg The SVG container to get metadata for
+ */
+function getMetadata(svg) {
+  return {
+    documentId: svg.getAttribute('data-pdf-annotate-document'),
+    pageNumber: parseInt(svg.getAttribute('data-pdf-annotate-page'), 10),
+    viewport: JSON.parse(svg.getAttribute('data-pdf-annotate-viewport'))
+  };
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/a11y/createScreenReaderOnly.js":
+/*!************************************************************!*\
+  !*** ./src/online_annotate/a11y/createScreenReaderOnly.js ***!
+  \************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ createScreenReaderOnly; }
+/* harmony export */ });
+/**
+ * Create a node that is only visible to screen readers
+ *
+ * @param {String} content The text content that should be read by screen reader
+ * @param {String} [annotationId] The ID of the annotation assocaited
+ * @return {Element} An Element that is only visible to screen readers
+ */
+function createScreenReaderOnly(content, annotationId) {
+  let node = document.createElement('div');
+  let text = document.createTextNode(content);
+  node.appendChild(text);
+  node.setAttribute('id', `pdf-annotate-screenreader-${annotationId}`);
+  node.style.position = 'absolute';
+  node.style.left = '-10000px';
+  node.style.top = 'auto';
+  node.style.width = '1px';
+  node.style.height = '1px';
+  node.style.overflow = 'hidden';
+  return node;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/a11y/initEventHandlers.js":
+/*!*******************************************************!*\
+  !*** ./src/online_annotate/a11y/initEventHandlers.js ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ initEventHandlers; }
+/* harmony export */ });
+/* harmony import */ var _renderScreenReaderHints__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./renderScreenReaderHints */ "./src/online_annotate/a11y/renderScreenReaderHints.js");
+/* harmony import */ var _insertScreenReaderComment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./insertScreenReaderComment */ "./src/online_annotate/a11y/insertScreenReaderComment.js");
+/* harmony import */ var _renderScreenReaderComments__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./renderScreenReaderComments */ "./src/online_annotate/a11y/renderScreenReaderComments.js");
+/* harmony import */ var _UI_event__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../UI/event */ "./src/online_annotate/UI/event.js");
+/* harmony import */ var _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../PDFJSAnnotate */ "./src/online_annotate/PDFJSAnnotate.js");
+
+
+
+
+
+
+/**
+ * Initialize the event handlers for keeping screen reader hints synced with data
+ */
+function initEventHandlers() {
+  (0,_UI_event__WEBPACK_IMPORTED_MODULE_3__.addEventListener)('annotation:add', (documentId, pageNumber, annotation) => {
+    reorderAnnotationsByType(documentId, pageNumber, annotation.type);
+  });
+  (0,_UI_event__WEBPACK_IMPORTED_MODULE_3__.addEventListener)('annotation:edit', (documentId, annotationId, annotation) => {
+    reorderAnnotationsByType(documentId, annotation.page, annotation.type);
+  });
+  (0,_UI_event__WEBPACK_IMPORTED_MODULE_3__.addEventListener)('annotation:delete', removeAnnotation);
+  (0,_UI_event__WEBPACK_IMPORTED_MODULE_3__.addEventListener)('comment:add', insertComment);
+  (0,_UI_event__WEBPACK_IMPORTED_MODULE_3__.addEventListener)('comment:delete', removeComment);
+}
+
+/**
+ * Reorder the annotation numbers by annotation type
+ *
+ * @param {String} documentId The ID of the document
+ * @param {Number} pageNumber The page number of the annotations
+ * @param {Strig} type The annotation type
+ */
+function reorderAnnotationsByType(documentId, pageNumber, type) {
+  _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_4__["default"].getStoreAdapter().getAnnotations(documentId, pageNumber)
+    .then((annotations) => {
+      return annotations.annotations.filter((a) => {
+        return a.type === type;
+      });
+    })
+    .then((annotations) => {
+      annotations.forEach((a) => {
+        removeAnnotation(documentId, a.uuid);
+      });
+
+      return annotations;
+    })
+    .then(_renderScreenReaderHints__WEBPACK_IMPORTED_MODULE_0__["default"]);
+}
+
+/**
+ * Remove the screen reader hint for an annotation
+ *
+ * @param {String} documentId The ID of the document
+ * @param {String} annotationId The Id of the annotation
+ */
+function removeAnnotation(documentId, annotationId) {
+  removeElementById(`pdf-annotate-screenreader-${annotationId}`);
+  removeElementById(`pdf-annotate-screenreader-${annotationId}-end`);
+}
+
+/**
+ * Insert a screen reader hint for a comment
+ *
+ * @param {String} documentId The ID of the document
+ * @param {String} annotationId The ID of tha assocated annotation
+ * @param {Object} comment The comment to insert a hint for
+ */
+function insertComment(documentId, annotationId, comment) {
+  let list = document.querySelector(`pdf-annotate-screenreader-comment-list-${annotationId}`);
+  let promise;
+
+  if (!list) {
+    promise = (0,_renderScreenReaderComments__WEBPACK_IMPORTED_MODULE_2__["default"])(documentId, annotationId, []).then(() => {
+      list = document.querySelector(`pdf-annotate-screenreader-comment-list-${annotationId}`);
+      return true;
+    });
+  }
+  else {
+    promise = Promise.resolve(true);
+  }
+
+  promise.then(() => {
+    (0,_insertScreenReaderComment__WEBPACK_IMPORTED_MODULE_1__["default"])(comment);
+  });
+}
+
+/**
+ * Remove a screen reader hint for a comment
+ *
+ * @param {String} documentId The ID of the document
+ * @param {String} commentId The ID of the comment
+ */
+function removeComment(documentId, commentId) {
+  removeElementById(`pdf-annotate-screenreader-comment-${commentId}`);
+}
+
+/**
+ * Remove an element from the DOM by it's ID if it exists
+ *
+ * @param {String} elementId The ID of the element to be removed
+ */
+function removeElementById(elementId) {
+  let el = document.getElementById(elementId);
+  if (el) {
+    el.parentNode.removeChild(el);
+  }
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/a11y/insertElementWithinChildren.js":
+/*!*****************************************************************!*\
+  !*** ./src/online_annotate/a11y/insertElementWithinChildren.js ***!
+  \*****************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ insertElementWithinChildren; }
+/* harmony export */ });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/online_annotate/config.js");
+/* harmony import */ var _insertElementWithinElement__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./insertElementWithinElement */ "./src/online_annotate/a11y/insertElementWithinElement.js");
+/* harmony import */ var _UI_utils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../UI/utils */ "./src/online_annotate/UI/utils.js");
+
+
+
+
+/**
+ * Insert an element at a point within the document.
+ * This algorithm will try to insert between elements if possible.
+ * It will however use `insertElementWithinElement` if it is more accurate.
+ *
+ * @param {Element} el The element to be inserted
+ * @param {Number} x The x coordinate of the point
+ * @param {Number} y The y coordinate of the point
+ * @param {Number} pageNumber The page number to limit elements to
+ * @return {Boolean} True if element was able to be inserted, otherwise false
+ */
+function insertElementWithinChildren(el, x, y, pageNumber) {
+  // Try and use most accurate method of inserting within an element
+  if ((0,_insertElementWithinElement__WEBPACK_IMPORTED_MODULE_1__["default"])(el, x, y, pageNumber, true)) {
+    return true;
+  }
+
+  // Fall back to inserting between elements
+  let svg = document.querySelector(`svg[data-pdf-annotate-page="${pageNumber}"]`);
+  let rect = svg.getBoundingClientRect();
+  let nodes = [...svg.parentNode.querySelectorAll(_config__WEBPACK_IMPORTED_MODULE_0__["default"].textClassQuery() + ' > div')];
+
+  y = (0,_UI_utils__WEBPACK_IMPORTED_MODULE_2__.scaleUp)(svg, {y}).y + rect.top;
+  x = (0,_UI_utils__WEBPACK_IMPORTED_MODULE_2__.scaleUp)(svg, {x}).x + rect.left;
+
+  // Find the best node to insert before
+  for (let i = 0, l = nodes.length; i < l; i++) {
+    let n = nodes[i];
+    let r = n.getBoundingClientRect();
+    if (y <= r.top) {
+      n.parentNode.insertBefore(el, n);
+      return true;
+    }
+  }
+
+  // If all else fails try to append to the bottom
+  let textLayer = svg.parentNode.querySelector(_config__WEBPACK_IMPORTED_MODULE_0__["default"].textClassQuery());
+  if (textLayer) {
+    let textRect = textLayer.getBoundingClientRect();
+    if ((0,_UI_utils__WEBPACK_IMPORTED_MODULE_2__.pointIntersectsRect)(x, y, textRect)) {
+      textLayer.appendChild(el);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/a11y/insertElementWithinElement.js":
+/*!****************************************************************!*\
+  !*** ./src/online_annotate/a11y/insertElementWithinElement.js ***!
+  \****************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ insertElementWithinElement; }
+/* harmony export */ });
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../config */ "./src/online_annotate/config.js");
+/* harmony import */ var _UI_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../UI/utils */ "./src/online_annotate/UI/utils.js");
+
+
+
+/**
+ * Insert an element at a point within the document.
+ * This algorithm will only insert within an element amidst it's text content.
+ *
+ * @param {Element} el The element to be inserted
+ * @param {Number} x The x coordinate of the point
+ * @param {Number} y The y coordinate of the point
+ * @param {Number} pageNumber The page number to limit elements to
+ * @param {Boolean} insertBefore Whether the element is to be inserted before or after x
+ * @return {Boolean} True if element was able to be inserted, otherwise false
+ */
+function insertElementWithinElement(el, x, y, pageNumber, insertBefore) {
+  const OFFSET_ADJUST = 2;
+
+  // If inserting before adjust `x` by looking for element a few px to the right
+  // Otherwise adjust a few px to the left
+  // This is to allow a little tolerance by searching within the box, instead
+  // of getting a false negative by testing right on the border.
+  x = Math.max(x + (OFFSET_ADJUST * (insertBefore ? 1 : -1)), 0);
+
+  let node = textLayerElementFromPoint(x, y + OFFSET_ADJUST, pageNumber);
+  if (!node) {
+    return false;
+  }
+
+  // Now that node has been found inverse the adjustment for `x`.
+  // This is done to accomodate tolerance by cutting off on the outside of the
+  // text boundary, instead of missing a character by cutting off within.
+  x = x + (OFFSET_ADJUST * (insertBefore ? -1 : 1));
+
+  let svg = document.querySelector(`svg[data-pdf-annotate-page="${pageNumber}"]`);
+  let left = (0,_UI_utils__WEBPACK_IMPORTED_MODULE_1__.scaleDown)(svg, {left: node.getBoundingClientRect().left}).left - svg.getBoundingClientRect().left;
+  let temp = node.cloneNode(true);
+  let head = temp.innerHTML.split('');
+  let tail = [];
+
+  // Insert temp off screen
+  temp.style.position = 'absolute';
+  temp.style.top = '-10000px';
+  temp.style.left = '-10000px';
+  document.body.appendChild(temp);
+
+  while (head.length) {
+    // Don't insert within HTML tags
+    if (head[head.length - 1] === '>') {
+      while (head.length) {
+        tail.unshift(head.pop());
+        if (tail[0] === '<') {
+          break;
+        }
+      }
+    }
+
+    // Check if width of temp based on current head value satisfies x
+    temp.innerHTML = head.join('');
+    let width = (0,_UI_utils__WEBPACK_IMPORTED_MODULE_1__.scaleDown)(svg, {width: temp.getBoundingClientRect().width}).width;
+    if (left + width <= x) {
+      break;
+    }
+    tail.unshift(head.pop());
+  }
+
+  // Update original node with new markup, including element to be inserted
+  node.innerHTML = head.join('') + el.outerHTML + tail.join('');
+  temp.parentNode.removeChild(temp);
+
+  return true;
+}
+
+/**
+ * Get a text layer element at a given point on a page
+ *
+ * @param {Number} x The x coordinate of the point
+ * @param {Number} y The y coordinate of the point
+ * @param {Number} pageNumber The page to limit elements to
+ * @return {Element} First text layer element found at the point
+ */
+function textLayerElementFromPoint(x, y, pageNumber) {
+  let svg = document.querySelector(`svg[data-pdf-annotate-page="${pageNumber}"]`);
+  let rect = svg.getBoundingClientRect();
+  y = (0,_UI_utils__WEBPACK_IMPORTED_MODULE_1__.scaleUp)(svg, {y}).y + rect.top;
+  x = (0,_UI_utils__WEBPACK_IMPORTED_MODULE_1__.scaleUp)(svg, {x}).x + rect.left;
+  return [...svg.parentNode.querySelectorAll(_config__WEBPACK_IMPORTED_MODULE_0__["default"].textClassQuery() + ' [data-canvas-width]')].filter((el) => {
+    return (0,_UI_utils__WEBPACK_IMPORTED_MODULE_1__.pointIntersectsRect)(x, y, el.getBoundingClientRect());
+  })[0];
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/a11y/insertScreenReaderComment.js":
+/*!***************************************************************!*\
+  !*** ./src/online_annotate/a11y/insertScreenReaderComment.js ***!
+  \***************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ insertScreenReaderComment; }
+/* harmony export */ });
+/**
+ * Insert a comment into the DOM to be available by screen reader
+ *
+ * @param {Object} comment The comment to be inserted
+ */
+function insertScreenReaderComment(comment) {
+  if (!comment) {
+    return;
+  }
+
+  let list = document.querySelector(`#pdf-annotate-screenreader-${comment.annotation} ol`);
+  if (list) {
+    let item = document.createElement('li');
+    item.setAttribute('id', `pdf-annotate-screenreader-comment-${comment.uuid}`);
+    item.appendChild(document.createTextNode(`${comment.content}`));
+    list.appendChild(item);
+  }
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/a11y/insertScreenReaderHint.js":
+/*!************************************************************!*\
+  !*** ./src/online_annotate/a11y/insertScreenReaderHint.js ***!
+  \************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ insertScreenReaderHint; }
+/* harmony export */ });
+/* harmony import */ var _createScreenReaderOnly__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./createScreenReaderOnly */ "./src/online_annotate/a11y/createScreenReaderOnly.js");
+/* harmony import */ var _insertElementWithinChildren__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./insertElementWithinChildren */ "./src/online_annotate/a11y/insertElementWithinChildren.js");
+/* harmony import */ var _insertElementWithinElement__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./insertElementWithinElement */ "./src/online_annotate/a11y/insertElementWithinElement.js");
+/* harmony import */ var _renderScreenReaderComments__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./renderScreenReaderComments */ "./src/online_annotate/a11y/renderScreenReaderComments.js");
+
+
+
+
+
+// Annotation types that support comments
+const COMMENT_TYPES = ['highlight', 'point', 'area', 'circle', 'emptycircle', 'fillcircle'];
+
+/**
+ * Insert a hint into the DOM for screen readers for a specific annotation.
+ *
+ * @param {Object} annotation The annotation to insert a hint for
+ * @param {Number} num The number of the annotation out of all annotations of the same type
+ */
+function insertScreenReaderHint(annotation, num = 0) {
+  switch (annotation.type) {
+    case 'highlight':
+    case 'strikeout':
+    case 'underline':
+      let rects = annotation.rectangles;
+      let first = rects[0];
+      let last = rects[rects.length - 1];
+
+      (0,_insertElementWithinElement__WEBPACK_IMPORTED_MODULE_2__["default"])(
+        (0,_createScreenReaderOnly__WEBPACK_IMPORTED_MODULE_0__["default"])(`Begin ${annotation.type} annotation ${num}`, annotation.uuid),
+        first.x, first.y, annotation.page, true
+      );
+
+      (0,_insertElementWithinElement__WEBPACK_IMPORTED_MODULE_2__["default"])(
+        (0,_createScreenReaderOnly__WEBPACK_IMPORTED_MODULE_0__["default"])(`End ${annotation.type} annotation ${num}`, `${annotation.uuid}-end`),
+        last.x + last.width, last.y, annotation.page, false
+      );
+      break;
+
+    case 'textbox':
+    case 'point':
+      let text = annotation.type === 'textbox' ? ` (content: ${annotation.content})` : '';
+
+      (0,_insertElementWithinChildren__WEBPACK_IMPORTED_MODULE_1__["default"])(
+        (0,_createScreenReaderOnly__WEBPACK_IMPORTED_MODULE_0__["default"])(`${annotation.type} annotation ${num}${text}`, annotation.uuid),
+        annotation.x, annotation.y, annotation.page
+      );
+      break;
+
+    case 'drawing':
+    case 'area':
+      let x = typeof annotation.x !== 'undefined' ? annotation.x : annotation.lines[0][0];
+      let y = typeof annotation.y !== 'undefined' ? annotation.y : annotation.lines[0][1];
+
+      (0,_insertElementWithinChildren__WEBPACK_IMPORTED_MODULE_1__["default"])(
+        (0,_createScreenReaderOnly__WEBPACK_IMPORTED_MODULE_0__["default"])(`Unlabeled drawing`, annotation.uuid),
+        x, y, annotation.page
+      );
+      break;
+
+    case 'circle':
+    case 'fillcircle':
+    case 'emptycircle':
+      let x2 = typeof annotation.cx !== 'undefined' ? annotation.cx : annotation.lines[0][0];
+      let y2 = typeof annotation.cy !== 'undefined' ? annotation.cy : annotation.lines[0][1];
+
+      (0,_insertElementWithinChildren__WEBPACK_IMPORTED_MODULE_1__["default"])(
+        (0,_createScreenReaderOnly__WEBPACK_IMPORTED_MODULE_0__["default"])(`Unlabeled drawing`, annotation.uuid),
+        x2, y2, annotation.page
+      );
+      break;
+  }
+
+  // Include comments in screen reader hint
+  if (COMMENT_TYPES.includes(annotation.type)) {
+    (0,_renderScreenReaderComments__WEBPACK_IMPORTED_MODULE_3__["default"])(annotation.documentId, annotation.uuid);
+  }
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/a11y/renderScreenReaderComments.js":
+/*!****************************************************************!*\
+  !*** ./src/online_annotate/a11y/renderScreenReaderComments.js ***!
+  \****************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ renderScreenReaderComments; }
+/* harmony export */ });
+/* harmony import */ var _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../PDFJSAnnotate */ "./src/online_annotate/PDFJSAnnotate.js");
+/* harmony import */ var _insertScreenReaderComment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./insertScreenReaderComment */ "./src/online_annotate/a11y/insertScreenReaderComment.js");
+
+
+
+/**
+ * Insert the comments into the DOM to be available by screen reader
+ *
+ * Example output:
+ *   <div class="screenReaderOnly">
+ *    <div>Begin highlight 1</div>
+ *    <ol aria-label="Comments">
+ *      <li>Foo</li>
+ *      <li>Bar</li>
+ *      <li>Baz</li>
+ *      <li>Qux</li>
+ *    </ol>
+ *  </div>
+ *  <div>Some highlighted text goes here...</div>
+ *  <div class="screenReaderOnly">End highlight 1</div>
+ *
+ * NOTE: `screenReaderOnly` is not a real class, just used for brevity
+ *
+ * @param {String} documentId The ID of the document
+ * @param {String} annotationId The ID of the annotation
+ * @param {Array} [comments] Optionally preloaded comments to be rendered
+ * @return {Promise} Promise that once has comments, render them for screen reader
+ */
+function renderScreenReaderComments(documentId, annotationId, comments) {
+  let promise;
+
+  if (Array.isArray(comments)) {
+    promise = Promise.resolve(comments);
+  }
+  else {
+    promise = _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().getComments(documentId, annotationId);
+  }
+
+  return promise.then((comments) => {
+    // Node needs to be found by querying DOM as it may have been inserted as innerHTML
+    // leaving `screenReaderNode` as an invalid reference (see `insertElementWithinElement`).
+    let node = document.getElementById(`pdf-annotate-screenreader-${annotationId}`);
+    if (node) {
+      let list = document.createElement('ol');
+      list.setAttribute('id', `pdf-annotate-screenreader-comment-list-${annotationId}`);
+      list.setAttribute('aria-label', 'Comments');
+      node.appendChild(list);
+      comments.forEach(_insertScreenReaderComment__WEBPACK_IMPORTED_MODULE_1__["default"]);
+    }
+  });
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/a11y/renderScreenReaderHints.js":
+/*!*************************************************************!*\
+  !*** ./src/online_annotate/a11y/renderScreenReaderHints.js ***!
+  \*************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ renderScreenReaderHints; }
+/* harmony export */ });
+/* harmony import */ var _insertScreenReaderHint__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./insertScreenReaderHint */ "./src/online_annotate/a11y/insertScreenReaderHint.js");
+/* harmony import */ var _initEventHandlers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./initEventHandlers */ "./src/online_annotate/a11y/initEventHandlers.js");
+
+
+
+// TODO This is not the right place for this to live
+(0,_initEventHandlers__WEBPACK_IMPORTED_MODULE_1__["default"])();
+
+/**
+ * Insert hints into the DOM for screen readers.
+ *
+ * @param {Array} annotations The annotations that hints are inserted for
+ */
+function renderScreenReaderHints(annotations) {
+  annotations = Array.isArray(annotations) ? annotations : [];
+
+  // Insert hints for each type
+  Object.keys(SORT_TYPES).forEach((type) => {
+    let sortBy = SORT_TYPES[type];
+    annotations
+      .filter((a) => a.type === type)
+      .sort(sortBy)
+      .forEach((a, i) => (0,_insertScreenReaderHint__WEBPACK_IMPORTED_MODULE_0__["default"])(a, i + 1));
+  });
+}
+
+// Sort annotations first by y, then by x.
+// This allows hints to be injected in the order they appear,
+// which makes numbering them easier.
+function sortByPoint(a, b) {
+  if (a.y < b.y) {
+    return a.x - b.x;
+  }
+  else {
+    return 1;
+  }
+}
+
+// Sort annotation by it's first rectangle
+function sortByRectPoint(a, b) {
+  return sortByPoint(a.rectangles[0], b.rectangles[0]);
+}
+
+// Sort annotation by it's first line
+function sortByLinePoint(a, b) {
+  let lineA = a.lines[0];
+  let lineB = b.lines[0];
+  return sortByPoint(
+    {x: lineA[0], y: lineA[1]},
+    {x: lineB[0], y: lineB[1]}
+  );
+}
+
+// Arrange supported types and associated sort methods
+const SORT_TYPES = {
+  'highlight': sortByRectPoint,
+  'strikeout': sortByRectPoint,
+  'underline': sortByRectPoint,
+  'drawing': sortByLinePoint,
+  'textbox': sortByPoint,
+  'point': sortByPoint,
+  'area': sortByPoint
+};
+
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/adapter/LocalStoreAdapter.js":
+/*!**********************************************************!*\
+  !*** ./src/online_annotate/adapter/LocalStoreAdapter.js ***!
+  \**********************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ LocalStoreAdapter; }
+/* harmony export */ });
+/* harmony import */ var _utils_uuid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/uuid */ "./src/online_annotate/utils/uuid.js");
+/* harmony import */ var _StoreAdapter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./StoreAdapter */ "./src/online_annotate/adapter/StoreAdapter.js");
+
+
+
+// StoreAdapter for working with localStorage
+// This is ideal for testing, examples, and prototyping
+class LocalStoreAdapter extends _StoreAdapter__WEBPACK_IMPORTED_MODULE_1__["default"] {
+  constructor() {
+    super({
+      getAnnotations(documentId, pageNumber) {
+        return new Promise((resolve, reject) => {
+          let annotations = getAnnotations(documentId).filter((i) => {
+            return i.page === pageNumber && i.class === 'Annotation';
+          });
+
+          resolve({
+            documentId,
+            pageNumber,
+            annotations
+          });
+        });
+      }
+    });
+
+    this.getAnnotation = (documentId, annotationId) => {
+      return Promise.resolve(getAnnotations(documentId)[findAnnotation(documentId, annotationId)]);
+    };
+
+    this.addAnnotation = (documentId, pageNumber, annotation) => {
+      //console.error('aa');
+      return new Promise((resolve, reject) => {
+        annotation.class = 'Annotation';
+        annotation.uuid = (0,_utils_uuid__WEBPACK_IMPORTED_MODULE_0__["default"])();
+        annotation.page = pageNumber;
+
+        let annotations = getAnnotations(documentId);
+        annotations.push(annotation);
+        updateAnnotations(documentId, annotations);
+
+        resolve(annotation);
+      });
+    };
+
+    this.editAnnotation = (documentId, annotationId, annotation) => {
+      return new Promise((resolve, reject) => {
+        let annotations = getAnnotations(documentId);
+        annotations[findAnnotation(documentId, annotationId)] = annotation;
+        updateAnnotations(documentId, annotations);
+        resolve(annotation);
+      });
+    };
+
+    this.deleteAnnotation = (documentId, annotationId) => {
+      return new Promise((resolve, reject) => {
+        let annotation = getAnnotations(documentId).filter(i => i.uuid === annotationId)[0] || {};
+        if (!annotation) {
+          return reject('Could not find annotation');
+        }
+        let index = findAnnotation(documentId, annotationId);
+        if (index > -1) {
+          let annotations = getAnnotations(documentId);
+          annotations.splice(index, 1);
+          updateAnnotations(documentId, annotations);
+        }
+
+        resolve(true);
+      });
+    };
+
+    this.getComments = (documentId, annotationId) => {
+      return new Promise((resolve, reject) => {
+        resolve(getAnnotations(documentId).filter((i) => {
+          return i.class === 'Comment' && i.annotation === annotationId;
+        }));
+      });
+    };
+
+    this.addComment = (documentId, annotationId, content) => {
+      return new Promise((resolve, reject) => {
+        let comment = {
+          class: 'Comment',
+          uuid: (0,_utils_uuid__WEBPACK_IMPORTED_MODULE_0__["default"])(),
+          annotation: annotationId,
+          content: content
+        };
+
+        let annotations = getAnnotations(documentId);
+        annotations.push(comment);
+        updateAnnotations(documentId, annotations);
+
+        resolve(comment);
+      });
+    };
+
+    this.deleteComment = (documentId, commentId) => {
+      return new Promise((resolve, reject) => {
+        let comment = getAnnotations(documentId).filter(i => i.uuid === commentId)[0] || {};
+        if (!comment) {
+          return reject('Could not find annotation');
+        }
+        let index = -1;
+        let annotations = getAnnotations(documentId);
+        for (let i = 0, l = annotations.length; i < l; i++) {
+          if (annotations[i].uuid === commentId) {
+            index = i;
+            break;
+          }
+        }
+
+        if (index > -1) {
+          annotations.splice(index, 1);
+          updateAnnotations(documentId, annotations);
+        }
+
+        resolve(true);
+      });
+    };
+  }
+}
+
+function getAnnotations(documentId) {
+  return JSON.parse(localStorage.getItem(`${documentId}/annotations`)) || [];
+}
+
+function updateAnnotations(documentId, annotations) {
+  localStorage.setItem(`${documentId}/annotations`, JSON.stringify(annotations));
+}
+/**
+ *
+ * @param {String} documentId Document id of the annotation
+ * @param {String} annotationId The id of the annotation
+ *
+ * This function finds all the annotation made by one user.
+ *
+ * @return {int} The index of the annotation in localstorage
+ */
+function findAnnotation(documentId, annotationId) {
+  let index = -1;
+  let annotations = getAnnotations(documentId);
+  for (let i = 0, l = annotations.length; i < l; i++) {
+    if (annotations[i].uuid === annotationId) {
+      index = i;
+      break;
+    }
+  }
+  return index;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/adapter/LocalUserStoreAdapter.js":
+/*!**************************************************************!*\
+  !*** ./src/online_annotate/adapter/LocalUserStoreAdapter.js ***!
+  \**************************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ LocalUserStoreAdapter; }
+/* harmony export */ });
+/* harmony import */ var _utils_uuid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/uuid */ "./src/online_annotate/utils/uuid.js");
+/* harmony import */ var _StoreAdapter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./StoreAdapter */ "./src/online_annotate/adapter/StoreAdapter.js");
+
+
+
+// StoreAdapter for working with localStorage and associated user id
+// This is ideal for testing, examples, and prototyping
+class LocalUserStoreAdapter extends _StoreAdapter__WEBPACK_IMPORTED_MODULE_1__["default"] {
+  constructor(userId = 'user', globalEdit = false) {
+    super({
+      getAnnotations(documentId, pageNumber) {
+        return new Promise((resolve, reject) => {
+          let annotations = getAllAnnotations(documentId).filter((i) => {
+            return i.page === pageNumber && i.class === 'Annotation';
+          });
+
+          resolve({
+            documentId,
+            pageNumber,
+            annotations
+          });
+        });
+      }
+    });
+
+    this._userId = userId;
+    this._globalEdit = globalEdit;
+
+    this.getAnnotation = (documentId, annotationId) => {
+      return Promise.resolve(getAnnotations(documentId, this._userId)[findAnnotation(documentId, this._userId, annotationId)]);
+    };
+
+    this.addAnnotation = (documentId, pageNumber, annotation) => {
+      return new Promise((resolve, reject) => {
+        annotation.class = 'Annotation';
+        annotation.uuid = (0,_utils_uuid__WEBPACK_IMPORTED_MODULE_0__["default"])();
+        annotation.page = pageNumber;
+        annotation.userId = this._userId;
+
+        let annotations = getAnnotations(documentId, this._userId);
+        annotations.push(annotation);
+        updateAnnotations(documentId, this._userId, annotations);
+
+        resolve(annotation);
+      });
+    };
+
+    this.editAnnotation = (documentId, annotationId, annotation) => {
+      return new Promise((resolve, reject) => {
+        if (!this._globalEdit && annotation.userId && annotation.userId !== this._userId) {
+          reject('Non-matching userId');
+        }
+        let annotations = getAnnotations(documentId, annotation.userId);
+        annotations[findAnnotation(documentId, annotation.userId, annotationId)] = annotation;
+        updateAnnotations(documentId, annotation.userId, annotations);
+        resolve(annotation);
+      });
+    };
+
+    this.deleteAnnotation = (documentId, annotationId) => {
+      return new Promise((resolve, reject) => {
+        let annotation = getAllAnnotations(documentId).filter(i => i.uuid === annotationId)[0] || {};
+        if (!annotation) {
+          return reject('Could not find annotation');
+        }
+        else if (!this._globalEdit && annotation.userId && annotation.userId !== this._userId) {
+          return reject('Non-matching userId');
+        }
+        let index = findAnnotation(documentId, annotation.userId, annotationId);
+        if (index > -1) {
+          let annotations = getAnnotations(documentId, annotation.userId);
+          annotations.splice(index, 1);
+          updateAnnotations(documentId, annotation.userId, annotations);
+        }
+
+        resolve(true);
+      });
+    };
+
+    this.getComments = (documentId, annotationId) => {
+      return new Promise((resolve, reject) => {
+        resolve(getAnnotations(documentId, this._userId).filter((i) => {
+          return i.class === 'Comment' && i.annotation === annotationId;
+        }));
+      });
+    };
+
+    this.addComment = (documentId, annotationId, content) => {
+      return new Promise((resolve, reject) => {
+        let comment = {
+          class: 'Comment',
+          uuid: (0,_utils_uuid__WEBPACK_IMPORTED_MODULE_0__["default"])(),
+          annotation: annotationId,
+          content: content,
+          userId: this._userId
+        };
+
+        let annotations = getAnnotations(documentId, this._userId);
+        annotations.push(comment);
+        updateAnnotations(documentId, this._userId, annotations);
+
+        resolve(comment);
+      });
+    };
+
+    this.deleteComment = (documentId, commentId) => {
+      return new Promise((resolve, reject) => {
+        let comment = getAllAnnotations(documentId).filter(i => i.uuid === commentId)[0] || {};
+        if (!comment) {
+          return reject('Could not find annotation');
+        }
+        else if (!this._globalEdit && comment.userId && comment.userId !== this._userId) {
+          return reject('Non-matching userId');
+        }
+        let index = -1;
+        let annotations = getAnnotations(documentId, comment.userId);
+        for (let i = 0, l = annotations.length; i < l; i++) {
+          if (annotations[i].uuid === commentId) {
+            index = i;
+            break;
+          }
+        }
+
+        if (index > -1) {
+          annotations.splice(index, 1);
+          updateAnnotations(documentId, comment.userId, annotations);
+        }
+
+        resolve(true);
+      });
+    };
+  }
+
+  get userId() {
+    return this._userId;
+  }
+}
+
+function getAllAnnotations(documentId) {
+  let all_annotations = [];
+  let re = new RegExp(`${documentId}/(.*)/annotations`);
+  for (let i = 0; i < localStorage.length; i++) {
+    if (localStorage.key(i).search(re) > -1) {
+      all_annotations.push(...JSON.parse(localStorage.getItem(localStorage.key(i))));
+    }
+  }
+  return all_annotations;
+}
+
+function getAnnotations(documentId, userId) {
+  return JSON.parse(localStorage.getItem(`${documentId}/${userId}/annotations`)) || [];
+}
+
+function updateAnnotations(documentId, userId, annotations) {
+  localStorage.setItem(`${documentId}/${userId}/annotations`, JSON.stringify(annotations));
+}
+/**
+ *
+ * @param {String} documentId Document id of the annotation
+ * @param {String} userId User id of the annotation
+ * @param {String} annotationId The id of the annotation
+ *
+ * This function finds all the annotation made by one user.
+ *
+ * @return {int} The index of the annotation in localstorage
+ */
+function findAnnotation(documentId, userId, annotationId) {
+  let index = -1;
+  let annotations = getAnnotations(documentId, userId);
+  for (let i = 0, l = annotations.length; i < l; i++) {
+    if (annotations[i].uuid === annotationId) {
+      index = i;
+      break;
+    }
+  }
+  return index;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/adapter/StoreAdapter.js":
+/*!*****************************************************!*\
+  !*** ./src/online_annotate/adapter/StoreAdapter.js ***!
+  \*****************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ StoreAdapter; }
+/* harmony export */ });
+/* harmony import */ var _utils_abstractFunction__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/abstractFunction */ "./src/online_annotate/utils/abstractFunction.js");
+/* harmony import */ var _UI_event__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../UI/event */ "./src/online_annotate/UI/event.js");
+// Disable JSDoc as it cannot really deal with the odd way that the functions are defined
+/* eslint valid-jsdoc: 0 */
+
+
+
+
+// Adapter should never be invoked publicly
+class StoreAdapter {
+  /**
+   * Create a new StoreAdapter instance
+   *
+   * @param {Object} [definition] The definition to use for overriding abstract methods
+   */
+  constructor(definition = {}) {
+    // Copy each function from definition if it is a function we know about
+    Object.keys(definition).forEach((key) => {
+      if (typeof definition[key] === 'function' &&
+          typeof this[key] === 'function') {
+        this[key] = definition[key];
+      }
+    });
+  }
+
+  /**
+   * Get all the annotations for a given document and page number.
+   *
+   * @param {String} documentId The ID for the document the annotations belong to
+   * @param {Number} pageNumber The number of the page the annotations belong to
+   * @return {Promise} Promise that returns with list of annotations for document and page
+   */
+  __getAnnotations(documentId, pageNumber) { (0,_utils_abstractFunction__WEBPACK_IMPORTED_MODULE_0__["default"])('getAnnotations'); }
+  get getAnnotations() { return this.__getAnnotations; }
+  set getAnnotations(fn) {
+    this.__getAnnotations = function getAnnotations(documentId, pageNumber) {
+      return fn(...arguments).then((annotations) => {
+        // TODO may be best to have this happen on the server
+        if (annotations.annotations) {
+          annotations.annotations.forEach((a) => {
+            a.documentId = documentId;
+          });
+        }
+        return annotations;
+      });
+    };
+  }
+
+  /**
+   * Get the definition for a specific annotation.
+   *
+   * @param {String} documentId The ID for the document the annotation belongs to
+   * @param {String} annotationId The ID for the annotation
+   * @return {Promise} Promise that returns the requested annotation
+   */
+  getAnnotation(documentId, annotationId) { (0,_utils_abstractFunction__WEBPACK_IMPORTED_MODULE_0__["default"])('getAnnotation'); }
+
+  /**
+   * Add an annotation
+   *
+   * @param {String} documentId The ID for the document to add the annotation to
+   * @param {String} pageNumber The page number to add the annotation to
+   * @param {Object} annotation The definition for the new annotation
+   * @return {Promise} Promise that returns with the added annotation
+   */
+  __addAnnotation(documentId, pageNumber, annotation) { (0,_utils_abstractFunction__WEBPACK_IMPORTED_MODULE_0__["default"])('addAnnotation'); }
+  get addAnnotation() { return this.__addAnnotation; }
+  set addAnnotation(fn) {
+    this.__addAnnotation = function addAnnotation(documentId, pageNumber, annotation) {
+      return fn(...arguments).then((annotation) => {
+        (0,_UI_event__WEBPACK_IMPORTED_MODULE_1__.fireEvent)('annotation:add', documentId, pageNumber, annotation);
+        return annotation;
+      });
+    };
+  }
+
+  /**
+   * Edit an annotation
+   *
+   * @param {String} documentId The ID for the document
+   * @param {String} pageNumber the page number of the annotation
+   * @param {Object} annotation The definition of the modified annotation
+   * @return {Promise} Promise that returns with the edited annotation
+   */
+  __editAnnotation(documentId, pageNumber, annotation) { (0,_utils_abstractFunction__WEBPACK_IMPORTED_MODULE_0__["default"])('editAnnotation'); }
+  get editAnnotation() { return this.__editAnnotation; }
+  set editAnnotation(fn) {
+    this.__editAnnotation = function editAnnotation(documentId, annotationId, annotation) {
+      return fn(...arguments).then((annotation) => {
+        (0,_UI_event__WEBPACK_IMPORTED_MODULE_1__.fireEvent)('annotation:edit', documentId, annotationId, annotation);
+        return annotation;
+      });
+    };
+  }
+
+  /**
+   * Delete an annotation
+   *
+   * @param {String} documentId The ID for the document
+   * @param {String} annotationId The ID for the annotation
+   * @return {Promise} Promise that returns with boolean if annotation was deleted
+   */
+  __deleteAnnotation(documentId, annotationId) { (0,_utils_abstractFunction__WEBPACK_IMPORTED_MODULE_0__["default"])('deleteAnnotation'); }
+  get deleteAnnotation() { return this.__deleteAnnotation; }
+  set deleteAnnotation(fn) {
+    this.__deleteAnnotation = function deleteAnnotation(documentId, annotationId) {
+      return fn(...arguments).then((success) => {
+        if (success) {
+          (0,_UI_event__WEBPACK_IMPORTED_MODULE_1__.fireEvent)('annotation:delete', documentId, annotationId);
+        }
+        return success;
+      });
+    };
+  }
+
+  /**
+   * Get all the comments for an annotation
+   *
+   * @param {String} documentId The ID for the document
+   * @param {String} annotationId The ID for the annotation
+   * @return {Promise} Promise that returns with comments for annotation
+   */
+  getComments(documentId, annotationId) { (0,_utils_abstractFunction__WEBPACK_IMPORTED_MODULE_0__["default"])('getComments'); }
+
+  /**
+   * Add a new comment
+   *
+   * @param {String} documentId The ID for the document
+   * @param {String} annotationId The ID for the annotation
+   * @param {Object} content The definition of the comment
+   * @return {Promise} Promise that returns with the added comment
+   */
+  __addComment(documentId, annotationId, content) { (0,_utils_abstractFunction__WEBPACK_IMPORTED_MODULE_0__["default"])('addComment'); }
+  get addComment() { return this.__addComment; }
+  set addComment(fn) {
+    this.__addComment = function addComment(documentId, annotationId, content) {
+      return fn(...arguments).then((comment) => {
+        (0,_UI_event__WEBPACK_IMPORTED_MODULE_1__.fireEvent)('comment:add', documentId, annotationId, comment);
+        return comment;
+      });
+    };
+  }
+
+  /**
+   * Delete a comment
+   *
+   * @param {String} documentId The ID for the document
+   * @param {String} commentId The ID for the comment
+   * @return {Promise} Promise that returns with boolean if comment was deleted
+   */
+  __deleteComment(documentId, commentId) { (0,_utils_abstractFunction__WEBPACK_IMPORTED_MODULE_0__["default"])('deleteComment'); }
+  get deleteComment() { return this.__deleteComment; }
+  set deleteComment(fn) {
+    this.__deleteComment = function deleteComment(documentId, commentId) {
+      return fn(...arguments).then((success) => {
+        if (success) {
+          (0,_UI_event__WEBPACK_IMPORTED_MODULE_1__.fireEvent)('comment:delete', documentId, commentId);
+        }
+        return success;
+      });
+    };
+  }
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/config.js":
+/*!***************************************!*\
+  !*** ./src/online_annotate/config.js ***!
+  \***************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  annotationLayerName: 'onlineAnnotationLayer',
+  textLayerName: 'textLayer',
+  annotationSvgQuery: function() {
+    return 'svg.' + this.annotationLayerName;
+  },
+  annotationClassQuery: function() {
+    return '.' + this.annotationLayerName;
+  },
+  textClassQuery: function() {
+    return '.' + this.textLayerName;
+  }
+});
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/initColorPicker.js":
+/*!************************************************!*\
+  !*** ./src/online_annotate/initColorPicker.js ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ initColorPicker; }
+/* harmony export */ });
+// Color picker component
+const COLORS = [
+  {hex: '#000000', name: 'Black'},
+  {hex: '#EF4437', name: 'Red'},
+  {hex: '#E71F63', name: 'Pink'},
+  {hex: '#8F3E97', name: 'Purple'},
+  {hex: '#65499D', name: 'Deep Purple'},
+  {hex: '#4554A4', name: 'Indigo'},
+  {hex: '#2083C5', name: 'Blue'},
+  {hex: '#35A4DC', name: 'Light Blue'},
+  {hex: '#09BCD3', name: 'Cyan'},
+  {hex: '#009688', name: 'Teal'},
+  {hex: '#43A047', name: 'Green'},
+  {hex: '#8BC34A', name: 'Light Green'},
+  {hex: '#FDC010', name: 'Yellow'},
+  {hex: '#F8971C', name: 'Orange'},
+  {hex: '#F0592B', name: 'Deep Orange'},
+  {hex: '#F06291', name: 'Light Pink'}
+];
+
+function initColorPicker(el, value, onChange) {
+  function getNameFromHex(hex) {
+    for (let color of COLORS) {
+      if (color.hex === hex) {
+        return color.name;
+      }
+    }
+  }
+
+  function setColor(hex, name, fireOnChange = true) {
+    a.setAttribute('data-color', hex);
+    a.setAttribute('data-name', name);
+    a.setAttribute('title', name);
+    a.style.background = hex;
+    if (fireOnChange && typeof onChange === 'function') {
+      onChange(hex);
+    }
+    closePicker();
+  }
+
+  function togglePicker() {
+    if (isPickerOpen) {
+      closePicker();
+    }
+    else {
+      openPicker();
+    }
+  }
+
+  function closePicker() {
+    document.removeEventListener('keyup', handleDocumentKeyup);
+    if (picker && picker.parentNode) {
+      picker.parentNode.removeChild(picker);
+    }
+    isPickerOpen = false;
+    a.focus();
+  }
+
+  function openPicker() {
+    if (!picker) {
+      picker = document.createElement('div');
+      picker.style.background = '#fff';
+      picker.style.border = '1px solid #ccc';
+      picker.style.padding = '2px';
+      picker.style.position = 'absolute';
+      picker.style.width = '122px';
+      el.style.position = 'relative';
+
+      COLORS.map(createColorOption).forEach((c) => {
+        c.style.margin = '2px';
+        c.onclick = function() {
+          setColor(c.getAttribute('data-color'), c.getAttribute('data-name'));
+        };
+        picker.appendChild(c);
+      });
+    }
+
+    document.addEventListener('keyup', handleDocumentKeyup);
+    el.appendChild(picker);
+    isPickerOpen = true;
+  }
+
+  function createColorOption(color) {
+    let e = document.createElement('a');
+    e.className = 'color';
+    e.setAttribute('href', 'javascript://');
+    e.setAttribute('title', color.name);
+    e.setAttribute('data-name', color.name);
+    e.setAttribute('data-color', color.hex);
+    e.style.background = color.hex;
+    return e;
+  }
+
+  function handleDocumentKeyup(e) {
+    if (e.keyCode === 27) {
+      closePicker();
+    }
+  }
+
+  let picker;
+  let isPickerOpen = false;
+  let name = getNameFromHex(value);
+  let a = createColorOption({hex: value, name: name});
+  a.onclick = togglePicker;
+  el.appendChild(a);
+  setColor(value, name, false);
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/render/appendChild.js":
+/*!***************************************************!*\
+  !*** ./src/online_annotate/render/appendChild.js ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getTranslation": function() { return /* binding */ getTranslation; },
+/* harmony export */   "appendChild": function() { return /* binding */ appendChild; },
+/* harmony export */   "transformChild": function() { return /* binding */ transformChild; }
+/* harmony export */ });
+/* harmony import */ var _renderLine__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./renderLine */ "./src/online_annotate/render/renderLine.js");
+/* harmony import */ var _renderPath__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./renderPath */ "./src/online_annotate/render/renderPath.js");
+/* harmony import */ var _renderPoint__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./renderPoint */ "./src/online_annotate/render/renderPoint.js");
+/* harmony import */ var _renderRect__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./renderRect */ "./src/online_annotate/render/renderRect.js");
+/* harmony import */ var _renderText__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./renderText */ "./src/online_annotate/render/renderText.js");
+/* harmony import */ var _renderCircle__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./renderCircle */ "./src/online_annotate/render/renderCircle.js");
+/* harmony import */ var _renderArrow__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./renderArrow */ "./src/online_annotate/render/renderArrow.js");
+
+
+
+
+
+
+
+
+const isFirefox = /firefox/i.test(navigator.userAgent);
+
+/**
+ * Get the x/y translation to be used for transforming the annotations
+ * based on the rotation of the viewport.
+ *
+ * @param {Object} viewport The viewport data from the page
+ * @return {Object}
+ */
+function getTranslation(viewport) {
+  let x;
+  let y;
+
+  // Modulus 360 on the rotation so that we only
+  // have to worry about four possible values.
+  switch (viewport.rotation % 360) {
+    case 0:
+      x = y = 0;
+      break;
+    case 90:
+      x = 0;
+      y = (viewport.width / viewport.scale) * -1;
+      break;
+    case 180:
+      x = (viewport.width / viewport.scale) * -1;
+      y = (viewport.height / viewport.scale) * -1;
+      break;
+    case 270:
+      x = (viewport.height / viewport.scale) * -1;
+      y = 0;
+      break;
+  }
+
+  return { x, y };
+}
+
+/**
+ * Transform the rotation and scale of a node using SVG's native transform attribute.
+ *
+ * @param {Node} node The node to be transformed
+ * @param {Object} viewport The page's viewport data
+ * @return {Node}
+ */
+function transform(node, viewport) {
+  let trans = getTranslation(viewport);
+
+  // Let SVG natively transform the element
+  node.setAttribute('transform', `scale(${viewport.scale}) rotate(${viewport.rotation}) translate(${trans.x}, ${trans.y})`);
+
+  // Manually adjust x/y for nested SVG nodes
+  if (!isFirefox && node.nodeName.toLowerCase() === 'svg') {
+    node.setAttribute('x', parseInt(node.getAttribute('x'), 10) * viewport.scale);
+    node.setAttribute('y', parseInt(node.getAttribute('y'), 10) * viewport.scale);
+
+    let x = parseInt(node.getAttribute('x', 10));
+    let y = parseInt(node.getAttribute('y', 10));
+    let width = parseInt(node.getAttribute('width'), 10);
+    let height = parseInt(node.getAttribute('height'), 10);
+    let path = node.querySelector('path');
+    let svg = path.parentNode;
+
+    // Scale width/height
+    [node, svg, path, node.querySelector('rect')].forEach((n) => {
+      n.setAttribute('width', parseInt(n.getAttribute('width'), 10) * viewport.scale);
+      n.setAttribute('height', parseInt(n.getAttribute('height'), 10) * viewport.scale);
+    });
+
+    // Transform path but keep scale at 100% since it will be handled natively
+    transform(path, Object.assign({}, viewport, { scale: 1 }));
+
+    switch (viewport.rotation % 360) {
+      case 90:
+        node.setAttribute('x', viewport.width - y - width);
+        node.setAttribute('y', x);
+        svg.setAttribute('x', 1);
+        svg.setAttribute('y', 0);
+        break;
+      case 180:
+        node.setAttribute('x', viewport.width - x - width);
+        node.setAttribute('y', viewport.height - y - height);
+        svg.setAttribute('y', 2);
+        break;
+      case 270:
+        node.setAttribute('x', y);
+        node.setAttribute('y', viewport.height - x - height);
+        svg.setAttribute('x', -1);
+        svg.setAttribute('y', 0);
+        break;
+    }
+  }
+
+  return node;
+}
+
+/**
+ * Append an annotation as a child of an SVG.
+ *
+ * @param {SVGElement} svg The SVG element to append the annotation to
+ * @param {Object} annotation The annotation definition to render and append
+ * @param {Object} viewport The page's viewport data
+ * @return {SVGElement} A node that was created and appended by this function
+ */
+function appendChild(svg, annotation, viewport) {
+  if (!viewport) {
+    viewport = JSON.parse(svg.getAttribute('data-pdf-annotate-viewport'));
+  }
+
+  let child;
+  switch (annotation.type) {
+    case 'area':
+    case 'highlight':
+      child = (0,_renderRect__WEBPACK_IMPORTED_MODULE_3__["default"])(annotation);
+      break;
+    case 'circle':
+    case 'fillcircle':
+    case 'emptycircle':
+      child = (0,_renderCircle__WEBPACK_IMPORTED_MODULE_5__["default"])(annotation);
+      break;
+    case 'strikeout':
+      case 'underline':
+      child = (0,_renderLine__WEBPACK_IMPORTED_MODULE_0__["default"])(annotation);
+      break;
+    case 'point':
+      child = (0,_renderPoint__WEBPACK_IMPORTED_MODULE_2__["default"])(annotation);
+      break;
+    case 'textbox':
+      child = (0,_renderText__WEBPACK_IMPORTED_MODULE_4__["default"])(annotation);
+      break;
+    case 'drawing':
+      child = (0,_renderPath__WEBPACK_IMPORTED_MODULE_1__["default"])(annotation);
+      break;
+    case 'arrow':
+      child = (0,_renderArrow__WEBPACK_IMPORTED_MODULE_6__["default"])(annotation);
+      break;
+  }
+
+  // If no type was provided for an annotation it will result in node being null.
+  // Skip appending/transforming if node doesn't exist.
+  if (child) {
+    // Set attributes
+    child.setAttribute('data-pdf-annotate-id', annotation.uuid);
+    child.setAttribute('aria-hidden', true);
+
+    // Dynamically set any other attributes associated with annotation that is not related to drawing it
+    Object.keys(annotation).filter((key) => {
+      return ['color', 'x', 'y', 'cx', 'cy', 'color', 'documentId', 'lines', 'page',
+        'width', 'class', 'content', 'size', 'rotation', 'r'].indexOf(key) === -1;
+    }).forEach((key) => {
+      child.setAttribute(`data-pdf-annotate-${key}`, annotation[key]);
+    });
+
+    svg.appendChild(transform(child, viewport));
+  }
+
+  return child;
+}
+
+/**
+ * Transform a child annotation of an SVG.
+ *
+ * @param {SVGElement} svg The SVG element with the child annotation
+ * @param {Object} child The SVG child to transform
+ * @param {Object} viewport The page's viewport data
+ * @return {SVGElement} A node that was transformed by this function
+ */
+function transformChild(svg, child, viewport) {
+  if (!viewport) {
+    viewport = JSON.parse(svg.getAttribute('data-pdf-annotate-viewport'));
+  }
+
+  // If no type was provided for an annotation it will result in node being null.
+  // Skip transforming if node doesn't exist.
+  if (child) {
+    child = transform(child, viewport);
+  }
+
+  return child;
+}
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  /**
+   * Get the x/y translation to be used for transforming the annotations
+   * based on the rotation of the viewport.
+   */
+  getTranslation,
+
+  /**
+   * Append an SVG child for an annotation
+   */
+  appendChild,
+
+  /**
+   * Transform an existing SVG child
+   */
+  transformChild
+});
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/render/index.js":
+/*!*********************************************!*\
+  !*** ./src/online_annotate/render/index.js ***!
+  \*********************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ render; }
+/* harmony export */ });
+/* harmony import */ var _appendChild__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./appendChild */ "./src/online_annotate/render/appendChild.js");
+
+
+/**
+ * Render the response from PDFJSAnnotate.getStoreAdapter().getAnnotations to SVG
+ *
+ * @param {SVGElement} svg The SVG element to render the annotations to
+ * @param {Object} viewport The page viewport data
+ * @param {Object} data The response from PDFJSAnnotate.getStoreAdapter().getAnnotations
+ * @return {Promise} Settled once rendering has completed
+ *  A settled Promise will be either:
+ *    - fulfilled: SVGElement
+ *    - rejected: Error
+ */
+function render(svg, viewport, data) {
+  return new Promise((resolve, reject) => {
+    // Reset the content of the SVG
+    svg.setAttribute('data-pdf-annotate-container', true);
+    svg.setAttribute('data-pdf-annotate-viewport', JSON.stringify(viewport));
+    svg.removeAttribute('data-pdf-annotate-document');
+    svg.removeAttribute('data-pdf-annotate-page');
+
+    // If there's no data nothing can be done
+    if (!data) {
+      svg.innerHTML = '';
+      return resolve(svg);
+    }
+
+    svg.setAttribute('data-pdf-annotate-document', data.documentId);
+    svg.setAttribute('data-pdf-annotate-page', data.pageNumber);
+
+    // Make sure annotations is an array
+    if (!Array.isArray(data.annotations) || data.annotations.length === 0) {
+      return resolve(svg);
+    }
+
+    // Append or transform annotation to svg
+    data.annotations.forEach((a) => {
+      let node = svg.querySelector('[data-pdf-annotate-id="' + a.uuid + '"]');
+      if (node) {
+        (0,_appendChild__WEBPACK_IMPORTED_MODULE_0__.transformChild)(svg, node, viewport);
+      }
+      else {
+        (0,_appendChild__WEBPACK_IMPORTED_MODULE_0__.appendChild)(svg, a, viewport);
+      }
+    });
+
+    resolve(svg);
+  });
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/render/renderArrow.js":
+/*!***************************************************!*\
+  !*** ./src/online_annotate/render/renderArrow.js ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ renderArrow; }
+/* harmony export */ });
+/* harmony import */ var _utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/setAttributes */ "./src/online_annotate/utils/setAttributes.js");
+/* harmony import */ var _utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/normalizeColor */ "./src/online_annotate/utils/normalizeColor.js");
+/* harmony import */ var _utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils/mathUtils */ "./src/online_annotate/utils/mathUtils.js");
+
+
+
+
+/**
+ * Create SVGPathElement from an annotation definition.
+ * This is used for anntations of type `drawing`.
+ *
+ * @param {Object} a The annotation definition
+ * @return {SVGPathElement} The path to be rendered
+ */
+function renderArrow(a) {
+  let arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+
+  if (a.lines.length === 2) {
+    let p1 = a.lines[0];
+    let p2 = a.lines[a.lines.length - 1];
+
+    let arrowLength = 40;
+    let pt0 = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.makePoint)(p1[0], p1[1], 0);
+    let pt1 = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.makePoint)(p2[0], p2[1], 0);
+    let x = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.makeVectorFromPoints)(pt0, pt1);
+    let unitX = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.unitVector)(x);
+    pt1 = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.addVector)(pt0, (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.multiplyVector)(unitX, arrowLength));
+    x = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.makeVectorFromPoints)(pt0, pt1);
+    let unitZ = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.makeVector)(0, 0, 1);
+    let unitY = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.unitVector)((0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.crossProduct)(unitX, unitZ));
+    let thickness = a.width || 10;
+
+    let A = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.addVector)(pt0, (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.multiplyVector)(unitY, thickness * 0.5));
+    let B = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.addVector)(A, (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.multiplyVector)(unitX, (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.magnitude)(x) - thickness * 2.0));
+    let C = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.addVector)(B, (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.multiplyVector)(unitY, thickness));
+    let D = pt1;
+    let G = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.addVector)(pt0, (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.multiplyVector)((0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.negateVector)(unitY), thickness * 0.5));
+    let F = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.addVector)(G, (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.multiplyVector)(unitX, (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.magnitude)(x) - thickness * 2.0));
+    let E = (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.addVector)(F, (0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.multiplyVector)((0,_utils_mathUtils__WEBPACK_IMPORTED_MODULE_2__.negateVector)(unitY), thickness));
+
+    let points = '' +
+      A.x + ',' + A.y + ' ' +
+      B.x + ',' + B.y + ' ' +
+      C.x + ',' + C.y + ' ' +
+      D.x + ',' + D.y + ' ' +
+      E.x + ',' + E.y + ' ' +
+      F.x + ',' + F.y + ' ' +
+      G.x + ',' + G.y;
+
+    (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(arrow, {
+      points: points,
+      stroke: (0,_utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__["default"])(a.color || '#000'),
+      fill: (0,_utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__["default"])(a.color || '#000')
+    });
+  }
+
+  return arrow;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/render/renderCircle.js":
+/*!****************************************************!*\
+  !*** ./src/online_annotate/render/renderCircle.js ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ renderCircle; }
+/* harmony export */ });
+/* harmony import */ var _utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/setAttributes */ "./src/online_annotate/utils/setAttributes.js");
+/* harmony import */ var _utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/normalizeColor */ "./src/online_annotate/utils/normalizeColor.js");
+
+
+
+/**
+ * Create an SVGCircleElement from an annotation definition.
+ * This is used for annotations of type `circle`.
+ *
+ * @param {Object} a The annotation definition
+ * @return {SVGGElement|SVGCircleElement} A circle to be rendered
+ */
+function renderCircle(a) {
+  let circle = createCircle(a);
+  let color = (0,_utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__["default"])(a.color || '#f00');
+
+  if (a.type === 'circle') {
+    (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(circle, {
+      stroke: color,
+      fill: 'none',
+      'stroke-width': 5
+    });
+  }
+  if (a.type === 'emptycircle') {
+    (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(circle, {
+      stroke: color,
+      fill: 'none',
+      'stroke-width': 2
+    });
+  }
+
+  if (a.type === 'fillcircle') {
+    (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(circle, {
+      stroke: color,
+      fill: color,
+      'stroke-width': 5
+    });
+  }
+
+  return circle;
+}
+
+function createCircle(a) {
+  let circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(circle, {
+    cx: a.cx,
+    cy: a.cy,
+    r: a.r
+  });
+
+  return circle;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/render/renderLine.js":
+/*!**************************************************!*\
+  !*** ./src/online_annotate/render/renderLine.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ renderLine; }
+/* harmony export */ });
+/* harmony import */ var _utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/setAttributes */ "./src/online_annotate/utils/setAttributes.js");
+/* harmony import */ var _utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/normalizeColor */ "./src/online_annotate/utils/normalizeColor.js");
+
+
+
+/**
+ * Create SVGLineElements from an annotation definition.
+ * This is used for anntations of type `strikeout`.
+ *
+ * @param {Object} a The annotation definition
+ * @return {SVGGElement} A group of all lines to be rendered
+ */
+function renderLine(a) {
+  let group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(group, {
+    stroke: (0,_utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__["default"])(a.color || '#f00'),
+    strokeWidth: 1
+  });
+
+  a.rectangles.forEach((r) => {
+    let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+
+    (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(line, {
+      x1: r.x,
+      y1: r.y,
+      x2: r.x + r.width,
+      y2: r.y
+    });
+
+    group.appendChild(line);
+  });
+
+  return group;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/render/renderPath.js":
+/*!**************************************************!*\
+  !*** ./src/online_annotate/render/renderPath.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ renderPath; }
+/* harmony export */ });
+/* harmony import */ var _utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/setAttributes */ "./src/online_annotate/utils/setAttributes.js");
+/* harmony import */ var _utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/normalizeColor */ "./src/online_annotate/utils/normalizeColor.js");
+
+
+
+/**
+ * Create SVGPathElement from an annotation definition.
+ * This is used for anntations of type `drawing`.
+ *
+ * @param {Object} a The annotation definition
+ * @return {SVGPathElement} The path to be rendered
+ */
+function renderPath(a) {
+  let d = [];
+  let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
+  if (a.lines.length > 0) {
+    d.push(`M${a.lines[0][0]} ${a.lines[0][1]}`);
+    for (let i = 1, l = a.lines.length; i < l; i++) {
+      let p1 = a.lines[i];
+      let p2 = a.lines[i + 1];
+      if (p2) {
+        d.push(`L${p1[0]} ${p1[1]}`);
+      }
+    }
+  }
+
+  /*
+
+   if(a.lines.length>2) {
+    var p1 = a.lines[0];
+    var p2 = a.lines[a.lines.length-1];
+
+    var p3 = []; //arrow
+    var p4 = [];
+    var p0 = []; //arrow intersection
+
+    if (p2) {
+      var k = -(p2[0]-p1[0])/(p2[1]-p1[1]);
+
+      var deltaX = 3;
+      p0[0] = p1[0]+0.8*(p2[0]-p1[0]);
+      p0[1] = p1[1]+0.8*(p2[1]-p1[1]);
+
+      p3[0] = p0[0] + deltaX;
+      p3[1] = p0[1] + k*deltaX;
+
+      p4[0] = p0[0] - deltaX;
+      p4[1] = p0[1] - k*deltaX;
+
+      if(Math.abs(p2[1]-p1[1]) < 20) {
+
+        p3[0] = p0[0] ;
+        p3[1] = p0[1] + deltaX*1;
+
+        p4[0] = p0[0] ;
+        p4[1] = p0[1] - deltaX*1;
+
+      }
+
+      d.push(`M${p1[0]} ${p1[1]} ${p2[0]} ${p2[1]}`);
+       //d.push(`M${p1[0]} ${p1[1]} ${p2[0]} ${p2[1]}`);
+      d.push(`M${p2[0]} ${p2[1]} ${p3[0]} ${p3[1]}`);
+      d.push(`M${p3[0]} ${p3[1]} ${p4[0]} ${p4[1]}`);
+      d.push(`M${p4[0]} ${p4[1]} ${p2[0]} ${p2[1]}`);
+     }
+    } */
+
+  (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(path, {
+    d: `${d.join(' ')}`, // `${d.join(' ')}Z`,
+    stroke: (0,_utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__["default"])(a.color || '#000'),
+    strokeWidth: a.width || 1,
+    fill: 'none'
+  });
+
+  return path;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/render/renderPoint.js":
+/*!***************************************************!*\
+  !*** ./src/online_annotate/render/renderPoint.js ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ renderPoint; }
+/* harmony export */ });
+/* harmony import */ var _utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/setAttributes */ "./src/online_annotate/utils/setAttributes.js");
+
+
+const SIZE = 25;
+const D = 'M499.968 214.336q-113.832 0 -212.877 38.781t-157.356 104.625 -58.311 142.29q0 62.496 39.897 119.133t112.437 97.929l48.546 27.9 -15.066 53.568q-13.392 50.778 -39.06 95.976 84.816 -35.154 153.45 -95.418l23.994 -21.204 31.806 3.348q38.502 4.464 72.54 4.464 113.832 0 212.877 -38.781t157.356 -104.625 58.311 -142.29 -58.311 -142.29 -157.356 -104.625 -212.877 -38.781z';
+
+/**
+ * Create SVGElement from an annotation definition.
+ * This is used for anntations of type `comment`.
+ *
+ * @param {Object} a The annotation definition
+ * @return {SVGElement} A svg to be rendered
+ */
+function renderPoint(a) {
+  let outerSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  let innerSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+
+  (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(outerSVG, {
+    width: SIZE,
+    height: SIZE,
+    x: a.x,
+    y: a.y
+  });
+
+  (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(innerSVG, {
+    width: SIZE,
+    height: SIZE,
+    x: 0,
+    y: (SIZE * 0.05) * -1,
+    viewBox: '0 0 1000 1000'
+  });
+
+  (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(rect, {
+    width: SIZE,
+    height: SIZE,
+    stroke: '#000',
+    fill: '#ff0'
+  });
+
+  (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(path, {
+    d: D,
+    strokeWidth: 50,
+    stroke: '#000',
+    fill: '#fff'
+  });
+
+  innerSVG.appendChild(path);
+  outerSVG.appendChild(rect);
+  outerSVG.appendChild(innerSVG);
+
+  return outerSVG;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/render/renderRect.js":
+/*!**************************************************!*\
+  !*** ./src/online_annotate/render/renderRect.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ renderRect; }
+/* harmony export */ });
+/* harmony import */ var _utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/setAttributes */ "./src/online_annotate/utils/setAttributes.js");
+/* harmony import */ var _utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/normalizeColor */ "./src/online_annotate/utils/normalizeColor.js");
+
+
+
+/**
+ * Create SVGRectElements from an annotation definition.
+ * This is used for anntations of type `area` and `highlight`.
+ *
+ * @param {Object} a The annotation definition
+ * @return {SVGGElement|SVGRectElement} A group of all rects to be rendered
+ */
+function renderRect(a) {
+  if (a.type === 'highlight') {
+    let group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(group, {
+      fill: (0,_utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__["default"])(a.color || '#ff0'),
+      fillOpacity: 0.2
+    });
+
+    a.rectangles.forEach((r) => {
+      group.appendChild(createRect(r));
+    });
+
+    return group;
+  }
+  else {
+    let rect = createRect(a);
+    (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(rect, {
+      stroke: (0,_utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__["default"])(a.color || '#f00'),
+      fill: 'none'
+    });
+
+    return rect;
+  }
+}
+
+function createRect(r) {
+  let rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+
+  (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(rect, {
+    x: r.x,
+    y: r.y,
+    width: r.width,
+    height: r.height
+  });
+
+  return rect;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/render/renderText.js":
+/*!**************************************************!*\
+  !*** ./src/online_annotate/render/renderText.js ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ renderText; }
+/* harmony export */ });
+/* harmony import */ var _utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/setAttributes */ "./src/online_annotate/utils/setAttributes.js");
+/* harmony import */ var _utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/normalizeColor */ "./src/online_annotate/utils/normalizeColor.js");
+
+
+
+/**
+ * Wrap each line of given text in a `<tspan>` element and append these
+ * lines to the given SVGTextElement
+ *
+ * @param {SVGTextElement} textElement A text element to hold the split text
+ * @param {String} textContent String to render with line breaks
+ */
+function insertLineBreaks(textElement, textContent) {
+  const lines = (textContent || '').split('\n');
+  // can't use dy attribute here since we want empty lines to take up space as well,
+  // so we will update y manually based on font size
+  const x = textElement.getAttribute('x');
+  let y = Number(textElement.getAttribute('y'));
+  const size = Number(textElement.getAttribute('font-size'));
+  for (const line of lines) {
+    const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+    tspan.setAttribute('y', y.toString());
+    tspan.setAttribute('x', x);
+    tspan.innerHTML = line;
+    textElement.appendChild(tspan);
+
+    y += size;
+  }
+}
+
+/**
+ * Create SVGTextElement from an annotation definition.
+ * This is used for anntations of type `textbox`.
+ *
+ * @param {Object} a The annotation definition
+ * @return {SVGTextElement} A text to be rendered
+ */
+function renderText(a) {
+  // Text should be rendered at 0 degrees relative to
+  // document rotation
+  let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(text, {
+    x: a.x,
+    y: a.y,
+    fill: (0,_utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__["default"])(a.color || '#000'),
+    fontSize: a.size,
+    transform: `rotate(${a.rotation})`,
+    style: 'white-space: pre'
+  });
+
+  insertLineBreaks(text, a.content);
+
+  let g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.appendChild(text);
+
+  return g;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/utils/abstractFunction.js":
+/*!*******************************************************!*\
+  !*** ./src/online_annotate/utils/abstractFunction.js ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ abstractFunction; }
+/* harmony export */ });
+/**
+ * Throw an Error for an abstract function that hasn't been implemented.
+ *
+ * @param {String} name The name of the abstract function
+ */
+function abstractFunction(name) {
+  throw new Error(name + ' is not implemented');
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/utils/mathUtils.js":
+/*!************************************************!*\
+  !*** ./src/online_annotate/utils/mathUtils.js ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "applyTransform": function() { return /* binding */ applyTransform; },
+/* harmony export */   "applyInverseTransform": function() { return /* binding */ applyInverseTransform; },
+/* harmony export */   "transform": function() { return /* binding */ transform; },
+/* harmony export */   "translate": function() { return /* binding */ translate; },
+/* harmony export */   "rotate": function() { return /* binding */ rotate; },
+/* harmony export */   "scale": function() { return /* binding */ scale; },
+/* harmony export */   "makePoint": function() { return /* binding */ makePoint; },
+/* harmony export */   "makeVector": function() { return /* binding */ makeVector; },
+/* harmony export */   "makeVectorFromPoints": function() { return /* binding */ makeVectorFromPoints; },
+/* harmony export */   "addVector": function() { return /* binding */ addVector; },
+/* harmony export */   "multiplyVector": function() { return /* binding */ multiplyVector; },
+/* harmony export */   "magnitude": function() { return /* binding */ magnitude; },
+/* harmony export */   "negateVector": function() { return /* binding */ negateVector; },
+/* harmony export */   "unitVector": function() { return /* binding */ unitVector; },
+/* harmony export */   "crossProduct": function() { return /* binding */ crossProduct; }
+/* harmony export */ });
+// Transform point by matrix
+//
+function applyTransform(p, m) {
+  return [
+    p[0] * m[0] + p[1] * m[2] + m[4],
+    p[0] * m[1] + p[1] * m[3] + m[5]
+  ];
+};
+
+// Transform point by matrix inverse
+//
+function applyInverseTransform(p, m) {
+  let d = m[0] * m[3] - m[1] * m[2];
+  return [
+    (p[0] * m[3] - p[1] * m[2] + m[2] * m[5] - m[4] * m[3]) / d,
+    (-p[0] * m[1] + p[1] * m[0] + m[4] * m[1] - m[5] * m[0]) / d
+  ];
+};
+
+// Concatenates two transformation matrices together and returns the result.
+function transform(m1, m2) {
+  return [
+    m1[0] * m2[0] + m1[2] * m2[1],
+    m1[1] * m2[0] + m1[3] * m2[1],
+    m1[0] * m2[2] + m1[2] * m2[3],
+    m1[1] * m2[2] + m1[3] * m2[3],
+    m1[0] * m2[4] + m1[2] * m2[5] + m1[4],
+    m1[1] * m2[4] + m1[3] * m2[5] + m1[5]
+  ];
+};
+
+function translate(m, x, y) {
+  return [
+    m[0],
+    m[1],
+    m[2],
+    m[3],
+    m[0] * x + m[2] * y + m[4],
+    m[1] * x + m[3] * y + m[5]
+  ];
+};
+
+function rotate(m, angle) {
+  angle = angle * Math.PI / 180;
+
+  let cosValue = Math.cos(angle);
+  let sinValue = Math.sin(angle);
+
+  return [
+    m[0] * cosValue + m[2] * sinValue,
+    m[1] * cosValue + m[3] * sinValue,
+    m[0] * (-sinValue) + m[2] * cosValue,
+    m[1] * (-sinValue) + m[3] * cosValue,
+    m[4],
+    m[5]
+  ];
+};
+
+function scale(m, x, y) {
+  return [
+    m[0] * x,
+    m[1] * x,
+    m[2] * y,
+    m[3] * y,
+    m[4],
+    m[5]
+  ];
+};
+
+function makePoint(x, y, z) {
+  return { x: x, y: y, z: z };
+};
+
+function makeVector(xcoord, ycoord, zcoord) {
+  return { xcoord: xcoord, ycoord: ycoord, zcoord: zcoord };
+};
+
+function makeVectorFromPoints(pt1, pt2) {
+  let xcoord = pt2.x - pt1.x;
+  let ycoord = pt2.y - pt1.y;
+  let zcoord = pt2.z - pt1.z;
+  return makeVector(xcoord, ycoord, zcoord);
+};
+
+function addVector(pt, v) {
+  return makePoint(pt.x + v.xcoord, pt.y + v.ycoord, pt.z + v.zcoord);
+};
+
+function multiplyVector(v, scalar) {
+  return makeVector(v.xcoord * scalar, v.ycoord * scalar, v.zcoord * scalar);
+};
+
+function magnitude(v) {
+  return Math.sqrt(
+    Math.pow(v.xcoord, 2) + Math.pow(v.ycoord, 2) + Math.pow(v.zcoord, 2)
+  );
+};
+
+function negateVector(v) {
+  return multiplyVector(v, -1);
+};
+
+function unitVector(v) {
+  let mag = magnitude(v);
+  let xcoord = v.xcoord / mag;
+  let ycoord = v.ycoord / mag;
+  let zcoord = v.zcoord / mag;
+  return makeVector(xcoord, ycoord, zcoord);
+};
+
+function crossProduct(u, v) {
+  //
+  // u X v = < u2*v3 - u3*v2,
+  //           u3*v1 - u1*v3,
+  //           u1*v2 - u2*v1 >
+  let xcoord = u.ycoord * v.zcoord - u.zcoord * v.ycoord;
+  let ycoord = u.zcoord * v.xcoord - u.xcoord * v.zcoord;
+  let zcoord = u.xcoord * v.ycoord - u.ycoord * v.xcoord;
+  return makeVector(xcoord, ycoord, zcoord);
+};
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/utils/normalizeColor.js":
+/*!*****************************************************!*\
+  !*** ./src/online_annotate/utils/normalizeColor.js ***!
+  \*****************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ normalizeColor; }
+/* harmony export */ });
+const REGEX_HASHLESS_HEX = /^([a-f0-9]{6}|[a-f0-9]{3})$/i;
+
+/**
+ * Normalize a color value
+ *
+ * @param {String} color The color to normalize
+ * @return {String}
+ */
+function normalizeColor(color) {
+  if (REGEX_HASHLESS_HEX.test(color)) {
+    color = `#${color}`;
+  }
+  return color;
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/utils/setAttributes.js":
+/*!****************************************************!*\
+  !*** ./src/online_annotate/utils/setAttributes.js ***!
+  \****************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ setAttributes; }
+/* harmony export */ });
+const UPPER_REGEX = /[A-Z]/g;
+
+// Don't convert these attributes from camelCase to hyphenated-attributes
+const BLACKLIST = [
+  'viewBox'
+];
+
+let keyCase = (key) => {
+  if (BLACKLIST.indexOf(key) === -1) {
+    key = key.replace(UPPER_REGEX, match => '-' + match.toLowerCase());
+  }
+  return key;
+};
+
+/**
+ * Set attributes for a node from a map
+ *
+ * @param {Node} node The node to set attributes on
+ * @param {Object} attributes The map of key/value pairs to use for attributes
+ */
+function setAttributes(node, attributes) {
+  Object.keys(attributes).forEach((key) => {
+    node.setAttribute(keyCase(key), attributes[key]);
+  });
+}
+
+
+/***/ }),
+
+/***/ "./src/online_annotate/utils/uuid.js":
+/*!*******************************************!*\
+  !*** ./src/online_annotate/utils/uuid.js ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ uuid; }
+/* harmony export */ });
+const REGEXP = /[xy]/g;
+const PATTERN = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+
+function replacement(c) {
+  let r = Math.random() * 16 | 0;
+  let v = c === 'x' ? r : (r & 0x3 | 0x8);
+  return v.toString(16);
+}
+
+/**
+ * Generate a univierally unique identifier
+ *
+ * @return {String} A UUID
+ */
+function uuid() {
+  return PATTERN.replace(REGEXP, replacement);
+}
+
+
+/***/ }),
+
 /***/ "./src/overlay_manager.js":
 /*!********************************!*\
   !*** ./src/overlay_manager.js ***!
@@ -42588,9 +48171,9 @@ class PDFCursorTools {
   if (this.activeBeforePresentationMode !== null) {
    return;
   }
-  if (tool === this.active) {
-   return;
-  }
+  // if (tool === this.active) {
+  //  return;
+  // }
   const disableActiveTool = () => {
    switch (this.active) {
    case CursorTool.SELECT:
@@ -42625,6 +48208,8 @@ class PDFCursorTools {
  }
  _addEventListeners() {
   this.eventBus._on("switchcursortool", evt => {
+    // sdpdfcore annotation
+    window._setActiveToolbarItem&&window._setActiveToolbarItem('cursor',null);
    this.switchTool(evt.tool);
   });
   
@@ -44670,6 +50255,7 @@ class PDFPageView {
   this.structTreeLayer = null;
   const div = document.createElement("div");
   div.className = "page";
+  div.id="page"+this.id;
   div.style.width = Math.floor(this.viewport.width) + "px";
   div.style.height = Math.floor(this.viewport.height) + "px";
   div.setAttribute("data-page-number", this.id);
@@ -44679,6 +50265,21 @@ class PDFPageView {
   });
   this.div = div;
   container?.appendChild(div);
+  this.eventBus.on("annotationlayerrendered",(data)=>{
+    if(data.pageNumber==this.id){
+        const newOpt = {
+          documentId: window._RENDER_OPTIONS.documentId,
+          pdfDocument: window._RENDER_OPTIONS.pdfDocument,
+          scale:this.viewport.scale.toFixed(2),
+          rotate:this.viewport.rotation
+        }
+        window._RENDER_OPTIONS = newOpt;
+        window.PDFJSAnnotate.UI.renderPage(data.pageNumber, newOpt,this.pdfPage).then(() => {
+          let viewport = this.viewport;
+          window._PAGE_HEIGHT = viewport.height;
+        });
+    }
+});
  }
  setPdfPage(pdfPage) {
   this.pdfPage = pdfPage;
@@ -44770,6 +50371,7 @@ class PDFPageView {
    node.remove();
   }
   div.removeAttribute("data-loaded");
+  div.removeAttribute("data-anno-loaded");
   if (annotationLayerNode) {
    this.annotationLayer.hide();
   }
@@ -44985,6 +50587,7 @@ class PDFPageView {
    }
    return Promise.reject(new Error("pdfPage is not loaded"));
   }
+
   this.renderingState = RenderingStates.RUNNING;
   const canvasWrapper = document.createElement("div");
   canvasWrapper.style.width = div.style.width;
@@ -45105,6 +50708,8 @@ class PDFPageView {
    this.structTreeLayer = this.structTreeLayerFactory.createStructTreeLayerBuilder(pdfPage);
   }
   div.setAttribute("data-loaded", true);
+  div.setAttribute("data-anno-loaded", false);
+
   this.eventBus.dispatch("pagerender", {
    source: this,
    pageNumber: this.id
@@ -46320,7 +51925,6 @@ class SecondaryToolbar {
  constructor(options, mainContainer, eventBus) {
   this.toolbar = options.toolbar;
   this.toggleButton = options.toggleButton;
-  this.toolbarButtonContainer = options.toolbarButtonContainer;
   this.buttons = [
 
   //  {
@@ -46468,6 +52072,7 @@ class SecondaryToolbar {
  }
  _bindClickListeners() {
   this.toggleButton.addEventListener("click", this.toggle.bind(this));
+  console.log(this.buttons);
   for (const {element, eventName, close, eventDetails} of this.buttons) {
    element.addEventListener("click", evt => {
     if (eventName !== null) {
@@ -46485,16 +52090,17 @@ class SecondaryToolbar {
  }
  _bindCursorToolsListener(buttons) {
   this.eventBus._on("cursortoolchanged", function ({tool}) {
-   buttons.cursorSelectToolButton.classList.toggle("toggled", tool === CursorTool.SELECT);
-   buttons.cursorHandToolButton.classList.toggle("toggled", tool === CursorTool.HAND);
+
+   buttons.cursorSelectToolButton.classList.toggle("active", tool === CursorTool.SELECT);
+   buttons.cursorHandToolButton.classList.toggle("active", tool === CursorTool.HAND);
   });
  }
  _bindScrollModeListener(buttons) {
   const scrollModeChanged = ({mode}) => {
-   buttons.scrollPageButton.classList.toggle("toggled", mode === ScrollMode.PAGE);
-   buttons.scrollVerticalButton.classList.toggle("toggled", mode === ScrollMode.VERTICAL);
-   buttons.scrollHorizontalButton.classList.toggle("toggled", mode === ScrollMode.HORIZONTAL);
-   buttons.scrollWrappedButton.classList.toggle("toggled", mode === ScrollMode.WRAPPED);
+   buttons.scrollPageButton.classList.toggle("active", mode === ScrollMode.PAGE);
+   buttons.scrollVerticalButton.classList.toggle("active", mode === ScrollMode.VERTICAL);
+   buttons.scrollHorizontalButton.classList.toggle("active", mode === ScrollMode.HORIZONTAL);
+   buttons.scrollWrappedButton.classList.toggle("active", mode === ScrollMode.WRAPPED);
    const forceScrollModePage = this.pagesCount > PagesCountLimit.FORCE_SCROLL_MODE_PAGE;
    buttons.scrollPageButton.disabled = forceScrollModePage;
    buttons.scrollVerticalButton.disabled = forceScrollModePage;
@@ -46514,9 +52120,9 @@ class SecondaryToolbar {
  }
  _bindSpreadModeListener(buttons) {
   function spreadModeChanged({mode}) {
-   buttons.spreadNoneButton.classList.toggle("toggled", mode === SpreadMode.NONE);
-   buttons.spreadOddButton.classList.toggle("toggled", mode === SpreadMode.ODD);
-   buttons.spreadEvenButton.classList.toggle("toggled", mode === SpreadMode.EVEN);
+   buttons.spreadNoneButton.classList.toggle("active", mode === SpreadMode.NONE);
+   buttons.spreadOddButton.classList.toggle("active", mode === SpreadMode.ODD);
+   buttons.spreadEvenButton.classList.toggle("active", mode === SpreadMode.EVEN);
   }
   this.eventBus._on("spreadmodechanged", spreadModeChanged);
   this.eventBus._on("secondarytoolbarreset", evt => {
@@ -46531,17 +52137,17 @@ class SecondaryToolbar {
   }
   this.opened = true;
   this._setMaxHeight();
-  this.toggleButton.classList.add("toggled");
+  this.toggleButton.classList.add("active");
   this.toggleButton.setAttribute("aria-expanded", "true");
-  this.toolbar.classList.remove("hidden");
+  this.toolbar.classList.remove("closed");
  }
  close() {
   if (!this.opened) {
    return;
   }
   this.opened = false;
-  this.toolbar.classList.add("hidden");
-  this.toggleButton.classList.remove("toggled");
+  this.toolbar.classList.add("closed");
+  this.toggleButton.classList.remove("active");
   this.toggleButton.setAttribute("aria-expanded", "false");
  }
  toggle() {
@@ -46555,12 +52161,6 @@ class SecondaryToolbar {
   if (!this.opened) {
    return;
   }
-  this.containerHeight = this.mainContainer.clientHeight;
-  if (this.containerHeight === this.previousContainerHeight) {
-   return;
-  }
-  this.toolbarButtonContainer.style.maxHeight = `${ this.containerHeight - SCROLLBAR_PADDING }px`;
-  this.previousContainerHeight = this.containerHeight;
  }
 }
 
@@ -48294,6 +53894,18 @@ class XfaLayerBuilder {
 /******/ 	__webpack_require__.m = __webpack_modules__;
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	!function() {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = function(module) {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				function() { return module['default']; } :
+/******/ 				function() { return module; };
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	}();
+/******/ 	
 /******/ 	/* webpack/runtime/create fake namespace object */
 /******/ 	!function() {
 /******/ 		var getProto = Object.getPrototypeOf ? function(obj) { return Object.getPrototypeOf(obj); } : function(obj) { return obj.__proto__; };
@@ -48583,10 +54195,13 @@ __webpack_require__.r(__webpack_exports__);
 const {AppOptions} = __webpack_require__(/*! ./app_options.js */ "./src/app_options.js");
 const {PDFViewerApplication} = __webpack_require__(/*! ./app.js */ "./src/app.js");
 const {SDPDFCore} = __webpack_require__(/*! ./sdpdfcore.js */ "./src/sdpdfcore.js");
+const {initOnlineAnnotation} = __webpack_require__(/*! ./online_annotate.js */ "./src/online_annotate.js");
+
 const pdfjsVersion = '2.12.313';
 const pdfjsBuild = '2.12.313';
 window.PDFViewerApplication = PDFViewerApplication;
 window.PDFViewerApplicationOptions = AppOptions;
+
 ;
 {
  __webpack_require__(/*! ./pdf_print_service.js */ "./src/pdf_print_service.js");
@@ -48630,9 +54245,9 @@ function getViewerConfiguration() {
    viewBookmark: document.getElementById("viewBookmark")||fakea//TODO:
   },
   secondaryToolbar: {
-   toolbar: document.getElementById("secondaryToolbar")||fakediv,
-   toggleButton: document.getElementById("secondaryToolbarToggle")||fakebutton,
-   toolbarButtonContainer: document.getElementById("secondaryToolbarButtonContainer")||fakediv,
+   toolbar: document.getElementById("secondaryToolbar"),
+   toggleButton: document.getElementById("secondaryToolbarToggle"),
+
 
    openFileButton: document.getElementById("secondaryOpenFile")||fakebutton,
    printButton: document.getElementById("secondaryPrint")||fakebutton,
@@ -48640,17 +54255,17 @@ function getViewerConfiguration() {
    viewBookmarkButton: document.getElementById("secondaryViewBookmark")||fakea,
    firstPageButton: document.getElementById("firstPage")||fakebutton,
    lastPageButton: document.getElementById("lastPage")||fakebutton,
-   pageRotateCwButton: document.getElementById("pageRotateCw")||fakebutton,
-   pageRotateCcwButton: document.getElementById("pageRotateCcw")||fakebutton,
-   cursorSelectToolButton: document.getElementById("cursorSelectTool")||fakebutton,
-   cursorHandToolButton: document.getElementById("cursorHandTool")||fakebutton,
-   scrollPageButton: document.getElementById("scrollPage")||fakebutton,
-   scrollVerticalButton: document.getElementById("scrollVertical")||fakebutton,
-   scrollHorizontalButton: document.getElementById("scrollHorizontal")||fakebutton,
-   scrollWrappedButton: document.getElementById("scrollWrapped")||fakebutton,
-   spreadNoneButton: document.getElementById("spreadNone")||fakebutton,
-   spreadOddButton: document.getElementById("spreadOdd")||fakebutton,
-   spreadEvenButton: document.getElementById("spreadEven")||fakebutton,
+   pageRotateCwButton: document.getElementById("pageRotateCw"),
+   pageRotateCcwButton: document.getElementById("pageRotateCcw"),
+   cursorSelectToolButton: document.getElementById("cursorSelectTool"),
+   cursorHandToolButton: document.getElementById("cursorHandTool"),
+   scrollPageButton: document.getElementById("scrollPage"),
+   scrollVerticalButton: document.getElementById("scrollVertical"),
+   scrollHorizontalButton: document.getElementById("scrollHorizontal"),
+   scrollWrappedButton: document.getElementById("scrollWrapped"),
+   spreadNoneButton: document.getElementById("spreadNone"),
+   spreadOddButton: document.getElementById("spreadOdd"),
+   spreadEvenButton: document.getElementById("spreadEven"),
    // saltdog disable documentProperties
   //  documentPropertiesButton: document.getElementById("documentProperties")
   },
@@ -48739,14 +54354,81 @@ function webViewerLoad() {
     PDFViewerApplication.run(config)
  });
 }
+///////PDF MODE INIT BEGIN/////////////
+function closeSubToolbar(){
+  const toolContainer = document.querySelector('.HeaderToolsContainer');
+  if(toolContainer){
+    toolContainer.style.display='none';
+  }
+  const viewer = document.getElementById(`viewerContainer`);
+  viewer.style.top='42px';
+}
+function openSubToolbar(modeName){
+  if(modeName=='View') return;
+  const toolContainer = document.querySelector('.HeaderToolsContainer');
+  if(toolContainer){
+    toolContainer.style.display='block';
+  }
+  const viewer = document.getElementById(`viewerContainer`);
+  viewer.style.top='82px';
+  const btnGroups = document.querySelector(`.Header .Tools`);
+  for(let i=0;i<btnGroups.children.length;i++){
+    btnGroups[i].classList.add('hidden');
+  }
+  switch(modeName){
+    case 'Annotate':
+      document.querySelector(`.AnnotationBtns`).classList.classList.remove('hidden');
+  }
+}
+let ribbons = document.getElementById(`ribbonsContainer`);
+ribbons.addEventListener('click',(e)=>{
+  if(e.target.tagName!='BUTTON')return;
+  const btn = e.target;
+  const mode = btn.getAttribute('data-pdf-mode')||'View';
+  const ribbonsChild = ribbons.children;
+  // 按钮状态
+  for(let i=0;i<ribbonsChild.length;i++){
+    if(ribbonsChild[i].getAttribute('data-pdf-mode')!=mode)
+      ribbonsChild[i].classList.remove('active');
+    else
+    ribbonsChild[i].classList.add('active');
+  }
+  switch(mode){
+    case 'View':
+      closeSubToolbar();
+    break;
+    case 'Annotate':
+      openSubToolbar(mode);
+    break;
+  }
+})
+// if(ribbons){
+//   ribbons = ribbons.children;
+//   for(let i=0;i<ribbons.length;i++){
+    
+//   }
+// }
+///////PDF MODE INIT END/////////////
+///////PDF ANNOTATE JS INIT BEGIN//////////////
+try{
+initOnlineAnnotation();
+}catch(e){
+  console.error('Init Online Annotation failed, detail:',e);
+}
+////////PDF ANNOTATE JS INIT END/////////////
+
+
 if (document.blockUnblockOnload) {
- document.blockUnblockOnload(true);
-}
-if (document.readyState === "interactive" || document.readyState === "complete") {
- webViewerLoad();
-} else {
- document.addEventListener("DOMContentLoaded", webViewerLoad, true);
-}
+  document.blockUnblockOnload(true);
+ }
+ if (document.readyState === "interactive" || document.readyState === "complete") {
+  webViewerLoad();
+ } else {
+  document.addEventListener("DOMContentLoaded", webViewerLoad, true);
+ }
+
+ 
+
 
 
 }();
