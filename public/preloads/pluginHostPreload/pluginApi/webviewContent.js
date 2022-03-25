@@ -18,6 +18,7 @@ class WebviewContent {
             },(msg)=>{
                 if(msg.status!=0){
                     console.error(TAG,`addEventListener ${event} failed: ${msg.msg}`);
+                    return null;
                 }else{
                     bus.on(`Webview_${this.webviewId}_contentEvent:${msg.id}`,cb);
                     console.log('addEventListener listen event',`Webview_${this.webviewId}_contentEvent:${msg.id}`)
@@ -33,8 +34,10 @@ class WebviewContent {
         },(msg)=>{
             if(msg.status!=0){
                 console.error(TAG,`removeEventListener ${event} failed: ${msg.msg}`);
+                return false;
             }else{
-                bus.removeAllListeners(`Webview_${this.webviewId}_contentEvent:${id}`)
+                bus.removeAllListeners(`Webview_${this.webviewId}_contentEvent:${id}`);
+                return true;
             }
         }); 
     }

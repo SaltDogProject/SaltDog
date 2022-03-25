@@ -63,7 +63,8 @@ class WebviewAgent {
 
 function createWebview(args, callback) {
     messageChannel.invoke('createWebview', args, (id) => {
-        callback(new Proxy(new WebviewAgent(id),{
+        if(!id) callback&&callback();
+        callback&&callback(new Proxy(new WebviewAgent(id),{
             get(target, key) {
                 if (target[key]) return target[key];
                 else {

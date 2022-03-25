@@ -20,7 +20,8 @@ const listenerIdMap = {};
 const listenerInfo = {};
 function _requestAddEventListener(args, callback) {
     console.log(TAG, '_requestAddEventListener', args);
-    const { selector, eventName, invokeTime } = args;
+    const { selector, eventName} = args;
+    const invokeTime = args.invokeTime||false;
     let ele;
     if (selector == 'document' || selector == '') {
         ele = document;
