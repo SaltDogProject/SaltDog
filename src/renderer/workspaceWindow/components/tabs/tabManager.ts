@@ -88,7 +88,7 @@ class MainTabManager implements ITabManager {
             this.webviewPendingFunction[tabid] = fn;
         }
     }
-    public addPdfTab(tabName: string, pdfPath: string,owner='saltdog-internal') {
+    public addPdfTab(tabName: string, pdfPath: string, owner = 'saltdog-internal') {
         if (!pdfPath) {
             console.error(TAG, 'Can not create pdf tab: No pdfPath');
         }
@@ -124,7 +124,7 @@ class MainTabManager implements ITabManager {
         });
         //
         bus.on(`PDFVIEW_${tabid}:_WebviewContentEvent`, (args) => {
-            console.log(TAG, 'Custom Event dispatch',args);
+            console.log(TAG, 'Custom Event dispatch', args);
             pluginMsgChannel.send(args.owner, `Webview_${tabid}_contentEvent:${args.id}`, args.data);
         });
         return tabid;
@@ -212,7 +212,7 @@ class MainTabManager implements ITabManager {
                     this.webviewMessageHandler.set(v.webviewId, new MessageHandler(element));
                 }
                 bus.emit(`${v.webviewId}_domReady`);
-                element.openDevTools();
+                if (process.env.NODE_ENV === 'development') element.openDevTools();
             });
             element.addEventListener('console-message', (e) => {
                 console.log('[webview]: ' + e.message);

@@ -6,6 +6,7 @@ import path from 'path';
 import process from 'process';
 import { ChildProcess } from 'child_process';
 import SaltDogMessageChannel from './api/messageChannel';
+import { loggerWriter } from '~/main/utils/logger';
 const TAG = 'SaltDogPlugin';
 class SaltDogPlugin {
     private _plugins: Map<string, ISaltDogPluginInfo> = new Map();
@@ -13,7 +14,7 @@ class SaltDogPlugin {
     private _pluginMessageChannelTicket: Map<string, SaltDogMessageChannel> = new Map(); // string为ticket
     private _pluginMessageChannel: Map<string, SaltDogMessageChannel> = new Map(); // string为plugin.name
     private _activator: SaltDogPluginActivator;
-    private isDevelopment = process.env.NODE_ENV !== 'production';
+    private isDevelopment = process.env.NODE_ENV == 'development';
     // 开发模式下加载文件路径内的插件，方便调试
     public pluginPath = path.normalize(
         this.isDevelopment ? path.join(__static, '../plugin_demo') : app.getPath('userData') + '/SaltDogPlugins'
@@ -92,12 +93,18 @@ class SaltDogPlugin {
     }
     public publishEventToPluginHost(target: string, event: string, data: any) {
         const messageChannel = this._pluginMessageChannelTicket.get(target);
+        loggerWriter(`send ${target}`);
         messageChannel!.publishEventToPluginHost(event, data);
     }
 
     public sendToPluginHost(data: IPluginWebviewIPC) {
         const messageChannel = this._pluginMessageChannelTicket.get(data.ticket);
         messageChannel!.sendToPluginHost(data);
+    }
+    public destroyAllPluginHosts() {
+        this._pluginHosts.forEach((host) => {
+            host.kill();
+        });
     }
     public workspaceGetBasicPluginInfo(): any {
         const pluginInfo: any = {};

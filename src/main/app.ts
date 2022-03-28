@@ -22,9 +22,9 @@ class LifeCycle {
         app.on('browser-window-focus', (e, window) => {
             windowManager.setFocusWindow(window);
         });
-        ipcMain.on('_rendererToPluginEvents',(e,target,events,data)=>{
-            this.pluginManager.publishEventToPluginHost(target,events,data);
-        })
+        ipcMain.on('_rendererToPluginEvents', (e, target, events, data) => {
+            this.pluginManager.publishEventToPluginHost(target, events, data);
+        });
     }
     onReady() {
         const readyFunction = async () => {
@@ -56,9 +56,9 @@ class LifeCycle {
             createProtocol('saltdog');
             // On macOS it's common to re-create a window in the app when the
             // dock icon is clicked and there are no other windows open.
-            if (!windowManager.has(IWindowList.ENTRY_WINDOW)) {
-                windowManager.create(IWindowList.ENTRY_WINDOW);
-            }
+            // if (!windowManager.has(IWindowList.ENTRY_WINDOW)) {
+            //     windowManager.create(IWindowList.ENTRY_WINDOW);
+            // }
             // app.setLoginItemSettings({
             //     openAtLogin: db.get('settings.autoStart') || false
             //   })
@@ -72,7 +72,9 @@ class LifeCycle {
         app.on('window-all-closed', () => {
             // On macOS it is common for applications and their menu bar
             // to stay active until the user quits explicitly with Cmd + Q
+            console.log('window-all-closed');
             if (process.platform !== 'darwin') {
+                this.pluginManager.destroyAllPluginHosts();
                 app.quit();
             }
         });

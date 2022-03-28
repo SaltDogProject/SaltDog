@@ -178,9 +178,7 @@ class SaltDogPlugin {
                 // 避免结构化克隆报错，加;0
                 ;0
             `);
-            const jsPath = path
-            .normalize(__static + '/preloads/pluginWebviewPreload/sidebar.js')
-            .replaceAll('\\', '/');
+            const jsPath = path.normalize(__static + '/preloads/pluginWebviewPreload/sidebar.js').replaceAll('\\', '/');
             console.log('Inject JS', jsPath);
             webview.executeJavaScript(`
                 const js=document.createElement('script');
@@ -196,7 +194,7 @@ class SaltDogPlugin {
 
             this._ticketSidebarMap.set(viewInfo.ticket, webview);
             this._sidebarViewsUUIDMap.set(viewUUID, webview);
-            webview.openDevTools();
+            if (process.env.NODE_ENV === 'development') webview.openDevTools();
         });
 
         webview.addEventListener('ipc-message', (event) => {

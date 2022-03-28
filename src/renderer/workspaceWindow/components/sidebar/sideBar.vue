@@ -50,7 +50,7 @@ export default defineComponent({
     setup() {
         // eslint-disable-next-line no-undef
         const staticPath = __static;
-        const sidebarPreload = ref(`${staticPath}/preloads/pluginWebviewPreload/preload.js`);
+        const sidebarPreload = ref(`${staticPath}/preloads/pluginWebviewPreload/build/preload.js`);
         const sidebarViews = ref(plugins.getSidebarViewsRef());
         const mountedViews = new Map<string, boolean>();
         const isDev = ref(false);

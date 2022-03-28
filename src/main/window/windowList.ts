@@ -2,7 +2,6 @@ import { IWindowList, ENTRY_WINDOW_URL, WORKSPACE_WINDOW_URL } from './constants
 import { IWindowListItem } from '#/types/electron';
 import { app, ipcMain } from 'electron';
 import { IBrowserWindowOptions } from '#/types/browserWindow';
-import { closeBrowser, doTranslate, openTranslateWeb } from './translator';
 import { IpcMainEvent } from 'electron/main';
 const windowList = new Map<IWindowList, IWindowListItem>();
 declare const __static: string;
@@ -41,7 +40,7 @@ windowList.set(IWindowList.ENTRY_WINDOW, {
     },
     callback(window, windowManager) {
         window.loadURL(ENTRY_WINDOW_URL);
-        if (!process.env.IS_TEST) window.webContents.openDevTools();
+        if (process.env.NODE_ENV == 'development') window.webContents.openDevTools();
         window.on('closed', () => {
             if (process.platform === 'linux') {
                 process.nextTick(() => {
@@ -88,13 +87,11 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
     },
     callback(window, windowManager) {
         window.loadURL(WORKSPACE_WINDOW_URL);
-        if (!process.env.IS_TEST) window.webContents.openDevTools();
-        //openTranslateWeb();
+        window.webContents.openDevTools();
         ipcMain.on('getWindowId', (e: IpcMainEvent, str: string) => {
             e.returnValue = window.id;
         });
         window.on('closed', () => {
-            //closeBrowser();
             if (process.platform === 'linux') {
                 process.nextTick(() => {
                     app.quit();

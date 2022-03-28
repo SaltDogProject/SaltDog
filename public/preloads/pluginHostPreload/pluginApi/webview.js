@@ -3,7 +3,7 @@ const messageChannel = require('../messageChannel.js');
 const WebviewContent = require('./webviewContent');
 const bus = require('../bus');
 const uniqId = require('licia/uniqId');
-const TAG = '[WebviewAgent]'
+const TAG = '[WebviewAgent]';
 var eventList = [
     'load-commit',
     'did-finish-load',
@@ -42,19 +42,18 @@ var eventList = [
 ];
 
 class WebviewAgent {
-    webviewId = "";
-    content;
     constructor(id) {
         this.webviewId = id;
         this.content = new WebviewContent(id);
-    };
-    on(event,cb){
-        if(eventList.indexOf(event)!=-1){
-            bus.on(`Webview_${this.webviewId}_${event}`,(args)=>{
-                console.log('[Webview Event]',event,args);
-            cb(...args)});
-        }else{
-            console.log(TAG,'Invalid event name');
+    }
+    on(event, cb) {
+        if (eventList.indexOf(event) != -1) {
+            bus.on(`Webview_${this.webviewId}_${event}`, (args) => {
+                console.log('[Webview Event]', event, args);
+                cb(...args);
+            });
+        } else {
+            console.log(TAG, 'Invalid event name');
         }
     }
 }
@@ -63,26 +62,35 @@ class WebviewAgent {
 
 function createWebview(args, callback) {
     messageChannel.invoke('createWebview', args, (id) => {
-        if(!id) callback&&callback();
-        callback&&callback(new Proxy(new WebviewAgent(id),{
-            get(target, key) {
-                if (target[key]) return target[key];
-                else {
-                    console.log(TAG,`Call Webview Api "${key}".`);
-                    return function (args, callback) {
-                        messageChannel.invoke("_handleWebviewMethod", {
-                            webviewId:id,
-                            method:key,
-                            originalArgs:args
-                        }, (res)=>{callback(res)});
-                    };
-                }
-            },
-        }));
+        if (!id) callback && callback();
+        callback &&
+            callback(
+                new Proxy(new WebviewAgent(id), {
+                    get(target, key) {
+                        if (target[key]) return target[key];
+                        else {
+                            console.log(TAG, `Call Webview Api "${key}".`);
+                            return function (args, callback) {
+                                messageChannel.invoke(
+                                    '_handleWebviewMethod',
+                                    {
+                                        webviewId: id,
+                                        method: key,
+                                        originalArgs: args,
+                                    },
+                                    (res) => {
+                                        callback(res);
+                                    }
+                                );
+                            };
+                        }
+                    },
+                })
+            );
     });
 }
 
 module.exports = {
     WebviewAgent,
-    createWebview
-}
+    createWebview,
+};

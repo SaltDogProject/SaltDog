@@ -47,9 +47,9 @@ const config = {
     },
     pluginOptions: {
         electronBuilder: {
-
-            customFileProtocol: 'saltdog://./',
-            externals: ['saltdog'],
+            customFileProtocol: './',
+            // customFileProtocol: 'saltdog://./',
+            // externals: ['saltdog'],
             chainWebpackMainProcess: (config) => {
                 config.resolve.alias
                     .set('@', resolve('src/renderer'))
@@ -116,9 +116,9 @@ const config = {
                     perMachine: true,
                     allowElevation: true,
                     allowToChangeInstallationDirectory: true,
-                    installerIcon: './electron/ico/install 256x256.ico',
-                    uninstallerIcon: './electron/ico/uninstall 256x256.ico',
-                    installerHeaderIcon: './electron/ico/install 256x256.ico',
+                    installerIcon: './public/images/logo.ico',
+                    uninstallerIcon: './public/images/logo.ico',
+                    installerHeaderIcon: './public/images/logo.ico',
                     createDesktopShortcut: true,
                     createStartMenuShortcut: true,
                     shortcutName: 'SaltDog',

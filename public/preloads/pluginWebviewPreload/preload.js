@@ -1,6 +1,8 @@
-const { ipcRenderer, contextBridge } = require('electron');
+// eslint-disable-next-line no-undef
+const requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
+const { ipcRenderer, contextBridge } = requireFunc('electron');
 const uniqId = require('licia/uniqId');
-const {EventEmitter} = require('eventemitter3');
+const { EventEmitter } = require('eventemitter3');
 const bus = new EventEmitter();
 ipcRenderer.sendToHost('_getSidebarInfo');
 function getQueryVariable() {
@@ -18,10 +20,10 @@ const ticket = params.ticket;
 const webviewId = params.webviewId;
 const windowId = params.windowId;
 
-ipcRenderer.on('PLUGINHOST_TO_SIDEBAR_MESSAGE', (e,msg) => {
+ipcRenderer.on('PLUGINHOST_TO_SIDEBAR_MESSAGE', (e, msg) => {
     // msg={data,event,ticket}
-    console.log('Receive Message from Host',msg);
-    bus.emit(msg.event,msg.data);
+    console.log('Receive Message from Host', msg);
+    bus.emit(msg.event, msg.data);
 });
 
 //contextBridge.exposeInMainWorld('__sdConfig', params);
@@ -52,6 +54,6 @@ contextBridge.exposeInMainWorld('saltdog', {
         });
     },
     on: (event, callback) => {
-        bus.on(event,callback);
+        bus.on(event, callback);
     },
 });

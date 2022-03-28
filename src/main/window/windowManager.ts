@@ -88,9 +88,11 @@ class WindowManager implements IWindowManager {
         const name = this.windowIdMap.get(id);
         console.log('close id', name);
         if (name) {
-            this.windowMap.get(name)!.close();
+            // FIXME: close() 关不掉，不知道为啥。。。
+            this.windowMap.get(name)!.destroy();
+            // this.windowMap.get(name)!.close();
+            this.deleteById(id);
         }
-        this.deleteById(id);
     };
     minimizeById = (id: number) => {
         const name = this.windowIdMap.get(id);

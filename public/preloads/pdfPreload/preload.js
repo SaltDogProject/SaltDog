@@ -4,10 +4,13 @@ const { listenTextSelect } = require('./api/events/index');
 const bus = require('./bus');
 const { noop } = require('lodash');
 const api = require('./api/api');
-const electron = require('electron');
+
+// eslint-disable-next-line no-undef
+const requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
+const electron = requireFunc('electron');
 const uniqId = require('licia/uniqId');
 const callbacks = {};
-
+console.log('LOAD PDF PRELOAD SCRIPTS');
 window.__sdConfig = {};
 const __sdJSBridge = {
     // 向host发送信息
