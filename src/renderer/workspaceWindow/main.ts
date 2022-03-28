@@ -15,7 +15,7 @@ const windowId = ipcRenderer.sendSync('getWindowId'); // 当前窗口的id
 console.log('[Saltdog Kernel] BasicInfo:', basicInfo);
 app.config.globalProperties.__workspaceInfo = {
     // pdfPath: 'C:/Users/dorap/Desktop/Xilinx Doc/ug1399-vitis-hls.pdf',
-    pdfPath:'C:/Users/Dorapocket/Desktop/Xilinx Doc/Xilinx Doc/ug1399-vitis-hls.pdf',
+    // pdfPath:'C:/Users/Dorapocket/Desktop/Xilinx Doc/Xilinx Doc/ug1399-vitis-hls.pdf',
 }; //arg;
 app.config.globalProperties.__basicInfo = basicInfo; //arg;
 console.log('[Workspace load]', basicInfo);

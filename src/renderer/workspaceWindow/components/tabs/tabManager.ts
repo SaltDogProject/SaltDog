@@ -90,7 +90,7 @@ class MainTabManager implements ITabManager {
     }
     public addPdfTab(tabName: string, pdfPath: string,owner='saltdog-internal') {
         if (!pdfPath) {
-            console.error(TAG, 'Can not create pdf tab: No pdfPath,check proxy.__workspaceInfo.pdfPath');
+            console.error(TAG, 'Can not create pdf tab: No pdfPath');
         }
         const name = tabName;
         const tabid = this.addTab(name, 'PDFVIEWER', owner);

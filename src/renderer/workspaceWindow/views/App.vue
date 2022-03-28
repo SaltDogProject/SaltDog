@@ -4,8 +4,13 @@
             <div class="fake-title-bar__title">{{ documentName }} - SaltDog - {{ version }}</div>
             <div class="handle-bar" v-if="os !== 'darwin'">
                 <i v-if="version == 'Dev'" class="el-icon-refresh" @click="refreshWindow"></i>
+                <div class="window__button" @click="minimizeWindow">
                 <i class="el-icon-minus" @click="minimizeWindow"></i>
-                <i class="el-icon-close" @click="closeWindow"></i>
+                </div>
+                <div class="window__button">
+<i class="el-icon-close" @click="closeWindow"></i>
+                </div>
+                
             </div>
         </div>
         <div class="workspaceContainer">
@@ -51,16 +56,20 @@ import SidebarIcons from '../components/sideBarIcons.vue';
 import sidebar from '../components/sidebar/sideBar.vue';
 import tabManager from '../components/tabs/tabManager';
 import { ipcRenderer } from 'electron';
+import bus from '../controller/systemBus'
 declare var __static: string;
 
 const App = defineComponent({
     components: { Tabs, SidebarIcons, sidebar },
     setup() {
-        const documentName = ref('Test Document.pdf');
+        const documentName = ref('欢迎');
         const os = ref(process.platform);
         const version = ref('');
         const { proxy } = getCurrentInstance()!;
         version.value = process.env.NOCE_ENV === 'production' ? pkg.version : 'Dev';
+        bus.on('_setWindowTitle',(title)=>{
+            documentName.value = title;
+        });
         function refreshWindow() {
             location.reload();
         }
@@ -179,14 +188,21 @@ $darwinBg = transparentify(#172426, #000, 0.7)
                 padding-left 167px
         .handle-bar
             position absolute
-            top 2px
-            right 8px
+            top 0px
+            right 0px
             z-index 10000
             -webkit-app-region no-drag
+            .window__button
+                display:inline-block;
+                text-align:center;
+                padding:0px 9px 0 9px;
+
+                &:hover
+                    background-color:rgba(0,0,0,0.1)
             i
                 cursor pointer
+                margin-top:6px
                 font-size 16px
-                margin-left 5px
             .el-icon-minus
                 &:hover
                     color #409eff

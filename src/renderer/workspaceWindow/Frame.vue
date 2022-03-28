@@ -6,6 +6,10 @@
 
 <script>
 import App from './views/App.vue';
+// var myFonts = new FontFace('myFontName', 'url(ShouShu.ttf)',{});
+// myFonts.load().then(function(loadFace){
+//   document.fonts.add(loadFace);
+// });
 export default {
     name: 'SaltDogWorkSpace',
     components: { App },
@@ -36,7 +40,8 @@ body,html
     padding 0
     margin 0
     height 100%
-    font-family "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif
+    font-family: -apple-system,"PingFang SC",Noto Sans,Helvetica Neue,Helvetica,Nimbus Sans L,Arial,Liberation Sans,PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Source Han Sans SC,Source Han Sans CN,Microsoft YaHei,Wenquanyi Micro Hei,WenQuanYi Zen Hei,ST Heiti,SimHei,WenQuanYi Zen Hei Sharp,sans-serif;
+    //font-family "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif
 #app
     user-select none
     overflow hidden

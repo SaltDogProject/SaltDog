@@ -99,7 +99,7 @@ export default defineComponent({
             const currentId = mainTabManager.getCurrentTab();
 
             const currentTabInfo = mainTabManager.getTabInfo(currentId);
-            if (currentTabInfo.isPdf) {
+            if (currentTabInfo&&currentTabInfo.isPdf) {
                 if (currentId != prevId) {
                     // 记录上一个打开时的pdfid，后面不一样的话就要重新刷新搜索列表
                     searchText.value = '';
