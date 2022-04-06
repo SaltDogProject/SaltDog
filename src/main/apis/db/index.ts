@@ -17,7 +17,6 @@ class ConfigStore {
     private db: Datastore.LowdbSync<Datastore.AdapterSync>;
     constructor() {
         const adapter = new FileSync(CONFIG_PATH);
-
         this.db = Datastore(adapter);
         this.db._.mixin(LodashId);
     }

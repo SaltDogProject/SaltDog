@@ -11,8 +11,8 @@ let _configFilePath = '';
 let hasCheckPath = false;
 
 const errorMsg = {
-    broken: 'PicGo 配置文件损坏，已经恢复为默认配置',
-    brokenButBackup: 'PicGo 配置文件损坏，已经恢复为备份配置',
+    broken: 'SaltDog 配置文件损坏，已经恢复为默认配置',
+    brokenButBackup: 'SaltDog 配置文件损坏，已经恢复为备份配置',
 };
 
 /** ensure notification list */

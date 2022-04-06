@@ -7,7 +7,7 @@ import { IWindowList } from './window/constants';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 import windowManager from './window/windowManager';
 import { dbChecker } from './apis/db/dbChecker';
-import db from './apis/db/index';
+
 import saltDogPlugin from './apis/plugin/index';
 import { initIpc } from './window/ipcMessage';
 import { ISaltDogPluginMessageType } from './apis/plugin/constant';

@@ -3,6 +3,7 @@ import { IWindowManager } from '~/utils/types/electron';
 import { IWindowList } from './constants';
 import { extend } from 'lodash';
 import pluginManager from '../apis/plugin/index';
+import db from '../apis/db/index';
 export function initIpc(windowManager: IWindowManager): void {
     console.log('[IPC] inited');
     ipcMain.on('openFileDialog', (e, msg) => {
@@ -44,4 +45,42 @@ export function initIpc(windowManager: IWindowManager): void {
         // console.log('[MAIN] PLUGINWEBVIEW_IPC', msg);
         pluginManager.sendToPluginHost(msg[0]);
     });
+
+    // db
+    ipcMain.on('DBSYNC',(e,method,key='',value='')=>{
+        //const allowMethod = ['read','get','set','has','insert','unset','getById','removeById','getConfigPath'];
+        let returnValue;
+        switch(method){
+            case 'read':
+                returnValue=db.read();
+                return;
+            case 'get':
+                returnValue = db.get(key);
+                return;
+            case 'set':
+                returnValue = db.set(key,value);
+                return;
+            case 'has':
+                returnValue = db.has(key);
+                return;
+            case 'insert':
+                returnValue = db.insert(key,value);
+                return;
+            case 'unset':
+                returnValue = db.unset(key,value);
+                return;
+            case 'getById':
+                returnValue = db.getById(key,value);
+                return;
+            case 'removeById':
+                returnValue = db.removeById(key,value);
+                return;
+            case 'getConfigPath':
+                returnValue = db.getConfigPath();
+                return;
+            default:
+                console.error('Bad DB IPC',method);
+        }
+        e.returnValue = returnValue;
+    })
 }
