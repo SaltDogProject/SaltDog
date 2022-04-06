@@ -71,6 +71,11 @@ class MainTabManager implements ITabManager {
         if (this.webviewMap.has(id)) return this.webviewMap.get(id) as WebviewTag;
         else return null;
     }
+    public getInfoById(id: string): any | null {
+        const target = this.getTabList().filter(info=>{return info.name==id});
+        if (target.length!=0) return target[0];
+        else return null;
+    }
     public setCurrentTab(tabId: string): void {
         this.currentTab.value = tabId;
     }

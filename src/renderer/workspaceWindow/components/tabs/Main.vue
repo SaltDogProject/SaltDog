@@ -71,13 +71,11 @@ export default defineComponent({
             }
         }
         function handleSettingsView(){
-            console.log('handleSettingsView');
-            if(settingsViewId!=''&&tabManager.getWebviewById(settingsViewId)){
-                console.log('handleSettingsView redir');
+            if(settingsViewId!=''&&tabManager.getInfoById(settingsViewId)!=null){
                 tabManager.setCurrentTab(settingsViewId);
+                
             }else{
-                console.log('handleSettingsView add');
-                tabManager.addTab('settings','','saltdog-internal','settings');
+                settingsViewId=tabManager.addTab('settings','','saltdog-internal','settings');
             }
         }
         onUnmounted(()=>{
