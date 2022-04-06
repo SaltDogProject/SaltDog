@@ -9,6 +9,9 @@
 yarn install
 ```
 
+### Before Compile
+- 在build/prebuild.js里面把webpack改成全局webpack路径
+- 按pluginHostPreload下的README.md修改以支持vm2 compile
 ### Compiles and hot-reloads for development
 ```
 yarn serve

@@ -36,7 +36,6 @@ export class SaltDogPluginActivator {
             const port = 18044 + Math.floor(Math.random() * 1000);
             extend(processConfig, {
                 execArgv: ['--inspect=' + port],
-                env: {},
                 // stdio: 'inherit',
             });
             console.log(TAG, `Plugin ${pluginInfo.name} is in develop mode, port: ${port}`);

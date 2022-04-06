@@ -71,8 +71,8 @@ class MainTabManager implements ITabManager {
         if (this.webviewMap.has(id)) return this.webviewMap.get(id) as WebviewTag;
         else return null;
     }
-    public setCurrentTab(tabName: string): void {
-        this.currentTab.value = tabName;
+    public setCurrentTab(tabId: string): void {
+        this.currentTab.value = tabId;
     }
     public getTabInfo(id: string): any {
         return this.webviewId2Info.get(id);
@@ -140,13 +140,14 @@ class MainTabManager implements ITabManager {
     }
 
     // 添加tab 设置owner为插件名字，只有名字一样才可以互相控制
-    public addTab(title: string, webviewUrl: string, owner = 'saltdog-internal'): string {
+    public addTab(title: string, webviewUrl: string, owner = 'saltdog-internal',type="webview"): string {
         const id = uniqueId(`MainPanelWebview-`);
         const baseInfo = {
             title,
             name: id,
             isPdf: webviewUrl == 'PDFVIEWER',
             owner,
+            type,
             webviewUrl: webviewUrl == 'PDFVIEWER' ? `${__static}/sdpdfcore/index.html?webviewId=${id}` : webviewUrl,
             webviewId: id,
         };

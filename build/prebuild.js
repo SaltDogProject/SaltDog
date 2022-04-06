@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const webpack = require('webpack');
+// vm2要求的webpack版本较高，不能用当前目录下的webpack，要求5.17+ 在这里用全局的，手动指定路径
+const webpack = require('C:\\Users\\Dorapocket\\AppData\\Local\\Yarn\\Data\\global\\node_modules\\webpack');
 // pluginHost js don't need compile
 // teFolif (fs.existsSync(path.join(__dirname, '../public/plugin/preload'))) deleder('../public/plugin/preload');
 // copyFolder('../src/main/apis/plugin/preload', '../public/plugin/preload');
@@ -60,6 +61,17 @@ webpack(
         },
         resolve: {
             extensions: ['.js', '.ts', '.json'],
+        },
+        // vm2 requires
+        module:{
+            parser:{
+                javascript:{
+                    commonjsMagicComments:true,
+                }
+            }
+        },
+        optimization:{
+            minimize:true,
         },
         devtool: 'source-map', // 打包出的js文件是否生成map文件（方便浏览器调试）
         mode: 'production',

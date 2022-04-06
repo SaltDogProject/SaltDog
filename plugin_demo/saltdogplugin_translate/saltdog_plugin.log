@@ -1,0 +1,85 @@
+2022-04-06 09:49:35 [SaltDog Plugin] beginnull
+2022-04-06 09:49:35 [SaltDog Plugin] PluginError
+------Error Stack Begin------
+Error: ENOENT: no such file or directory, open 'D:\SaltDog\public\preloads\pluginHostPreload\build/contextify.js'
+    at Object.openSync (fs.js:476:3)
+    at Object.func [as openSync] (electron/js2c/asar_bundle.js:5:1846)
+    at Object.readFileSync (fs.js:377:35)
+    at Object.e.readFileSync (electron/js2c/asar_bundle.js:5:8872)
+    at p (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:42453)
+    at Object.1932 (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:42650)
+    at n (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:58330)
+    at Object.9842 (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:41962)
+    at n (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:58330)
+    at D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:58965
+-------Error Stack End-------
+2022-04-06 09:54:51 [SaltDog Plugin] beginnull
+2022-04-06 09:54:51 [SaltDog Plugin] PluginError
+------Error Stack Begin------
+Error: ENOENT: no such file or directory, open 'D:\SaltDog\public\preloads\pluginHostPreload\build/contextify.js'
+    at Object.openSync (fs.js:476:3)
+    at Object.func [as openSync] (electron/js2c/asar_bundle.js:5:1846)
+    at Object.readFileSync (fs.js:377:35)
+    at Object.e.readFileSync (electron/js2c/asar_bundle.js:5:8872)
+    at p (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:42453)
+    at Object.1932 (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:42650)
+    at n (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:58330)
+    at Object.9842 (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:41962)
+    at n (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:58330)
+    at D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:58940
+-------Error Stack End-------
+2022-04-06 09:59:52 [SaltDog Plugin] beginnull
+2022-04-06 09:59:52 [SaltDog Plugin] PluginError
+------Error Stack Begin------
+Error: ENOENT: no such file or directory, open 'D:\SaltDog\public\preloads\pluginHostPreload\build/contextify.js'
+    at Object.openSync (fs.js:476:3)
+    at Object.func [as openSync] (electron/js2c/asar_bundle.js:5:1846)
+    at Object.readFileSync (fs.js:377:35)
+    at Object.e.readFileSync (electron/js2c/asar_bundle.js:5:8872)
+    at p (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:42453)
+    at Object.1932 (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:42650)
+    at n (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:58330)
+    at Object.9842 (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:41962)
+    at n (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:58330)
+    at D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:59239
+-------Error Stack End-------
+2022-04-06 10:11:27 [SaltDog Plugin] beginnull
+2022-04-06 10:11:27 [SaltDog Plugin] messageChannelTicket: 71bb1d9a-cc69-4641-89d2-75281865dc86null
+2022-04-06 10:11:27 [SaltDog Plugin] mainjs: D:\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-06 10:11:27 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"D:\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-06 10:11:27 [SaltDog Plugin] PluginError
+------Error Stack Begin------
+Error: ENOENT: no such file or directory, open 'D:\SaltDog\public\preloads\pluginHostPreload\build/fixasync.js'
+    at Object.openSync (fs.js:476:3)
+    at Object.func [as openSync] (electron/js2c/asar_bundle.js:5:1846)
+    at Object.readFileSync (fs.js:377:35)
+    at Object.e.readFileSync (electron/js2c/asar_bundle.js:5:8872)
+    at p (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:42453)
+    at new b (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:46969)
+    at new E (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:49974)
+    at D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:60041
+    at D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:60664
+    at Object.<anonymous> (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:60668)
+-------Error Stack End-------
+2022-04-06 10:15:56 [SaltDog Plugin] beginnull
+2022-04-06 10:15:56 [SaltDog Plugin] messageChannelTicket: 4b9a42fb-fb85-4d41-be38-7b75f2ee032cnull
+2022-04-06 10:15:56 [SaltDog Plugin] mainjs: D:\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-06 10:15:56 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"D:\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-06 10:15:56 [SaltDog Plugin] PluginError
+------Error Stack Begin------
+Error: Cannot find module 'vm'
+    at Object.e [as require] (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:53171)
+    at Object.<anonymous> (D:\SaltDog\public\preloads\pluginHostPreload\build/sandbox.js:6:23)
+    at new E (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:50489)
+    at D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:60041
+    at D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:60664
+    at Object.<anonymous> (D:\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:60668)
+    at Module._compile (internal/modules/cjs/loader.js:1078:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1108:10)
+    at Module.load (internal/modules/cjs/loader.js:935:32)
+    at Module._load (internal/modules/cjs/loader.js:776:14)
+-------Error Stack End-------
+2022-04-06 10:47:00 [SaltDog Plugin] beginnull
+2022-04-06 10:47:00 [SaltDog Plugin] messageChannelTicket: b24e5129-fcf5-47ba-abdb-71698df1acc9null
+2022-04-06 10:47:00 [SaltDog Plugin] mainjs: D:\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-06 10:47:00 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"D:\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null

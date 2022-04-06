@@ -5,11 +5,11 @@ const util = require('util');
 
 let LOG_PATH;
 try {
-    LOG_PATH = path.join(JSON.parse(process.env.sdconfig).rootDir, 'saltdog_plugin.log');
-} catch {
+    LOG_PATH = path.join(JSON.parse(process.env.sdConfig).rootDir, 'saltdog_plugin.log');
+} catch(e) {
+    console.error(e);
     LOG_PATH = path.join('C:\\', 'saltdog_plugin.log');
 }
-
 const loggerWriter = (msg, error = null) => {
     let log = `${dayjs().format('YYYY-MM-DD HH:mm:ss')} [SaltDog Plugin] ${msg}`;
     if (error && error.stack) {
@@ -23,16 +23,22 @@ const loggerWriter = (msg, error = null) => {
 };
 loggerWriter('begin');
 try {
-    const hostApi = require('./pluginApi/index.js');
-    const messageChannel = require('./messageChannel.js');
-    const { NodeVM } = require('vm2');
     const fs = require('fs');
     const process = require('process');
 
     process.on('unhandledRejection', (reason, promise) => {
-        loggerWriter('Unhandled Rejection', reason);
-        console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+        loggerWriter('PluginHost Unhandled Rejection', reason);
+        console.log('PluginHost Unhandled Rejection at:', promise, 'reason:', reason);
     });
+    process.on('uncaughtException',(reason,promise)=>{
+        console.log('PluginHost Unhandled Rejection at:', promise, 'reason:', reason);
+        loggerWriter('PluginHost Unhandled Rejection at:', reason);
+    });
+
+    const hostApi = require('./pluginApi/index.js');
+    const messageChannel = require('./messageChannel.js');
+    const { NodeVM } = require('vm2');
+
     global.__sdConfig = {
         message: 'not inited',
     };
@@ -86,6 +92,10 @@ try {
         },
     });
     vm.on('unhandledRejection', (reason, promise) => {
+        console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+        loggerWriter('VM Unhandled Rejection at:', reason);
+    });
+    vm.on('uncaughtException',(reason,promise)=>{
         console.log('Unhandled Rejection at:', promise, 'reason:', reason);
         loggerWriter('VM Unhandled Rejection at:', reason);
     });

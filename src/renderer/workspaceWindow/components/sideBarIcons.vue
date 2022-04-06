@@ -8,6 +8,9 @@
         >
             <img :src="icon.iconImg" :alt="icon.description" />
         </div>
+        <div :class="{ sideBarIconsContainer: true, activeIcon: false}" @click="openSettings">
+            <img :src="settingsIcon" :alt="settings">
+        </div>
     </div>
 </template>
 <script lang="ts">
@@ -18,6 +21,9 @@ import plugins from '../controller/plugin/plugin';
 
 export default defineComponent({
     setup() {
+        
+        // eslint-disable-next-line no-undef
+        const settingsIcon=`${__static}/images/workspace/settings.svg`;
         const iconList = plugins.getSidebarIconListRef();
         function iconClick(index: number) {
             if (iconList.value[index].active) {
@@ -36,9 +42,14 @@ export default defineComponent({
                 sysBus.emit('saltdog:openSidebar');
             }
         }
+        function openSettings(){
+            sysBus.emit('saltdog:openSettings');
+        }
         return {
             iconList,
             iconClick,
+            settingsIcon,
+            openSettings
         };
     },
 });
