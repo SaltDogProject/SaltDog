@@ -12,17 +12,17 @@
             <!--disable node integration for security-->
             <div style="width: 100%; height: 100%">
                 <keep-alive>
-                    <div style="width:100%;height:100%">
-                    <webview
-                        v-if="item.type=='webview'"
-                        :id="item.webviewId"
-                        class="mainWebView"
-                        :src="item.webviewUrl"
-                        disablewebsecurity
-                        webpreferences="contextIsolation=false"
-                        :preload="item.isPdf ? pdfViewerPreload : ''"
-                    ></webview>
-                    <settings v-if="item.type=='settings'"/>
+                    <div style="width: 100%; height: 100%">
+                        <webview
+                            v-if="item.type == 'webview'"
+                            :id="item.webviewId"
+                            class="mainWebView"
+                            :src="item.webviewUrl"
+                            disablewebsecurity
+                            webpreferences="contextIsolation=false"
+                            :preload="item.isPdf ? pdfViewerPreload : ''"
+                        ></webview>
+                        <settings v-if="item.type == 'settings'" />
                     </div>
                 </keep-alive>
                 <!--
@@ -36,7 +36,16 @@
     </el-tabs>
 </template>
 <script lang="ts">
-import { defineComponent, watch, onMounted, ref, onBeforeUpdate, onUpdated, getCurrentInstance, onUnmounted } from 'vue';
+import {
+    defineComponent,
+    watch,
+    onMounted,
+    ref,
+    onBeforeUpdate,
+    onUpdated,
+    getCurrentInstance,
+    onUnmounted,
+} from 'vue';
 import tabManager from './tabManager';
 import Viewer from './pdfViewer/viewer.vue';
 import path from 'path';
@@ -45,9 +54,10 @@ import WelcomePage from './Welcome.vue';
 // @ts-ignore
 import Settings from './Settings.vue';
 import bus from '../../controller/systemBus';
+const isDevelopment = process.env.NODE_ENV !== 'production';
 declare const __static: any;
 export default defineComponent({
-    components: { WelcomePage,Settings },
+    components: { WelcomePage, Settings },
     //item.webviewUrl
     setup() {
         const pdfViewerPreload = `${__static}/preloads/pdfPreload/build/preload.js`;
@@ -70,20 +80,19 @@ export default defineComponent({
                 }
             }
         }
-        function handleSettingsView(){
-            if(settingsViewId!=''&&tabManager.getInfoById(settingsViewId)!=null){
+        function handleSettingsView() {
+            if (settingsViewId != '' && tabManager.getInfoById(settingsViewId) != null) {
                 tabManager.setCurrentTab(settingsViewId);
-                
-            }else{
-                settingsViewId=tabManager.addTab('settings','','saltdog-internal','settings');
+            } else {
+                settingsViewId = tabManager.addTab('设置', '', 'saltdog-internal', 'settings');
             }
         }
-        onUnmounted(()=>{
-            bus.removeListener('saltdog:openSettings',handleSettingsView);
-        })
+        onUnmounted(() => {
+            bus.removeListener('saltdog:openSettings', handleSettingsView);
+        });
         onMounted(() => {
             tabManager.onMounted();
-            bus.on('saltdog:openSettings',handleSettingsView)
+            bus.on('saltdog:openSettings', handleSettingsView);
             // @ts-ignore
             if (proxy.__workspaceInfo.pdfPath && existsSync(proxy.__workspaceInfo.pdfPath)) {
                 // 有预先注入的打开目标
@@ -120,7 +129,7 @@ export default defineComponent({
     },
 });
 </script>
-<style lang="stylus">
+<style scoped lang="stylus">
 tabitem_height = 40px
 .tabview
     box-shadow: none!important

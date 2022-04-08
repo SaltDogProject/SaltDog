@@ -45,12 +45,16 @@ import { WebviewTag } from 'electron';
 import { defineComponent, DefineComponent, getCurrentInstance, onMounted, onUpdated, ref } from 'vue';
 import plugins from '../../controller/plugin/plugin';
 const TAG = '[Sidebar]';
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
 export default defineComponent({
     components: { Outline, Search },
     setup() {
         // eslint-disable-next-line no-undef
         const staticPath = __static;
-        const sidebarPreload = ref(`${staticPath}/preloads/pluginWebviewPreload/build/preload.js`);
+        const sidebarPreload = ref(
+            `${staticPath}/preloads/pluginWebviewPreload${isDevelopment ? '/build' : ''}/preload.js`
+        );
         const sidebarViews = ref(plugins.getSidebarViewsRef());
         const mountedViews = new Map<string, boolean>();
         const isDev = ref(false);

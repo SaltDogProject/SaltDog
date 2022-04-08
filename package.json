@@ -16,7 +16,7 @@
         "electron:serve": "vue-cli-service electron:serve",
         "postinstall": "electron-builder install-app-deps",
         "postuninstall": "electron-builder install-app-deps",
-        "dev": "node build/prebuild.js && yarn run electron:serve",
+        "dev": "yarn run electron:serve",
         "lint-fix": "eslint --ext .vue,.ts --fix ./src",
         "set-proxy": "set http_proxy=http://127.0.0.1:7890 & set https_proxy=http://127.0.0.1:7890"
     },
@@ -24,6 +24,7 @@
     "dependencies": {
         "@element-plus/icons": "^0.0.11",
         "@types/lodash": "^4.14.176",
+        "better-sqlite3": "^7.5.1",
         "bufferutil": "^4.0.5",
         "core-js": "^3.6.5",
         "dayjs": "^1.10.7",

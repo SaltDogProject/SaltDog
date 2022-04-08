@@ -153,5 +153,29 @@ class SaltDogPlugin {
         });
         return pluginInfo;
     }
+    public collectSettingsInfo(): IPluginSettings[] {
+        // 返回格式详见 ../db/settings_buildin.ts
+        const settingsList = [] as IPluginSettings[];
+
+        this._plugins.forEach((plugin) => {
+            try {
+                const temp = {};
+                if (has(plugin, 'contributes.settings')) {
+                    set(temp, 'title', plugin.name);
+                    for (const key in plugin.contributes!.settings) {
+                        const original = plugin.contributes!.settings[key];
+                        extend(original, {
+                            id: `plugins.${plugin.name}.${key}`,
+                        });
+                        set(temp, `children.${key}`, original);
+                    }
+                }
+                settingsList.push(temp as IPluginSettings);
+            } catch (e) {
+                console.log(TAG, `plugin ${plugin.name} collectSettingsInfo failed`, e);
+            }
+        });
+        return settingsList;
+    }
 }
 export default new SaltDogPlugin();

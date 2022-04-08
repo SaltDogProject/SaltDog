@@ -5,7 +5,8 @@ import FileSync from 'lowdb/adapters/FileSync';
 
 import LodashId from 'lodash-id';
 import { dbPathChecker, dbPathDir } from './dbChecker';
-
+import { extend } from 'lodash';
+import defaultSettingsTemplate from './settings_buildin';
 const STORE_PATH = dbPathDir();
 
 if (!fs.pathExistsSync(STORE_PATH)) {
@@ -53,3 +54,9 @@ class ConfigStore {
 }
 
 export default new ConfigStore();
+
+export function buildSettingsTemplate(pluginSettings: IPluginSettings[]) {
+    const def = defaultSettingsTemplate;
+    def.plugins.subGroup = pluginSettings;
+    return def;
+}

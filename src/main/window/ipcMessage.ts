@@ -4,6 +4,7 @@ import { IWindowList } from './constants';
 import { extend } from 'lodash';
 import pluginManager from '../apis/plugin/index';
 import db from '../apis/db/index';
+import { buildSettingsTemplate } from '../apis/db/index';
 export function initIpc(windowManager: IWindowManager): void {
     console.log('[IPC] inited');
     ipcMain.on('openFileDialog', (e, msg) => {
@@ -47,40 +48,44 @@ export function initIpc(windowManager: IWindowManager): void {
     });
 
     // db
-    ipcMain.on('DBSYNC',(e,method,key='',value='')=>{
+    ipcMain.on('DBSYNC', (e, method, key = '', value = '') => {
         //const allowMethod = ['read','get','set','has','insert','unset','getById','removeById','getConfigPath'];
         let returnValue;
-        switch(method){
+        switch (method) {
             case 'read':
-                returnValue=db.read();
-                return;
+                returnValue = db.read();
+                break;
             case 'get':
                 returnValue = db.get(key);
-                return;
+                break;
             case 'set':
-                returnValue = db.set(key,value);
-                return;
+                returnValue = db.set(key, value);
+                break;
             case 'has':
                 returnValue = db.has(key);
-                return;
+                break;
             case 'insert':
-                returnValue = db.insert(key,value);
-                return;
+                returnValue = db.insert(key, value);
+                break;
             case 'unset':
-                returnValue = db.unset(key,value);
-                return;
+                returnValue = db.unset(key, value);
+                break;
             case 'getById':
-                returnValue = db.getById(key,value);
-                return;
+                returnValue = db.getById(key, value);
+                break;
             case 'removeById':
-                returnValue = db.removeById(key,value);
-                return;
+                returnValue = db.removeById(key, value);
+                break;
             case 'getConfigPath':
                 returnValue = db.getConfigPath();
-                return;
+                break;
             default:
-                console.error('Bad DB IPC',method);
+                console.error('Bad DB IPC', method);
         }
         e.returnValue = returnValue;
-    })
+    });
+    ipcMain.on('gstSettingsTemplate', (e) => {
+        const pluginSettings = pluginManager.collectSettingsInfo();
+        e.returnValue = buildSettingsTemplate(pluginSettings);
+    });
 }

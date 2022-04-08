@@ -16,7 +16,16 @@ interface ISaltDogPluginInfo {
         views?: {
             [key: string]: any;
         };
+        settings?: {
+            [key: string]: any;
+        };
     };
+}
+interface IPluginSettings {
+    title: string;
+    desc?: string;
+    type: 'boolean' | 'text';
+    id?: string;
 }
 interface ISaltDogPluginApi {
     [key: string]: any;

@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "description": "Translate Plugin for SaltDog",
     "author": "dorapocket",
-    "main":"dist/index.js",
-    "type":"module",
+    "main": "dist/index.js",
+    "type": "module",
     "contributes": {
         "viewsContainers": {
             "activitybar": [
@@ -15,9 +15,21 @@
             ]
         },
         "views": {
-            "translateView":{
+            "translateView": {
                 "name": "翻译",
                 "src": "index.html"
+            }
+        },
+        "settings": {
+            "displayVoice": {
+                "title": "显示拼音",
+                "desc": "在翻译结果页显示拼音",
+                "type": "boolean"
+            },
+            "translateApi": {
+                "title": "翻译API地址",
+                "desc": "调用翻译API的地址前缀（主机名称）",
+                "type": "text"
             }
         }
     }

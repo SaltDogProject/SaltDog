@@ -8,6 +8,7 @@ import path from 'path';
 import SaltDogMessageChannel from './api/messageChannel';
 import { loggerWriter } from '~/main/utils/logger';
 const TAG = '[Plugin Activator]';
+const isDevelopment = process.env.NODE_ENV !== 'production';
 export class SaltDogPluginActivator {
     private _pluginManager: typeof SaltDogPlugin;
     constructor(_plugin: typeof SaltDogPlugin) {
@@ -42,7 +43,7 @@ export class SaltDogPluginActivator {
         }
         try {
             const pluginHost = fork(
-                __static + '/preloads/pluginHostPreload/build/preload.js',
+                __static + `/preloads/pluginHostPreload${isDevelopment ? '/build' : ''}/preload.js`,
                 [],
                 processConfig as ForkOptions
             );

@@ -83,3 +83,117 @@ Error: Cannot find module 'vm'
 2022-04-06 10:47:00 [SaltDog Plugin] messageChannelTicket: b24e5129-fcf5-47ba-abdb-71698df1acc9null
 2022-04-06 10:47:00 [SaltDog Plugin] mainjs: D:\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
 2022-04-06 10:47:00 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"D:\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 10:55:28 [SaltDog Plugin] beginnull
+2022-04-08 10:55:28 [SaltDog Plugin] messageChannelTicket: ffe91b0b-41fb-4cff-bc76-11ce716a6972null
+2022-04-08 10:55:28 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 10:55:28 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 11:53:28 [SaltDog Plugin] beginnull
+2022-04-08 11:53:29 [SaltDog Plugin] messageChannelTicket: f692879e-5372-4f46-b172-7d013a6fc2eanull
+2022-04-08 11:53:29 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 11:53:29 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 11:54:24 [SaltDog Plugin] beginnull
+2022-04-08 11:54:24 [SaltDog Plugin] messageChannelTicket: 2812b5bf-0320-46c6-91d2-3ed5c13c486cnull
+2022-04-08 11:54:24 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 11:54:24 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 11:55:40 [SaltDog Plugin] beginnull
+2022-04-08 11:55:40 [SaltDog Plugin] messageChannelTicket: c8922289-2866-4915-9ae9-39b7319a30ddnull
+2022-04-08 11:55:40 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 11:55:40 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 13:40:10 [SaltDog Plugin] beginnull
+2022-04-08 13:40:10 [SaltDog Plugin] messageChannelTicket: 83564c40-e17b-4f2a-bc6c-1eb9653262banull
+2022-04-08 13:40:10 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 13:40:10 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 13:45:07 [SaltDog Plugin] beginnull
+2022-04-08 13:45:07 [SaltDog Plugin] messageChannelTicket: 3ad19239-1ac5-4c33-9145-9ea303e57bd7null
+2022-04-08 13:45:07 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 13:45:07 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 13:46:40 [SaltDog Plugin] beginnull
+2022-04-08 13:46:40 [SaltDog Plugin] messageChannelTicket: 61305a99-5056-4c55-b473-f3e1bb4cc3a5null
+2022-04-08 13:46:40 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 13:46:40 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 13:49:55 [SaltDog Plugin] beginnull
+2022-04-08 13:49:55 [SaltDog Plugin] messageChannelTicket: 6ae7a73d-1864-463e-aab3-015805452944null
+2022-04-08 13:49:55 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 13:49:55 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 13:54:51 [SaltDog Plugin] beginnull
+2022-04-08 13:54:51 [SaltDog Plugin] messageChannelTicket: 42e14ce6-f8f4-4c14-b643-ca14b6f15b06null
+2022-04-08 13:54:51 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 13:54:51 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 13:55:20 [SaltDog Plugin] beginnull
+2022-04-08 13:55:20 [SaltDog Plugin] messageChannelTicket: 90722b09-966d-4590-b50e-e1324858a321null
+2022-04-08 13:55:20 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 13:55:20 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 13:56:25 [SaltDog Plugin] beginnull
+2022-04-08 13:56:25 [SaltDog Plugin] messageChannelTicket: 4400ac83-f92f-4feb-9db7-edba2a84fd57null
+2022-04-08 13:56:25 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 13:56:25 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 13:57:12 [SaltDog Plugin] beginnull
+2022-04-08 13:57:12 [SaltDog Plugin] messageChannelTicket: ccd8e8b3-9f6d-4f61-9b99-a9420dca302enull
+2022-04-08 13:57:12 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 13:57:12 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 13:57:39 [SaltDog Plugin] beginnull
+2022-04-08 13:57:39 [SaltDog Plugin] messageChannelTicket: 652720aa-d41e-49bc-8d8a-3cf3683fb243null
+2022-04-08 13:57:39 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 13:57:39 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 14:37:37 [SaltDog Plugin] PluginHost Unhandled Rejection at:
+------Error Stack Begin------
+TypeError: Cannot read property 'content' of undefined
+    at F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.js:14:21
+    at Object.<anonymous> (F:\Develop\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:56962)
+    at process.<anonymous> (F:\Develop\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:55488)
+    at process.emit (events.js:315:20)
+    at emit (internal/child_process.js:903:12)
+    at processTicksAndRejections (internal/process/task_queues.js:81:21)
+-------Error Stack End-------
+2022-04-08 14:56:40 [SaltDog Plugin] beginnull
+2022-04-08 14:56:41 [SaltDog Plugin] messageChannelTicket: 251112de-00cb-4fb6-8a34-9c338d4a6b79null
+2022-04-08 14:56:41 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 14:56:41 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 14:58:24 [SaltDog Plugin] beginnull
+2022-04-08 14:58:24 [SaltDog Plugin] messageChannelTicket: b0e7da26-4de6-4c86-836f-d94212f482a8null
+2022-04-08 14:58:24 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 14:58:24 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 14:58:30 [SaltDog Plugin] beginnull
+2022-04-08 14:58:30 [SaltDog Plugin] messageChannelTicket: 0644f696-36e2-49c1-8455-bd1c9cfc7fadnull
+2022-04-08 14:58:30 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 14:58:30 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 15:10:39 [SaltDog Plugin] beginnull
+2022-04-08 15:10:39 [SaltDog Plugin] messageChannelTicket: 4f9f5403-a02d-4059-bd7f-cf6dd2d3e9d6null
+2022-04-08 15:10:39 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 15:10:39 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 15:11:17 [SaltDog Plugin] beginnull
+2022-04-08 15:11:17 [SaltDog Plugin] messageChannelTicket: 41297a58-b414-471d-89f7-47f372109645null
+2022-04-08 15:11:17 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 15:11:17 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 15:12:58 [SaltDog Plugin] beginnull
+2022-04-08 15:12:58 [SaltDog Plugin] messageChannelTicket: 684da4fa-9431-4e60-a4e2-75c056762c9bnull
+2022-04-08 15:12:58 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 15:12:58 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 15:40:13 [SaltDog Plugin] beginnull
+2022-04-08 15:40:13 [SaltDog Plugin] messageChannelTicket: 32bdd9c4-6fc3-47ed-b0b1-571cdf7e7084null
+2022-04-08 15:40:13 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 15:40:13 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"},"translateApi":{"title":"翻译API地址","desc":"调用翻译API的地址前缀（主机名称）","type":"text"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 15:41:55 [SaltDog Plugin] beginnull
+2022-04-08 15:41:55 [SaltDog Plugin] messageChannelTicket: 11ddf515-1cdd-49b0-b7d1-0bad49cd7e63null
+2022-04-08 15:41:55 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 15:41:55 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"},"translateApi":{"title":"翻译API地址","desc":"调用翻译API的地址前缀（主机名称）","type":"text"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 15:42:19 [SaltDog Plugin] beginnull
+2022-04-08 15:42:19 [SaltDog Plugin] messageChannelTicket: c4d07fa4-c2fd-42eb-9fd5-b21dfd4b94e3null
+2022-04-08 15:42:19 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 15:42:19 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"},"translateApi":{"title":"翻译API地址","desc":"调用翻译API的地址前缀（主机名称）","type":"text"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 15:43:11 [SaltDog Plugin] beginnull
+2022-04-08 15:43:11 [SaltDog Plugin] messageChannelTicket: 10769520-a79b-4986-a24a-6f0c08990a1bnull
+2022-04-08 15:43:11 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 15:43:11 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"},"translateApi":{"title":"翻译API地址","desc":"调用翻译API的地址前缀（主机名称）","type":"text"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 15:44:05 [SaltDog Plugin] beginnull
+2022-04-08 15:44:05 [SaltDog Plugin] messageChannelTicket: a92df025-848d-4061-a462-6d92251b7791null
+2022-04-08 15:44:05 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 15:44:05 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"},"translateApi":{"title":"翻译API地址","desc":"调用翻译API的地址前缀（主机名称）","type":"text"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 15:44:50 [SaltDog Plugin] beginnull
+2022-04-08 15:44:51 [SaltDog Plugin] messageChannelTicket: 342af272-480d-4e4b-be85-b6499ce12e09null
+2022-04-08 15:44:51 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 15:44:51 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"},"translateApi":{"title":"翻译API地址","desc":"调用翻译API的地址前缀（主机名称）","type":"text"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 15:46:19 [SaltDog Plugin] beginnull
+2022-04-08 15:46:19 [SaltDog Plugin] messageChannelTicket: f2c541df-40a7-400c-a4be-077e3f8e1436null
+2022-04-08 15:46:19 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 15:46:19 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"},"translateApi":{"title":"翻译API地址","desc":"调用翻译API的地址前缀（主机名称）","type":"text"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
