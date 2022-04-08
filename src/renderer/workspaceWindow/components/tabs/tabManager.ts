@@ -72,8 +72,10 @@ class MainTabManager implements ITabManager {
         else return null;
     }
     public getInfoById(id: string): any | null {
-        const target = this.getTabList().filter(info=>{return info.name==id});
-        if (target.length!=0) return target[0];
+        const target = this.getTabList().filter((info) => {
+            return info.name == id;
+        });
+        if (target.length != 0) return target[0];
         else return null;
     }
     public setCurrentTab(tabId: string): void {
@@ -145,7 +147,7 @@ class MainTabManager implements ITabManager {
     }
 
     // 添加tab 设置owner为插件名字，只有名字一样才可以互相控制
-    public addTab(title: string, webviewUrl: string, owner = 'saltdog-internal',type="webview"): string {
+    public addTab(title: string, webviewUrl: string, owner = 'saltdog-internal', type = 'webview'): string {
         const id = uniqueId(`MainPanelWebview-`);
         const baseInfo = {
             title,
@@ -218,6 +220,7 @@ class MainTabManager implements ITabManager {
                     this.webviewMessageHandler.set(v.webviewId, new MessageHandler(element));
                 }
                 bus.emit(`${v.webviewId}_domReady`);
+                console.log('[lgy] emit', `${v.webviewId}_domReady`);
                 if (process.env.NODE_ENV === 'development') element.openDevTools();
             });
             element.addEventListener('console-message', (e) => {

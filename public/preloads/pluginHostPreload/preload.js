@@ -67,6 +67,7 @@ try {
         get(target, key) {
             if (target[key]) return target[key];
             else if (key == 'on') return messageChannel.on;
+            else if (key == 'subscribe') return messageChannel.subscribe;
             else if (key == 'once') return messageChannel.once;
             else if (key == 'send') return messageChannel.send;
             else if (key == '_messageChannel') return messageChannel;
@@ -104,7 +105,7 @@ try {
 console.log('Plugin Host Context for:', global.__mainjs);
 const userCode = require(global.__mainjs);
 
-await userCode.activate(global.saltdog);
+userCode.activate(global.saltdog);
 `);
 } catch (e) {
     loggerWriter('PluginError', e);

@@ -44,6 +44,7 @@ function createPDFView(args, callback) {
         );
     });
 }
+
 const getCurrentPDFView = apiWrapper(_getCurrentPDFView);
 function _getCurrentPDFView(args, callback) {
     messageChannel.invoke('getCurrentTabInfo', args, (info) => {
@@ -51,10 +52,13 @@ function _getCurrentPDFView(args, callback) {
             callback(
                 new Proxy(new PDFViewAgent(info.webviewId), {
                     get(target, key) {
+                        if (key == 'then' || key == 'catch' || key == 'finally') {
+                            return Reflect.get(target, key);
+                        }
                         if (target[key]) return target[key];
                         else {
-                            console.log(TAG, `Call PDFView Api "${key}".`);
-                            return function (args, callback) {
+                            console.error(TAG, `Call PDFView Api "${key}".`);
+                            return apiWrapper(function (args, callback) {
                                 messageChannel.invoke(
                                     '_handlePDFViewMethod',
                                     {
@@ -66,7 +70,7 @@ function _getCurrentPDFView(args, callback) {
                                         callback && callback(res);
                                     }
                                 );
-                            };
+                            });
                         }
                     },
                 })

@@ -39,6 +39,10 @@ class SaltDogPlugin {
         // sysBus.on('onClickSidebarIcon', (cmd) => {
         //     this.loadSidebarViews(cmd);
         // });
+        sysBus.on('onTabsChange', (tabid) => {
+            console.log('onTabsChange');
+            ipcRenderer.send('onTabsChange', tabid);
+        });
     }
     public getSidebarIconListRef(): any {
         const buildinIconPath = __static + '/images/workspace';

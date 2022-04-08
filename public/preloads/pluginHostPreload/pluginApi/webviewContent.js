@@ -9,25 +9,30 @@ class WebviewContent {
     }
     // 监听webview内部 dom的EventListener事件（直接映射）
     addEventListener(selector, event, cb, invokeTime) {
-        messageChannel.invoke(
-            '_registerWebviewContentEvent',
-            {
-                webviewId: this.webviewId,
-                selector,
-                eventName: event,
-                invokeTime,
-            },
-            (msg) => {
-                if (msg.status != 0) {
-                    console.error(TAG, `addEventListener ${event} failed: ${msg.msg}`);
-                    return null;
-                } else {
-                    bus.on(`Webview_${this.webviewId}_contentEvent:${msg.id}`, cb);
-                    console.log('addEventListener listen event', `Webview_${this.webviewId}_contentEvent:${msg.id}`);
-                    return msg.id;
+        return new Promise((resolve, reject) => {
+            messageChannel.invoke(
+                '_registerWebviewContentEvent',
+                {
+                    webviewId: this.webviewId,
+                    selector,
+                    eventName: event,
+                    invokeTime,
+                },
+                (msg) => {
+                    if (msg.status != 0) {
+                        console.error(TAG, `addEventListener ${event} failed: ${msg.msg}`);
+                        reject(new Error(`addEventListener ${event} failed: ${msg.msg}`));
+                    } else {
+                        bus.on(`Webview_${this.webviewId}_contentEvent:${msg.id}`, cb);
+                        console.log(
+                            'addEventListener listen event',
+                            `Webview_${this.webviewId}_contentEvent:${msg.id}`
+                        );
+                        resolve(msg.id);
+                    }
                 }
-            }
-        );
+            );
+        });
     }
     removeEventListener(id) {
         messageChannel.invoke(

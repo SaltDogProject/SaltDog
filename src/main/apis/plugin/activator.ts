@@ -43,7 +43,7 @@ export class SaltDogPluginActivator {
         }
         try {
             const pluginHost = fork(
-                __static + `/preloads/pluginHostPreload${isDevelopment ? '/build' : ''}/preload.js`,
+                __static + `/preloads/pluginHostPreload${isDevelopment ? '' : '/build'}/preload.js`,
                 [],
                 processConfig as ForkOptions
             );

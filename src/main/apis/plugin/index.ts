@@ -26,6 +26,9 @@ class SaltDogPlugin {
             const res = this.restartPluginHost(data.name);
             e.returnValue = res;
         });
+        ipcMain.on('onTabsChange', (e, tabid) => {
+            this.broadcastToPluginHost('onTabsChange', tabid);
+        });
     }
     // 加载appdata/SaltDogPlugins下的所有插件
     // TODO: 禁用插件
@@ -94,9 +97,15 @@ class SaltDogPlugin {
     public publishEventToPluginHost(target: string, event: string, data: any) {
         const messageChannel = this._pluginMessageChannelTicket.get(target);
         loggerWriter(`send ${target}`);
+        console.log('123', target, event, data);
         messageChannel!.publishEventToPluginHost(event, data);
     }
-
+    public broadcastToPluginHost(event: string, data: any) {
+        this._pluginMessageChannel.forEach((channel) => {
+            console.log(event, data);
+            channel && channel.publishEventToPluginHost(event, data);
+        });
+    }
     public sendToPluginHost(data: IPluginWebviewIPC) {
         const messageChannel = this._pluginMessageChannelTicket.get(data.ticket);
         messageChannel!.sendToPluginHost(data);

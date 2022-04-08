@@ -7,6 +7,7 @@
         type="border-card"
         closable
         @edit="handleTabsEdit"
+        @tab-change="handleTabsChange"
     >
         <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
             <!--disable node integration for security-->
@@ -56,11 +57,12 @@ import Settings from './Settings.vue';
 import bus from '../../controller/systemBus';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 declare const __static: any;
+const TAG = '[tabs/Main]';
 export default defineComponent({
     components: { WelcomePage, Settings },
     //item.webviewUrl
     setup() {
-        const pdfViewerPreload = `${__static}/preloads/pdfPreload/build/preload.js`;
+        const pdfViewerPreload = `${__static}/preloads/pdfPreload${isDevelopment ? '' : '/build'}/preload.js`;
         const editableTabs = tabManager.getTabListRef();
         const editableTabsValue = tabManager.getCurrentTabRef();
         const { proxy } = getCurrentInstance()!;
@@ -114,10 +116,14 @@ export default defineComponent({
                 showWelcome.value = false;
                 bus.emit('_setWindowTitle', tabManager.getTabInfo(tabManager.getCurrentTab()).title);
             }
+            bus.emit('onTabsChange', editableTabsValue.value);
         });
         onUpdated(() => {
             tabManager.onUpdated();
         });
+        function handleTabsChange(e: any) {
+            console.error(TAG, e);
+        }
         return {
             showWelcome,
             editableTabsValue,
@@ -125,6 +131,7 @@ export default defineComponent({
             tabIndex,
             pdfViewerPreload,
             handleTabsEdit,
+            handleTabsChange,
         };
     },
 });

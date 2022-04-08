@@ -1,8 +1,8 @@
 module.exports = function (fn) {
     if (typeof fn != 'function') return;
-    return function (args, callback) {
+    return function (args = {}, callback) {
         if (callback && typeof callback == 'function') {
-            return fn(args, callback);
+            fn(args, callback);
         } else
             return new Promise((resolve, reject) => {
                 try {
