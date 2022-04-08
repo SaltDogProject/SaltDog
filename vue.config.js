@@ -56,6 +56,7 @@ const config = {
                     .set('~', resolve('src'))
                     .set('root', resolve('./'));
             },
+
             mainProcessFile: 'src/background.ts',
             outputDir: 'saltdog_electron',
             nodeIntegration: true,

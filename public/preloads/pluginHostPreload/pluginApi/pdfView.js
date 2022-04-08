@@ -4,6 +4,7 @@ const messageChannel = require('../messageChannel.js');
 const { WebviewAgent } = require('./webview');
 const bus = require('../bus');
 const uniqId = require('licia/uniqId');
+const apiWrapper = require('../utils/apiWrapper');
 const TAG = '[PDFViewAgent]';
 
 class PDFViewAgent extends WebviewAgent {
@@ -43,8 +44,8 @@ function createPDFView(args, callback) {
         );
     });
 }
-
-function getCurrentPDFView(args, callback) {
+const getCurrentPDFView = apiWrapper(_getCurrentPDFView);
+function _getCurrentPDFView(args, callback) {
     messageChannel.invoke('getCurrentTabInfo', args, (info) => {
         if (info && info.isPdf) {
             callback(

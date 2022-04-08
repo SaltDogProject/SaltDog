@@ -6,7 +6,7 @@ const util = require('util');
 let LOG_PATH;
 try {
     LOG_PATH = path.join(JSON.parse(process.env.sdConfig).rootDir, 'saltdog_plugin.log');
-} catch(e) {
+} catch (e) {
     console.error(e);
     LOG_PATH = path.join('C:\\', 'saltdog_plugin.log');
 }
@@ -30,7 +30,7 @@ try {
         loggerWriter('PluginHost Unhandled Rejection', reason);
         console.log('PluginHost Unhandled Rejection at:', promise, 'reason:', reason);
     });
-    process.on('uncaughtException',(reason,promise)=>{
+    process.on('uncaughtException', (reason, promise) => {
         console.log('PluginHost Unhandled Rejection at:', promise, 'reason:', reason);
         loggerWriter('PluginHost Unhandled Rejection at:', reason);
     });
@@ -95,7 +95,7 @@ try {
         console.log('Unhandled Rejection at:', promise, 'reason:', reason);
         loggerWriter('VM Unhandled Rejection at:', reason);
     });
-    vm.on('uncaughtException',(reason,promise)=>{
+    vm.on('uncaughtException', (reason, promise) => {
         console.log('Unhandled Rejection at:', promise, 'reason:', reason);
         loggerWriter('VM Unhandled Rejection at:', reason);
     });
@@ -104,7 +104,7 @@ try {
 console.log('Plugin Host Context for:', global.__mainjs);
 const userCode = require(global.__mainjs);
 
-userCode.activate(global.saltdog);
+await userCode.activate(global.saltdog);
 `);
 } catch (e) {
     loggerWriter('PluginError', e);

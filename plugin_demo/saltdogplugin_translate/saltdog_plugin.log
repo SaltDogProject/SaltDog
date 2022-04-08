@@ -197,3 +197,34 @@ TypeError: Cannot read property 'content' of undefined
 2022-04-08 15:46:19 [SaltDog Plugin] messageChannelTicket: f2c541df-40a7-400c-a4be-077e3f8e1436null
 2022-04-08 15:46:19 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
 2022-04-08 15:46:19 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"},"translateApi":{"title":"翻译API地址","desc":"调用翻译API的地址前缀（主机名称）","type":"text"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 16:01:46 [SaltDog Plugin] PluginHost Unhandled Rejection at:
+------Error Stack Begin------
+TypeError: Cannot read property 'content' of undefined
+    at F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.js:14:21
+    at Object.<anonymous> (F:\Develop\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:56962)
+    at process.<anonymous> (F:\Develop\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:55488)
+    at process.emit (events.js:315:20)
+    at emit (internal/child_process.js:903:12)
+    at processTicksAndRejections (internal/process/task_queues.js:81:21)
+-------Error Stack End-------
+2022-04-08 16:15:36 [SaltDog Plugin] beginnull
+2022-04-08 16:15:36 [SaltDog Plugin] messageChannelTicket: e8f97c5e-8a8d-49fc-b714-24c2a7129b5fnull
+2022-04-08 16:15:36 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 16:15:36 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"},"translateApi":{"title":"翻译API地址","desc":"调用翻译API的地址前缀（主机名称）","type":"text"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 16:47:34 [SaltDog Plugin] beginnull
+2022-04-08 16:47:34 [SaltDog Plugin] messageChannelTicket: 0823ffad-0119-45a9-b9a8-fa80105c81dbnull
+2022-04-08 16:47:34 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 16:47:34 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"},"translateApi":{"title":"翻译API地址","desc":"调用翻译API的地址前缀（主机名称）","type":"text"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null
+2022-04-08 16:48:01 [SaltDog Plugin] PluginHost Unhandled Rejection at:
+------Error Stack Begin------
+TypeError: t is not a function
+    at Object.<anonymous> (F:\Develop\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:56698)
+    at process.<anonymous> (F:\Develop\SaltDog\public\preloads\pluginHostPreload\build\preload.js:1:55488)
+    at process.emit (events.js:315:20)
+    at emit (internal/child_process.js:903:12)
+    at processTicksAndRejections (internal/process/task_queues.js:81:21)
+-------Error Stack End-------
+2022-04-08 16:50:07 [SaltDog Plugin] beginnull
+2022-04-08 16:50:07 [SaltDog Plugin] messageChannelTicket: 17197cad-8015-4a28-8b37-b03e1ae649b1null
+2022-04-08 16:50:07 [SaltDog Plugin] mainjs: F:\Develop\SaltDog\plugin_demo\saltdogplugin_translate\dist\index.jsnull
+2022-04-08 16:50:07 [SaltDog Plugin] sdconfig: {"name":"SaltDogTranslate","version":"1.0.0","description":"Translate Plugin for SaltDog","author":"dorapocket","main":"dist/index.js","type":"module","contributes":{"viewsContainers":{"activitybar":[{"icon":"images/icon.svg","id":"translateView"}]},"views":{"translateView":{"name":"翻译","src":"index.html"}},"settings":{"displayVoice":{"title":"显示拼音","desc":"在翻译结果页显示拼音","type":"boolean"},"translateApi":{"title":"翻译API地址","desc":"调用翻译API的地址前缀（主机名称）","type":"text"}}},"rootDir":"F:\\Develop\\SaltDog\\plugin_demo\\saltdogplugin_translate"}null

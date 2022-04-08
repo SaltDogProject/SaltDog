@@ -129,19 +129,20 @@ export default defineComponent({
     },
 });
 </script>
-<style scoped lang="stylus">
+<style lang="stylus">
 tabitem_height = 40px
 .tabview
     box-shadow: none!important
     border:none!important
     height: 100%
-    .el-tabs__header
-        background-color: var(--saltdog-tabheader-background-color)!important
-        .el-tabs__item
-            height tabitem_height
+    // .el-tabs__header
+    //     background-color: var(--saltdog-tabheader-background-color)!important
+    //     .el-tabs__item
+    //         height tabitem_height
     .el-tabs__content
         padding 0px!important
-        height:'calc(100% - %s)' % tabitem_height
+        // height:'calc(100% - %s)' % tabitem_height
+        height:100%
         width:100%
         .el-tab-pane
             height:100%

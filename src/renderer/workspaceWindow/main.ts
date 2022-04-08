@@ -22,6 +22,7 @@ app.config.globalProperties.__workspaceInfo = {
 app.config.globalProperties.__basicInfo = basicInfo; //arg;
 console.log('[Workspace load]', basicInfo);
 pluginManager.init(basicInfo.plugins, windowId);
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 app.use(store)
     .use(ElementPlus, {
         zIndex: 3000,

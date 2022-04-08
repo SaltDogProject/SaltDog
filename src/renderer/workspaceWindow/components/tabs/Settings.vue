@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+    <div class="settingsTabs">
+        <el-tabs class="settingsTabs" v-model="activeName" model-value="preferences">
             <el-tab-pane :key="index" v-for="(item, index) in template" :label="item.title" :name="index">
                 <div class="settingsPaneConainer">
                     <div
@@ -16,6 +16,8 @@
                                     {{ listitem.desc }}
                                 </div>
                                 <el-input
+                                    autocomplete="false"
+                                    spellcheck="false"
                                     @change="handleSettingsChange"
                                     v-model="listitem.value"
                                     :data-settingsid="listitem.id"
@@ -26,6 +28,7 @@
                             <div class="settingsListContainer__typebool" v-if="listitem.type == 'boolean'">
                                 <div style="margin-top: 10px">
                                     <el-switch
+                                        spellcheck="false"
                                         @change="handleSettingsChange"
                                         v-model="listitem.value"
                                         :data-settingsid="listitem.id"
@@ -117,10 +120,19 @@ function DeepProxy(Obj: any) {
     return new TypeError('Argument must be object or array');
 }
 </script>
-<style lang="stylus" scoped>
+<style lang="stylus">
+.settingsTabs
+    .el-tabs__header
+        padding 20px 40px 0px 40px!important
 .settingsPaneConainer
     color:var(--el-text-color-primary)
     margin:20px 40px 20px 40px
+    // .el-tabs__header
+    //     background-color: var(--saltdog-tabheader-background-color)!important
+    //     .el-tabs__item
+    //         height tabitem_height
+    .el-tabs__header
+        padding 10px!important
 .settingsPaneSubConainer
     margin:0px 20px 0px 0px
     &__grouptitle
