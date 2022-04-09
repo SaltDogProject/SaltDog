@@ -20,6 +20,7 @@
                     </div>
                 </div>
                 <div class="sidebar-content">
+                    <library v-if="view.isBuildIn && view.viewName == 'saltdog.library'"></library>
                     <outline v-if="view.isBuildIn && view.viewName == 'saltdog.outline'"></outline>
                     <search v-if="view.isBuildIn && view.viewName == 'saltdog.search'"></search>
                     <webview

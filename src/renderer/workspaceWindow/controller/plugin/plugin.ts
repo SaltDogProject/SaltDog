@@ -48,6 +48,12 @@ class SaltDogPlugin {
         const buildinIconPath = __static + '/images/workspace';
         const iconList = [
             {
+                iconImg: `${buildinIconPath}/library.svg`,
+                description: '图书馆',
+                active: false,
+                command: 'onClickSidebarIcon:saltdog.library',
+            },
+            {
                 iconImg: `${buildinIconPath}/content.svg`,
                 description: '目录',
                 active: false,
@@ -82,6 +88,7 @@ class SaltDogPlugin {
     }
     private _buildInPluginSidebarGenerator(viewName: string) {
         const knownBuildInPlugins = {
+            'saltdog.library': '图书馆',
             'saltdog.outline': '目录',
             'saltdog.search': '搜索',
         };

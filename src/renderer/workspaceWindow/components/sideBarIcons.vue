@@ -8,8 +8,9 @@
         >
             <img :src="icon.iconImg" :alt="icon.description" />
         </div>
-        <div :class="{ sideBarIconsContainer: true, activeIcon: false}" @click="openSettings">
-            <img :src="settingsIcon" :alt="settings">
+        <div style="flex-grow: 1"></div>
+        <div :class="{ sideBarIconsContainer: true, activeIcon: false }" @click="openSettings">
+            <img :src="settingsIcon" :alt="settings" />
         </div>
     </div>
 </template>
@@ -21,9 +22,8 @@ import plugins from '../controller/plugin/plugin';
 
 export default defineComponent({
     setup() {
-        
         // eslint-disable-next-line no-undef
-        const settingsIcon=`${__static}/images/workspace/settings.svg`;
+        const settingsIcon = `${__static}/images/workspace/settings.svg`;
         const iconList = plugins.getSidebarIconListRef();
         function iconClick(index: number) {
             if (iconList.value[index].active) {
@@ -42,14 +42,14 @@ export default defineComponent({
                 sysBus.emit('saltdog:openSidebar');
             }
         }
-        function openSettings(){
+        function openSettings() {
             sysBus.emit('saltdog:openSettings');
         }
         return {
             iconList,
             iconClick,
             settingsIcon,
-            openSettings
+            openSettings,
         };
     },
 });
@@ -60,12 +60,12 @@ sidebar_icon_true_width = 25px
 .sideBarIconsView
     -webkit-app-region:no-drag!important
     width: sidebar_icon_width;
+    height:calc(100% - 20px);
     overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin-top:20px
+    margin:20px 0px
     .sideBarIconsContainer
         -webkit-app-region:no-drag!important
         &:hover
