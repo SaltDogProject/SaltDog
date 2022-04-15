@@ -2,7 +2,7 @@ import { BrowserWindow } from 'electron';
 import { IWindowManager, IWindowListItem } from '#/types/electron';
 import windowList from './windowList';
 import { IWindowList } from './constants';
-
+const TAG = '[Main]';
 class WindowManager implements IWindowManager {
     private a = 1;
     private windowMap: Map<IWindowList | string, BrowserWindow> = new Map();
@@ -35,6 +35,7 @@ class WindowManager implements IWindowManager {
                 c({ cancel: false, responseHeaders: d.responseHeaders });
             });
             if (config) this.windowConfig.set(window.id, config);
+            console.log(TAG, 'Creating window', name);
             windowConfig.callback(window, this);
             window.on('close', () => {
                 this.deleteById(id);

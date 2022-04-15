@@ -1,38 +1,51 @@
 import { ChildProcess } from 'child_process';
-import { ipcMain } from 'electron';
+import { BrowserWindow, ipcMain } from 'electron';
 import { ISaltDogPluginMessageType } from '../constant';
 import { extend, uuid } from 'licia';
 import windowManager from '~/main/window/windowManager';
 const TAG = '[SaltDogMessageChannel]';
 class SaltDogMessageChannel {
-    public pluginHost?: ChildProcess;
-    public pluginInfo: ISaltDogPluginInfo;
+    public pluginHost?: BrowserWindow;
     public api: ISaltDogPluginApi;
-    private ticket: string;
+    private pluginname2Ticket = new Map<string, string>();
+    private pluginticket2info = new Map<string, ISaltDogPluginInfo>();
     private pendingCallbackId = 0;
-    constructor(pluginInfo: ISaltDogPluginInfo, api: ISaltDogPluginApi) {
-        this.pluginInfo = pluginInfo;
+    constructor(api: ISaltDogPluginApi) {
         this.api = api;
-        this.ticket = uuid();
     }
-    public bindHost(pluginHost: ChildProcess): void {
+    public bindHost(pluginHost: BrowserWindow): void {
         this.pluginHost = pluginHost;
-        this.pluginHost.on('message', (msg: any) => {
-            switch (msg.type as ISaltDogPluginMessageType) {
-                case ISaltDogPluginMessageType.PLUGINHOST_INVOKE:
-                    this.handlePluginHostInvoke(msg as ISaltDogPluginInvoke);
-                    break;
-                case ISaltDogPluginMessageType.PLUGINWEBVIEW_INVOKE_CALLBACK:
-                    this.sendToRenderer(msg as ISaltDogPluginWebviewInvokeCallback);
-            }
+        // FIXME: connect
+        ipcMain.on(ISaltDogPluginMessageType.PLUGINHOST_INVOKE, (event, msg: ISaltDogPluginInvoke) => {
+            this.handlePluginHostInvoke(msg);
         });
+        ipcMain.on(
+            ISaltDogPluginMessageType.PLUGINWEBVIEW_INVOKE_CALLBACK,
+            (event, msg: ISaltDogPluginWebviewInvokeCallback) => {
+                this.sendToRenderer(msg);
+            }
+        );
+        // this.pluginHost.on('message', (msg: any) => {
+        //     switch (msg.type as ISaltDogPluginMessageType) {
+        //         case ISaltDogPluginMessageType.PLUGINHOST_INVOKE:
+        //             this.handlePluginHostInvoke(msg as ISaltDogPluginInvoke);
+        //             break;
+        //         case ISaltDogPluginMessageType.PLUGINWEBVIEW_INVOKE_CALLBACK:
+        //             this.sendToRenderer(msg as ISaltDogPluginWebviewInvokeCallback);
+        //     }
+        // });
+    }
+    public generatePluginTicket(info: ISaltDogPluginInfo) {
+        const t = uuid();
+        this.pluginname2Ticket.set(info.name, t);
+        this.pluginticket2info.set(t, info);
+        return t;
     }
 
     private handlePluginHostInvoke(msg: ISaltDogPluginInvoke): void {
         if (typeof this.api[msg.api] === 'function') {
             this.api[msg.api](msg.args, (data: any) => {
-                this.pluginHost!.send({
-                    type: ISaltDogPluginMessageType.PLUGINHOST_INVOKE_CALLBACK,
+                this.pluginHost!.webContents.send(ISaltDogPluginMessageType.PLUGINHOST_INVOKE_CALLBACK, {
                     callbackId: msg.callbackId,
                     data,
                 } as ISaltDogPluginInvokeCallback);
@@ -43,8 +56,7 @@ class SaltDogMessageChannel {
             } else if (windowManager.getCurrentWindow() != null) {
                 const id = windowManager.getCurrentWindow()!.id;
                 this.sendToRenderer(extend(msg, { windowId: id }), (data: any) => {
-                    this.pluginHost!.send({
-                        type: ISaltDogPluginMessageType.PLUGINHOST_INVOKE_CALLBACK,
+                    this.pluginHost!.webContents.send(ISaltDogPluginMessageType.PLUGINHOST_INVOKE_CALLBACK, {
                         callbackId: msg.callbackId,
                         data,
                     } as ISaltDogPluginInvokeCallback);
@@ -54,24 +66,21 @@ class SaltDogMessageChannel {
                 // );
             } else {
                 console.error(
-                    `${this.pluginInfo.name}插件接口调用失败：尝试调用${msg.api}，参数为${JSON.stringify(
-                        msg.args
-                    )}, 且无活动窗口。`
+                    `插件接口调用失败：尝试调用${msg.api}，参数为${JSON.stringify(msg.args)}, 且无活动窗口。`
                 );
             }
         }
     }
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     public publishEventToPluginHost(event: string, data: any): void {
-        this.pluginHost!.send({
-            type: ISaltDogPluginMessageType.HOST_EVENT,
+        this.pluginHost!.webContents.send(ISaltDogPluginMessageType.HOST_EVENT, {
             event,
             data,
         } as ISaltDogPluginHostEventToPlugin);
     }
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    public sendToPluginHost(data: any): void {
-        this.pluginHost!.send(data);
+    public sendToPluginHost(channel: string, data: any): void {
+        this.pluginHost!.webContents.send(channel, data);
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -80,10 +89,10 @@ class SaltDogMessageChannel {
             // console.log(TAG, 'sendToRenderer', data);
             if (callback) {
                 if (this.pendingCallbackId >= 65535) this.pendingCallbackId = 0;
-                const callbackIdIfExist = 'rdcb_' + this.getTicket() + '_' + this.pendingCallbackId;
+                const callbackIdIfExist = this.pendingCallbackId;
                 this.pendingCallbackId++;
                 data.callbackMainId = callbackIdIfExist;
-                ipcMain.once(callbackIdIfExist, (e, d) => {
+                ipcMain.once(callbackIdIfExist.toString(), (e, d) => {
                     callback(d);
                 });
             }
@@ -93,8 +102,8 @@ class SaltDogMessageChannel {
         }
     }
 
-    public getTicket(): string {
-        return this.ticket;
+    public getTicket(name: string): string | undefined {
+        return this.pluginname2Ticket.get(name);
     }
 }
 export default SaltDogMessageChannel;

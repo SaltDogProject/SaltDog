@@ -44,7 +44,6 @@ contextBridge.exposeInMainWorld('saltdog', {
         window._pendingFunction[id] = callback;
         // window.isMessageChannelInited ? null : (window.isMessageChannelInited = false);
         ipcRenderer.sendToHost('PLUGINWEBVIEW_IPC', {
-            type: 'PLUGINWEBVIEW_INVOKE',
             channel: channel,
             data: msg,
             ticket: ticket,

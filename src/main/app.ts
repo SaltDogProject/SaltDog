@@ -17,8 +17,11 @@ class LifeCycle {
         // Scheme must be registered before the app is ready
         protocol.registerSchemesAsPrivileged([{ scheme: 'saltdog', privileges: { secure: true, standard: true } }]);
         dbChecker();
-        this.pluginManager.init();
         initIpc(windowManager);
+        ipcMain.on('_pluginHostReady', () => {
+            console.log('[Main] _pluginHostReady');
+            saltDogPlugin.init();
+        });
         app.on('browser-window-focus', (e, window) => {
             windowManager.setFocusWindow(window);
         });
@@ -41,6 +44,7 @@ class LifeCycle {
             //windowManager.create(IWindowList.ENTRY_WINDOW, {});
             // FIXME: debug create the WORKSPACE window
             windowManager.create(IWindowList.WORKSPACE_WINDOW);
+            windowManager.create(IWindowList.PLUGIN_HOST);
         };
         if (!app.isReady()) {
             // This method will be called when Electron has finished
@@ -74,7 +78,7 @@ class LifeCycle {
             // to stay active until the user quits explicitly with Cmd + Q
             console.log('window-all-closed');
             if (process.platform !== 'darwin') {
-                this.pluginManager.destroyAllPluginHosts();
+                // this.pluginManager.destroyAllPluginHosts();
                 app.quit();
             }
         });

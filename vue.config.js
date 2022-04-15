@@ -18,6 +18,12 @@ const config = {
             filename: 'workspace.html',
             title: 'SaltDog-Workspace',
         },
+        pluginhost: {
+            entry: 'src/pluginHost/main.ts',
+            template: 'public/index.html',
+            filename: 'pluginhost.html',
+            title: 'SaltDog-PluginHost',
+        },
         // pdfviewer: {
         //     entry: 'src/renderer/webviews/pdfviewer/viewer.js',
         //     template: 'src/renderer/webviews/pdfviewer/viewer.html',

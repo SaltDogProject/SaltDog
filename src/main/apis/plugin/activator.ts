@@ -1,78 +1,68 @@
-import { fork, ForkOptions } from 'child_process';
 import { extend, fromPairs, noop } from 'lodash';
 import SaltDogPlugin from '.';
 import apiFactory from './api/index';
 import windowManager from '~/main/window/windowManager';
-const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 import path from 'path';
 import SaltDogMessageChannel from './api/messageChannel';
 import { loggerWriter } from '~/main/utils/logger';
+import { app, BrowserWindow, ipcMain } from 'electron';
+import { IWindowList } from '~/main/window/constants';
 const TAG = '[Plugin Activator]';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 export class SaltDogPluginActivator {
     private _pluginManager: typeof SaltDogPlugin;
+    private _pluginHost: BrowserWindow | null = null;
+    private _messageChannel: SaltDogMessageChannel | null = null;
     constructor(_plugin: typeof SaltDogPlugin) {
         this._pluginManager = _plugin;
     }
-    activatePlugin(pluginInfo: ISaltDogPluginInfo, isReload = false): void {
-        const newApi = (
-            isReload ? apiFactory.getApi(pluginInfo.name) : apiFactory.createApi(pluginInfo)
-        ) as ISaltDogPluginApi;
-        const messageChannel = (
-            isReload
-                ? this._pluginManager.getMessageChannel(pluginInfo.name)
-                : new SaltDogMessageChannel(pluginInfo, newApi)
-        ) as SaltDogMessageChannel;
-        const processConfig = {
-            env: {
-                pluginManifest: JSON.stringify(pluginInfo),
-                messageChannelTicket: messageChannel.getTicket(),
-                mainjs: path.resolve(pluginInfo.rootDir, pluginInfo.main),
-                sdConfig: JSON.stringify(pluginInfo),
-            },
-            serialization: 'advanced',
-        };
-
-        if (process.env.NODE_ENV === 'development') {
-            const port = 18044 + Math.floor(Math.random() * 1000);
-            extend(processConfig, {
-                execArgv: ['--inspect=' + port],
-                // stdio: 'inherit',
-            });
-            console.log(TAG, `Plugin ${pluginInfo.name} is in develop mode, port: ${port}`);
+    // 一个WindowId对应一个插件宿主进程，所有插件运行在同一个宿主进程上下文。
+    initPluginHost() {
+        const pluginHost = windowManager.get(IWindowList.PLUGIN_HOST);
+        if (!pluginHost) {
+            throw new Error('Plugin host NOT start!');
         }
+        pluginHost!.webContents.send('_pluginHostConfig', {
+            logDir: app.getPath('userData'),
+            rootDir: app.getPath('userData'),
+        });
+        console.log(TAG, `Init plugin host...`);
         try {
-            const pluginHost = fork(
-                __static + `/preloads/pluginHostPreload${isDevelopment ? '' : '/build'}/preload.js`,
-                [],
-                processConfig as ForkOptions
-            );
-            this._pluginManager.setPluginHost(pluginInfo.name, pluginHost);
-            messageChannel.bindHost(pluginHost);
-            this._pluginManager.setMessageChannel(pluginInfo.name, messageChannel);
-            // pluginHost.stdout!.on('data', (data) => {
-            //     loggerWriter(`plugin ${pluginInfo.name} : ${data}`);
-            // });
-            pluginHost.on('close', (message: any) => {
-                console.warn(TAG, `plugin close`, message);
-                loggerWriter(`plugin ${pluginInfo.name} close`);
-            });
-            pluginHost.on('disconnect', (message: any) => {
-                console.warn(TAG, `plugin ${pluginInfo.name} disconnect`, message);
-                loggerWriter(`plugin ${pluginInfo.name} disconnect`);
-            });
-            pluginHost.on('error', (message: any) => {
-                console.error(TAG, `plugin ${pluginInfo.name} error`, message);
-                loggerWriter(`plugin ${pluginInfo.name} error`, message);
-            });
-            pluginHost.on('exit', (message: any) => {
-                console.warn(TAG, `plugin ${pluginInfo.name} exit`, message);
-            });
+            this._pluginHost = pluginHost;
+            const newApi = apiFactory.createApi() as ISaltDogPluginApi;
+            const messageChannel = new SaltDogMessageChannel(newApi) as SaltDogMessageChannel;
+            messageChannel.bindHost(this._pluginHost as BrowserWindow);
+            this._messageChannel = messageChannel;
+            this._pluginManager.setPluginHost(pluginHost);
+            this._pluginManager.setMessageChannel(messageChannel);
         } catch (e: any) {
-            loggerWriter(`Activateing ${pluginInfo.name} error`, e);
+            console.error(e);
         }
-        // messageChannel.publishEventToPluginHost('sdConfigReady', {
-        //     message: 'ready',
-        // });
+    }
+
+    activatePlugin(pluginInfo: ISaltDogPluginInfo, isReload = false): void {
+        console.log(TAG, `Activate plugin ${pluginInfo}.`);
+        if (!this._pluginHost || !this._messageChannel) {
+            console.warn(
+                'Can not connect to pluginHost while activatePlugin. Starting a new one...',
+                this._pluginHost,
+                this._messageChannel
+            );
+            windowManager.create(IWindowList.PLUGIN_HOST);
+        }
+        const pluginEnv = {
+            name: pluginInfo.name,
+            pluginManifest: JSON.stringify(pluginInfo),
+            mainjs: path.resolve(pluginInfo.rootDir, pluginInfo.main),
+        };
+        try {
+            this._pluginManager.setMessageChannelTicket(
+                pluginInfo.name,
+                this._messageChannel!.generatePluginTicket(pluginInfo)
+            );
+            this._messageChannel!.publishEventToPluginHost('_activatePlugin', pluginEnv);
+        } catch (e: any) {
+            console.error(`Activateing ${pluginInfo.name} error`, e);
+        }
     }
 }

@@ -2,7 +2,7 @@
     "allowSyntheticDefaultImports": true,
     "compilerOptions": {
         "target": "esnext",
-        "module":"commonjs",
+        "module": "commonjs",
         "outDir": "./dist/",
         "rootDir": "./src/",
         "strict": true,
@@ -10,6 +10,15 @@
         "esModuleInterop": true,
         "experimentalDecorators": true
     },
-    "include": ["src/*.ts","src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx", "src/**/*.d.ts"],
+    "include": [
+        "src/*.ts",
+        "src/*.d.ts",
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/**/*.vue",
+        "tests/**/*.ts",
+        "tests/**/*.tsx",
+        "src/**/*.d.ts"
+    ]
     // "exclude": ["node_modules"]
 }
