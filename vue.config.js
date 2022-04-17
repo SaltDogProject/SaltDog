@@ -43,6 +43,7 @@ const config = {
             .set('~', resolve('src'))
             .set('root', resolve('./'))
             .set('#', resolve('utils'));
+
         // build web
         // config.entry('entryWindow').add('src/renderer/entryWindow/main.ts').end().output.filename('entryWindow.js');
         // config
@@ -62,7 +63,12 @@ const config = {
                     .set('~', resolve('src'))
                     .set('root', resolve('./'));
             },
-
+            chainWebpackRendererProcess: (config) => {
+                config.resolve.alias
+                    .set('@', resolve('src/renderer'))
+                    .set('~', resolve('src'))
+                    .set('root', resolve('./'));
+            },
             mainProcessFile: 'src/background.ts',
             outputDir: 'saltdog_electron',
             nodeIntegration: true,

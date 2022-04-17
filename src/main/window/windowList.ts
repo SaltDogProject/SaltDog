@@ -102,7 +102,7 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
     },
 });
 
-// workspace
+// PLUGIN_HOST
 windowList.set(IWindowList.PLUGIN_HOST, {
     isValid: true,
     multiple: false,

@@ -50,11 +50,13 @@ export class SaltDogPluginActivator {
             );
             windowManager.create(IWindowList.PLUGIN_HOST);
         }
+
         const pluginEnv = {
             name: pluginInfo.name,
-            pluginManifest: JSON.stringify(pluginInfo),
+            pluginManifest: pluginInfo,
             mainjs: path.resolve(pluginInfo.rootDir, pluginInfo.main),
         };
+
         try {
             this._pluginManager.setMessageChannelTicket(
                 pluginInfo.name,

@@ -27,7 +27,7 @@ pnpm-debug.log*
 /saltdog_electron
 
 #Thirdparty build
-
+/vue-cli-plugin-electron-builder
 
 #others
 my_notice
