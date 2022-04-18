@@ -31,11 +31,9 @@ interface ISaltDogPluginApi {
     [key: string]: any;
 }
 interface ISaltDogPluginInvoke {
-    type: ISaltDogPluginMessageType;
-    windowId?: string;
+    windowId?: string|null;
     api: string;
     args: any;
-    pluginInfo: ISaltDogPluginInfo;
     callbackId: string;
 }
 interface ISaltDogPluginWebviewInvokeCallback {
@@ -49,6 +47,10 @@ interface ISaltDogPluginInvokeCallback {
     type: ISaltDogPluginMessageType;
     data: any;
     callbackId: string;
+}
+interface ISaltDogPluginWebviewInvoke {
+    channel:string;
+    data:any;
 }
 interface ISaltDogPluginHostEventToPlugin {
     type: ISaltDogPluginMessageType;

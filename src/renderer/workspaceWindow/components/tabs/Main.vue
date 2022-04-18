@@ -86,7 +86,7 @@ export default defineComponent({
             if (settingsViewId != '' && tabManager.getInfoById(settingsViewId) != null) {
                 tabManager.setCurrentTab(settingsViewId);
             } else {
-                settingsViewId = tabManager.addTab('设置', '', 'saltdog-internal', 'settings');
+                settingsViewId = tabManager.addTab('设置', '','settings');
             }
         }
         onUnmounted(() => {

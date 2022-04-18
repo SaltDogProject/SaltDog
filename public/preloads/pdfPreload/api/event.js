@@ -32,7 +32,6 @@ function _requestAddEventListener(args, callback) {
         window.__sdJSBridge &&
             window.__sdJSBridge.publish(`_WebviewContentEvent`, {
                 event: eventName,
-                owner: args.owner,
                 data: JSON.parse(JSON.stringify(e)), // 防止序列化错误
                 id,
             });
@@ -42,7 +41,7 @@ function _requestAddEventListener(args, callback) {
         eventName,
         invokeTime,
     };
-    console.log(TAG, '_requestAddEventListener res:', ele, args.owner);
+    console.log(TAG, '_requestAddEventListener res:', ele);
     if (ele) {
         ele.addEventListener(eventName, listenerIdMap[id], invokeTime);
         callback({

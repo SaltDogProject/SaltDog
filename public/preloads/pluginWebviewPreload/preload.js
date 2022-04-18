@@ -16,7 +16,7 @@ function getQueryVariable() {
     return params;
 }
 const params = getQueryVariable();
-const ticket = params.ticket;
+const name = params.name;
 const webviewId = params.webviewId;
 const windowId = params.windowId;
 
@@ -46,7 +46,7 @@ contextBridge.exposeInMainWorld('saltdog', {
         ipcRenderer.sendToHost('PLUGINWEBVIEW_IPC', {
             channel: channel,
             data: msg,
-            ticket: ticket,
+            name,
             webviewId,
             windowId,
             callbackId: id,

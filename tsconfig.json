@@ -16,7 +16,7 @@
         "sourceMap": true,
         "baseUrl": ".",
         "types": ["webpack-env"],
-        "typeRoots": ["./src/utils/types/*", "./src/pluginHost/types/*"],
+        "typeRoots": ["./src/utils/types/*", "./src/pluginHost/types/*","./third_party/saltdog_npm/*"],
         "paths": {
             "@/*": ["src/renderer/*"],
             "~/*": ["src/*"],

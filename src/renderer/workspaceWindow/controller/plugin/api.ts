@@ -7,7 +7,7 @@ const testRendererApi = (arg: any, callback: any,rawData:any) => {
 };
 const _hostToSidebarMsg = (args:any,callback:any)=>{
     console.log('Handle message to Sidebar');
-    const sidebarView = plugin.getSidebarByTicket(args.ticket);
+    const sidebarView = plugin.getSidebarByName(args.name);
     if(!sidebarView) return;
     sidebarView.send('PLUGINHOST_TO_SIDEBAR_MESSAGE',{
         event:args.event,

@@ -1,17 +1,17 @@
 const bus = require('./bus');
 const uniqId = require('licia/uniqId');
 const callbackMap = {};
-function send(event,data){
+// name: 注册的sidebar的name
+function send(name,event,data){
     process.send({
         type: 'PLUGINHOST_INVOKE',
         api:'_hostToSidebarMsg',
         args: {
             event,data,
-            ticket:process.env.messageChannelTicket
+            name
         },
         pluginInfo: global.__sdConfig,
         callbackId:-1,
-        hostIdentity:process.env.messageChannelTicket
     });
 }
 // plugin向host发请求
@@ -27,7 +27,6 @@ function invoke(api, args, callback) {
         args: args,
         pluginInfo: global.__sdConfig,
         callbackId,
-        hostIdentity:process.env.messageChannelTicket
     });
 }
 function on(channel, cb) {

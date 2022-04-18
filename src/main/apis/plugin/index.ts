@@ -11,7 +11,6 @@ const TAG = 'SaltDogPlugin';
 class SaltDogPlugin {
     private _plugins: Map<string, ISaltDogPluginInfo> = new Map();
     private _pluginHost: BrowserWindow | null = null;
-    private _pluginMessageChannelTicket: Map<string, string> = new Map(); // name ticket
     private _pluginMessageChannel: SaltDogMessageChannel | null = null;
     private _activator: SaltDogPluginActivator | null = null;
     private isDevelopment = process.env.NODE_ENV == 'development';
@@ -82,21 +81,15 @@ class SaltDogPlugin {
     //     this._activator!.initPluginHost();
     //     return true;
     // }
-    public setMessageChannelTicket(name: string, ticket: string) {
-        this._pluginMessageChannelTicket.set(name, ticket);
-        this._plugins.get(name)!.messageChannelTicket = ticket;
-    }
+
     public setMessageChannel(channel: SaltDogMessageChannel): void {
         this._pluginMessageChannel = channel;
     }
     public getMessageChannel(): SaltDogMessageChannel | null {
         return this._pluginMessageChannel;
     }
-    public publishEventToPluginHost(target: string, event: string, data: any) {
+    public publishEventToPluginHost(event: string, data: any) {
         const messageChannel = this._pluginMessageChannel;
-        extend(data, {
-            target,
-        });
         messageChannel!.publishEventToPluginHost(event, data);
     }
     public broadcastToPluginHost(event: string, data: any) {

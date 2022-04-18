@@ -13,7 +13,6 @@ class SaltDogPlugin {
     private _sidebarViews: any = ref([]);
     private _sidebarViewsMap: Map<string, any> = new Map(); // plugin.view--->index in _sidebarViews
     private _sidebarViewsUUIDMap: Map<string, any> = new Map();
-    private _ticketSidebarMap: Map<string, any> = new Map(); // ticket/hostIdentity->webview
     // @ts-ignore
     private windowId;
     public init(basicInfo: any, windowId: any): void {
@@ -153,13 +152,10 @@ class SaltDogPlugin {
                 id: `sidebarView_${alreadyLoadedViewsLen}`,
                 isBuildIn: false,
                 viewName,
-                viewSrc: `${_view.src.split('?')[0]}?ticket=${
-                    this._basicInfo[viewName.split('.')[0]]._messageChannelTicket
-                }&windowId=${this.windowId}&webviewId=${id}`, //不允许用户?传参,传递和host通信的tickets
+                viewSrc: `${_view.src.split('?')[0]}?windowId=${this.windowId}&webviewId=${id}&name=${_view.name}`,
                 name: _view.name,
                 show: true,
                 uuid: id,
-                ticket: this._basicInfo[viewName.split('.')[0]]._messageChannelTicket,
             };
             this._sidebarViews.value.push(viewinfo);
             // 关闭其他的webview-show
@@ -203,7 +199,6 @@ class SaltDogPlugin {
                 return (v.uuid = viewUUID);
             })[0];
 
-            this._ticketSidebarMap.set(viewInfo.ticket, webview);
             this._sidebarViewsUUIDMap.set(viewUUID, webview);
             if (process.env.NODE_ENV === 'development') webview.openDevTools();
         });
@@ -214,8 +209,8 @@ class SaltDogPlugin {
         });
     }
 
-    public getSidebarByTicket(ticket: string): WebviewTag | null {
-        return this._ticketSidebarMap.get(ticket);
+    public getSidebarByName(name: string): WebviewTag | null {
+        return this._sidebarViews.value[this._sidebarViewsMap.get(name)];
     }
 
     public restartPlugin(name: string): void {

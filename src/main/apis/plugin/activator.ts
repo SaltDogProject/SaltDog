@@ -58,10 +58,6 @@ export class SaltDogPluginActivator {
         };
 
         try {
-            this._pluginManager.setMessageChannelTicket(
-                pluginInfo.name,
-                this._messageChannel!.generatePluginTicket(pluginInfo)
-            );
             this._messageChannel!.publishEventToPluginHost('_activatePlugin', pluginEnv);
         } catch (e: any) {
             console.error(`Activateing ${pluginInfo.name} error`, e);

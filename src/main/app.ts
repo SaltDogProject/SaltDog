@@ -25,8 +25,8 @@ class LifeCycle {
         app.on('browser-window-focus', (e, window) => {
             windowManager.setFocusWindow(window);
         });
-        ipcMain.on('_rendererToPluginEvents', (e, target, events, data) => {
-            this.pluginManager.publishEventToPluginHost(target, events, data);
+        ipcMain.on('_rendererToPluginEvents', (e, events, data) => {
+            this.pluginManager.publishEventToPluginHost(events, data);
         });
     }
     onReady() {

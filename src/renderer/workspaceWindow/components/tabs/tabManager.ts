@@ -8,6 +8,7 @@ import fs from 'fs';
 // FIXME:
 import bus from '../../controller/systemBus';
 import pluginMsgChannel from '../../../utils/pluginMsgChannel';
+import { uuid } from 'licia';
 const TAG = '[TabManager]';
 class MainTabManager implements ITabManager {
     private _eventList = [
@@ -95,12 +96,12 @@ class MainTabManager implements ITabManager {
             this.webviewPendingFunction[tabid] = fn;
         }
     }
-    public addPdfTab(tabName: string, pdfPath: string, owner = 'saltdog-internal') {
+    public addPdfTab(tabName: string, pdfPath: string) {
         if (!pdfPath) {
             console.error(TAG, 'Can not create pdf tab: No pdfPath');
         }
         const name = tabName;
-        const tabid = this.addTab(name, 'PDFVIEWER', owner);
+        const tabid = this.addTab(name, 'PDFVIEWER');
         this.pdfTabReadyState[tabid] = false;
         bus.once(`PDFVIEW_${tabid}:SDPDFCore_Ready`, () => {
             const handler = this.getMessageHandler(tabid) as MessageHandler;
@@ -132,28 +133,27 @@ class MainTabManager implements ITabManager {
         //
         bus.on(`PDFVIEW_${tabid}:_WebviewContentEvent`, (args) => {
             console.log(TAG, 'Custom Event dispatch', args);
-            pluginMsgChannel.send(args.owner, `Webview_${tabid}_contentEvent:${args.id}`, args.data);
+            pluginMsgChannel.send(`Webview_${tabid}_contentEvent:${args.id}`, args.data);
         });
         return tabid;
     }
     // 插件创建页面Tab
     public addPluginTab(pluginMessage: any, title: string, webviewUrl: string, statCallback: any) {
         const name = title;
-        const tabid = this.addTab(name, webviewUrl, pluginMessage.hostIdentity);
-        statCallback(tabid);
-        // bus.once(`${tabid}_domReady`, () => {
-        //     statCallback(tabid);
-        // });
+        const tabid = this.addTab(name, webviewUrl);
+        // statCallback(tabid);
+        bus.once(`${tabid}_domReady`, () => {
+            statCallback(tabid);
+        });
     }
 
-    // 添加tab 设置owner为插件名字，只有名字一样才可以互相控制
-    public addTab(title: string, webviewUrl: string, owner = 'saltdog-internal', type = 'webview'): string {
-        const id = uniqueId(`MainPanelWebview-`);
+    // 添加tab
+    public addTab(title: string, webviewUrl: string,type = 'webview'): string {
+        const id = uuid();
         const baseInfo = {
             title,
             name: id,
             isPdf: webviewUrl == 'PDFVIEWER',
-            owner,
             type,
             webviewUrl: webviewUrl == 'PDFVIEWER' ? `${__static}/sdpdfcore/index.html?webviewId=${id}` : webviewUrl,
             webviewId: id,
@@ -212,7 +212,7 @@ class MainTabManager implements ITabManager {
             // 事件转发
             for (const e of this._eventList) {
                 element.addEventListener(e, (...args) => {
-                    pluginMsgChannel.send(v.owner, `Webview_${v.webviewId}_${e}`, args);
+                    pluginMsgChannel.send(`Webview_${v.webviewId}_${e}`, args);
                 });
             }
             element.addEventListener('dom-ready', () => {

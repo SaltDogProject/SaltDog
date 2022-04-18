@@ -4,7 +4,6 @@ export interface ITabConfig {
     isPdf:boolean;
     webviewUrl: string;
     webviewId: string;
-    owner:string
 }
 
 export interface ITabManager {

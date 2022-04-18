@@ -1,5 +1,6 @@
 // @ts-nocheck
 import bus from '@/workspaceWindow/controller/systemBus';
+import { uuid } from 'licia';
 import mainTabManager from '../../components/tabs/tabManager';
 const TAG = '[SaltDogPlugin Webview]';
 
@@ -29,12 +30,10 @@ function _handleWebviewMethod(arg: any, callback: any): void {
 
 function _registerWebviewContentEvent(arg: any, callback?: any): void {
     let _done = false;
-    const owner = this.hostIdentity;
     function whenReady() {
         _done = true;
         const h = mainTabManager.getMessageHandler(webviewId);
         console.log(TAG, '_registerWebviewContentEvent', arg);
-        arg.owner = owner;
         h.invokeWebview('_requestAddEventListener', arg, (msg) => {
             callback && callback(msg);
         });
@@ -44,7 +43,6 @@ function _registerWebviewContentEvent(arg: any, callback?: any): void {
     const handler = mainTabManager.getMessageHandler(webviewId);
     if (handler) {
         console.log(TAG, '_registerWebviewContentEvent', arg);
-        arg.owner = owner;
         handler.invokeWebview('_requestAddEventListener', arg, (msg) => {
             callback && callback(msg);
         });
@@ -99,7 +97,8 @@ function getTabInfo(arg: any, callback?: any) {
 
 function createPDFView(arg: any, callback?: any) {
     console.log(TAG, 'Create PDFView', arg);
-    const id = mainTabManager.addPdfTab(arg.title, arg.pdfPath, this.owner);
+    const webviewId = uuid();
+    const id = mainTabManager.addPdfTab(arg.title, arg.pdfPath,webviewId);
     callback && callback(id);
 }
 function _handlePDFViewMethod(arg: any, callback?: any) {
