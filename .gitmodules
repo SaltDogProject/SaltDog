@@ -4,3 +4,6 @@
 [submodule "docs"]
 	path = docs
 	url = https://github.com/SaltDogProject/docs.git
+[submodule "third_party/saltdog_npm"]
+	path = third_party/saltdog_npm
+	url = https://github.com/SaltDogProject/saltdog_npm.git
