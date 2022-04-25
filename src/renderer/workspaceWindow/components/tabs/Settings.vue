@@ -69,7 +69,7 @@ onUnmounted(() => {
 onBeforeMount;
 let template = ref({});
 onMounted(() => {
-    const ori = ipcRenderer.sendSync('gstSettingsTemplate');
+    const ori = ipcRenderer.sendSync('getSettingsTemplate');
     console.log(ori);
     template.value = DeepProxy(reactive(ori));
 });

@@ -4,6 +4,7 @@ import { IWindowList } from './constants';
 import { extend } from 'lodash';
 import pluginManager from '../apis/plugin/index';
 import db from '../apis/db/index';
+import libraryDB from '../apis/db/libraryDB/libraryDB';
 import { buildSettingsTemplate } from '../apis/db/index';
 export function initIpc(windowManager: IWindowManager): void {
     console.log('[IPC] inited');
@@ -84,8 +85,10 @@ export function initIpc(windowManager: IWindowManager): void {
         }
         e.returnValue = returnValue;
     });
-    ipcMain.on('gstSettingsTemplate', (e) => {
+    ipcMain.on('getSettingsTemplate', (e) => {
         const pluginSettings = pluginManager.collectSettingsInfo();
         e.returnValue = buildSettingsTemplate(pluginSettings);
     });
+
+    ipcMain.on('');
 }

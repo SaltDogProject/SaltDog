@@ -48,8 +48,8 @@ body,html
 .clickable
     -webkit-app-region: no-drag;
     user-select: "auto";
-.el-button-group
-    width 100%
-    .el-button
-        width 50%
+// .el-button-group
+//     width 100%
+//     .el-button
+//         width 50%
 </style>

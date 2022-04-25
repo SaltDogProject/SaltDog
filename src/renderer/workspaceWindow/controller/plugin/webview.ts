@@ -1,7 +1,7 @@
 // @ts-nocheck
 import bus from '@/workspaceWindow/controller/systemBus';
 import { uuid } from 'licia';
-import mainTabManager from '../../components/tabs/tabManager';
+import mainTabManager from '../tabManager';
 const TAG = '[SaltDogPlugin Webview]';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -98,7 +98,7 @@ function getTabInfo(arg: any, callback?: any) {
 function createPDFView(arg: any, callback?: any) {
     console.log(TAG, 'Create PDFView', arg);
     const webviewId = uuid();
-    const id = mainTabManager.addPdfTab(arg.title, arg.pdfPath,webviewId);
+    const id = mainTabManager.addPdfTab(arg.title, arg.pdfPath, webviewId);
     callback && callback(id);
 }
 function _handlePDFViewMethod(arg: any, callback?: any) {

@@ -12,7 +12,7 @@
 <script lang="ts">
 import { defineComponent, DefineComponent, getCurrentInstance, onMounted, onUpdated, ref } from 'vue';
 import bus from '../../controller/systemBus';
-import mainTabManager from '../tabs/tabManager';
+import mainTabManager from '../../controller/tabManager';
 import { PDFAPISTAT } from '@/utils/constants';
 const TAG = '[Sidebar/Outline]';
 interface Tree {

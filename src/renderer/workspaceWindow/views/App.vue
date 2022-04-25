@@ -48,12 +48,12 @@ import { defineComponent, ref, getCurrentInstance, ComponentInternalInstance, on
 import pkg from 'root/package.json';
 import Tabs from '../components/tabs/Main.vue';
 import panelManager from '../controller/panelManager';
-import pdfTabManager from '../components/tabs/tabManager';
+import pdfTabManager from '../controller/tabManager';
 // @ts-ignore
 import SidebarIcons from '../components/sideBarIcons.vue';
 // @ts-ignore
 import sidebar from '../components/sidebar/sideBar.vue';
-import tabManager from '../components/tabs/tabManager';
+import tabManager from '../controller/tabManager';
 import { ipcRenderer } from 'electron';
 import bus from '../controller/systemBus';
 declare var __static: string;
@@ -281,6 +281,7 @@ $darwinBg = transparentify(#172426, #000, 0.7)
             order 100
             height bottom_bar_height
             width 100vw
+            z-index 9999
             background-color: var(--saltdog-bottombar-background-color)
         //     .mainPanel
         //         .primaryPanel

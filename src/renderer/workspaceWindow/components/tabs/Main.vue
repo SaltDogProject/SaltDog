@@ -24,6 +24,7 @@
                             :preload="item.isPdf ? pdfViewerPreload : ''"
                         ></webview>
                         <settings v-if="item.type == 'settings'" />
+                        <library v-if="item.type == 'library'" />
                     </div>
                 </keep-alive>
                 <!--
@@ -47,11 +48,12 @@ import {
     getCurrentInstance,
     onUnmounted,
 } from 'vue';
-import tabManager from './tabManager';
+import tabManager from '../../controller/tabManager';
 import Viewer from './pdfViewer/viewer.vue';
 import path from 'path';
 import { existsSync } from 'fs';
 import WelcomePage from './Welcome.vue';
+import Library from './library/library.vue';
 // @ts-ignore
 import Settings from './Settings.vue';
 import bus from '../../controller/systemBus';
@@ -59,7 +61,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 declare const __static: any;
 const TAG = '[tabs/Main]';
 export default defineComponent({
-    components: { WelcomePage, Settings },
+    components: { WelcomePage, Settings, Library },
     //item.webviewUrl
     setup() {
         const pdfViewerPreload = `${__static}/preloads/pdfPreload${isDevelopment ? '' : '/build'}/preload.js`;
@@ -68,6 +70,7 @@ export default defineComponent({
         const { proxy } = getCurrentInstance()!;
         const showWelcome = ref(true);
         let settingsViewId = '';
+        let libraryViewId = '';
         let tabIndex = 1;
         function handleTabsEdit(targetName: string, action: string) {
             if (action === 'add') {
@@ -86,15 +89,24 @@ export default defineComponent({
             if (settingsViewId != '' && tabManager.getInfoById(settingsViewId) != null) {
                 tabManager.setCurrentTab(settingsViewId);
             } else {
-                settingsViewId = tabManager.addTab('设置', '','settings');
+                settingsViewId = tabManager.addTab('设置', '', 'settings');
+            }
+        }
+        function handleLibraryView() {
+            if (libraryViewId != '' && tabManager.getInfoById(libraryViewId) != null) {
+                tabManager.setCurrentTab(libraryViewId);
+            } else {
+                libraryViewId = tabManager.addTab('文献列表', '', 'library');
             }
         }
         onUnmounted(() => {
             bus.removeListener('saltdog:openSettings', handleSettingsView);
+            bus.removeListener('saltdog:openLibrary', handleLibraryView);
         });
         onMounted(() => {
             tabManager.onMounted();
             bus.on('saltdog:openSettings', handleSettingsView);
+            bus.on('saltdog:openLibrary', handleLibraryView);
             // @ts-ignore
             if (proxy.__workspaceInfo.pdfPath && existsSync(proxy.__workspaceInfo.pdfPath)) {
                 // 有预先注入的打开目标

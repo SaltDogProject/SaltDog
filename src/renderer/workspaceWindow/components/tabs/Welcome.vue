@@ -7,24 +7,28 @@
             </el-header>
             <el-main class="welcome-main">
                 <div>
-                <div class="welcomeMain__open">
-                    <span>最近打开</span>
-                    <el-button size="mini" type="primary" icon="el-icon-plus" round @click="openDocument">
-                        打开文档
-                    </el-button>
-                </div>
-                <el-table :data="tableData" style="width: 100%">
-                    <el-table-column prop="title" label="标题" />
-                    <el-table-column prop="info" label="信息" width="180" />
-                    <el-table-column prop="date" label="打开日期" width="180" />
-                </el-table>
+                    <div class="welcomeMain__open">
+                        <span>最近打开</span>
+                        <el-button size="mini" type="primary" icon="el-icon-plus" round @click="openDocument">
+                            打开文档
+                        </el-button>
+                    </div>
+                    <el-table :data="tableData" style="width: 100%">
+                        <el-table-column prop="title" label="标题" />
+                        <el-table-column prop="info" label="信息" width="180" />
+                        <el-table-column prop="date" label="打开日期" width="180" />
+                    </el-table>
                 </div>
                 <div>
                     <div class="welcomeMain__focus">
-                    <span class="welcomeMain__focusTitle">领域热门</span>
-                    <span class="welcomeMain__focusSubtitle">Computer Science</span>
+                        <span class="welcomeMain__focusTitle">领域热门</span>
+                        <span class="welcomeMain__focusSubtitle">Computer Science</span>
                     </div>
-                    <div class="focus_error">查找数据失败了TAT<br>完善领域设置或添加RSS/Google Alerts来接受领域最新进展吧</div>
+                    <div class="focus_error">
+                        查找数据失败了TAT
+                        <br />
+                        完善领域设置或添加RSS/Google Alerts来接受领域最新进展吧
+                    </div>
                 </div>
             </el-main>
             <el-footer class="welcome-footer">CopyRight 2022 SaltDog Project</el-footer>
@@ -34,9 +38,9 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, onBeforeUpdate, onUpdated, getCurrentInstance } from 'vue';
 import { ipcRenderer } from 'electron';
-import tabManager from './tabManager';
+import tabManager from '../../controller/tabManager';
 import path from 'path';
-const TAG="[Renderer/Welcome]"
+const TAG = '[Renderer/Welcome]';
 export default defineComponent({
     setup() {
         const tableData = [
@@ -65,10 +69,10 @@ export default defineComponent({
             ipcRenderer.send('openFileDialog', {});
             ipcRenderer.once('openFileDialogReply', (e, arg) => {
                 if (!arg.canceled && arg.filePaths.length != 0) {
-                    console.log(TAG,'Open new PDF file',arg.filePaths);
-                    for(const p of arg.filePaths){
+                    console.log(TAG, 'Open new PDF file', arg.filePaths);
+                    for (const p of arg.filePaths) {
                         // 打开PDF
-                        tabManager.addPdfTab(path.basename(p||'未命名'),p);
+                        tabManager.addPdfTab(path.basename(p || '未命名'), p);
                     }
                 }
             });

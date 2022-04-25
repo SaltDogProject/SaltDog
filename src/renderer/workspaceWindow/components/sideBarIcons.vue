@@ -9,6 +9,9 @@
             <img :src="icon.iconImg" :alt="icon.description" />
         </div>
         <div style="flex-grow: 1"></div>
+        <div :class="{ sideBarIconsContainer: true, activeIcon: false }" @click="openLibrary">
+            <img :src="libraryIcon" :alt="library" />
+        </div>
         <div :class="{ sideBarIconsContainer: true, activeIcon: false }" @click="openSettings">
             <img :src="settingsIcon" :alt="settings" />
         </div>
@@ -24,6 +27,8 @@ export default defineComponent({
     setup() {
         // eslint-disable-next-line no-undef
         const settingsIcon = `${__static}/images/workspace/settings.svg`;
+        // eslint-disable-next-line no-undef
+        const libraryIcon = `${__static}/images/workspace/library.svg`;
         const iconList = plugins.getSidebarIconListRef();
         function iconClick(index: number) {
             if (iconList.value[index].active) {
@@ -42,6 +47,9 @@ export default defineComponent({
                 sysBus.emit('saltdog:openSidebar');
             }
         }
+        function openLibrary() {
+            sysBus.emit('saltdog:openLibrary', {});
+        }
         function openSettings() {
             sysBus.emit('saltdog:openSettings');
         }
@@ -49,7 +57,9 @@ export default defineComponent({
             iconList,
             iconClick,
             settingsIcon,
+            libraryIcon,
             openSettings,
+            openLibrary,
         };
     },
 });

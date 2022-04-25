@@ -2,12 +2,12 @@ import { ref, getCurrentInstance } from 'vue';
 import { WebviewTag } from 'electron';
 import { noop, uniqueId } from 'lodash';
 import { ITabConfig, ITabManager } from '@/utils/panelTab';
-import MessageHandler from './messageHandler';
+import MessageHandler from '../components/tabs/messageHandler';
 import path from 'path';
 import fs from 'fs';
 // FIXME:
-import bus from '../../controller/systemBus';
-import pluginMsgChannel from '../../../utils/pluginMsgChannel';
+import bus from './systemBus';
+import pluginMsgChannel from '../../utils/pluginMsgChannel';
 import { uuid } from 'licia';
 const TAG = '[TabManager]';
 class MainTabManager implements ITabManager {
@@ -148,7 +148,7 @@ class MainTabManager implements ITabManager {
     }
 
     // 添加tab
-    public addTab(title: string, webviewUrl: string,type = 'webview'): string {
+    public addTab(title: string, webviewUrl: string, type = 'webview'): string {
         const id = uuid();
         const baseInfo = {
             title,
