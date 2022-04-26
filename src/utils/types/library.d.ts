@@ -35,3 +35,13 @@ interface IDirList {
     dirs: Array<IDirListDir>;
     items: Array<IDirListItems>;
 }
+
+interface ILibInfo {
+    libraryID: number;
+    rootDirID: number;
+    name: string;
+    type: string;
+    editable: boolean;
+    filesEditable: boolean;
+    archived: boolean;
+}

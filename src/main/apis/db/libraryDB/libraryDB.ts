@@ -4,6 +4,11 @@ import lodash from 'lodash';
 import uuid from 'licia/uuid';
 import { join } from 'path';
 import { app } from 'electron';
+import * as path from 'path';
+const TAG = '[Main/LibraryDB]';
+const schemaJSOHPath = path.resolve(__static, 'libraryDB', './schema.json');
+const internalInitSQLPath = path.resolve(__static, 'libraryDB', './internalInit.sql');
+const triggersSQLPath = path.resolve(__static, 'libraryDB', './triggers.sql');
 export default class SaltDogItemDB extends Database {
     constructor(path: string, config = {}) {
         let _firstLoad = false;
@@ -23,7 +28,8 @@ export default class SaltDogItemDB extends Database {
     static getInstance(): SaltDogItemDB {
         const isDev = process.env.NODE_ENV === 'development';
         if (this.saltdogItemDB === undefined) {
-            this.dbPath = isDev ? join(__static, 'saltdog.sqlite') : app.getPath('userData') + '/saltdog.sqlite';
+            this.dbPath = isDev ? join(__static, '../saltdog.sqlite') : app.getPath('userData') + '/saltdog.sqlite';
+            console.log(TAG, `Create instance SaltDogItemDB isDev: ${isDev}, dbPath: ${this.dbPath}`);
             this.saltdogItemDB = new SaltDogItemDB(this.dbPath, { verbose: isDev ? console.log : null });
         }
         return this.saltdogItemDB;
@@ -81,6 +87,8 @@ export default class SaltDogItemDB extends Database {
         getParentDirID: 'SELECT parentDirID FROM dirs WHERE dirID=?;',
         getDirItems: 'SELECT * FROM items LEFT JOIN itemTypes USING(itemTypeID) WHERE dirID=?;',
         getDirInfoByID: 'SELECT * FROM dirs WHERE dirID=?;',
+        getLibraryInfoByID: `SELECT * FROM libraries l LEFT JOIN dirs d WHERE l.libraryID=d.libraryID AND d.dirname='root' AND l.libraryID=?`,
+        checkDirSameName: 'SELECT * FROM dirs WHERE parentDirID=? AND dirname=?',
 
         // items
         insertItem: 'INSERT INTO items (itemTypeID,libraryID,dirID,itemName,extra,key) VALUES (?,?,?,?,?,?);',
@@ -200,6 +208,8 @@ export default class SaltDogItemDB extends Database {
     // 创建新文件夹
     public mkdir(libraryID: number, parentDirID: number, dirname: string) {
         try {
+            const smdir = this.prepare(this._sqlTemplate.checkDirSameName).get(parentDirID, dirname);
+            if (smdir && smdir.dirID) throw new Error(`Already have ${dirname} in this folder.`);
             const key = uuid();
             const dir = this.prepare(this._sqlTemplate.insertDir).run(libraryID, parentDirID, dirname, key, 0);
             return {
@@ -212,36 +222,61 @@ export default class SaltDogItemDB extends Database {
         }
     }
     // 定位DIR的路径，返回dirID对应的路径(包括root)
-    public locateDir(dirID:number):IDirPath[]{
+    public locateDir(dirID: number): IDirPath[] {
         const pathReverse = [];
         let dirInfo = this.getDirInfoByID(dirID);
-        while(dirInfo.parentDirID!=dirInfo.dirID){
+        if (!dirInfo) {
+            throw new Error(`init locate dir with unvalid dirID ${dirID}`);
+        }
+        while (dirInfo!.parentDirID != dirInfo!.dirID) {
             pathReverse.push({
-                dirID:dirInfo.dirID,
-                name:dirInfo.name,
+                dirID: dirInfo!.dirID,
+                name: dirInfo!.name,
             } as IDirPath);
-            dirInfo = this.getDirInfoByID(dirInfo.parentDirID);
+            dirInfo = this.getDirInfoByID(dirInfo!.parentDirID);
+            if (!dirInfo) {
+                throw new Error(`locate dir with unvalid dirID ${dirID}`);
+            }
         }
         // push root
         pathReverse.push({
-            dirID:dirInfo.dirID,
-            name:dirInfo.name,
+            dirID: dirInfo.dirID,
+            name: dirInfo.name,
         });
         return pathReverse.reverse();
     }
-    public getDirInfoByID(dirID: number): IDirInfo {
+    // 获取library信息
+    public getLibraryInfoByID(libraryID: number): ILibInfo | null {
+        const info = this.prepare(this._sqlTemplate.getLibraryInfoByID).get(libraryID);
+        if (info && info.libraryID) {
+            return {
+                libraryID: info.libraryID,
+                rootDirID: info.dirID,
+                name: info.libraryName,
+                type: info.type,
+                editable: !!info.editable,
+                filesEditable: !!info.filesEditable,
+                archived: !!info.archived,
+            };
+        } else {
+            return null;
+        }
+    }
+    // 获取Dir信息
+    public getDirInfoByID(dirID: number): IDirInfo | null {
         const info = this.prepare(this._sqlTemplate.getDirInfoByID).get(dirID);
+        if (!info || !info.dirID) return null;
         return {
-            dirID:info.dirID,
-            libraryID:info.libraryID,
-            name:info.name,
-            parentDirID:info.parentDirID,
-            localKey:info.key, 
+            dirID: info.dirID,
+            libraryID: info.libraryID,
+            name: info.dirname,
+            parentDirID: info.parentDirID,
+            localKey: info.key,
             dateAdded: info.dateAdded,
             dateModified: info.dateModified,
-        }
-    } 
-    public listDir(libraryID: number, dirID: number):IDirList{
+        };
+    }
+    public listDir(libraryID: number, dirID: number): IDirList {
         const itemList = {
             meta: { parentDirID: dirID, libraryID, isRoot: false },
             dirs: [],
@@ -282,8 +317,8 @@ export default class SaltDogItemDB extends Database {
 }
 
 function _initDBSchema(db: SaltDogItemDB) {
-    const initSchema = readFileSync('./internalInit.sql', 'utf8');
-    const triggers = readFileSync('./triggers.sql', 'utf8');
+    const initSchema = readFileSync(internalInitSQLPath, 'utf8');
+    const triggers = readFileSync(triggersSQLPath, 'utf8');
     try {
         db.exec(initSchema);
         db.exec(triggers);
@@ -328,7 +363,7 @@ function _initLibrary(db: SaltDogItemDB): void {
 }
 
 function _initSchemaData(db: SaltDogItemDB): void {
-    const _schemaJSON = JSON.parse(readFileSync('./schema.json', 'utf-8'));
+    const _schemaJSON = JSON.parse(readFileSync(schemaJSOHPath, 'utf-8'));
     const currentVersion = db.prepare(db._sqlTemplate.getVersion).get('globalSchema');
     if (!currentVersion || currentVersion.version != _schemaJSON.version) {
         console.log(

@@ -43,7 +43,9 @@ const config = {
             .set('~', resolve('src'))
             .set('root', resolve('./'))
             .set('#', resolve('utils'));
-
+        config.externals = {
+            'better-sqlite3': 'commonjs better-sqlite3',
+        };
         // build web
         // config.entry('entryWindow').add('src/renderer/entryWindow/main.ts').end().output.filename('entryWindow.js');
         // config
@@ -54,6 +56,7 @@ const config = {
     },
     pluginOptions: {
         electronBuilder: {
+            externals: ['better-sqlite3'],
             customFileProtocol: './',
             // customFileProtocol: 'saltdog://./',
             // externals: ['saltdog'],

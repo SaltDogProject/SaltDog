@@ -6,6 +6,7 @@ import pluginManager from '../apis/plugin/index';
 import db from '../apis/db/index';
 import LibraryDB from '../apis/db/libraryDB/libraryDB';
 import { buildSettingsTemplate } from '../apis/db/index';
+const TAG = '[Main/IPC]';
 export function initIpc(windowManager: IWindowManager): void {
     console.log('[IPC] inited');
     ipcMain.on('openFileDialog', (e, msg) => {
@@ -85,22 +86,25 @@ export function initIpc(windowManager: IWindowManager): void {
         }
         e.returnValue = returnValue;
     });
+
     ipcMain.on('getSettingsTemplate', (e) => {
         const pluginSettings = pluginManager.collectSettingsInfo();
         e.returnValue = buildSettingsTemplate(pluginSettings);
     });
 
-    ipcMain.on('invokeLibraryMethod',(e,fn,id,...args)=>{
-        try{
-        const libraryDB = LibraryDB.getInstance();
-        if(typeof libraryDB[fn]=='function'){
-            const rtData = libraryDB[fn](...args);
-            e.sender.send('invokeLibraryMethodReply',id,null,rtData);
-        }else{
-            e.sender.send('invokeLibraryMethodReply',id,'Bad Method',null);
-        }
-        }catch(err:any){
-            e.sender.send(`invokeLibraryMethodReply`,id,err.message?err.message:JSON.stringify(err),null);
+    ipcMain.on('invokeLibraryMethod', (e, fn, id, ...args) => {
+        console.log(TAG, 'invokeLibraryMethod', fn, id, ...args);
+        try {
+            const libraryDB = LibraryDB.getInstance();
+            if (typeof libraryDB[fn] == 'function') {
+                const rtData = libraryDB[fn](...args);
+                e.sender.send('invokeLibraryMethodReply', id, null, rtData);
+            } else {
+                e.sender.send('invokeLibraryMethodReply', id, 'Bad Method', null);
+            }
+        } catch (err: any) {
+            console.error(err);
+            e.sender.send(`invokeLibraryMethodReply`, id, err.message ? err.message : JSON.stringify(err), null);
         }
     });
 }

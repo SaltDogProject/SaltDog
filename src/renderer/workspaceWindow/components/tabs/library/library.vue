@@ -6,25 +6,30 @@
                 <el-icon class="el-icon--left"><Upload /></el-icon>
                 导入文献
             </el-button>
-            <el-button type="primary" round>
+            <el-button type="primary" round @click="createDir">
                 <el-icon class="el-icon--left"><FolderAdd /></el-icon>
                 新建文件夹
             </el-button>
         </el-button-group>
-        <Navi class="pathBreadcrumb" :currentPath="currentPath" />
+        <Navi class="pathBreadcrumb" :currentLib="currentLib" :currentPath="currentPath" @updateView="updateView" />
 
         <el-table
             ref="singleTableRef"
             :data="itemData"
             highlight-current-row
             style="width: 100%"
+            @row-dblclick="handleRowDbClick"
             @current-change="handleCurrentChange"
         >
             <el-table-column show-overflow-tooltip property="title" label="标题" min-width="240">
                 <template #default="scope">
                     <div style="display: flex; align-items: center">
-                        <img style="width: 20px; height: 20px; margin-right: 5px" :src="pdfSrc" alt="" />
-                        {{ scope.row.title }}
+                        <img
+                            style="width: 20px; height: 20px; margin-right: 5px"
+                            :src="getImagesByType(scope.row.type)"
+                            alt=""
+                        />
+                        {{ scope.row.name }}
                     </div>
                 </template>
             </el-table-column>
@@ -40,54 +45,101 @@ import { ref, defineProps, onMounted } from 'vue';
 import Info from './info.vue';
 import Navi from './navi.vue';
 import { FolderAdd, Upload, Document } from '@element-plus/icons-vue';
-import {locateDir,listDir} from '../../../controller/library';
+import { locateDir, listDir, getLibraryInfoByID, mkdir } from '../../../controller/library';
+import { ElMessage, ElMessageBox } from 'element-plus';
 const TAG = '[Renderer/Library/Library]';
 interface User {
     title: string;
 }
 
 const currentPath = ref<any[]>([]);
+const currentLib = ref<any>({});
 const itemData = ref<any[]>([]);
 //@ts-ignore
 const pdfSrc = '/conference.svg';
 const showInfo = ref(false);
-let _dirID=1;
-let _libraryID=1;
+let _dirID = 1;
+let _libraryID = 1;
 onMounted(() => {
-    updateView(_libraryID,_dirID);
+    updateView(_libraryID, _dirID);
 });
-function updateView(libraryID:number,dirID:number) {
-    console.log(TAG, 'updateView',libraryID,dirID);
+function updateView(libraryID: number, dirID: number) {
+    console.log(TAG, 'updateView', libraryID, dirID);
     _dirID = dirID;
     _libraryID = libraryID;
-    locateDir(dirID).then((res)=>{
-        currentPath.value = res;
-    });
-    listDir(libraryID,dirID).then((dirList)=>{
-        const list = [];
-        for(let i of dirList.dirs){
-            list.push({
-                id: i.dirID,
-                name: i.name,
-                type: 'dir',
-            });
+    Promise.all([locateDir(dirID), listDir(libraryID, dirID), getLibraryInfoByID(libraryID)]).then(
+        ([res1, res2, res3]) => {
+            currentPath.value = res1.slice(1, res1.length);
+            const list = [];
+            for (let i of res2.dirs) {
+                list.push({
+                    id: i.dirID,
+                    name: i.name,
+                    type: 'dir',
+                });
+            }
+            for (let i of res2.items) {
+                list.push({
+                    id: i.itemID,
+                    name: i.name,
+                    type: 'item',
+                });
+            }
+            itemData.value = list;
+            currentLib.value = res3;
+            console.log(TAG, `Load View `, res1, list, res3);
         }
-        for(let i of dirList.items){
-            list.push({
-                id: i.itemID,
-                name: i.name,
-                type: 'item',
-            });
-        }
-    itemData.value = list;
-    });
+    );
+}
+function createDir() {
+    ElMessageBox.prompt('请输入文件夹名称', '新建文件夹', {
+        confirmButtonText: '新建',
+        cancelButtonText: '取消',
+    })
+        .then(({ value }) => {
+            mkdir(_libraryID, _dirID, value)
+                .then((res: any) => {
+                    // res.dirID,res.localKey
+                    updateView(_libraryID, _dirID);
+                })
+                .catch((err: string) => {
+                    ElMessage({
+                        type: 'error',
+                        message: `新建文件夹失败：${err}`,
+                    });
+                });
+            console.log(TAG, `Create Dir Success.`, value);
+        })
+        .catch(() => {
+            console.log(TAG, `Create Dir Candeled.`);
+        });
+}
+function getImagesByType(type: string) {
+    switch (type) {
+        case 'dir':
+            // eslint-disable-next-line no-undef
+            return __static + '/images/workspace/folder.svg';
+        case 'item':
+            // eslint-disable-next-line no-undef
+            return __static + '/images/workspace/item.svg';
+        default:
     }
-
+}
 function gotoPath(path: any) {
     console.log(path);
 }
+
+function handleRowDbClick(e: any) {
+    console.log(TAG, 'handleRowDbClick', e);
+    if (e && e.type == 'dir') {
+        _dirID = e.id;
+        updateView(_libraryID, _dirID);
+    }
+}
 function handleCurrentChange(e: any) {
-    console.log(e);
+    if (!e) return;
+    if (e.type == 'dir') return;
+    console.log(TAG, 'handleCurrentChange', e);
     showInfo.value = true;
 }
 </script>
