@@ -4,7 +4,7 @@ import { IWindowList } from './constants';
 import { extend } from 'lodash';
 import pluginManager from '../apis/plugin/index';
 import db from '../apis/db/index';
-import libraryDB from '../apis/db/libraryDB/libraryDB';
+import LibraryDB from '../apis/db/libraryDB/libraryDB';
 import { buildSettingsTemplate } from '../apis/db/index';
 export function initIpc(windowManager: IWindowManager): void {
     console.log('[IPC] inited');
@@ -90,5 +90,17 @@ export function initIpc(windowManager: IWindowManager): void {
         e.returnValue = buildSettingsTemplate(pluginSettings);
     });
 
-    ipcMain.on('');
+    ipcMain.on('invokeLibraryMethod',(e,fn,id,...args)=>{
+        try{
+        const libraryDB = LibraryDB.getInstance();
+        if(typeof libraryDB[fn]=='function'){
+            const rtData = libraryDB[fn](...args);
+            e.sender.send('invokeLibraryMethodReply',id,null,rtData);
+        }else{
+            e.sender.send('invokeLibraryMethodReply',id,'Bad Method',null);
+        }
+        }catch(err:any){
+            e.sender.send(`invokeLibraryMethodReply`,id,err.message?err.message:JSON.stringify(err),null);
+        }
+    });
 }

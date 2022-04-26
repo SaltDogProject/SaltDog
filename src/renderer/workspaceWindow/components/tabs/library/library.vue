@@ -15,7 +15,7 @@
 
         <el-table
             ref="singleTableRef"
-            :data="tableData"
+            :data="itemData"
             highlight-current-row
             style="width: 100%"
             @current-change="handleCurrentChange"
@@ -35,23 +35,54 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ref, defineProps } from 'vue';
+import { ref, defineProps, onMounted } from 'vue';
 // @ts-ignore
 import Info from './info.vue';
 import Navi from './navi.vue';
 import { FolderAdd, Upload, Document } from '@element-plus/icons-vue';
+import {locateDir,listDir} from '../../../controller/library';
+const TAG = '[Renderer/Library/Library]';
 interface User {
     title: string;
 }
-const currentPath = ref([1, 1]);
-const tableData: User[] = [
-    {
-        title: 'A Survey of Neuromorphic Computing and Neural Networks in Hardware',
-    },
-];
+
+const currentPath = ref<any[]>([]);
+const itemData = ref<any[]>([]);
 //@ts-ignore
 const pdfSrc = '/conference.svg';
 const showInfo = ref(false);
+let _dirID=1;
+let _libraryID=1;
+onMounted(() => {
+    updateView(_libraryID,_dirID);
+});
+function updateView(libraryID:number,dirID:number) {
+    console.log(TAG, 'updateView',libraryID,dirID);
+    _dirID = dirID;
+    _libraryID = libraryID;
+    locateDir(dirID).then((res)=>{
+        currentPath.value = res;
+    });
+    listDir(libraryID,dirID).then((dirList)=>{
+        const list = [];
+        for(let i of dirList.dirs){
+            list.push({
+                id: i.dirID,
+                name: i.name,
+                type: 'dir',
+            });
+        }
+        for(let i of dirList.items){
+            list.push({
+                id: i.itemID,
+                name: i.name,
+                type: 'item',
+            });
+        }
+    itemData.value = list;
+    });
+    }
+
 function gotoPath(path: any) {
     console.log(path);
 }

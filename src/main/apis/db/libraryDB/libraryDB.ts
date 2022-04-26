@@ -4,7 +4,7 @@ import lodash from 'lodash';
 import uuid from 'licia/uuid';
 import { join } from 'path';
 import { app } from 'electron';
-export class SaltDogItemDB extends Database {
+export default class SaltDogItemDB extends Database {
     constructor(path: string, config = {}) {
         let _firstLoad = false;
         if (!existsSync(path)) {
@@ -80,6 +80,7 @@ export class SaltDogItemDB extends Database {
         getLibraryDir: 'SELECT * FROM dirs WHERE libraryID=? AND parentDirID=?;',
         getParentDirID: 'SELECT parentDirID FROM dirs WHERE dirID=?;',
         getDirItems: 'SELECT * FROM items LEFT JOIN itemTypes USING(itemTypeID) WHERE dirID=?;',
+        getDirInfoByID: 'SELECT * FROM dirs WHERE dirID=?;',
 
         // items
         insertItem: 'INSERT INTO items (itemTypeID,libraryID,dirID,itemName,extra,key) VALUES (?,?,?,?,?,?);',
@@ -210,7 +211,37 @@ export class SaltDogItemDB extends Database {
             throw e;
         }
     }
-    public listDir(libraryID: number, dirID: number) {
+    // 定位DIR的路径，返回dirID对应的路径(包括root)
+    public locateDir(dirID:number):IDirPath[]{
+        const pathReverse = [];
+        let dirInfo = this.getDirInfoByID(dirID);
+        while(dirInfo.parentDirID!=dirInfo.dirID){
+            pathReverse.push({
+                dirID:dirInfo.dirID,
+                name:dirInfo.name,
+            } as IDirPath);
+            dirInfo = this.getDirInfoByID(dirInfo.parentDirID);
+        }
+        // push root
+        pathReverse.push({
+            dirID:dirInfo.dirID,
+            name:dirInfo.name,
+        });
+        return pathReverse.reverse();
+    }
+    public getDirInfoByID(dirID: number): IDirInfo {
+        const info = this.prepare(this._sqlTemplate.getDirInfoByID).get(dirID);
+        return {
+            dirID:info.dirID,
+            libraryID:info.libraryID,
+            name:info.name,
+            parentDirID:info.parentDirID,
+            localKey:info.key, 
+            dateAdded: info.dateAdded,
+            dateModified: info.dateModified,
+        }
+    } 
+    public listDir(libraryID: number, dirID: number):IDirList{
         const itemList = {
             meta: { parentDirID: dirID, libraryID, isRoot: false },
             dirs: [],
@@ -223,7 +254,7 @@ export class SaltDogItemDB extends Database {
         for (const dir of dirs) {
             // 两个ID相等时是root，不显示了
             if (dir.dirID == dir.parentDirID) continue;
-            (itemList.dirs as any).push({
+            (itemList.dirs as IDirListDir[]).push({
                 dirID: dir.dirID,
                 name: dir.dirname,
                 dateAdded: dir.dateAdded,
@@ -234,7 +265,7 @@ export class SaltDogItemDB extends Database {
         const items = this.prepare(this._sqlTemplate.getDirItems).all(dirID);
         for (const item of items) {
             if (item.display > 0)
-                (itemList.items as any).push({
+                (itemList.items as IDirListItems[]).push({
                     itemID: item.itemID,
                     name: item.itemName,
                     itemType: item.typeName,
@@ -407,7 +438,7 @@ function _initSchemaData(db: SaltDogItemDB): void {
     return;
 }
 
-export default new SaltDogItemDB('saltdog.db', { verbose: console.log });
+// export default new SaltDogItemDB('saltdog.db', { verbose: console.log });
 // process.on('exit', () => db.close());
 // process.on('SIGHUP', () => process.exit(128 + 1));
 // process.on('SIGINT', () => process.exit(128 + 2));

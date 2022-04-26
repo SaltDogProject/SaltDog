@@ -8,17 +8,23 @@
 </template>
 <script setup lang="ts">
 import { ref, toRefs, defineProps, onUpdated, onMounted } from 'vue';
+import {}
+const TAG = '[Renderer/Library/Navi]';
 const p = defineProps<{
-    currentPath: number[];
+    currentPath: number;
 }>();
 
 const { currentPath } = toRefs(p);
-
+let libraryID = 1;
 // const emit = defineEmits(['change', 'delete']);
 
 onUpdated(() => {
     console.log('pathchange', currentPath.value);
 });
-onMounted(() => {});
+onMounted(() => {
+    console.log(TAG,'Load Navi in dir', currentPath.value);
+
+});
+});
 </script>
 <style></style>
