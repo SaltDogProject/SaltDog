@@ -2,7 +2,7 @@
     <div class="libraryContainer">
         <div style="display: inline-block; margin-right: 40px" class="library-title">文献列表</div>
         <el-button-group style="margin-top: -1 0px">
-            <el-button type="primary" round>
+            <el-button type="primary" round @click="doImport">
                 <el-icon class="el-icon--left"><Upload /></el-icon>
                 导入文献
             </el-button>
@@ -11,7 +11,7 @@
                 新建文件夹
             </el-button>
         </el-button-group>
-        <Navi class="pathBreadcrumb" :currentLib="currentLib" :currentPath="currentPath" @updateView="updateView" />
+        <Navi class="pathBreadcrumb" :current-lib="currentLib" :current-path="currentPath" @updateView="updateView" />
 
         <el-table
             ref="singleTableRef"
@@ -37,6 +37,7 @@
         <div v-if="showInfo" :class="{ itemInfoPanel: true }">
             <Info />
         </div>
+        <ImportDialog v-model:show-import-panel="showImportPanel" />
     </div>
 </template>
 <script setup lang="ts">
@@ -44,14 +45,16 @@ import { ref, defineProps, onMounted } from 'vue';
 // @ts-ignore
 import Info from './info.vue';
 import Navi from './navi.vue';
+import ImportDialog from './import.vue';
 import { FolderAdd, Upload, Document } from '@element-plus/icons-vue';
 import { locateDir, listDir, getLibraryInfoByID, mkdir } from '../../../controller/library';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { trim } from 'lodash';
 const TAG = '[Renderer/Library/Library]';
 interface User {
     title: string;
 }
-
+const showImportPanel = ref<boolean>(false);
 const currentPath = ref<any[]>([]);
 const currentLib = ref<any>({});
 const itemData = ref<any[]>([]);
@@ -63,6 +66,9 @@ let _libraryID = 1;
 onMounted(() => {
     updateView(_libraryID, _dirID);
 });
+function doImport() {
+    showImportPanel.value = true;
+}
 function updateView(libraryID: number, dirID: number) {
     console.log(TAG, 'updateView', libraryID, dirID);
     _dirID = dirID;
@@ -97,7 +103,13 @@ function createDir() {
         cancelButtonText: '取消',
     })
         .then(({ value }) => {
-            mkdir(_libraryID, _dirID, value)
+            if (trim(value) == '') {
+                ElMessage({
+                    type: 'error',
+                    message: `文件夹名称不能为空，请重试`,
+                });
+            }
+            mkdir(_libraryID, _dirID, trim(value))
                 .then((res: any) => {
                     // res.dirID,res.localKey
                     updateView(_libraryID, _dirID);

@@ -1,7 +1,8 @@
 <template>
     <div>
         <h2 style="color: #eee; padding-left: 40px; padding-right: 20px; display: inline-block">最近打开</h2>
-        <el-button size="mini" class="openNew" type="primary" icon="el-icon-plus" round @click="openDocument">
+        <el-button size="mini" class="openNew" type="primary" round @click="openDocument">
+            <el-icon class="el-icon--left"><Plus /></el-icon>
             打开文档
         </el-button>
         <el-table max-height="300px" class="recentTable" :fit="false" :data="tableData" style="width: 100%">
@@ -18,7 +19,9 @@
 <script lang="ts">
 import { ipcRenderer } from 'electron';
 import { defineComponent, ref } from 'vue';
+import { Plus } from '@element-plus/icons-vue';
 export default defineComponent({
+    components: { Plus },
     setup() {
         const tableData = ref([
             {

@@ -29,14 +29,13 @@ export default {
     --saltdog-sidebaricon-icon-color:#9d9e9f;
     --saltdog-panel-background-color:#fafafa;
 
-
     --saltdog-scrollbar-thumb-background-color:#a2a7b0
     --el-tree-font-color:var(--saltdog-sidebar-title-font-color);
     --el-tree-node-hover-background-color: #f5f7fa;
     --el-tree-expand-icon-color: var(--saltdog-sidebar-title-font-color);
 
 
-body,html
+body,html,span
     padding 0
     margin 0
     height 100%
@@ -48,6 +47,15 @@ body,html
 .clickable
     -webkit-app-region: no-drag;
     user-select: "auto";
+
+@font-face {
+  /* 重命名字体名 */
+  font-family: 'PingFang SC';
+  /* 引入字体 */
+  src: url('../../../public/fonts/PingFang Medium.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
 // .el-button-group
 //     width 100%
 //     .el-button

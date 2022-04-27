@@ -3,12 +3,14 @@
         <div class="fake-title-bar" :class="{ darwin: os === 'darwin' }">
             <div class="fake-title-bar__title">{{ documentName }} - SaltDog - {{ version }}</div>
             <div class="handle-bar" v-if="os !== 'darwin'">
-                <i v-if="version == 'Dev'" class="el-icon-refresh" @click="refreshWindow"></i>
-                <div class="window__button" @click="minimizeWindow">
-                    <i class="el-icon-minus" @click="minimizeWindow"></i>
+                <div v-if="version == 'Dev'" class="window__button" @click="refreshWindow">
+                    <el-icon><Refresh /></el-icon>
                 </div>
-                <div class="window__button">
-                    <i class="el-icon-close" @click="closeWindow"></i>
+                <div class="window__button" @click="minimizeWindow">
+                    <el-icon><Minus /></el-icon>
+                </div>
+                <div class="window__button" @click="closeWindow">
+                    <el-icon><Close /></el-icon>
                 </div>
             </div>
         </div>
@@ -56,10 +58,11 @@ import sidebar from '../components/sidebar/sideBar.vue';
 import tabManager from '../controller/tabManager';
 import { ipcRenderer } from 'electron';
 import bus from '../controller/systemBus';
+import { Minus, Refresh, Close } from '@element-plus/icons-vue';
 declare var __static: string;
 
 const App = defineComponent({
-    components: { Tabs, SidebarIcons, sidebar },
+    components: { Tabs, SidebarIcons, sidebar, Minus, Refresh, Close },
     setup() {
         const documentName = ref('欢迎');
         const os = ref(process.platform);
@@ -196,14 +199,14 @@ $darwinBg = transparentify(#172426, #000, 0.7)
             .window__button
                 display:inline-block;
                 text-align:center;
-                padding:0px 9px 0 9px;
-
+                padding:0px 9px 0px 9px;
+                line-height: 25px;
                 &:hover
                     background-color:rgba(0,0,0,0.1)
             i
                 cursor pointer
-                margin-top:6px
-                font-size 16px
+                margin-top:8px
+                font-size 14px
             .el-icon-circle-plus-outline
                 &:hover
                     color #69c282

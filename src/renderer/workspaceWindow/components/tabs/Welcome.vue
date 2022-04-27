@@ -9,7 +9,8 @@
                 <div>
                     <div class="welcomeMain__open">
                         <span>最近打开</span>
-                        <el-button size="mini" type="primary" icon="el-icon-plus" round @click="openDocument">
+                        <el-button size="mini" type="primary" round @click="openDocument">
+                            <el-icon style="display: inline-block; margin-right: 5px"><plus /></el-icon>
                             打开文档
                         </el-button>
                     </div>
@@ -40,8 +41,10 @@ import { defineComponent, onMounted, ref, onBeforeUpdate, onUpdated, getCurrentI
 import { ipcRenderer } from 'electron';
 import tabManager from '../../controller/tabManager';
 import path from 'path';
+import { Plus } from '@element-plus/icons-vue';
 const TAG = '[Renderer/Welcome]';
 export default defineComponent({
+    components: { Plus },
     setup() {
         const tableData = [
             {

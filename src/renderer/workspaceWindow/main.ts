@@ -6,6 +6,7 @@ import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
 import { ipcRenderer } from 'electron';
 import pluginManager from './controller/plugin/plugin';
+import zhCn from 'element-plus/es/locale/lang/zh-cn';
 const app = createApp(Frame);
 // FIXME: debug
 //ipcRenderer.once('initWorkspace', (e, arg) => {
@@ -26,7 +27,7 @@ pluginManager.init(basicInfo.plugins, windowId);
 app.use(store)
     .use(ElementPlus, {
         zIndex: 3000,
-        size: 'small',
+        locale: zhCn,
     })
     .mount('#app');
 
