@@ -48,15 +48,7 @@
                             <el-icon><question-filled /></el-icon>
                         </span>
                     </el-tooltip>
-                    <el-upload ref="uploadRef" :auto-upload="false">
-                        <template #trigger>
-                            <el-button type="primary">select file</el-button>
-                        </template>
-
-                        <template #tip>
-                            <div class="el-upload__tip">请选择PDF文件</div>
-                        </template>
-                    </el-upload>
+                    
                 </el-tab-pane>
                 <div class="libraryImportBtnGroup">
                     <el-button @click="closeSelf">取消</el-button>
@@ -69,7 +61,6 @@
 <script setup lang="ts">
 import { ref, defineProps, toRefs, defineEmits, onMounted, onUpdated } from 'vue';
 import { QuestionFilled } from '@element-plus/icons-vue';
-import type { UploadInstance } from 'element-plus';
 
 const uploadRef = ref<any>();
 const activeName = ref('doi');

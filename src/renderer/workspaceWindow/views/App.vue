@@ -199,7 +199,7 @@ $darwinBg = transparentify(#172426, #000, 0.7)
             .window__button
                 display:inline-block;
                 text-align:center;
-                padding:0px 9px 0px 9px;
+                padding:0px 15px 0px 15px;
                 line-height: 25px;
                 &:hover
                     background-color:rgba(0,0,0,0.1)
