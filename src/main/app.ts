@@ -11,6 +11,7 @@ import { dbChecker } from './apis/db/dbChecker';
 import saltDogPlugin from './apis/plugin/index';
 import { initIpc } from './window/ipcMessage';
 import { ISaltDogPluginMessageType } from './apis/plugin/constant';
+import Parser from './apis/parser/parser';
 class LifeCycle {
     private pluginManager = saltDogPlugin;
     beforeReady() {
@@ -18,6 +19,7 @@ class LifeCycle {
         protocol.registerSchemesAsPrivileged([{ scheme: 'saltdog', privileges: { secure: true, standard: true } }]);
         dbChecker();
         initIpc(windowManager);
+        Parser.getInstance();
         ipcMain.on('_pluginHostReady', () => {
             console.log('[Main] _pluginHostReady');
             saltDogPlugin.init();

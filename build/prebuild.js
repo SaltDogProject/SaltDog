@@ -8,56 +8,90 @@ const webpack = require('C:\\Users\\Dorapocket\\AppData\\Local\\Yarn\\Data\\glob
 // webviews preload don't need compile
 // if (fs.existsSync(path.join(__dirname, '../public/sidebar'))) deleteFolder('../public/sidebar');
 // copyFolder('../src/renderer/workspaceWindow/components/sidebar/basic', '../public/sidebar');
+// webpack(
+//     {
+//         entry: path.join(__dirname, '../public/preloads/pdfPreload/preload.js'),
+//         output: {
+//             path: path.join(__dirname, '../public/preloads/pdfPreload/build'),
+//             filename: 'preload.js',
+//         },
+//         resolve: {
+//             extensions: ['.js', '.ts', '.json'],
+//         },
+//         devtool: 'source-map', // 打包出的js文件是否生成map文件（方便浏览器调试）
+//         mode: 'production',
+//         target: 'node',
+//     },
+//     (err, stats) => {
+//         if (err || stats.hasErrors()) {
+//             console.error('[Prebuild] Build pdfPreload/preload.js failed.', err, stats);
+//         } else {
+//             console.log('[Prebuild] Build pdfPreload/preload.js successfully.');
+//         }
+//     }
+// );
+// webpack(
+//     {
+//         entry: path.join(__dirname, '../public/preloads/pluginWebviewPreload/preload.js'),
+//         output: {
+//             path: path.join(__dirname, '../public/preloads/pluginWebviewPreload/build'),
+//             filename: 'preload.js',
+//         },
+//         resolve: {
+//             extensions: ['.js', '.ts', '.json'],
+//         },
+//         devtool: 'source-map', // 打包出的js文件是否生成map文件（方便浏览器调试）
+//         mode: 'production',
+//         target: 'node',
+//     },
+//     (err, stats) => {
+//         if (err || stats.hasErrors()) {
+//             console.error('[Prebuild] Build pluginWebviewPreload/preload.js failed.', err, stats);
+//         } else {
+//             console.log('[Prebuild] Build pluginWebviewPreload/preload.js successfully.');
+//         }
+//     }
+// );
+// webpack(
+//     {
+//         entry: path.join(__dirname, '../public/preloads/pluginHostPreload/preload.js'),
+//         output: {
+//             path: path.join(__dirname, '../public/preloads/pluginHostPreload/build'),
+//             filename: 'preload.js',
+//         },
+//         resolve: {
+//             extensions: ['.js', '.ts', '.json'],
+//         },
+//         // vm2 requires
+//         module:{
+//             parser:{
+//                 javascript:{
+//                     commonjsMagicComments:true,
+//                 }
+//             }
+//         },
+//         optimization:{
+//             minimize:true,
+//         },
+//         devtool: 'source-map', // 打包出的js文件是否生成map文件（方便浏览器调试）
+//         mode: 'production',
+//         target: 'node',
+//     },
+//     (err, stats) => {
+//         if (err || stats.hasErrors()) {
+//             console.error('[Prebuild] Build pluginHostPreload/preload.js failed.', err, stats);
+//         } else {
+//             console.log('[Prebuild] Build pluginHostPreload/preload.js successfully.');
+//         }
+//     }
+// );
+
 webpack(
     {
-        entry: path.join(__dirname, '../public/preloads/pdfPreload/preload.js'),
+        entry: path.join(__dirname, '../third_party/translation-server/src/server.js'),
         output: {
-            path: path.join(__dirname, '../public/preloads/pdfPreload/build'),
-            filename: 'preload.js',
-        },
-        resolve: {
-            extensions: ['.js', '.ts', '.json'],
-        },
-        devtool: 'source-map', // 打包出的js文件是否生成map文件（方便浏览器调试）
-        mode: 'production',
-        target: 'node',
-    },
-    (err, stats) => {
-        if (err || stats.hasErrors()) {
-            console.error('[Prebuild] Build pdfPreload/preload.js failed.', err, stats);
-        } else {
-            console.log('[Prebuild] Build pdfPreload/preload.js successfully.');
-        }
-    }
-);
-webpack(
-    {
-        entry: path.join(__dirname, '../public/preloads/pluginWebviewPreload/preload.js'),
-        output: {
-            path: path.join(__dirname, '../public/preloads/pluginWebviewPreload/build'),
-            filename: 'preload.js',
-        },
-        resolve: {
-            extensions: ['.js', '.ts', '.json'],
-        },
-        devtool: 'source-map', // 打包出的js文件是否生成map文件（方便浏览器调试）
-        mode: 'production',
-        target: 'node',
-    },
-    (err, stats) => {
-        if (err || stats.hasErrors()) {
-            console.error('[Prebuild] Build pluginWebviewPreload/preload.js failed.', err, stats);
-        } else {
-            console.log('[Prebuild] Build pluginWebviewPreload/preload.js successfully.');
-        }
-    }
-);
-webpack(
-    {
-        entry: path.join(__dirname, '../public/preloads/pluginHostPreload/preload.js'),
-        output: {
-            path: path.join(__dirname, '../public/preloads/pluginHostPreload/build'),
-            filename: 'preload.js',
+            path: path.join(__dirname, '../translation-server'),
+            filename: 'translation-server-build.js',
         },
         resolve: {
             extensions: ['.js', '.ts', '.json'],
@@ -85,6 +119,7 @@ webpack(
         }
     }
 );
+
 // config.entry = {
 //     pdfPreload: ['src/renderer/workspaceWindow/components/tabs/preload/preload.js'],
 // };

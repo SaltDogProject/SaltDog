@@ -7,6 +7,6 @@
 [submodule "third_party/saltdog_npm"]
 	path = third_party/saltdog_npm
 	url = https://github.com/SaltDogProject/saltdog_npm.git
-[submodule "public/translation-server"]
-	path = public/translation-server
+[submodule "third_party/translation-server"]
+	path = third_party/translation-server
 	url = https://github.com/SaltDogProject/translation-server.git
