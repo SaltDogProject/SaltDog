@@ -5,6 +5,7 @@ import { extend } from 'lodash';
 import pluginManager from '../apis/plugin/index';
 import db from '../apis/db/index';
 import LibraryDB from '../apis/db/libraryDB/libraryDB';
+import Parser from '../apis/parser/parser';
 import { buildSettingsTemplate } from '../apis/db/index';
 const TAG = '[Main/IPC]';
 export function initIpc(windowManager: IWindowManager): void {
@@ -107,4 +108,17 @@ export function initIpc(windowManager: IWindowManager): void {
             e.sender.send(`invokeLibraryMethodReply`, id, err.message ? err.message : JSON.stringify(err), null);
         }
     });
+
+    ipcMain.on('retriveMetadata',(e,id,type,data)=>{
+        console.log(TAG,'retriveMetadata',id,type,data);
+        try {
+            const parser = Parser.getInstance();
+            parser.query(type,data,(res:any)=>{
+                e.sender.send(`retriveMetadataReply_${id}`,null,res);
+            });
+        }catch(err:any){
+            console.error(err);
+            e.sender.send(`retriveMetadataReply_${id}`,err.message ? err.message : JSON.stringify(err),null);
+        }
+    })
 }
