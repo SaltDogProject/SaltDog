@@ -15,9 +15,11 @@ class SaltDogPlugin {
     private _sidebarViewsUUIDMap: Map<string, any> = new Map();
     // @ts-ignore
     private windowId;
-    public init(basicInfo: any, windowId: any): void {
+    public hostId:any;
+    public init(basicInfo: any, windowId: any,hostID:any): void {
         this._basicInfo = basicInfo;
         this.windowId = windowId;
+        this.hostId = hostID;
         console.log(TAG, 'basicInfo', this._basicInfo);
         ipcRenderer.on('PLUGINWEBVIEW_INVOKE_CALLBACK', (event: any, data: any) => {
             const webview = this._sidebarViewsUUIDMap.get(data.webviewId);

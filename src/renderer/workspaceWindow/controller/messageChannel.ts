@@ -89,4 +89,4 @@ class SaltDogMessageChannelRenderer extends EventEmitter implements  SaltDogMess
     }
 }
 
-export default new SaltDogMessageChannelRenderer(SaltDogRendererType.PLUGINHOST);
+export default new SaltDogMessageChannelRenderer(SaltDogRendererType.WORKSPACE);

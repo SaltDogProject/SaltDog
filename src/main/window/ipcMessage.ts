@@ -38,10 +38,19 @@ export function initIpc(windowManager: IWindowManager): void {
     ipcMain.on('close-window', (e, msg) => {
         windowManager.closeById(msg);
     });
+    ipcMain.on('getWindowInfoSync', (e, msg) => {
+        // console.log('[IPC] getBasicInfoSync');
+        e.returnValue = {
+            pluginHostID:windowManager.get(IWindowList.PLUGIN_HOST)!.webContents.id,
+            workspaceID:windowManager.get(IWindowList.WORKSPACE_WINDOW)!.webContents.id,
+        };
+    });
     ipcMain.on('getBasicInfoSync', (e, msg) => {
         // console.log('[IPC] getBasicInfoSync');
         e.returnValue = {
             plugins: pluginManager.workspaceGetBasicPluginInfo(),
+            pluginHostID:windowManager.get(IWindowList.PLUGIN_HOST)!.webContents.id,
+            workspaceID:windowManager.get(IWindowList.WORKSPACE_WINDOW)!.webContents.id,
         };
     });
     // plugin webview->plugin host
@@ -108,7 +117,6 @@ export function initIpc(windowManager: IWindowManager): void {
             e.sender.send(`invokeLibraryMethodReply`, id, err.message ? err.message : JSON.stringify(err), null);
         }
     });
-
     ipcMain.on('retriveMetadata',(e,id,type,data)=>{
         console.log(TAG,'retriveMetadata',id,type,data);
         try {
@@ -120,5 +128,5 @@ export function initIpc(windowManager: IWindowManager): void {
             console.error(err);
             e.sender.send(`retriveMetadataReply_${id}`,err.message ? err.message : JSON.stringify(err),null);
         }
-    })
+    });
 }
