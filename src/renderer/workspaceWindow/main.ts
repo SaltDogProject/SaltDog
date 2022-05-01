@@ -13,8 +13,9 @@ const app = createApp(Frame);
 
 const basicInfo = ipcRenderer.sendSync('getBasicInfoSync'); // 基本配置，和打开的文件无关，包括插件等信息
 const windowId = ipcRenderer.sendSync('getWindowId'); // 当前窗口的id
+const pluginHostWebcontentsID = ipcRenderer.sendSync('getPluginHostWindowId'); // 插件主窗口的id
 app.config.globalProperties.$windowId = windowId;
-
+app.config.globalProperties.$pluginHostWebcontentsID = pluginHostWebcontentsID;
 console.log('[Saltdog Kernel] BasicInfo:', basicInfo);
 app.config.globalProperties.__workspaceInfo = {
     // pdfPath: 'C:/Users/dorap/Desktop/Xilinx Doc/ug1399-vitis-hls.pdf',
@@ -22,7 +23,7 @@ app.config.globalProperties.__workspaceInfo = {
 }; //arg;
 app.config.globalProperties.__basicInfo = basicInfo; //arg;
 console.log('[Workspace load]', basicInfo);
-pluginManager.init(basicInfo.plugins, windowId);
+pluginManager.init(basicInfo.plugins, windowId,pluginHostWebcontentsID);
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 app.use(store)
     .use(ElementPlus, {
