@@ -48,11 +48,10 @@
                             <el-icon><question-filled /></el-icon>
                         </span>
                     </el-tooltip>
-                    
                 </el-tab-pane>
                 <div class="libraryImportBtnGroup">
                     <el-button @click="closeSelf">取消</el-button>
-                    <el-button type="primary">开始导入</el-button>
+                    <el-button type="primary" :loading="retriveLoading" @click="doRetrieveMetadata">开始导入</el-button>
                 </div>
             </el-tabs>
         </el-dialog>
@@ -61,11 +60,15 @@
 <script setup lang="ts">
 import { ref, defineProps, toRefs, defineEmits, onMounted, onUpdated } from 'vue';
 import { QuestionFilled } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
+import { ipcRenderer } from 'electron';
+import { uniqueId } from 'lodash';
 
 const uploadRef = ref<any>();
 const activeName = ref('doi');
 const doiInput = ref('');
 const urlInput = ref('');
+const retriveLoading = ref(false);
 const handleClick = (tab: any, event: Event) => {
     console.log(tab, event);
 };
@@ -88,6 +91,40 @@ onMounted(() => {
 onUpdated(() => {
     _show.value = showImportPanel.value;
 });
+function doRetrieveMetadata() {
+    const type = activeName.value;
+    let reqType = null;
+    let inputData = null;
+    const reqId = uniqueId();
+    switch (type) {
+        case 'doi':
+            reqType = 'search';
+            inputData = doiInput.value;
+            break;
+        case 'url':
+            reqType = 'web';
+            inputData = urlInput.value;
+            break;
+    }
+    if (!reqType || !inputData || inputData == '') {
+        ElMessage.error('输入不能为空哦！');
+        return;
+    }
+    retriveLoading.value = true;
+    ipcRenderer.send('retriveMetadata', reqId, reqType, inputData);
+    ipcRenderer.once(`retriveMetadataReply_${reqId}`, (event, err, data) => {
+        retriveLoading.value = false;
+        if (err) {
+            console.error(err);
+            ElMessage.error(`获取出错：${err}`);
+            return;
+        }
+        ElMessage.success(`添加成功`);
+        doiInput.value = urlInput.value = '';
+        console.log(data);
+        closeSelf();
+    });
+}
 </script>
 <style lang="stylus">
 .libraryImportTypeTab

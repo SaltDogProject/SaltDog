@@ -109,16 +109,22 @@ export function initIpc(windowManager: IWindowManager): void {
         }
     });
 
-    ipcMain.on('retriveMetadata',(e,id,type,data)=>{
-        console.log(TAG,'retriveMetadata',id,type,data);
+    ipcMain.on('retriveMetadata', async (e, id, type, data) => {
+        console.log(TAG, 'retriveMetadata', id, type, data);
         try {
             const parser = Parser.getInstance();
-            parser.query(type,data,(res:any)=>{
-                e.sender.send(`retriveMetadataReply_${id}`,null,res);
+            const _type = type,
+                _data = data;
+            // if (type == 'pdf') {
+            //     const doi = await parser.extractID(data);
+            //     _type = 'search';
+            //     _data = doi.value;
+            // }
+            parser.query(_type, _data, (err: any, res: any) => {
+                e.sender.send(`retriveMetadataReply_${id}`, err, res);
             });
-        }catch(err:any){
+        } catch (err: any) {
             console.error(err);
-            e.sender.send(`retriveMetadataReply_${id}`,err.message ? err.message : JSON.stringify(err),null);
         }
-    })
+    });
 }
