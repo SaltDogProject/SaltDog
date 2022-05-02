@@ -11,7 +11,6 @@ const TAG = 'SaltDogPlugin';
 class SaltDogPlugin {
     private _plugins: Map<string, ISaltDogPluginInfo> = new Map();
     private _pluginHost: BrowserWindow | null = null;
-    private _pluginMessageChannel: SaltDogMessageChannel | null = null;
     private _activator: SaltDogPluginActivator | null = null;
     private isDevelopment = process.env.NODE_ENV == 'development';
     // 开发模式下加载文件路径内的插件，方便调试
@@ -82,29 +81,15 @@ class SaltDogPlugin {
     //     return true;
     // }
 
-    public setMessageChannel(channel: SaltDogMessageChannel): void {
-        this._pluginMessageChannel = channel;
-    }
-    public getMessageChannel(): SaltDogMessageChannel | null {
-        return this._pluginMessageChannel;
-    }
     public publishEventToPluginHost(event: string, data: any) {
-        const messageChannel = this._pluginMessageChannel;
-        messageChannel!.publishEventToPluginHost(event, data);
+        SaltDogMessageChannel.getInstance().publish(event, data);
     }
     public broadcastToPluginHost(event: string, data: any) {
-        extend(data, {
-            target: 'all',
-        });
-        this._pluginMessageChannel!.publishEventToPluginHost(event, data);
+        SaltDogMessageChannel.getInstance().publish(event, data);
     }
 
     public sendToPluginHost(channel: string, data: IPluginWebviewIPC) {
-        const messageChannel = this._pluginMessageChannel;
-        extend(data, {
-            target: data.ticket,
-        });
-        messageChannel!.sendToPluginHost(channel, data);
+        SaltDogMessageChannel.getInstance().invokePluginHost(channel, data);
     }
     // public destroyAllPluginHosts() {
     //     if (!this._pluginHost) return;

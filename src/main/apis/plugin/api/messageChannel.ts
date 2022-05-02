@@ -1,6 +1,6 @@
 import { BrowserWindow, ipcMain } from "electron";
 import { EventEmitter } from "events";
-import { uniqueId } from "lodash";
+import { noop, uniqueId } from "lodash";
 import { IWindowList } from "~/main/window/constants";
 import windowManager from "~/main/window/windowManager";
 export default class SaltDogMessageChannelMain extends EventEmitter{
@@ -32,17 +32,17 @@ export default class SaltDogMessageChannelMain extends EventEmitter{
         this._workspace = windowManager.get(IWindowList.WORKSPACE_WINDOW);
         }
     }
-    public invokePluginHost(api: string, args: any, callback: (data: any) => void):void{
+    public invokePluginHost(api: string, args: any, callback?: (data: any) => void):void{
         this._refreshBindingIfNeeded();
         const id = uniqueId();
-        this._callbackIDMap.set(id,callback);
+        this._callbackIDMap.set(id,callback?callback:()=>{noop()});
         this._host!.webContents.send('SALTDOG_IPC_INVOKE',api,args,id);
     }
-    public invokeWorkspace(api: string, args: any, callback: (data: any) => void):void{
+    public invokeWorkspace(api: string, args: any, callback?: (data: any) => void):void{
         this._refreshBindingIfNeeded();
         this._refreshBindingIfNeeded();
         const id = uniqueId();
-        this._callbackIDMap.set(id,callback);
+        this._callbackIDMap.set(id,callback?callback:()=>{noop()});
         this._workspace!.webContents.send('SALTDOG_IPC_INVOKE',api,args,id);
     }
     public publish(events:string,...args:any){
