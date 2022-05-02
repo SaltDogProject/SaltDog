@@ -7,7 +7,7 @@ import path from 'path';
 import fs from 'fs';
 // FIXME:
 import bus from './systemBus';
-import pluginMsgChannel from '../../utils/pluginMsgChannel';
+import SaltDogMessageChannelRenderer from './messageChannel';
 import { uuid } from 'licia';
 const TAG = '[TabManager]';
 class MainTabManager implements ITabManager {
@@ -131,10 +131,10 @@ class MainTabManager implements ITabManager {
             // handler.invokeWebview('jumpToTarget', '_OPENTOPIC_TOC_PROCESSING_d114e60114');
         });
         //
-        bus.on(`PDFVIEW_${tabid}:_WebviewContentEvent`, (args) => {
-            console.log(TAG, 'Custom Event dispatch', args);
-            pluginMsgChannel.send(`Webview_${tabid}_contentEvent:${args.id}`, args.data);
-        });
+        // bus.on(`PDFVIEW_${tabid}:_WebviewContentEvent`, (args) => {
+        //     console.log(TAG, 'Custom Event dispatch', args);
+        //     pluginMsgChannel.send(`Webview_${tabid}_contentEvent:${args.id}`, args.data);
+        // });
         return tabid;
     }
     // 插件创建页面Tab
@@ -212,7 +212,17 @@ class MainTabManager implements ITabManager {
             // 事件转发
             for (const e of this._eventList) {
                 element.addEventListener(e, (...args) => {
-                    pluginMsgChannel.send(`Webview_${v.webviewId}_${e}`, args);
+                    SaltDogMessageChannelRenderer.getInstance().publish(
+                        'webview.webviewNative',
+                        JSON.parse(
+                            JSON.stringify({
+                                webviewId: v.webviewId,
+                                event: e,
+                                data: args,
+                            })
+                        )
+                    );
+                    // pluginMsgChannel.send(`Webview_${v.webviewId}_${e}`, args);
                 });
             }
             element.addEventListener('dom-ready', () => {
@@ -220,7 +230,6 @@ class MainTabManager implements ITabManager {
                     this.webviewMessageHandler.set(v.webviewId, new MessageHandler(element));
                 }
                 bus.emit(`${v.webviewId}_domReady`);
-                console.log('[lgy] emit', `${v.webviewId}_domReady`);
                 if (process.env.NODE_ENV === 'development') element.openDevTools();
             });
             element.addEventListener('console-message', (e) => {

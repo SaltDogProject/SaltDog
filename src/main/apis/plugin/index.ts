@@ -23,9 +23,9 @@ class SaltDogPlugin {
         //     const res = this.restartPluginHost(data.name);
         //     e.returnValue = res;
         // });
-        ipcMain.on('onTabsChange', (e, tabid) => {
-            this.broadcastToPluginHost('onTabsChange', tabid);
-        });
+        // ipcMain.on('onTabsChange', (e, tabid) => {
+        //     this.broadcastToPluginHost('onTabsChange', tabid);
+        // });
     }
     // 加载appdata/SaltDogPlugins下的所有插件
     // TODO: 禁用插件
@@ -81,16 +81,16 @@ class SaltDogPlugin {
     //     return true;
     // }
 
-    public publishEventToPluginHost(event: string, data: any) {
-        SaltDogMessageChannel.getInstance().publish(event, data);
-    }
-    public broadcastToPluginHost(event: string, data: any) {
-        SaltDogMessageChannel.getInstance().publish(event, data);
-    }
+    // public publishEventToPluginHost(event: string, data: any) {
+    //     SaltDogMessageChannel.getInstance().publish(event, data);
+    // }
+    // public broadcastToPluginHost(event: string, data: any) {
+    //     SaltDogMessageChannel.getInstance().publish(event, data);
+    // }
 
-    public sendToPluginHost(channel: string, data: IPluginWebviewIPC) {
-        SaltDogMessageChannel.getInstance().invokePluginHost(channel, data);
-    }
+    // public sendToPluginHost(channel: string, data: IPluginWebviewIPC) {
+    //     SaltDogMessageChannel.getInstance().invokePluginHost(channel, data);
+    // }
     // public destroyAllPluginHosts() {
     //     if (!this._pluginHost) return;
     //     this._pluginHost.kill();

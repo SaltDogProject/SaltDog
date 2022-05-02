@@ -7,7 +7,7 @@ import { IWindowList } from './window/constants';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 import windowManager from './window/windowManager';
 import { dbChecker } from './apis/db/dbChecker';
-
+import SaltDogMessageChannelMain from './apis/plugin/api/messageChannel';
 import saltDogPlugin from './apis/plugin/index';
 import { initIpc } from './window/ipcMessage';
 import { ISaltDogPluginMessageType } from './apis/plugin/constant';
@@ -20,16 +20,17 @@ class LifeCycle {
         dbChecker();
         initIpc(windowManager);
         Parser.getInstance();
-        ipcMain.on('_pluginHostReady', () => {
+        SaltDogMessageChannelMain.getInstance();
+        SaltDogMessageChannelMain.getInstance().subscribe('_pluginHostReady', () => {
             console.log('[Main] _pluginHostReady');
             saltDogPlugin.init();
         });
         app.on('browser-window-focus', (e, window) => {
             windowManager.setFocusWindow(window);
         });
-        ipcMain.on('_rendererToPluginEvents', (e, events, data) => {
-            this.pluginManager.publishEventToPluginHost(events, data);
-        });
+        // ipcMain.on('_rendererToPluginEvents', (e, events, data) => {
+        //     this.pluginManager.publishEventToPluginHost(events, data);
+        // });
     }
     onReady() {
         const readyFunction = async () => {

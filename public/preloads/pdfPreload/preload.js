@@ -44,9 +44,10 @@ const __sdJSBridge = {
     // webview向host发送事件
     publish: function (event, data) {
         console.log('sendtohost!', window._saltdogWebviewId, event, data);
-
         electron.ipcRenderer.sendToHost('WEBVIEW_PUBLISH', {
-            event: `PDFVIEW_${window._saltdogWebviewId}:${event}`,
+            webviewId: window._saltdogWebviewId,
+            isReader: true,
+            event,
             data,
         });
     },
@@ -80,7 +81,7 @@ electron.ipcRenderer.on('HOST_INVOKE_CALLBACK', (e, args) => {
         callback(arg.data);
     }
 });
-// listenTextSelect();
+listenTextSelect();
 // bus.on('selectText', (txt) => {
 //     window.__sdJSBridge.publish('selectText', txt);
 // });

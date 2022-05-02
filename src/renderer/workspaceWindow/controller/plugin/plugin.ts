@@ -6,6 +6,7 @@ import { uuid, extend } from 'licia';
 import api from './api';
 import panelManager from '../panelManager';
 import { ElMessage } from 'element-plus';
+import SaltDogMessageChannelRenderer from '../messageChannel';
 const TAG = '[SaltDogPlugin]';
 class SaltDogPlugin {
     private _basicInfo: any = {};
@@ -15,8 +16,8 @@ class SaltDogPlugin {
     private _sidebarViewsUUIDMap: Map<string, any> = new Map();
     // @ts-ignore
     private windowId;
-    public hostId:any;
-    public init(basicInfo: any, windowId: any,hostID:any): void {
+    public hostId: any;
+    public init(basicInfo: any, windowId: any, hostID: any): void {
         this._basicInfo = basicInfo;
         this.windowId = windowId;
         this.hostId = hostID;
@@ -154,7 +155,9 @@ class SaltDogPlugin {
                 id: `sidebarView_${alreadyLoadedViewsLen}`,
                 isBuildIn: false,
                 viewName,
-                viewSrc: `${_view.src.split('?')[0]}?windowId=${this.windowId}&webviewId=${id}&name=${_view.name}`,
+                viewSrc: `${_view.src.split('?')[0]}?windowId=${this.windowId}&webviewId=${id}&name=${
+                    _view.name
+                }&pluginName=${viewName.split('.')[0]}`,
                 name: _view.name,
                 show: true,
                 uuid: id,
@@ -171,6 +174,9 @@ class SaltDogPlugin {
     // 注册webview事件
     public registerSidebarView(webview: WebviewTag) {
         const viewUUID = webview.dataset.uuid || '';
+        const viewInfo = this._sidebarViews.value.filter((v: any) => {
+            return (v.uuid = viewUUID);
+        })[0];
         webview.addEventListener('dom-ready', () => {
             console.log('[Sidebar View] Dom Ready');
             const cssPath = path
@@ -196,18 +202,18 @@ class SaltDogPlugin {
                 // 避免结构化克隆报错，加;0
                 ;0
             `);
-
-            const viewInfo = this._sidebarViews.value.filter((v: any) => {
-                return (v.uuid = viewUUID);
-            })[0];
-
             this._sidebarViewsUUIDMap.set(viewUUID, webview);
             if (process.env.NODE_ENV === 'development') webview.openDevTools();
         });
-
         webview.addEventListener('ipc-message', (event) => {
             // console.log('[Sidebar View]', event.channel, event.args);
-            ipcRenderer.send(event.channel, event.args);
+            SaltDogMessageChannelRenderer.getInstance().publish('sidebar:events', {
+                webviewId: viewInfo.id,
+                webviewName: viewInfo.viewName,
+                event: event.channel,
+                data: event.args,
+            });
+            // ipcRenderer.send(event.channel, event.args);
         });
     }
 

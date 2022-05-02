@@ -41,23 +41,23 @@ export function initIpc(windowManager: IWindowManager): void {
     ipcMain.on('getWindowInfoSync', (e, msg) => {
         // console.log('[IPC] getBasicInfoSync');
         e.returnValue = {
-            pluginHostID:windowManager.get(IWindowList.PLUGIN_HOST)!.webContents.id,
-            workspaceID:windowManager.get(IWindowList.WORKSPACE_WINDOW)!.webContents.id,
+            pluginHostID: windowManager.get(IWindowList.PLUGIN_HOST)!.webContents.id,
+            workspaceID: windowManager.get(IWindowList.WORKSPACE_WINDOW)!.webContents.id,
         };
     });
     ipcMain.on('getBasicInfoSync', (e, msg) => {
         // console.log('[IPC] getBasicInfoSync');
         e.returnValue = {
             plugins: pluginManager.workspaceGetBasicPluginInfo(),
-            pluginHostID:windowManager.get(IWindowList.PLUGIN_HOST)!.webContents.id,
-            workspaceID:windowManager.get(IWindowList.WORKSPACE_WINDOW)!.webContents.id,
+            pluginHostID: windowManager.get(IWindowList.PLUGIN_HOST)!.webContents.id,
+            workspaceID: windowManager.get(IWindowList.WORKSPACE_WINDOW)!.webContents.id,
         };
     });
     // plugin webview->plugin host
-    ipcMain.on('PLUGINWEBVIEW_IPC', (e, msg) => {
-        // console.log('[MAIN] PLUGINWEBVIEW_IPC', msg);
-        pluginManager.sendToPluginHost('PLUGINWEBVIEW_INVOKE', msg[0]);
-    });
+    // ipcMain.on('PLUGINWEBVIEW_IPC', (e, msg) => {
+    //     // console.log('[MAIN] PLUGINWEBVIEW_IPC', msg);
+    //     pluginManager.sendToPluginHost('PLUGINWEBVIEW_INVOKE', msg[0]);
+    // });
 
     // db
     ipcMain.on('DBSYNC', (e, method, key = '', value = '') => {

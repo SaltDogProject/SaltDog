@@ -12,7 +12,6 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 export class SaltDogPluginActivator {
     private _pluginManager: typeof SaltDogPlugin;
     private _pluginHost: BrowserWindow | null = null;
-    private _messageChannel: SaltDogMessageChannel | null = null;
     constructor(_plugin: typeof SaltDogPlugin) {
         this._pluginManager = _plugin;
     }
@@ -22,24 +21,24 @@ export class SaltDogPluginActivator {
         if (!pluginHost) {
             throw new Error('Plugin host NOT start!');
         }
-        SaltDogMessageChannelMain.getInstance().invokePluginHost('_pluginHostConfig', {
-            logDir: app.getPath('userData'),
-            rootDir: app.getPath('userData'),
-        },(data)=>{
-            if(data.error){
-                console.error(data.error);
-                return;
+        SaltDogMessageChannelMain.getInstance().invokePluginHost(
+            '_pluginHostConfig',
+            {
+                logDir: app.getPath('userData'),
+                rootDir: app.getPath('userData'),
+            },
+            (data) => {
+                if (data.error) {
+                    console.error(data.error);
+                    return;
+                }
             }
-        });
+        );
 
         try {
             this._pluginHost = pluginHost;
             const newApi = apiFactory.createApi() as ISaltDogPluginApi;
-            const messageChannel = new SaltDogMessageChannel(newApi) as SaltDogMessageChannel;
-            messageChannel.bindHost(this._pluginHost as BrowserWindow);
-            this._messageChannel = messageChannel;
             this._pluginManager.setPluginHost(pluginHost);
-            this._pluginManager.setMessageChannel(messageChannel);
         } catch (e: any) {
             console.error(e);
         }
@@ -47,12 +46,8 @@ export class SaltDogPluginActivator {
 
     activatePlugin(pluginInfo: ISaltDogPluginInfo, isReload = false): void {
         console.log(TAG, `Activate plugin ${pluginInfo}.`);
-        if (!this._pluginHost || !this._messageChannel) {
-            console.warn(
-                'Can not connect to pluginHost while activatePlugin. Starting a new one...',
-                this._pluginHost,
-                this._messageChannel
-            );
+        if (!this._pluginHost) {
+            console.warn('Can not connect to pluginHost while activatePlugin. Starting a new one...', this._pluginHost);
             windowManager.create(IWindowList.PLUGIN_HOST);
         }
 
@@ -63,7 +58,7 @@ export class SaltDogPluginActivator {
         };
 
         try {
-            this._messageChannel!.publishEventToPluginHost('_activatePlugin', pluginEnv);
+            SaltDogMessageChannelMain.getInstance().invokePluginHost('_activatePlugin', pluginEnv);
         } catch (e: any) {
             console.error(`Activateing ${pluginInfo.name} error`, e);
         }

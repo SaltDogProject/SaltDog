@@ -22,7 +22,8 @@ function _listenSelect() {
             selectedText = rangeObj.text;
             selectedHtml = rangeObj.htmlText;
         }
-        bus.emit('selectText', selectedText);
+        window.__sdJSBridge.publish('onTextSelect', selectedText);
+        window.__sdJSBridge.publish('onHtmlSelect', selectedHtml);
     };
 }
 function listenTextSelect() {

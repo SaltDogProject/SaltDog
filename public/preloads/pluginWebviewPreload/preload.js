@@ -32,12 +32,12 @@ contextBridge.exposeInMainWorld('saltdog', {
     init: () => {
         // window.isMessageChannelInited = false;
         window._pendingFunction = {};
-        ipcRenderer.on('PLUGINWEBVIEW_INVOKE_CALLBACK', (e, data) => {
-            if (data.callbackId && window._pendingFunction[data.callbackId]) {
-                window._pendingFunction[data.callbackId](data.data);
-                delete window._pendingFunction[data.callbackId];
-            }
-        });
+        // ipcRenderer.on('PLUGINWEBVIEW_INVOKE_CALLBACK', (e, data) => {
+        //     if (data.callbackId && window._pendingFunction[data.callbackId]) {
+        //         window._pendingFunction[data.callbackId](data.data);
+        //         delete window._pendingFunction[data.callbackId];
+        //     }
+        // });
     },
     send: (channel, msg, callback) => {
         const id = uniqId();
