@@ -38,10 +38,19 @@ export function initIpc(windowManager: IWindowManager): void {
     ipcMain.on('close-window', (e, msg) => {
         windowManager.closeById(msg);
     });
+    ipcMain.on('getWindowInfoSync', (e, msg) => {
+        // console.log('[IPC] getBasicInfoSync');
+        e.returnValue = {
+            pluginHostID:windowManager.get(IWindowList.PLUGIN_HOST)!.webContents.id,
+            workspaceID:windowManager.get(IWindowList.WORKSPACE_WINDOW)!.webContents.id,
+        };
+    });
     ipcMain.on('getBasicInfoSync', (e, msg) => {
         // console.log('[IPC] getBasicInfoSync');
         e.returnValue = {
             plugins: pluginManager.workspaceGetBasicPluginInfo(),
+            pluginHostID:windowManager.get(IWindowList.PLUGIN_HOST)!.webContents.id,
+            workspaceID:windowManager.get(IWindowList.WORKSPACE_WINDOW)!.webContents.id,
         };
     });
     // plugin webview->plugin host

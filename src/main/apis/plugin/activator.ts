@@ -3,7 +3,7 @@ import SaltDogPlugin from '.';
 import apiFactory from './api/index';
 import windowManager from '~/main/window/windowManager';
 import path from 'path';
-import SaltDogMessageChannel from './api/messageChannel';
+import SaltDogMessageChannelMain from './api/messageChannel';
 import { loggerWriter } from '~/main/utils/logger';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { IWindowList } from '~/main/window/constants';
@@ -22,11 +22,16 @@ export class SaltDogPluginActivator {
         if (!pluginHost) {
             throw new Error('Plugin host NOT start!');
         }
-        pluginHost!.webContents.send('_pluginHostConfig', {
+        SaltDogMessageChannelMain.getInstance().invokePluginHost('_pluginHostConfig', {
             logDir: app.getPath('userData'),
             rootDir: app.getPath('userData'),
+        },(data)=>{
+            if(data.error){
+                console.error(data.error);
+                return;
+            }
         });
-        console.log(TAG, `Init plugin host...`);
+
         try {
             this._pluginHost = pluginHost;
             const newApi = apiFactory.createApi() as ISaltDogPluginApi;

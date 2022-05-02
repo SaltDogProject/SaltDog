@@ -55,7 +55,7 @@ windowList.set(IWindowList.ENTRY_WINDOW, {
 // workspace
 windowList.set(IWindowList.WORKSPACE_WINDOW, {
     isValid: true,
-    multiple: true,
+    multiple: false,
     options() {
         const options: IBrowserWindowOptions = {
             height: 800,
@@ -93,6 +93,8 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
             e.returnValue = window.id;
         });
         window.on('closed', () => {
+            const pluginHost = windowManager.get(IWindowList.PLUGIN_HOST);
+            pluginHost&&pluginHost.close();
             if (process.platform === 'linux') {
                 process.nextTick(() => {
                     app.quit();
@@ -140,7 +142,7 @@ windowList.set(IWindowList.PLUGIN_HOST, {
             mode: 'detach',
         });
         function getHostWindowIdSync(e: IpcMainEvent, str: string) {
-            e.returnValue = window.id;
+            e.returnValue = window.webContents.id;
         }
         ipcMain.on('getPluginHostWindowId', getHostWindowIdSync);
 
