@@ -63,10 +63,6 @@ function onVisibilityChange(viewName: string, action: 'open' | 'close', callback
     SaltDogMessageChannelRenderer.getInstance().on(`${viewName}:${action}`, callback);
 }
 function send(viewName: string, channel: string, ...args: any) {
-    console.log(`sidebar.pluginHostMsg:${viewName}`, {
-        channel,
-        args,
-    });
     SaltDogMessageChannelRenderer.getInstance().publish(`sidebar.pluginHostMsg:${viewName}`, {
         channel,
         args,

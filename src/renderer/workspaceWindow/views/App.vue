@@ -9,7 +9,7 @@
                 <div class="window__button" @click="minimizeWindow">
                     <el-icon><Minus /></el-icon>
                 </div>
-                <div class="window__button" @click="closeWindow">
+                <div class="window__button closeWin" @click="closeWindow">
                     <el-icon><Close /></el-icon>
                 </div>
             </div>
@@ -203,6 +203,10 @@ $darwinBg = transparentify(#172426, #000, 0.7)
                 line-height: 25px;
                 &:hover
                     background-color:rgba(0,0,0,0.1)
+                &.closeWin
+                    &:hover
+                        background-color:rgba(232,17,35,.9)
+                        color:white
             i
                 cursor pointer
                 margin-top:8px

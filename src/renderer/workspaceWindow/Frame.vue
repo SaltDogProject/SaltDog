@@ -36,8 +36,9 @@ export default {
     --el-tree-expand-icon-color: var(--saltdog-sidebar-title-font-color);
 
 
-
-body,html,i.el-icon
+i.el-icon
+    font-family: var(--saltdog-font-family);
+body,html
     padding 0
     margin 0
     height 100%

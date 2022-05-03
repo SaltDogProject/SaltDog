@@ -43,7 +43,7 @@ const __sdJSBridge = {
     },
     // webview向host发送事件
     publish: function (event, data) {
-        console.log('sendtohost!', window._saltdogWebviewId, event, data);
+        // console.log('sendtohost!', window._saltdogWebviewId, event, data);
         electron.ipcRenderer.sendToHost('WEBVIEW_PUBLISH', {
             webviewId: window._saltdogWebviewId,
             isReader: true,

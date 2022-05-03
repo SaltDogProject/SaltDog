@@ -97,15 +97,15 @@ webpack(
             extensions: ['.js', '.ts', '.json'],
         },
         // vm2 requires
-        module:{
-            parser:{
-                javascript:{
-                    commonjsMagicComments:true,
-                }
-            }
+        module: {
+            parser: {
+                javascript: {
+                    commonjsMagicComments: true,
+                },
+            },
         },
-        optimization:{
-            minimize:true,
+        optimization: {
+            minimize: true,
         },
         devtool: 'source-map', // 打包出的js文件是否生成map文件（方便浏览器调试）
         mode: 'production',
