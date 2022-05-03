@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-undef
 const requireFunc = typeof __webpack_require__ === 'function' ? __non_webpack_require__ : require;
 const { ipcRenderer, contextBridge } = requireFunc('electron');
-const uniqId = require('licia/uniqId');
+// const uniqId = require('licia/uniqId');
 const { EventEmitter } = require('eventemitter3');
 const bus = new EventEmitter();
 ipcRenderer.sendToHost('_getSidebarInfo');
@@ -31,7 +31,7 @@ contextBridge.exposeInMainWorld('_pendingFunction', {});
 contextBridge.exposeInMainWorld('saltdog', {
     init: () => {
         // window.isMessageChannelInited = false;
-        window._pendingFunction = {};
+        // window._pendingFunction = {};
         // ipcRenderer.on('PLUGINWEBVIEW_INVOKE_CALLBACK', (e, data) => {
         //     if (data.callbackId && window._pendingFunction[data.callbackId]) {
         //         window._pendingFunction[data.callbackId](data.data);
@@ -39,20 +39,23 @@ contextBridge.exposeInMainWorld('saltdog', {
         //     }
         // });
     },
-    send: (channel, msg, callback) => {
-        const id = uniqId();
-        window._pendingFunction[id] = callback;
+    send: (channel, ...args) => {
+        // const id = uniqId();
+        // window._pendingFunction[id] = callback;
         // window.isMessageChannelInited ? null : (window.isMessageChannelInited = false);
-        ipcRenderer.sendToHost('PLUGINWEBVIEW_IPC', {
-            channel: channel,
-            data: msg,
-            name,
-            webviewId,
-            windowId,
-            callbackId: id,
-        });
+        // ipcRenderer.sendToHost('PLUGINWEBVIEW_IPC', {
+        //     channel: channel,
+        //     data: msg,
+        //     name,
+        //     webviewId,
+        //     windowId,
+        //     callbackId: id,
+        // });
+        ipcRenderer.sendToHost(channel, ...args);
     },
     on: (event, callback) => {
-        bus.on(event, callback);
+        ipcRenderer.on(event, (e, ...args) => {
+            callback(...args);
+        });
     },
 });

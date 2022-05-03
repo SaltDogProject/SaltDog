@@ -28,6 +28,7 @@ export default {
     --saltdog-sidebaricon-active-color:#121417;
     --saltdog-sidebaricon-icon-color:#9d9e9f;
     --saltdog-panel-background-color:#fafafa;
+    --saltdog-font-family: -apple-system,"PingFang SC",Noto Sans,Helvetica Neue,Helvetica,Nimbus Sans L,Arial,Liberation Sans,PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Source Han Sans SC,Source Han Sans CN,Microsoft YaHei,Wenquanyi Micro Hei,WenQuanYi Zen Hei,ST Heiti,SimHei,WenQuanYi Zen Hei Sharp,sans-serif;
 
     --saltdog-scrollbar-thumb-background-color:#a2a7b0
     --el-tree-font-color:var(--saltdog-sidebar-title-font-color);
@@ -35,11 +36,12 @@ export default {
     --el-tree-expand-icon-color: var(--saltdog-sidebar-title-font-color);
 
 
-body,html,button>*>span
+
+body,html,i.el-icon
     padding 0
     margin 0
     height 100%
-    font-family: -apple-system,"PingFang SC",Noto Sans,Helvetica Neue,Helvetica,Nimbus Sans L,Arial,Liberation Sans,PingFang SC,Hiragino Sans GB,Noto Sans CJK SC,Source Han Sans SC,Source Han Sans CN,Microsoft YaHei,Wenquanyi Micro Hei,WenQuanYi Zen Hei,ST Heiti,SimHei,WenQuanYi Zen Hei Sharp,sans-serif;
+    font-family: var(--saltdog-font-family);
     //font-family "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif
 #app
     user-select none

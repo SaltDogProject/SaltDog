@@ -1,64 +1,60 @@
 /* eslint-disable no-undef */
 let renderInfo = {};
 const srcTxtArea = document.getElementById('srcTextArea');
-document.addEventListener('resize',()=>{
+document.addEventListener('resize', () => {
     adjustHeight(srcTxtArea);
-})
-saltdog.init();
-saltdog.send('panelOpen', '', (msg) => {
-    console.log('From Host:', msg);
 });
-saltdog.on('translate_getText',(txt)=>{
+saltdog.on('translate_getText', (txt) => {
     srcTxtArea.value = txt;
     adjustHeight(srcTxtArea);
     showLoading();
-})
+});
 saltdog.on('translate_result', (txt) => {
     closeLoading();
     console.log('Got Result!', txt);
     renderResult(txt);
 });
-saltdog.on('translate_error',(txt)=>{
+saltdog.on('translate_error', (txt) => {
     closeLoading();
     showError(txt);
 });
-function showLoading(){
-    document.getElementById('src_speechText').innerText='';
+function showLoading() {
+    document.getElementById('src_speechText').innerText = '';
     document.getElementById('dst_speechText').innerText = '';
-    document.getElementById('dstTextHtmlContainer').innerHTML='<i id="LoadingIndicator" class="loading"></i>';
+    document.getElementById('dstTextHtmlContainer').innerHTML = '<i id="LoadingIndicator" class="loading"></i>';
 }
-function closeLoading(){
-    document.getElementById('dstTextHtmlContainer').innerHTML='';
+function closeLoading() {
+    document.getElementById('dstTextHtmlContainer').innerHTML = '';
 }
-function showError(txt){
+function showError(txt) {
     dstTxtArea.innerHTML = txt;
 }
-function adjustHeight(div){
+function adjustHeight(div) {
     div.style.height = 'auto';
     div.scrollTop = 0;
     div.style.height = div.scrollHeight + 'px';
 }
-function hasDef(txt){
+function hasDef(txt) {
     return !!txt.dict;
 }
-function hasTrans(txt){
+function hasTrans(txt) {
     return !!txt.definitions;
 }
-function hasExample(txt){
-    return !!txt.examples
+function hasExample(txt) {
+    return !!txt.examples;
 }
-function renderResult(res){
-    renderInfo={};
+function renderResult(res) {
+    renderInfo = {};
     const sentences_raw = res.sentences;
-    let src_text='';
-    let dst_info=[];
-    for(let s_index=0;s_index<sentences_raw.length-1;s_index++){
-        src_text+=sentences_raw[s_index].orig;
+    let src_text = '';
+    let dst_info = [];
+    for (let s_index = 0; s_index < sentences_raw.length - 1; s_index++) {
+        src_text += sentences_raw[s_index].orig;
         dst_info.push({
-            id:s_index,
-            src:sentences_raw[s_index].orig,
-            text:sentences_raw[s_index].trans
-        })
+            id: s_index,
+            src: sentences_raw[s_index].orig,
+            text: sentences_raw[s_index].trans,
+        });
     }
     renderInfo.src_text = src_text;
     renderInfo.dst_info = dst_info;
@@ -66,65 +62,63 @@ function renderResult(res){
     srcTxtArea.value = src_text;
     // 适应高度
     adjustHeight(srcTxtArea);
-    const speech = sentences_raw[sentences_raw.length-1];
+    const speech = sentences_raw[sentences_raw.length - 1];
     // 读音
-    const src_speechTextContainer = document.getElementById('src_speechTextContainer')
-    const src_speechText = document.getElementById('src_speechText')
-    const dst_speechTextContainer = document.getElementById('dst_speechTextContainer')
-    const dst_speechText = document.getElementById('dst_speechText')
-    if(speech&&speech.src_translit){
+    const src_speechTextContainer = document.getElementById('src_speechTextContainer');
+    const src_speechText = document.getElementById('src_speechText');
+    const dst_speechTextContainer = document.getElementById('dst_speechTextContainer');
+    const dst_speechText = document.getElementById('dst_speechText');
+    if (speech && speech.src_translit) {
         renderInfo.src_translit = speech.src_translit;
         src_speechTextContainer.style.display = 'block';
         src_speechText.innerText = speech.src_translit;
-    }else{
+    } else {
         src_speechTextContainer.style.display = 'none';
         src_speechText.innerText = '';
     }
-    if(speech&&speech.translit){
+    if (speech && speech.translit) {
         renderInfo.translit = speech.translit;
         dst_speechTextContainer.style.display = 'block';
         dst_speechText.innerText = speech.translit;
-    }else{
+    } else {
         dst_speechTextContainer.style.display = 'none';
         dst_speechText.innerText = '';
     }
     const dstTxtArea = document.getElementById('dstTextHtmlContainer');
     let dstHtmlTemp = [];
-    for(const dst of dst_info){
-        dstHtmlTemp.push(
-            `<span data-dst-id=${dst.id}>${dst.text}</span>`
-        );
+    for (const dst of dst_info) {
+        dstHtmlTemp.push(`<span data-dst-id=${dst.id}>${dst.text}</span>`);
     }
     // 设置到目标语言
     dstTxtArea.innerHTML = dstHtmlTemp.join('');
-    if(hasDef(res)){
-        document.getElementById('defContainer').style.display='block';
+    if (hasDef(res)) {
+        document.getElementById('defContainer').style.display = 'block';
         // 有定义信息
         renderDef(res);
-    }else{
-        document.getElementById('defContainer').style.display='none';
+    } else {
+        document.getElementById('defContainer').style.display = 'none';
     }
-    if(hasTrans(res)){
-        document.getElementById('TransContainer').style.display='block';
+    if (hasTrans(res)) {
+        document.getElementById('TransContainer').style.display = 'block';
         renderTrans(res);
-    }else{
-        document.getElementById('TransContainer').style.display="none";
+    } else {
+        document.getElementById('TransContainer').style.display = 'none';
     }
-    if(hasExample(res)){
+    if (hasExample(res)) {
         document.getElementById('exampleContainer').style.display = 'block';
         renderExample(res);
-    }else{
+    } else {
         document.getElementById('exampleContainer').style.display = 'none';
     }
 }
-function buildDictTable(cx){
-    function buildexTrans(entry){
-    let temp = '';
-    for(const tr in entry)
-    temp+=`<li style="display:inline">
-        <span class="defexmword">${tr==entry.length-1?entry[tr]:entry[tr]+','}</span>
+function buildDictTable(cx) {
+    function buildexTrans(entry) {
+        let temp = '';
+        for (const tr in entry)
+            temp += `<li style="display:inline">
+        <span class="defexmword">${tr == entry.length - 1 ? entry[tr] : entry[tr] + ','}</span>
     </li>`;
-    return temp;
+        return temp;
     }
     let dictTr = '';
     // let freqValue=[];
@@ -139,13 +133,17 @@ function buildDictTable(cx){
     //         freqValue[i]=1;
     //     else if(prop>0.33&&prop<0.66)
     //         freqValue[i]=2;
-    //     else 
+    //     else
     //         freqValue[i]=3;
     // }
-    for(const i in cx.entry){
-        dictTr+=`
+    for (const i in cx.entry) {
+        dictTr += `
         <tr style="height:1px">
-        ${i==0?'<div style="color: #1a73e8;font-size: 14px;font-weight: 500;line-height: 20px;">'+cx.pos+'</div>':''}
+        ${
+            i == 0
+                ? '<div style="color: #1a73e8;font-size: 14px;font-weight: 500;line-height: 20px;">' + cx.pos + '</div>'
+                : ''
+        }
         <th style="white-space: nowrap;vertical-align: top;">
             <div style="margin-top: 4px;">
                 <span style="cursor: pointer;line-height: 24px;">${cx.entry[i].word}</span>
@@ -164,7 +162,7 @@ function buildDictTable(cx){
                 <div class="freqDot_gray"></div>-->
             </span>
         </td>
-    </tr>`
+    </tr>`;
     }
     return `
     <table style="position:relative;width:100%;margin-top:10px;
@@ -175,31 +173,31 @@ function buildDictTable(cx){
                             
                         </tbody>
                     </table>
-    `
+    `;
 }
-function renderDef(res){
+function renderDef(res) {
     const defspan = document.getElementById('deftransspan');
     defspan.innerText = renderInfo.src_text;
     const dict = res.dict;
-    let dicthtml = "";
-    for(const cx of dict){
-        dicthtml+=buildDictTable(cx);
+    let dicthtml = '';
+    for (const cx of dict) {
+        dicthtml += buildDictTable(cx);
     }
     document.getElementById('deftables').innerHTML = dicthtml;
 }
 
-function renderTrans(res){
+function renderTrans(res) {
     let transHtml = '';
     const transspan = document.getElementById('transspan');
     transspan.innerText = renderInfo.src_text;
-    function rendersubTrans(subTrans){
+    function rendersubTrans(subTrans) {
         let subHtml = '';
-        for(let j in subTrans){
-            subHtml+=`
+        for (let j in subTrans) {
+            subHtml += `
             <div style="display: flex;margin-bottom: 12px;">
                         <div style="flex:0 0 30px;">
                             <div class="defnum">
-                                ${parseInt(j)+1}
+                                ${parseInt(j) + 1}
                             </div>
                         </div>
                         <div style="flex-grow: 1;word-break: break-word;">
@@ -207,12 +205,12 @@ function renderTrans(res){
                             <div class="defsub">${subTrans[j].example}</div>
                         </div>
                     </div>
-            `
+            `;
         }
         return subHtml;
     }
-    for(let i in res.definitions){
-        transHtml+=`
+    for (let i in res.definitions) {
+        transHtml += `
         <!-- 词性组 -->
                     <div style="display: flex;padding-bottom: 12px;">
                         <div style="color: #1a73e8;font-size: 14px;font-weight: 500;line-height: 20px;">
@@ -223,22 +221,22 @@ function renderTrans(res){
                     ${rendersubTrans(res.definitions[i].entry)}
                     <!-- 分项解释结束 -->
         <!-- 词性组结束 -->
-        `
+        `;
     }
     document.getElementById('transList').innerHTML = transHtml;
 }
 
-function renderExample(res){
+function renderExample(res) {
     let exHtml = '';
     const exspan = document.getElementById('exspan');
     exspan.innerText = renderInfo.src_text;
     const raw_example = res.examples.example;
-    for(let i in raw_example){
-        exHtml+=`
+    for (let i in raw_example) {
+        exHtml += `
         <div style="margin: 8px 0;">
         ${raw_example[i].text}
     </div>
-        `
+        `;
     }
     document.getElementById('exampleList').innerHTML = exHtml;
 }

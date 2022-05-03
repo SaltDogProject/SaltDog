@@ -26,7 +26,7 @@ export default class SaltDogMessageChannelMain extends EventEmitter {
             cbfn(result);
         });
         ipcMain.on('SALTDOG_IPC_PUBLISH', (elee, e: string, ...args: any) => {
-            console.log('SALTDOG_IPC_PUBLISH', e);
+            // console.log('SALTDOG_IPC_PUBLISH', e);
             this.emit(e, ...args);
         });
     }

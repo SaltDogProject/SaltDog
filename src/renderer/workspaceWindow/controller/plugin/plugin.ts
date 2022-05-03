@@ -130,15 +130,12 @@ class SaltDogPlugin {
         } else {
             viewName = viewName.replace('onClickSidebarIcon:', '');
         }
+        let thisView = null;
         //viewname = pluginName.viewName
         if (!isReload && this._sidebarViewsMap.has(viewName)) {
             console.log(`[Sidebar Plugin] Already has sidebar views ${viewName}`);
             // show出webview
-            const thisview = this._sidebarViewsMap.get(viewName);
-            for (let i = 0; i < this._sidebarViews.value.length; i++) {
-                this._sidebarViews.value[i].show = i == thisview;
-            }
-            return true;
+            thisView = this._sidebarViewsMap.get(viewName);
         } else {
             const alreadyLoadedViewsLen = this._sidebarViews.value.length;
             if (viewName.split('.')[0] == 'saltdog') {
@@ -163,13 +160,33 @@ class SaltDogPlugin {
                 uuid: id,
             };
             this._sidebarViews.value.push(viewinfo);
+
             // 关闭其他的webview-show
             // show出webview
-            for (let i = 0; i < this._sidebarViews.value.length; i++) {
-                this._sidebarViews.value[i].show = i == alreadyLoadedViewsLen;
-            }
+
+            thisView = alreadyLoadedViewsLen;
+
             console.log(`[Sidebar Plugin] Sidebar views info`, viewinfo);
         }
+        let from = null;
+        let to = null;
+        for (let i = 0; i < this._sidebarViews.value.length; i++) {
+            const should = i == thisView;
+            if (this._sidebarViews.value[i].show) {
+                from = i;
+            }
+            if (should) to = i;
+            this._sidebarViews.value[i].show = should;
+        }
+        console.log({
+            from: from ? JSON.stringify(this._sidebarViews.value[from]) : undefined,
+            to: to ? this._sidebarViews.value[to] : undefined,
+        });
+        SaltDogMessageChannelRenderer.getInstance().publish('sidebar.onChange', {
+            from: from ? JSON.parse(JSON.stringify(this._sidebarViews.value[from])) : undefined,
+            to: to ? JSON.parse(JSON.stringify(this._sidebarViews.value[to])) : undefined,
+        });
+        return true;
     }
     // 注册webview事件
     public registerSidebarView(webview: WebviewTag) {
@@ -207,13 +224,17 @@ class SaltDogPlugin {
         });
         webview.addEventListener('ipc-message', (event) => {
             // console.log('[Sidebar View]', event.channel, event.args);
-            SaltDogMessageChannelRenderer.getInstance().publish('sidebar:events', {
+            SaltDogMessageChannelRenderer.getInstance().publish('sidebar.sidebarMsg', {
                 webviewId: viewInfo.id,
-                webviewName: viewInfo.viewName,
+                viewName: viewInfo.viewName,
                 event: event.channel,
                 data: event.args,
             });
             // ipcRenderer.send(event.channel, event.args);
+        });
+        SaltDogMessageChannelRenderer.getInstance().subscribe(`sidebar.pluginHostMsg:${viewInfo.viewName}`, (data) => {
+            const { channel, args } = data;
+            webview.send(channel, ...args);
         });
     }
 

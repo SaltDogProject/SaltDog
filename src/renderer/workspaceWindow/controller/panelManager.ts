@@ -7,6 +7,7 @@ import {
 } from './resize';
 import { throttle } from 'lodash';
 import sysBus from './systemBus';
+import SaltDogMessageChannelRenderer from './messageChannel';
 const TAG = '[PanelManager]';
 interface IPanelObject {
     htmlElement: HTMLDivElement;
@@ -130,11 +131,14 @@ class viewsManager {
         this.mainPanel!.size!.width = mainPanelWidth - 2;
         this.bottomPanel!.size!.width = mainPanelWidth - 2;
         this.primaryPanel!.size!.width = mainPanelWidth - this.secondaryPanel!.size!.width;
-
         this.updateView();
     }
     public closeSideBar() {
         console.log(TAG, 'closeSideBar');
+        SaltDogMessageChannelRenderer.getInstance().publish('saltdog.panelStatusChange', {
+            panel: 'sideBar',
+            visibility: false,
+        });
         if (!this.isSideBarOpen) return;
         this.isSideBarOpen = false;
         const outer = this.resizers!.sideBar2mainPanel.outerContainer.getBoundingClientRect();
