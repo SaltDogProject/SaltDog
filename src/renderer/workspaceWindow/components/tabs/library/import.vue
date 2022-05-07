@@ -63,7 +63,8 @@ import { QuestionFilled } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { ipcRenderer } from 'electron';
 import { uniqueId } from 'lodash';
-
+import { insertItem } from '../../../controller/library';
+const TAG = '[Library/Import]';
 const uploadRef = ref<any>();
 const activeName = ref('doi');
 const doiInput = ref('');
@@ -74,11 +75,15 @@ const handleClick = (tab: any, event: Event) => {
 };
 const p = defineProps<{
     showImportPanel: boolean;
+    currentDir: any;
+    currentLib: any;
 }>();
 const emit = defineEmits<{
     (e: 'update:showImportPanel', show: boolean): void;
+    (e: 'updateView', libraryID: number, dirID: number): void;
 }>();
-const { showImportPanel } = toRefs(p);
+
+const { showImportPanel, currentDir, currentLib } = toRefs(p);
 const _show = ref(false);
 
 // 由于elementui的限制只能先这样更新showImportPanel了。。
@@ -119,9 +124,18 @@ function doRetrieveMetadata() {
             ElMessage.error(`获取出错：${err}`);
             return;
         }
-        ElMessage.success(`添加成功`);
         doiInput.value = urlInput.value = '';
-        console.log(data);
+        console.log(TAG, 'Import', data, 'Library:', currentLib.value.libraryID, 'DirID:', currentDir.value);
+        insertItem(data[0], currentLib.value.libraryID, currentDir.value)
+            .then(() => {
+                ElMessage.success(`添加成功`);
+                emit('updateView', currentLib.value.libraryID, currentDir.value);
+            })
+            .catch((e) => {
+                ElMessage.error(`导入出错，请稍后重试`);
+                console.error(e);
+                return;
+            });
         closeSelf();
     });
 }

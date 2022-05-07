@@ -92,6 +92,9 @@ export default class SaltDogItemDB extends Database {
 
         // items
         insertItem: 'INSERT INTO items (itemTypeID,libraryID,dirID,itemName,extra,key) VALUES (?,?,?,?,?,?);',
+        getItemByID: 'SELECT * FROM items LEFT JOIN itemTypes USING(itemTypeID) WHERE itemID=?;',
+        getItemAllProps:
+            'SELECT fieldName,value FROM itemData as id LEFT JOIN fields as f LEFT JOIN itemDataValues as idv WHERE id.fieldID = f.fieldID AND idv.valueID = id.valueID AND id.itemID=?;',
         insertItemValue: 'INSERT INTO itemDataValues (value) VALUES (?);',
         insertItemValueRelation: 'INSERT INTO itemData (itemID,fieldID,valueID) VALUES (?,?,?);',
         getCreatorByName: 'SELECT * FROM creators WHERE firstName=? AND lastName=?',
@@ -304,6 +307,7 @@ export default class SaltDogItemDB extends Database {
                     itemID: item.itemID,
                     name: item.itemName,
                     itemType: item.typeName,
+                    itemTypeID: item.itemTypeID,
                     dateAdded: item.dateAdded,
                     dateModified: item.dateModified,
                     localKey: item.key,
@@ -312,7 +316,18 @@ export default class SaltDogItemDB extends Database {
         return itemList;
     }
     public getItemInfo(itemID: number) {
-        return;
+        const item = this.prepare(this._sqlTemplate.getItemByID).get(itemID);
+        const props = this.prepare(this._sqlTemplate.getItemAllProps).all(itemID);
+        return {
+            title: item.itemName,
+            typeName: item.typeName,
+            typeID: item.itemTypeID,
+            itemID: item.itemID,
+            localKey: item.key,
+            dateAdded: item.dateAdded,
+            dateModified: item.dateModified,
+            synced: item.synced,
+        };
     }
 }
 

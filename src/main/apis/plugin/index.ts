@@ -69,7 +69,13 @@ class SaltDogPlugin {
     public setPluginHost(host: BrowserWindow): void {
         this._pluginHost = host;
     }
-
+    public getPluginInfoJSON(): any {
+        const obj = {};
+        this._plugins.forEach((value: ISaltDogPluginInfo, key: string) => {
+            obj[key] = value;
+        });
+        return obj;
+    }
     // public restartPluginHost(targetPlugin: string): boolean {
     //     const pluginHost = this._pluginHost;
     //     if (!pluginHost) {

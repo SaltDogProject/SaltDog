@@ -22,6 +22,7 @@ interface IDirListItems {
     itemID: number;
     name: string;
     itemType: string;
+    itemTypeID: number;
     dateAdded: string;
     dateModified: string;
     localKey: string;

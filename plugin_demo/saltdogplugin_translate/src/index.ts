@@ -11,23 +11,27 @@ export function activate() {
             }
         });
     });
+    const sidebar = saltdog.sidebar.getSidebarView('SaltDogTranslate.translateView');
+    if (!sidebar) {
+        console.error(`sidebar not exist`);
+    }
     saltdog.reader.onTextSelect((txt: string) => {
         if (txt.trim().length == 0) return;
         const text = normalizeAppend(txt);
-        saltdog.sidebar.send('SaltDogTranslate.translateView', 'translate_getText', txt);
+        sidebar!.send('translate_getText', txt);
         if (text && text.trim().length != 0)
             google_translate(text).then((res) => {
                 if (!res || res.error) {
-                    saltdog.sidebar.send('SaltDogTranslate.translateView', 'translate_error', res.error);
+                    sidebar!.send('translate_error', res.error);
                 } else {
-                    saltdog.sidebar.send('SaltDogTranslate.translateView', 'translate_result', res);
+                    sidebar!.send('translate_result', res);
                 }
             });
     });
-    saltdog.sidebar.onVisibilityChange('SaltDogTranslate.translateView', 'open', () => {
+    sidebar!.onVisibilityChange('open', () => {
         console.log('SaltDogTranslate.translateView open');
     });
-    saltdog.sidebar.onVisibilityChange('SaltDogTranslate.translateView', 'close', () => {
+    sidebar!.onVisibilityChange('close', () => {
         console.log('SaltDogTranslate.translateView closed');
     });
 }

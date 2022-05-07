@@ -26,6 +26,7 @@ export class SaltDogPluginActivator {
             {
                 logDir: app.getPath('userData'),
                 rootDir: app.getPath('userData'),
+                // plugins: this._pluginManager.getPluginInfoJSON(),
             },
             (data) => {
                 if (data.error) {

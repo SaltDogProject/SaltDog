@@ -28,44 +28,39 @@ const saltdog = __importStar(require("saltdog"));
 const formatter_js_1 = require("./formatter.js");
 const google_translate_js_1 = require("./google_translate.js");
 function activate() {
-    // saltdog.commands.registerCommand('translate.translateNow', (text: string) => {
-    //     google_translate(text).then((res) => {
-    //         if (!res || res.error) {
-    //             //saltdog.send('translate_error', res.error);
-    //         } else {
-    //             //saltdog.send('translate_result', res);
-    //         }
-    //     });
-    // });
-    // saltdog.sidebar.on('SaltDogTranslate.translateView', 'panelOpen', (...args) => {
-    //     console.log('panelOpen', ...args);
-    //     console.log('isOpen', saltdog.sidebar.isOpen('SaltDogTranslate.translateView'));
-    // });
-    // saltdog.reader.onTextSelect((text: string) => {
-    //     console.log(`onTextSelect`, text);
-    //     google_translate(text).then((res) => {
-    //         console.log(res);
-    //     });
-    // });
+    saltdog.commands.registerCommand('translate.translateNow', (text) => {
+        (0, google_translate_js_1.google_translate)(text).then((res) => {
+            if (!res || res.error) {
+                //saltdog.send('translate_error', res.error);
+            }
+            else {
+                //saltdog.send('translate_result', res);
+            }
+        });
+    });
+    const sidebar = saltdog.sidebar.getSidebarView('SaltDogTranslate.translateView');
+    if (!sidebar) {
+        console.error(`sidebar not exist`);
+    }
     saltdog.reader.onTextSelect((txt) => {
         if (txt.trim().length == 0)
             return;
         const text = (0, formatter_js_1.normalizeAppend)(txt);
-        saltdog.sidebar.send('SaltDogTranslate.translateView', 'translate_getText', txt);
+        sidebar.send('translate_getText', txt);
         if (text && text.trim().length != 0)
             (0, google_translate_js_1.google_translate)(text).then((res) => {
                 if (!res || res.error) {
-                    saltdog.sidebar.send('SaltDogTranslate.translateView', 'translate_error', res.error);
+                    sidebar.send('translate_error', res.error);
                 }
                 else {
-                    saltdog.sidebar.send('SaltDogTranslate.translateView', 'translate_result', res);
+                    sidebar.send('translate_result', res);
                 }
             });
     });
-    saltdog.sidebar.onVisibilityChange('SaltDogTranslate.translateView', 'open', () => {
+    sidebar.onVisibilityChange('open', () => {
         console.log('SaltDogTranslate.translateView open');
     });
-    saltdog.sidebar.onVisibilityChange('SaltDogTranslate.translateView', 'close', () => {
+    sidebar.onVisibilityChange('close', () => {
         console.log('SaltDogTranslate.translateView closed');
     });
 }

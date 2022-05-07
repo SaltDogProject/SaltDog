@@ -37,7 +37,12 @@
         <div v-if="showInfo" :class="{ itemInfoPanel: true }">
             <Info />
         </div>
-        <ImportDialog v-model:show-import-panel="showImportPanel" />
+        <ImportDialog
+            v-model:show-import-panel="showImportPanel"
+            :current-lib="currentLib"
+            :current-dir="currentDir"
+            @updateView="updateView"
+        />
     </div>
 </template>
 <script setup lang="ts">
@@ -57,6 +62,7 @@ interface User {
 const showImportPanel = ref<boolean>(false);
 const currentPath = ref<any[]>([]);
 const currentLib = ref<any>({});
+const currentDir = ref<any>(-1);
 const itemData = ref<any[]>([]);
 //@ts-ignore
 const pdfSrc = '/conference.svg';
@@ -73,6 +79,7 @@ function updateView(libraryID: number, dirID: number) {
     console.log(TAG, 'updateView', libraryID, dirID);
     _dirID = dirID;
     _libraryID = libraryID;
+    currentDir.value = dirID;
     Promise.all([locateDir(dirID), listDir(libraryID, dirID), getLibraryInfoByID(libraryID)]).then(
         ([res1, res2, res3]) => {
             currentPath.value = res1.slice(1, res1.length);

@@ -9,6 +9,6 @@ interface IPluginActivateMessage {
 }
 
 abstract class SaltDogMessageChannel {
-    abstract invoke(method: string, data: any,callback?:any): void;
+    abstract invoke(method: string, data: any, callback?: any): void;
     abstract _bindWindowId(windowId: number): void;
 }

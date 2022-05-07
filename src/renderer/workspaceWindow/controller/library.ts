@@ -39,3 +39,6 @@ export function getLibraryInfoByID(libraryID: number): Promise<ILibInfo | null> 
 export function locateDir(dirID: number): Promise<IDirPath[]> {
     return invokeLibraryMethodAsync('locateDir', dirID) as Promise<IDirPath[]>;
 }
+export function insertItem(item: any, libraryID: number, dirID: number): Promise<any> {
+    return invokeLibraryMethodAsync('insertItem', item, libraryID, dirID) as Promise<any>;
+}

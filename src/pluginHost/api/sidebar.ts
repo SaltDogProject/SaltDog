@@ -1,4 +1,5 @@
 import SaltDogMessageChannelRenderer from '../messageChannel';
+import { has } from 'lodash';
 class SideBarStatus {
     private static _instance: SideBarStatus;
     private _openStatus: Map<string, boolean> = new Map(); // viewname--->open status
@@ -56,19 +57,47 @@ SaltDogMessageChannelRenderer.getInstance().subscribe('saltdog.panelStatusChange
     }
 });
 
-function isOpen(viewName: string) {
-    return SideBarStatus.getInstance().isOpen(viewName);
+function getSidebarView(viewName: string) {
+    const [p, v] = viewName.split('.');
+    if (!has(window._plugins, `${p}.contributes.views.${v}`)) {
+        console.warn(`Plugin ${p} with viewName ${v} not exist. Check manifest.json {contributes.views}`);
+        return null;
+    }
+    function isOpen() {
+        return SideBarStatus.getInstance().isOpen(viewName);
+    }
+    function onVisibilityChange(action: 'open' | 'close', callback: (...args: any) => any) {
+        SaltDogMessageChannelRenderer.getInstance().on(`${viewName}:${action}`, callback);
+    }
+    function send(channel: string, ...args: any) {
+        SaltDogMessageChannelRenderer.getInstance().publish(`sidebar.pluginHostMsg:${viewName}`, {
+            channel,
+            args,
+        });
+    }
+    function on(channel: string, callback: (...args: any) => any) {
+        SaltDogMessageChannelRenderer.getInstance().on(`sideBarEvent_${viewName}.${channel}`, callback);
+    }
+    return {
+        isOpen,
+        onVisibilityChange,
+        send,
+        on,
+    };
 }
-function onVisibilityChange(viewName: string, action: 'open' | 'close', callback: (...args: any) => any) {
-    SaltDogMessageChannelRenderer.getInstance().on(`${viewName}:${action}`, callback);
-}
-function send(viewName: string, channel: string, ...args: any) {
-    SaltDogMessageChannelRenderer.getInstance().publish(`sidebar.pluginHostMsg:${viewName}`, {
-        channel,
-        args,
-    });
-}
-function on(viewName: string, channel: string, callback: (...args: any) => any) {
-    SaltDogMessageChannelRenderer.getInstance().on(`sideBarEvent_${viewName}.${channel}`, callback);
-}
-export default { isOpen, send, on, onVisibilityChange };
+// function isOpen(viewName: string) {
+//     return SideBarStatus.getInstance().isOpen(viewName);
+// }
+// function onVisibilityChange(viewName: string, action: 'open' | 'close', callback: (...args: any) => any) {
+//     SaltDogMessageChannelRenderer.getInstance().on(`${viewName}:${action}`, callback);
+// }
+// function send(viewName: string, channel: string, ...args: any) {
+//     SaltDogMessageChannelRenderer.getInstance().publish(`sidebar.pluginHostMsg:${viewName}`, {
+//         channel,
+//         args,
+//     });
+// }
+// function on(viewName: string, channel: string, callback: (...args: any) => any) {
+//     SaltDogMessageChannelRenderer.getInstance().on(`sideBarEvent_${viewName}.${channel}`, callback);
+// }
+export default { getSidebarView }; //isOpen, send, on, onVisibilityChange };
