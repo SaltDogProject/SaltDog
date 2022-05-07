@@ -318,6 +318,7 @@ export default class SaltDogItemDB extends Database {
     public getItemInfo(itemID: number) {
         const item = this.prepare(this._sqlTemplate.getItemByID).get(itemID);
         const props = this.prepare(this._sqlTemplate.getItemAllProps).all(itemID);
+        console.log(TAG, JSON.stringify(props));
         return {
             title: item.itemName,
             typeName: item.typeName,

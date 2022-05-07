@@ -76,6 +76,17 @@ CREATE TABLE IF NOT EXISTS version (
 );
 CREATE INDEX IF NOT EXISTS schema ON version(schema);
 
+CREATE TABLE IF NOT EXISTS libraries (
+    libraryID INTEGER PRIMARY KEY,
+    libraryName TEXT NOT NULL,
+    type TEXT NOT NULL,
+    editable INT NOT NULL,
+    filesEditable INT NOT NULL,
+    version INT NOT NULL DEFAULT 0,
+    storageVersion INT NOT NULL DEFAULT 0,
+    lastSync  TIMESTAMP NOT NULL DEFAULT 0,
+    archived INT NOT NULL DEFAULT 0
+);
 
 CREATE TABLE IF NOT EXISTS dirs (
   dirID INTEGER NOT NULL,
@@ -115,14 +126,14 @@ CREATE INDEX IF NOT EXISTS items_synced ON items(synced);
 
 CREATE TABLE IF NOT EXISTS itemDataValues (
     valueID INTEGER PRIMARY KEY,
-    value UNIQUE
+    value TEXT,
 );
 
 -- Type-specific data for individual items
 CREATE TABLE IF NOT EXISTS itemData (
     itemID INT,
     fieldID INT,
-    valueID,
+    valueID INT,
     PRIMARY KEY (itemID, fieldID),
     FOREIGN KEY (itemID) REFERENCES items(itemID) ON DELETE CASCADE,
     FOREIGN KEY (fieldID) REFERENCES fields(fieldID),
@@ -206,15 +217,5 @@ CREATE TABLE IF NOT EXISTS itemCreators (
 CREATE INDEX IF NOT EXISTS itemCreators_creatorTypeID ON itemCreators(creatorTypeID);
 
 
-CREATE TABLE IF NOT EXISTS libraries (
-    libraryID INTEGER PRIMARY KEY,
-    libraryName TEXT NOT NULL,
-    type TEXT NOT NULL,
-    editable INT NOT NULL,
-    filesEditable INT NOT NULL,
-    version INT NOT NULL DEFAULT 0,
-    storageVersion INT NOT NULL DEFAULT 0,
-    lastSync  TIMESTAMP NOT NULL DEFAULT 0,
-    archived INT NOT NULL DEFAULT 0
-);
+
 

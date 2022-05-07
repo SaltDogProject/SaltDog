@@ -94,6 +94,7 @@ function updateView(libraryID: number, dirID: number) {
             for (let i of res2.items) {
                 list.push({
                     id: i.itemID,
+
                     name: i.name,
                     type: 'item',
                 });
@@ -150,6 +151,7 @@ function gotoPath(path: any) {
 
 function handleRowDbClick(e: any) {
     console.log(TAG, 'handleRowDbClick', e);
+    // getItemInfo(e)
     if (e && e.type == 'dir') {
         _dirID = e.id;
         updateView(_libraryID, _dirID);
