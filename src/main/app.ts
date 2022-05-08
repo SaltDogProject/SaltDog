@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, shell } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import { IWindowList } from './window/constants';
 // import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";

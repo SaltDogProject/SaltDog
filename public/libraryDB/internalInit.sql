@@ -119,14 +119,14 @@ CREATE TABLE IF NOT EXISTS items (
     version INT NOT NULL DEFAULT 0,
     synced INT NOT NULL DEFAULT 0,
     UNIQUE (libraryID, key),
-    FOREIGN KEY (libraryID) REFERENCES libraries(libraryID) ON DELETE CASCADE
+    FOREIGN KEY (libraryID) REFERENCES libraries(libraryID) ON DELETE CASCADE,
     FOREIGN KEY (dirID) REFERENCES dirs(dirID) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS items_synced ON items(synced);
 
 CREATE TABLE IF NOT EXISTS itemDataValues (
     valueID INTEGER PRIMARY KEY,
-    value TEXT,
+    value TEXT
 );
 
 -- Type-specific data for individual items

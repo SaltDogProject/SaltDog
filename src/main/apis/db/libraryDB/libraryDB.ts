@@ -92,9 +92,15 @@ export default class SaltDogItemDB extends Database {
 
         // items
         insertItem: 'INSERT INTO items (itemTypeID,libraryID,dirID,itemName,extra,key) VALUES (?,?,?,?,?,?);',
-        getItemByID: 'SELECT * FROM items LEFT JOIN itemTypes USING(itemTypeID) WHERE itemID=?;',
+        checkSameDOI:
+            'SELECT i.dirID FROM items i LEFT JOIN itemData id USING(itemID) LEFT JOIN itemDataValues idv USING(valueID) WHERE idv.value=? AND i.libraryID=?;',
+        getItemByID: `SELECT *,DATETIME(items.dateAdded, 'localtime') as localAddTime,DATETIME(items.dateModified, 'localtime') as localModTime FROM items LEFT JOIN itemTypes USING(itemTypeID) WHERE itemID=?;`,
         getItemAllProps:
             'SELECT fieldName,value FROM itemData as id LEFT JOIN fields as f LEFT JOIN itemDataValues as idv WHERE id.fieldID = f.fieldID AND idv.valueID = id.valueID AND id.itemID=?;',
+        getItemCreator:
+            'SELECT ic.creatorID,ic.orderIndex,c.firstName,c.lastName,c.extra,ct.creatorType FROM itemCreators ic LEFT JOIN creators c USING(creatorID) LEFT JOIN creatorTypes ct USING(creatorTypeID) WHERE ic.itemID=?',
+        getItemTags: 'SELECT * FROM itemTags it LEFT JOIN tags USING(tagID) WHERE it.itemID=?;',
+        getItemAttachments: 'SELECT * FROM itemAttachments WHERE parentItemID=?;',
         insertItemValue: 'INSERT INTO itemDataValues (value) VALUES (?);',
         insertItemValueRelation: 'INSERT INTO itemData (itemID,fieldID,valueID) VALUES (?,?,?);',
         getCreatorByName: 'SELECT * FROM creators WHERE firstName=? AND lastName=?',
@@ -120,6 +126,19 @@ export default class SaltDogItemDB extends Database {
             });
         const insertedFieldID = [];
         const insert_key = uuid();
+        if (item.DOI) {
+            // 查找是否有DOI相同的两篇文献。在同一个library内不允许两篇相同的。
+            // item.DOI = item.DOI.trim();
+            const same = this.prepare(this._sqlTemplate.checkSameDOI).get(item.DOI, libraryID);
+            let str = '/';
+            if (same && same.dirID) {
+                const p = this.locateDir(same.dirID);
+                for (let i = 0; i < p.length; i++) {
+                    if (i > 0) str += p[i].name + '/';
+                }
+                throw new Error(`DOI ${item.DOI} already exists in ${str}`);
+            }
+        }
         try {
             this.transaction((item: any, libraryID: number, dirID: number) => {
                 // 插入条目
@@ -168,8 +187,8 @@ export default class SaltDogItemDB extends Database {
                     } else {
                         // 没有semanticID，gg，这里和zotero不太一样，考虑到重名问题哪怕有重名也照样新增一条，后期用户可以手动绑定哪个作者是一样的。
                         insertCreatorID = this.prepare(this._sqlTemplate.insertCreator).run(
-                            creator.firstName,
-                            creator.lastName,
+                            creator.firstName ? creator.firstName : creator.name,
+                            creator.lastName ? creator.lastName : '',
                             '-1'
                         ).lastInsertRowid;
                     }
@@ -318,16 +337,23 @@ export default class SaltDogItemDB extends Database {
     public getItemInfo(itemID: number) {
         const item = this.prepare(this._sqlTemplate.getItemByID).get(itemID);
         const props = this.prepare(this._sqlTemplate.getItemAllProps).all(itemID);
-        console.log(TAG, JSON.stringify(props));
+        const creators = this.prepare(this._sqlTemplate.getItemCreator).all(itemID);
+        const tags = this.prepare(this._sqlTemplate.getItemTags).all(itemID);
+        const attachments = this.prepare(this._sqlTemplate.getItemAttachments).all(itemID);
+        // console.log(TAG, JSON.stringify(props));
         return {
             title: item.itemName,
             typeName: item.typeName,
             typeID: item.itemTypeID,
             itemID: item.itemID,
             localKey: item.key,
-            dateAdded: item.dateAdded,
-            dateModified: item.dateModified,
+            dateAdded: item.localAddTime,
+            dateModified: item.localModTime,
             synced: item.synced,
+            props,
+            creators,
+            tags,
+            attachments,
         };
     }
 }

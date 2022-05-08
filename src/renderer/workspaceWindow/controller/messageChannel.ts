@@ -1,6 +1,6 @@
 import { ipcMain, ipcRenderer } from 'electron';
 import EventEmitter from 'events';
-import { uniqueId } from 'lodash';
+import { noop, uniqueId } from 'lodash';
 import { SaltDogRendererType } from '../../../utils/consts';
 
 export default class SaltDogMessageChannelRenderer extends EventEmitter implements SaltDogMessageChannelRenderer {
@@ -46,9 +46,9 @@ export default class SaltDogMessageChannelRenderer extends EventEmitter implemen
     public invokeMainSync(api: string, args: any): any {
         return ipcRenderer.sendSync(api, args);
     }
-    public invokeMain(api: string, args: any, callback: (data: any) => void): void {
+    public invokeMain(api: string, args: any, callback?: (data: any) => void): void {
         const id = uniqueId();
-        this._callbackIDMap.set(id, callback);
+        this._callbackIDMap.set(id, callback || noop);
         ipcRenderer.send('SALTDOG_IPC_INVOKE', api, args, id);
     }
     public invoke(api: string, args: any, callback: (data: any) => void): void {

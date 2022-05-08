@@ -73,6 +73,7 @@ const retriveLoading = ref(false);
 const handleClick = (tab: any, event: Event) => {
     console.log(tab, event);
 };
+
 const p = defineProps<{
     showImportPanel: boolean;
     currentDir: any;
@@ -132,7 +133,7 @@ function doRetrieveMetadata() {
                 emit('updateView', currentLib.value.libraryID, currentDir.value);
             })
             .catch((e) => {
-                ElMessage.error(`导入出错，请稍后重试`);
+                ElMessage.error(`导入出错，${e}`);
                 console.error(e);
                 return;
             });

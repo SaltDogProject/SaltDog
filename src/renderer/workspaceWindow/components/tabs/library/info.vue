@@ -1,26 +1,29 @@
 <template>
-    <div style="max-height: 150px; width: 100%; position: relative">
+    <div style="max-height: 150px; width: 100%; position: relative" v-if="itemInfo && displayInfo">
         <div style="position: absolute; right: 12px; top: 2px">
             <el-button @click="closeInfoPanel" style="font-size: 20px; color: grey" type="text" :icon="Close" />
         </div>
         <div class="itemInfoHead">
             <div style="height: 100%; align-items: center; margin: 0px 10px">
-                <img style="width: 30px; height: 30px" src="/conference.svg" alt="" />
+                <img style="width: 30px; height: 30px" :src="getItemTypeImage(itemInfo.typeName)" alt="" />
             </div>
             <div class="itemInfoHead_title">
-                A Survey ofA Survey ofA Survey ofA Survey ofA Survey ofA Survey ofA Survey ofA Survey ofA Survey ofA
-                Survey ofA Survey ofA Survey ofA Survey ofA Survey ofA Survey ofA Survey ofA Survey of Neuromorphic
-                Computing and Neural Networks in Hardware
+                {{ itemInfo.title }}
             </div>
         </div>
     </div>
-    <div style="margin: 10px; height: calc(100% - 190px)">
+    <div style="margin: 10px; height: calc(100% - 190px)" v-if="itemInfo && displayInfo">
         <el-tabs stretch v-model="activeName" class="itemInfoListTabs" @tab-click="handleClick">
-            <el-tab-pane label="详细信息" name="first">
+            <el-tab-pane label="详细信息" name="info">
                 <div style="font-size: 20px">附件</div>
                 <div class="attachment_group">
-                    <div :key="a.name" v-for="a in attachment" class="attacment_item">
-                        <img style="width: 20px; height: 20px" :src="getImage(a.type)" alt="" />
+                    <div
+                        @click="handleAttachmentClick(a)"
+                        :key="a.attachmentID"
+                        v-for="a in displayInfo.attachments"
+                        class="attacment_item"
+                    >
+                        <img style="width: 20px; height: 20px" :src="getMIMEImage(a.contentType)" alt="" />
                         <span class="attacment_title">{{ a.name }}</span>
                     </div>
                 </div>
@@ -32,130 +35,70 @@
                             label-class-name="itemInfoList_label"
                             label="文章类型"
                         >
-                            会议论文
+                            {{ geti18N(itemInfo.typeName) }}
                         </el-descriptions-item>
                         <el-descriptions-item
+                            v-if="displayInfo.creators"
                             class-name="itemInfoList_content"
                             label-class-name="itemInfoList_label"
                             label="作者"
                         >
-                            Adam Jacobs; Grzegorz Cieslewski; Alan D. George;
+                            <el-tag class="ml-2 infoTag" v-for="au in displayInfo.creators" :key="au.creatorID">
+                                {{ au.firstName + (au.lastName == '' || undefined ? '' : ' ' + au.lastName) }}
+                            </el-tag>
                         </el-descriptions-item>
                         <el-descriptions-item
                             class-name="itemInfoList_content"
                             label-class-name="itemInfoList_label"
-                            label="DOI"
-                        >
-                            10.1109/FPL.2012.6339222
-                        </el-descriptions-item>
-                        <el-descriptions-item
-                            class-name="itemInfoList_content"
-                            label-class-name="itemInfoList_label"
-                            label="日期"
-                        >
-                            2012.08
-                        </el-descriptions-item>
-                        <el-descriptions-item
-                            class-name="itemInfoList_content"
-                            label-class-name="itemInfoList_label"
-                            label="会议名称"
-                        >
-                            2012 22nd International Conference on Field Programmable Logic and Applications (FPL)
-                        </el-descriptions-item>
-                        <el-descriptions-item
-                            class-name="itemInfoList_content"
-                            label-class-name="itemInfoList_label"
-                            label="地点"
-                        >
-                            Oslo, Norway
-                        </el-descriptions-item>
-                        <el-descriptions-item
-                            class-name="itemInfoList_content"
-                            label-class-name="itemInfoList_label"
-                            label="页码"
-                        >
-                            300-306
-                        </el-descriptions-item>
-                        <el-descriptions-item
-                            class-name="itemInfoList_content"
-                            label-class-name="itemInfoList_label"
-                            label="出版"
-                        >
-                            IEEE
-                        </el-descriptions-item>
-                        <el-descriptions-item
-                            class-name="itemInfoList_content"
-                            label-class-name="itemInfoList_label"
-                            label="ISBN"
-                        >
-                            978-1-4673-2256-0 978-1-4673-2257-7 978-1-4673-2255-3
-                        </el-descriptions-item>
-
-                        <el-descriptions-item
-                            class-name="itemInfoList_content"
-                            label-class-name="itemInfoList_label"
+                            v-if="displayInfo && displayInfo.abstractNote"
                             label="摘要"
                         >
                             <el-collapse style="--el-collapse-border-color">
                                 <el-collapse-item class="abstractCollapse" title="点击查看" name="1">
-                                    Commercial SRAM-based, ﬁeld-programmable gate arrays (FPGAs) have the capability to
-                                    provide space applications with the necessary performance, energy-efﬁciency, and
-                                    adaptability to meet next-generation mission requirements. However, mitigating an
-                                    FPGA’s susceptibility to radiationinduced faults is challenging. Triple-modular
-                                    redundancy (TMR) techniques are traditionally used to mitigate radiation effects,
-                                    but TMR incurs substantial overheads such as increased area and power requirements.
-                                    In order to reduce these overheads while still providing sufﬁcient radiation
-                                    mitigation, we propose the use of algorithm-based fault tolerance (ABFT). We
-                                    investigate the effectiveness of hardware-based ABFT logic in COTS FPGAs by
-                                    developing multiple ABFT-enabled matrix multiplication designs, carefully analyzing
-                                    resource usage and reliability tradeoffs, and proposing design modiﬁcations for
-                                    higher reliability. We perform fault-injection testing on a Xilinx Virtex-5 platform
-                                    to validate these ABFT designs, measure design vulnerability, and compare ABFT
-                                    effectiveness to other fault-tolerance methods. Our hybrid ABFT design reduces total
-                                    design vulnerability by 99% while only incurring 25% overhead over a baseline,
-                                    non-protected design.
+                                    {{ displayInfo.abstractNote }}
                                 </el-collapse-item>
                             </el-collapse>
                         </el-descriptions-item>
                         <el-descriptions-item
+                            v-if="displayInfo.url"
                             class-name="itemInfoList_content"
                             label-class-name="itemInfoList_label"
-                            label="来源"
+                            label="URL"
                         >
-                            DOI.org (Crossref)
+                            <a @click="openExternal(displayInfo.url)" style="color: #409eff">点此打开</a>
+                        </el-descriptions-item>
+                        <el-descriptions-item
+                            class-name="itemInfoList_content"
+                            label-class-name="itemInfoList_label"
+                            v-for="(data, index) in displayInfo.props"
+                            :key="index"
+                            :label="geti18N(data.fieldName)"
+                        >
+                            {{ data.value }}
                         </el-descriptions-item>
                         <el-descriptions-item
                             class-name="itemInfoList_content"
                             label-class-name="itemInfoList_label"
                             label="添加日期"
                         >
-                            2022/4/22 下午13:17
+                            {{ itemInfo.dateAdded }}
                         </el-descriptions-item>
                         <el-descriptions-item
                             class-name="itemInfoList_content"
                             label-class-name="itemInfoList_label"
                             label="修改日期"
                         >
-                            2022/4/22 下午13:20
+                            {{ itemInfo.dateModified }}
                         </el-descriptions-item>
                     </el-descriptions>
                 </div>
             </el-tab-pane>
-            <el-tab-pane label="管理" name="second">
+            <el-tab-pane label="管理" name="manage">
                 <div style="font-size: 20px">标签</div>
                 <div class="itemTags-group">
-                    <el-tag class="ml-2" type="success">Tag 2</el-tag>
-                    <el-tag class="ml-2" type="success">
-                        sdadddd dddddddd ddddddd ddddddd ddddddddddddddd dddddddddddsdaddd ddddddd ddddddddddddddd
-                        ddddddd dddddddddddd dddddd dd
+                    <el-tag v-for="tag in displayInfo.tags" :key="tag.tagID" :color="tag.color" class="ml-2 infoTag">
+                        {{ tag.name }}
                     </el-tag>
-                    <el-tag class="ml-2" type="success">Tag 2</el-tag>
-                    <el-tag class="ml-2" type="success">Tag 2</el-tag>
-                    <el-tag class="ml-2" type="success">Tag 2</el-tag>
-                    <el-tag class="ml-2" type="success">Tag 2</el-tag>
-                    <el-tag class="ml-2" type="success">Tag 2</el-tag>
-                    <el-tag class="ml-2" type="success">Tag 2</el-tag>
-                    <el-tag class="ml-2" type="success">Tag 2</el-tag>
                 </div>
             </el-tab-pane>
         </el-tabs>
@@ -163,30 +106,98 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import i18N from './i18n.ts';
+import { openExternal } from '../../../utils/external.ts';
+import { getMIMEImage, getItemTypeImage } from './utils';
+import { computed, onMounted, ref, defineProps, defineEmits, toRefs, onUpdated } from 'vue';
 import { Close } from '@element-plus/icons-vue';
-const attachment = ref([
-    {
-        type: 'pdf',
-        name: 'Full Text PDF',
+const TAG = '[Renderer/Library/Info]';
+const p = defineProps<{
+    itemInfo: any;
+}>();
+const emit = defineEmits<{
+    (e: 'closePanel'): void;
+}>();
+function geti18N(str: string) {
+    return i18N['zh-CN']['fields'][str] || i18N['zh-CN']['itemTypes'][str];
+}
+
+const { itemInfo } = toRefs(p);
+const displayInfo = computed<any>({
+    get: () => {
+        if (!itemInfo.value) return;
+        if (!itemInfo.value.props) return;
+        let rt: {
+            props: any[];
+            abstractNote?: string;
+            creators?: any[];
+            tags?: any[];
+            attachments?: any[];
+            url?: string;
+        } = {
+            props: [],
+        };
+        rt.props = itemInfo.value.props.filter((item: any) => {
+            if (item.fieldName == 'abstractNote') {
+                // 单独显示
+                rt.abstractNote = item.value;
+                return false;
+            }
+            if (item.fieldName == 'title') {
+                // 单独显示
+                return false;
+            }
+            if (item.fieldName == 'url') {
+                // 单独显示
+                rt.url = item.value;
+                return false;
+            }
+            if (item.fieldName == 'title') {
+                // 单独显示
+                return false;
+            }
+            return true;
+        });
+        rt.props.map((value) => {
+            if (
+                value.fieldName == 'accessDate' ||
+                value.fieldName == 'date' ||
+                value.fieldName == 'dateEnacted' ||
+                value.fieldName == 'filingDate'
+            ) {
+                if (value.value[10] == 'T' && value.value[value.value.length - 1] == 'Z') {
+                    // UTC时间
+                    value.value = new Date(value.value).toLocaleString();
+                }
+            }
+            return value;
+        });
+        if (itemInfo.value.creators)
+            rt.creators = JSON.parse(JSON.stringify(itemInfo.value.creators)).sort((a: any, b: any) => {
+                return a.orderIndex - b.orderIndex;
+            });
+        if (itemInfo.value.tags) rt.tags = itemInfo.value.tags;
+        if (itemInfo.value.attachments) rt.attachments = itemInfo.value.attachments;
+        return rt;
     },
-    {
-        type: 'internet',
-        name: 'Web Snapshot',
+    set: (val) => {
+        return;
     },
-]);
+});
+onUpdated(() => {
+    console.log(TAG, itemInfo.value);
+});
+
 function closeInfoPanel() {
     console.log('closePanel');
+    emit('closePanel');
 }
-function getImage(str: any) {
-    return '/' + str + '.svg';
-}
-const activeName = ref('first');
+const activeName = ref('info');
 const infoH = computed({
     // 自适应详情高度
     get: () => {
         let len = 'height:calc(100% - 29px - 10px - 20px - 39px ';
-        for (const i in attachment.value) {
+        for (const i in displayInfo.value.attachments) {
             len += '- 46px ';
         }
         return len + ')';
@@ -198,8 +209,18 @@ const infoH = computed({
 const handleClick = (tab: any, event: Event) => {
     console.log(tab, event);
 };
+function handleAttachmentClick(attachment: any) {
+    console.log(attachment);
+    if (attachment.contentType == 'text/html') {
+        openExternal(attachment.url);
+    }
+}
 </script>
 <style>
+.infoTag {
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
 .itemInfoList_content {
     display: inline-block;
     max-width: calc(100% - 90px);
@@ -235,6 +256,7 @@ const handleClick = (tab: any, event: Event) => {
 }
 .itemInfoList_content {
     border: none;
+    word-wrap: break-all;
 }
 .itemInfoHead_title {
     font-size: 20px;
@@ -273,6 +295,7 @@ const handleClick = (tab: any, event: Event) => {
 }
 .attachment_group .attacment_item {
     border: 2px solid;
+    cursor: pointer;
     border-color: rgba(64, 158, 255, 0.1);
     padding: 10px 16px;
     line-height: 1.5;
@@ -282,6 +305,12 @@ const handleClick = (tab: any, event: Event) => {
     flex-direction: row;
     align-items: center;
     margin-bottom: 5px;
+}
+.attachment_group .attacment_item:hover {
+    /* background-color: rgba(64, 158, 255, 0.1); */
+    /* animation: hoverAnim 0.3s; */
+    color: #409eff;
+    background: rgba(64, 158, 255, 0.1);
 }
 .itemTags-group {
     margin: 10px;

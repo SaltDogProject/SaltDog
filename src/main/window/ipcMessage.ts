@@ -1,4 +1,4 @@
-import { ipcMain, dialog } from 'electron';
+import { ipcMain, dialog, shell } from 'electron';
 import { IWindowManager } from '~/utils/types/electron';
 import { IWindowList } from './constants';
 import { extend } from 'lodash';
@@ -7,6 +7,7 @@ import db from '../apis/db/index';
 import LibraryDB from '../apis/db/libraryDB/libraryDB';
 import Parser from '../apis/parser/parser';
 import { buildSettingsTemplate } from '../apis/db/index';
+// import SaltDogMessageChannelMain from '../apis/plugin/api/messageChannel';
 const TAG = '[Main/IPC]';
 export function initIpc(windowManager: IWindowManager): void {
     console.log('[IPC] inited');
@@ -52,6 +53,10 @@ export function initIpc(windowManager: IWindowManager): void {
             pluginHostID: windowManager.get(IWindowList.PLUGIN_HOST)!.webContents.id,
             workspaceID: windowManager.get(IWindowList.WORKSPACE_WINDOW)!.webContents.id,
         };
+    });
+    ipcMain.on('open-url', (e, url) => {
+        console.log(TAG, 'openExternal', url);
+        shell.openExternal(url);
     });
     // plugin webview->plugin host
     // ipcMain.on('PLUGINWEBVIEW_IPC', (e, msg) => {
