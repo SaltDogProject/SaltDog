@@ -93,4 +93,11 @@ export default class SaltDogMessageChannelRenderer extends EventEmitter implemen
     public subscribe(e: string, callback: (...args: any) => void): void {
         this.on(e, callback);
     }
+    public registerCommand(command: string, callback: (...args: any) => any) {
+        this.on(`onCommand:${command}`, callback);
+    }
+    public execCommand(command: string, ...args: any) {
+        this.emit(`onCommand:${command}`, ...args);
+        this.publish(`onCommand:${command}`, ...args);
+    }
 }

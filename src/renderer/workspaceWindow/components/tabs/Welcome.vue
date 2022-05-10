@@ -69,16 +69,7 @@ export default defineComponent({
             },
         ];
         function openDocument() {
-            ipcRenderer.send('openFileDialog', {});
-            ipcRenderer.once('openFileDialogReply', (e, arg) => {
-                if (!arg.canceled && arg.filePaths.length != 0) {
-                    console.log(TAG, 'Open new PDF file', arg.filePaths);
-                    for (const p of arg.filePaths) {
-                        // 打开PDF
-                        tabManager.addPdfTab(path.basename(p || '未命名'), p);
-                    }
-                }
-            });
+            tabManager.pickAndOpenPDF();
         }
         return { tableData, openDocument };
     },

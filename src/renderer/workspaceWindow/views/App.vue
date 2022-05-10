@@ -1,6 +1,13 @@
 <template>
     <div id="workspace">
         <div class="fake-title-bar" :class="{ darwin: os === 'darwin' }">
+            <div class="titlebar-icon">
+                <img :src="iconPath" alt="icon" />
+            </div>
+            <div style="display: inline-block; position: absolute; top: 0; left: 40px">
+                <TitleMenu />
+            </div>
+
             <div class="fake-title-bar__title">{{ documentName }} - SaltDog - {{ version }}</div>
             <div class="handle-bar" v-if="os !== 'darwin'">
                 <div v-if="version == 'Dev'" class="window__button" @click="refreshWindow">
@@ -55,6 +62,7 @@ import pdfTabManager from '../controller/tabManager';
 import SidebarIcons from '../components/sideBarIcons.vue';
 // @ts-ignore
 import sidebar from '../components/sidebar/sideBar.vue';
+import TitleMenu from '../components/menu/menu.vue';
 import tabManager from '../controller/tabManager';
 import { ipcRenderer } from 'electron';
 import bus from '../controller/systemBus';
@@ -62,11 +70,12 @@ import { Minus, Refresh, Close } from '@element-plus/icons-vue';
 declare var __static: string;
 
 const App = defineComponent({
-    components: { Tabs, SidebarIcons, sidebar, Minus, Refresh, Close },
+    components: { Tabs, SidebarIcons, sidebar, Minus, Refresh, Close, TitleMenu },
     setup() {
         const documentName = ref('欢迎');
         const os = ref(process.platform);
         const version = ref('');
+        const iconPath = ref(`${__static}/images/logo.png`);
         const { proxy } = getCurrentInstance()!;
         version.value = process.env.NOCE_ENV === 'production' ? pkg.version : 'Dev';
         bus.on('_setWindowTitle', (title) => {
@@ -136,6 +145,7 @@ const App = defineComponent({
             //panelManager.showSideBar();
         });
         return {
+            iconPath,
             documentName,
             os,
             version,
@@ -149,6 +159,7 @@ export default App;
 </script>
 
 <style lang="stylus">
+title_bar_icon_width = 16px
 title_bar_height = 30px
 bottom_bar_height = 20px
 side_bar_icons_width = 40px
@@ -173,7 +184,7 @@ $darwinBg = transparentify(#172426, #000, 0.7)
         height title_bar_height
         width 100%
         text-align center
-        color --el-text-color-primary
+        color var(--el-text-color-primary)
         background-color var(--saltdog-titlebar-background-color)
         font-size 12px
         line-height @height
@@ -189,7 +200,16 @@ $darwinBg = transparentify(#172426, #000, 0.7)
                 $darwinBg 100%
             )
             .fake-title-bar__title
-                padding-left 167px
+                display inline-block
+                // padding-left 167px
+        .titlebar-icon
+            position absolute
+            top 0px
+            left 0px
+            &>img
+                height title_bar_icon_width
+                width title_bar_icon_width
+                margin:7px;
         .handle-bar
             position absolute
             top 0px

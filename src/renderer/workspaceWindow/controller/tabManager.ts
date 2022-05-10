@@ -1,5 +1,5 @@
 import { ref, getCurrentInstance } from 'vue';
-import { WebviewTag } from 'electron';
+import { WebviewTag, ipcRenderer } from 'electron';
 import { noop, uniqueId } from 'lodash';
 import { ITabConfig, ITabManager } from '@/utils/panelTab';
 import MessageHandler from '../components/tabs/messageHandler';
@@ -55,7 +55,23 @@ class MainTabManager implements ITabManager {
     private webviewId2Info = new Map<string, any>();
     private webviewPendingFunction = {}; // {"MainPanelWebview-1":[fn1,fn2]}
     private pdfTabReadyState = {}; // {"MainPanelWebview-1":false}
-
+    constructor() {
+        SaltDogMessageChannelRenderer.getInstance().registerCommand('saltdog.openNewPDF', () => {
+            this.pickAndOpenPDF();
+        });
+    }
+    public pickAndOpenPDF() {
+        ipcRenderer.send('openFileDialog', {});
+        ipcRenderer.once('openFileDialogReply', (e, arg) => {
+            if (!arg.canceled && arg.filePaths.length != 0) {
+                console.log(TAG, 'Open new PDF file', arg.filePaths);
+                for (const p of arg.filePaths) {
+                    // 打开PDF
+                    this.addPdfTab(path.basename(p || '未命名'), p);
+                }
+            }
+        });
+    }
     public getCurrentTabRef(): any {
         return this.currentTab;
     }
