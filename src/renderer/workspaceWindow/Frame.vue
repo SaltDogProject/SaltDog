@@ -24,7 +24,7 @@ export default {
     --saltdog-sidebar-treeview-background-color:#eaeaeb;
     --saltdog-sidebar-title-font-color:#616161;
     --saltdog-bottombar-background-color: #eaeaeb;
-    --saltdog-sidebaricon-background-color:#fafafa;
+    --saltdog-sidebaricon-background-color:rgb(250, 250, 250);
     --saltdog-sidebaricon-active-color:#121417;
     --saltdog-sidebaricon-icon-color:#9d9e9f;
     --saltdog-panel-background-color:#fafafa;

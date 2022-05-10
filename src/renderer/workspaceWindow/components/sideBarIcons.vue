@@ -65,8 +65,8 @@ export default defineComponent({
 });
 </script>
 <style lang="stylus">
-sidebar_icon_width = 40px
-sidebar_icon_true_width = 25px
+sidebar_icon_width = 48px
+sidebar_icon_true_width = 27px
 .sideBarIconsView
     -webkit-app-region:no-drag!important
     width: sidebar_icon_width;
@@ -75,7 +75,7 @@ sidebar_icon_true_width = 25px
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin:20px 0px
+    margin:5px 0px 20px 0px;
     .sideBarIconsContainer
         -webkit-app-region:no-drag!important
         &:hover
