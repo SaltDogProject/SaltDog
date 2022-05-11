@@ -1,5 +1,5 @@
 'use strict';
-
+import * as path from 'path';
 import { app, protocol, BrowserWindow, ipcMain, shell } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import { IWindowList } from './window/constants';
@@ -12,9 +12,34 @@ import saltDogPlugin from './apis/plugin/index';
 import { initIpc } from './window/ipcMessage';
 import { ISaltDogPluginMessageType } from './apis/plugin/constant';
 import Parser from './apis/parser/parser';
+import schemaParser from './schema';
 class LifeCycle {
     private pluginManager = saltDogPlugin;
     beforeReady() {
+        // URL Schemes 参数获取 https://segmentfault.com/a/1190000040130782
+        const schemaArgs = [];
+        if (!app.isPackaged) {
+            // dev模式下的测试
+            schemaArgs.push(path.resolve(process.argv[1]));
+        }
+        app.setAsDefaultProtocolClient('saltdog', process.execPath, schemaArgs);
+        // Windows监听URL Schema触发
+        app.on('second-instance', (event, argv) => {
+            if (process.platform === 'win32') {
+                // console.log('second-instance', argv);
+                schemaParser(argv[3]);
+            }
+        });
+
+        // macOS监听URL Schema触发
+        app.on('open-url', (event, urlStr) => {
+            // FIXME: macos schema
+            // handleUrl(urlStr);
+            if (process.platform === 'darwin') {
+                console.log('[WIP] MacOS schema is not supported yet');
+            }
+        });
+
         // Scheme must be registered before the app is ready
         protocol.registerSchemesAsPrivileged([{ scheme: 'saltdog', privileges: { secure: true, standard: true } }]);
         dbChecker();
@@ -48,6 +73,25 @@ class LifeCycle {
             // FIXME: debug create the WORKSPACE window
             windowManager.create(IWindowList.WORKSPACE_WINDOW);
             windowManager.create(IWindowList.PLUGIN_HOST);
+
+            /**
+             * Windows监听URL Schema触发时候要判断一下是否是第一次启动
+             *  应用处于打开状态，会触发 second-instance 事件并接收这个 URL。
+                应用处于未打开状态，在网页端通过浏览器调起应用之后不会触发 second-instance 事件；这个时候需要主动判断应用是否是从网页端调起，并主动触发 second-instance 事件；
+                在 window 里面判断是否是从网页端的标准：如果是通过url schema启动，其启动参数会超过1个
+
+             */
+            if (process.argv.length > 1) {
+                if (!app.isReady()) {
+                    app.once('browser-window-created', () => {
+                        // app 未打开时，通过 open-url打开 app，此时可能还没 ready，需要延迟发送事件
+                        // 此段ready延迟无法触发 service/app/ open-url 处理，因为saga初始化需要时间
+                        app.emit('second-instance', null, process.argv);
+                    });
+                } else {
+                    app.emit('second-instance', null, process.argv);
+                }
+            }
         };
         if (!app.isReady()) {
             // This method will be called when Electron has finished
@@ -104,6 +148,12 @@ class LifeCycle {
         }
     }
     launchApp() {
+        // 获取单实例锁
+        const gotTheLock = app.requestSingleInstanceLock();
+        if (!gotTheLock) {
+            // 如果获取失败，说明已经有实例在运行了，直接退出
+            app.quit();
+        }
         this.beforeReady();
         this.onReady();
         this.onRunning();

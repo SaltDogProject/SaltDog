@@ -216,7 +216,7 @@ function handleAttachmentClick(attachment: any) {
     }
 }
 </script>
-<style>
+<style lang="stylus" scoped>
 .infoTag {
     margin-right: 5px;
     margin-bottom: 5px;

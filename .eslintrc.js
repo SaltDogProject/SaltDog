@@ -25,6 +25,7 @@ module.exports = {
     },
     rules: {
         '@typescript-eslint/no-var-requires': 0,
+        'vue/no-v-html': 'off',
         'vue/attributes-order': 'off',
         indent: 'off',
         '@typescript-eslint/indent': ['off'],
@@ -32,7 +33,7 @@ module.exports = {
         '@typescript-eslint/no-unused-vars': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',
-        '@typescript-eslint/explicit-module-boundary-types':'off',
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
         'prettier/prettier': [
             'off',
             {},

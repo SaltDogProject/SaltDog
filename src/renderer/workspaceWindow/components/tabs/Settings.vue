@@ -120,7 +120,7 @@ function DeepProxy(Obj: any) {
     return new TypeError('Argument must be object or array');
 }
 </script>
-<style lang="stylus">
+<style lang="stylus" scoped>
 .settingsTabs
     .el-tabs__header
         padding 20px 40px 0px 40px!important

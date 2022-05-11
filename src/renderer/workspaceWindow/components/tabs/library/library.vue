@@ -189,7 +189,7 @@ function handleRowClick(e: any) {
 }
 </script>
 
-<style>
+<style lang="stylus" scoped>
 .libraryContainer {
     margin: 20px 40px;
     width: 100%;

@@ -110,12 +110,14 @@ const config = {
                 //         },
                 //     ],
                 // },
-                // mac: {
-                //     icon: 'build/icons/icon.icns',
-                //     extendInfo: {
-                //         LSUIElement: 1,
-                //     },
-                // },
+                mac: {
+                    icon: './public/images/logo.ico',
+
+                    extendInfo: {
+                        CFBundleURLSchemes: ['saltdog'],
+                        LSUIElement: 1,
+                    },
+                },
                 win: {
                     icon: './public/images/logo.ico',
                     artifactName: `SaltDog Setup \${version}-${arch}.exe`,

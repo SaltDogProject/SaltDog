@@ -141,7 +141,7 @@ function doRetrieveMetadata() {
     });
 }
 </script>
-<style lang="stylus">
+<style lang="stylus" scoped>
 .libraryImportTypeTab
     width:100%;
 .libraryImportDialog

@@ -46,7 +46,7 @@ onMounted(() => {
     console.log(TAG, 'Load Navi in dir', currentPath.value);
 });
 </script>
-<style>
+<style lang="stylus" scoped>
 .pathBreadcrumb pathBreadcrumb__item {
     cursor: pointer;
 }

@@ -48,7 +48,9 @@
                 </div>
             </div>
 
-            <div class="bottomBar"></div>
+            <div class="bottomBar">
+                <StatusBar />
+            </div>
         </div>
     </div>
 </template>
@@ -63,14 +65,16 @@ import SidebarIcons from '../components/sideBarIcons.vue';
 // @ts-ignore
 import sidebar from '../components/sidebar/sideBar.vue';
 import TitleMenu from '../components/menu/menu.vue';
+import StatusBar from '../components/statusBar/statusBar.vue';
 import tabManager from '../controller/tabManager';
 import { ipcRenderer } from 'electron';
 import bus from '../controller/systemBus';
 import { Minus, Refresh, Close } from '@element-plus/icons-vue';
+
 declare var __static: string;
 
 const App = defineComponent({
-    components: { Tabs, SidebarIcons, sidebar, Minus, Refresh, Close, TitleMenu },
+    components: { Tabs, SidebarIcons, sidebar, Minus, Refresh, Close, TitleMenu, StatusBar },
     setup() {
         const documentName = ref('欢迎');
         const os = ref(process.platform);
@@ -161,7 +165,7 @@ export default App;
 <style lang="stylus">
 title_bar_icon_width = 16px
 title_bar_height = 30px
-bottom_bar_height = 20px
+bottom_bar_height = 22px
 side_bar_icons_width = 48px
 side_bar_width = 180px
 bottom_panel_height = 200px

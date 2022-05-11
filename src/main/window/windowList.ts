@@ -93,12 +93,17 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
             e.returnValue = window.id;
         });
         window.on('closed', () => {
-            const pluginHost = windowManager.get(IWindowList.PLUGIN_HOST);
-            pluginHost&&pluginHost.close();
-            if (process.platform === 'linux') {
-                process.nextTick(() => {
-                    app.quit();
-                });
+            // 在处理schema时，异步可能导致第二个app获取不到单例锁已经quit还会调这个，跳过这个错误。
+            try {
+                const pluginHost = windowManager.get(IWindowList.PLUGIN_HOST);
+                pluginHost && pluginHost.close();
+                if (process.platform === 'linux') {
+                    process.nextTick(() => {
+                        app.quit();
+                    });
+                }
+            } catch (e) {
+                console.error(e);
             }
         });
     },

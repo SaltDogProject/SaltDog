@@ -158,7 +158,7 @@ export default defineComponent({
 .SeatchTree .__searchHighLight {
 }
 </style>
-<style lang="stylus">
+<style lang="stylus" scoped>
 .SearchTree
     background: var(--saltdog-sidebar-background-color)!important;
     border-radius:5px;

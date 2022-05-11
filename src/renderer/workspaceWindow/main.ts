@@ -4,9 +4,11 @@ import store from './store';
 // global use element-plus
 import ElementPlus from 'element-plus';
 import 'element-plus/dist/index.css';
+import '@mdi/font/css/materialdesignicons.min.css';
 import { ipcRenderer } from 'electron';
 import pluginManager from './controller/plugin/plugin';
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
+import initCommandListener from './utils/generalCommands';
 const app = createApp(Frame);
 // FIXME: debug
 //ipcRenderer.once('initWorkspace', (e, arg) => {
@@ -23,14 +25,17 @@ app.config.globalProperties.__workspaceInfo = {
 }; //arg;
 app.config.globalProperties.__basicInfo = basicInfo; //arg;
 console.log('[Workspace load]', basicInfo);
-pluginManager.init(basicInfo.plugins, windowId,pluginHostWebcontentsID);
-// eslint-disable-next-line @typescript-eslint/no-empty-function
+pluginManager.init(basicInfo.plugins, windowId, pluginHostWebcontentsID);
+
 app.use(store)
     .use(ElementPlus, {
         zIndex: 3000,
         locale: zhCn,
     })
     .mount('#app');
+
+// listenen Commands
+initCommandListener();
 
 ipcRenderer.send('WorkspaceWindowReady');
 //});

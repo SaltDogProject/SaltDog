@@ -92,7 +92,7 @@ export default defineComponent({
     },
 });
 </script>
-<style lang="stylus">
+<style lang="stylus" scoped>
 sidebar-content-margin = 0px
 sidebar-title-margin-left = 10px
 .sidebar-webview

@@ -24,7 +24,7 @@ export default {
     --saltdog-sidebar-treeview-background-color:#eaeaeb;
     --saltdog-sidebar-title-font-color:#616161;
     --saltdog-bottombar-background-color: #eaeaeb;
-    --saltdog-sidebaricon-background-color:rgb(250, 250, 250);
+    --saltdog-sidebaricon-background-color:#fafafa;
     --saltdog-sidebaricon-active-color:#121417;
     --saltdog-sidebaricon-icon-color:#9d9e9f;
     --saltdog-panel-background-color:#fafafa;
@@ -50,7 +50,26 @@ body,html
 .clickable
     -webkit-app-region: no-drag;
     user-select: "auto";
+/* 滚动条 */
+*::-webkit-scrollbar{
+    width: 4px;
+    height: 4px;
+  }
 
+  *::-webkit-scrollbar-thumb{
+    background: #aaaaaa;
+    border-radius: 4px;
+    cursor:pointer;
+  }
+
+  *::-webkit-scrollbar-thumb:hover{
+    opacity: 1;
+    display: block!important;
+  }
+
+  *::-webkit-scrollbar-track{
+    background-color: transparent;
+  }
 @font-face {
   /* 重命名字体名 */
   font-family: 'PingFang SC';

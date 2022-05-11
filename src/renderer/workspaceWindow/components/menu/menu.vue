@@ -116,7 +116,7 @@ function mouseOverSubmenu() {
     }
 }
 </script>
-<style lang="stylus">
+<style lang="stylus" scoped>
 .titleMenu_container
     font-size:13px;
     display: flex;
@@ -148,7 +148,7 @@ function mouseOverSubmenu() {
         padding:0;
         line-height: 25px;
         font-size: 13px;
-        li
+        &>li
             margin:3px 0px;
             padding 0px 20px;
             &:hover

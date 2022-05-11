@@ -148,7 +148,7 @@ export default defineComponent({
     },
 });
 </script>
-<style lang="stylus">
+<style lang="stylus" scoped>
 tabitem_height = 40px
 .tabview
     box-shadow: none!important

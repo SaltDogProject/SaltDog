@@ -64,7 +64,7 @@ export default defineComponent({
     },
 });
 </script>
-<style lang="stylus">
+<style lang="stylus" scoped>
 sidebar_icon_width = 48px
 sidebar_icon_true_width = 27px
 .sideBarIconsView

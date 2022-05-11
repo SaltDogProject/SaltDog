@@ -66,7 +66,7 @@ export default defineComponent({
     },
 });
 </script>
-<style lang="stylus">
+<style lang="stylus" scoped>
 .OutlineTree
     background: var(--saltdog-sidebar-background-color)!important;
     border-radius:5px;
