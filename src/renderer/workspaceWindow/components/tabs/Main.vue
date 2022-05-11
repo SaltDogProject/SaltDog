@@ -11,29 +11,27 @@
     >
         <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
             <!--disable node integration for security-->
-            <div style="width: 100%; height: 100%">
-                <keep-alive>
-                    <div style="width: 100%; height: 100%">
-                        <webview
-                            v-if="item.type == 'webview'"
-                            :id="item.webviewId"
-                            class="mainWebView"
-                            :src="item.webviewUrl"
-                            disablewebsecurity
-                            webpreferences="contextIsolation=false"
-                            :preload="item.isPdf ? pdfViewerPreload : ''"
-                        ></webview>
-                        <settings v-if="item.type == 'settings'" />
-                        <library v-if="item.type == 'library'" />
-                    </div>
-                </keep-alive>
-                <!--
+            <keep-alive>
+                <div style="width: 100%; height: 100%; overflow-y: scroll">
+                    <webview
+                        v-if="item.type == 'webview'"
+                        :id="item.webviewId"
+                        class="mainWebView"
+                        :src="item.webviewUrl"
+                        disablewebsecurity
+                        webpreferences="contextIsolation=false"
+                        :preload="item.isPdf ? pdfViewerPreload : ''"
+                    ></webview>
+                    <settings v-if="item.type == 'settings'" />
+                    <library v-if="item.type == 'library'" />
+                </div>
+            </keep-alive>
+            <!--
                     nodeintegration
                     disablewebsecurity
                     webpreferences="contextIsolation=false"
                     :preload="item.isPdf?pdfViewerPreload:''"
                 -->
-            </div>
         </el-tab-pane>
     </el-tabs>
 </template>
@@ -148,7 +146,7 @@ export default defineComponent({
     },
 });
 </script>
-<style lang="stylus" scoped>
+<style lang="stylus">
 tabitem_height = 40px
 .tabview
     box-shadow: none!important
@@ -160,12 +158,14 @@ tabitem_height = 40px
     //         height tabitem_height
     .el-tabs__content
         padding 0px!important
-        // height:'calc(100% - %s)' % tabitem_height
-        height:100%
+        height:'calc(100% - %s)' % tabitem_height
+        // height:100%
         width:100%
         .el-tab-pane
             height:100%
             width:100%
+            // overflow: scroll
+            // position: absolute
             .mainWebView
                 height:100%
                 width:100%

@@ -1,16 +1,18 @@
 <template>
     <div class="libraryContainer">
-        <div style="display: inline-block; margin-right: 40px" class="library-title">文献列表</div>
-        <el-button-group style="margin-top: -1 0px">
-            <el-button type="primary" round @click="doImport">
-                <el-icon class="el-icon--left"><Upload /></el-icon>
-                导入文献
-            </el-button>
-            <el-button type="primary" round @click="createDir">
-                <el-icon class="el-icon--left"><FolderAdd /></el-icon>
-                新建文件夹
-            </el-button>
-        </el-button-group>
+        <div style="width: 100%; position: sticky; top: 0px">
+            <div style="display: inline-block; margin-right: 40px" class="library-title">文献列表</div>
+            <el-button-group style="margin-top: -1 0px">
+                <el-button type="primary" round @click="doImport">
+                    <el-icon class="el-icon--left"><Upload /></el-icon>
+                    导入文献
+                </el-button>
+                <el-button type="primary" round @click="createDir">
+                    <el-icon class="el-icon--left"><FolderAdd /></el-icon>
+                    新建文件夹
+                </el-button>
+            </el-button-group>
+        </div>
         <Navi
             @click="closeInfoPanel"
             class="pathBreadcrumb"
@@ -41,7 +43,7 @@
                 </template>
             </el-table-column>
         </el-table>
-        <div style="width: 100%; height: 100%" @click="closeInfoPanel"></div>
+        <!-- <div style="width: 100%; height: 100%" @click="closeInfoPanel"></div> -->
         <div v-show="showInfo" :class="{ itemInfoPanel: true }">
             <Info :item-info="itemInfo" @closePanel="closeInfoPanel" />
         </div>
@@ -189,15 +191,14 @@ function handleRowClick(e: any) {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
 .libraryContainer {
     margin: 20px 40px;
-    width: 100%;
-    height: 100%;
+    overflow-y:scroll;
 }
 
 .libraryContainer > .itemInfoPanel {
-    height: calc(100% - 40px);
+    height: 100%;
     max-width: 450px;
     float: right;
     top: 0px;

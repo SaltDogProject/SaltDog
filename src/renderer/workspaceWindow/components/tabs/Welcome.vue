@@ -75,7 +75,7 @@ export default defineComponent({
     },
 });
 </script>
-<style lang="stylus" scoped>
+<style lang="stylus">
 
 .welcome-layout
     color:#303133;

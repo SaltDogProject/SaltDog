@@ -2,7 +2,8 @@ import { resolve } from 'path';
 import { ChildProcess, fork } from 'child_process';
 // import pdfjs, { PDFDocumentProxy } from 'pdfjs-dist/legacy/build/pdf.js';
 import got from 'got';
-import { readFile } from 'fs';
+import * as fs from 'fs';
+import * as path from 'path';
 const TAG = '[Main/parser]';
 
 export default class Parser {
@@ -27,17 +28,19 @@ export default class Parser {
             'CrossrefREST.email': 'service@saltdog.cn', // Pass an email to Crossref REST API to utilize the faster servers pool
         },
         userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:61.0) Gecko/20100101 Firefox/61.0 SaltDog/1.0',
-        translatorsDirectory: this._isDev
-            ? resolve(__static, '../third_party/translation-server/modules/translators')
-            : '',
+        translatorsDirectory: resolve(__static, '../public/translators'),
     };
-    private constructor() {
+    constructor() {
+        this.initParser();
+    }
+    public async initParser() {
         console.log(TAG, `Init Parser in ${this._serverPath}`);
         const worker = fork(this._serverPath, {});
         this._server = worker;
         worker.send({
             type: 'init',
             data: this._initConfig,
+            translators: await this._loadTranslator(),
         });
         worker.on('message', (message: any) => {
             if (message.type === 'ready') {
@@ -97,6 +100,82 @@ export default class Parser {
                     });
             });
         }
+    }
+    private async _loadTranslator(update = false) {
+        const translatorsDirPath = this._initConfig.translatorsDirectory;
+        const cacheJSONPath = path.resolve(translatorsDirPath, '_cacheMeta.json');
+        if (!update) {
+            if (await new Promise((resolve) => fs.access(cacheJSONPath, (err) => resolve(!err)))) {
+                console.log(TAG, 'Get metadata from cache');
+                return JSON.parse(fs.readFileSync(cacheJSONPath, 'utf-8'));
+            }
+        }
+
+        if (!(await new Promise((resolve) => fs.access(translatorsDirPath, (err) => resolve(!err))))) {
+            throw new Error(
+                'Translators directory ' +
+                    translatorsDirPath +
+                    ' is not ' +
+                    'accessible. Please set this correctly in config.js.\n'
+            );
+        }
+
+        const translatorFilePaths = (await new Promise((resolve, reject) =>
+            fs.readdir(translatorsDirPath, (err, files) => (err ? reject(err) : resolve(files)))
+        )) as any[];
+        const translators = [];
+        for (let filePath of translatorFilePaths) {
+            if (filePath[0] === '.' || filePath.substr(filePath.length - 3) !== '.js') continue;
+            filePath = path.resolve(translatorsDirPath, filePath);
+            let data = (await new Promise((resolve, reject) =>
+                fs.readFile(filePath, 'utf8', (err, data) => (err ? reject(err) : resolve(data)))
+            )) as string;
+
+            // Strip off byte order mark, if one exists
+            if (data[0] === '\uFEFF') data = data.substr(1);
+
+            // We assume lastUpdated is at the end to avoid running the regexp on more than necessary
+            const lastUpdatedIndex = data.indexOf('"lastUpdated"');
+            if (lastUpdatedIndex == -1) {
+                console.log('Invalid or missing translator metadata JSON object in ' + filePath);
+                continue;
+            }
+
+            // Add 50 characters to clear lastUpdated timestamp and final "}"
+            const header = data.substr(0, lastUpdatedIndex + 50);
+            const infoRe = /^\s*{[\S\s]*?}\s*?[\r\n]/;
+            const m = infoRe.exec(header);
+            if (!m) {
+                console.log('Invalid or missing translator metadata JSON object in ' + filePath);
+                continue;
+            }
+
+            const metadataString = m[0];
+            let info;
+            try {
+                info = JSON.parse(metadataString);
+            } catch (e) {
+                console.log('Invalid or missing translator metadata JSON object in ' + filePath);
+                continue;
+            }
+            info.cacheCode = false;
+            info.localPath = filePath;
+            // info.code = data;
+            // We don't ever want to reload from disk again (and don't have the code to do that either)
+            // info.cacheCode = true;
+
+            translators.push(info);
+        }
+
+        new Promise((resolve, reject) => {
+            if (fs.existsSync(cacheJSONPath)) {
+                fs.unlinkSync(cacheJSONPath);
+            }
+            fs.writeFile(cacheJSONPath, JSON.stringify(translators), 'utf-8', (err) => {
+                console.error('Create translator cache failed');
+            });
+        });
+        return translators;
     }
     // private async _getDOIFromArxiv(pdf: PDFDocumentProxy) {
     //     function matchArxiv(str: string, exact = false) {
