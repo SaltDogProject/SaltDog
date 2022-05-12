@@ -1,4 +1,4 @@
-import { ipcRenderer, WebviewTag } from 'electron';
+import { ipcRenderer } from 'electron';
 import { getCurrentInstance, ref, nextTick } from 'vue';
 import sysBus from '../systemBus';
 import path from 'path';
@@ -189,7 +189,7 @@ class SaltDogPlugin {
         return true;
     }
     // 注册webview事件
-    public registerSidebarView(webview: WebviewTag) {
+    public registerSidebarView(webview: Electron.WebviewTag) {
         const viewUUID = webview.dataset.uuid || '';
         const viewInfo = this._sidebarViews.value.filter((v: any) => {
             return (v.uuid = viewUUID);
@@ -238,7 +238,7 @@ class SaltDogPlugin {
         });
     }
 
-    public getSidebarByName(name: string): WebviewTag | null {
+    public getSidebarByName(name: string): Electron.WebviewTag | null {
         return this._sidebarViews.value[this._sidebarViewsMap.get(name)];
     }
 

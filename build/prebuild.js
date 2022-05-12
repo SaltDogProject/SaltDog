@@ -1,7 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const webpack = require('webpack');
 // vm2要求的webpack版本较高，不能用当前目录下的webpack，要求5.17+ 在这里用全局的，手动指定路径
-const webpack = require('C:\\Users\\Dorapocket\\AppData\\Local\\Yarn\\Data\\global\\node_modules\\webpack');
+// const webpack = require('C:\\Users\\Dorapocket\\AppData\\Local\\Yarn\\Data\\global\\node_modules\\webpack');
 // pluginHost js don't need compile
 // teFolif (fs.existsSync(path.join(__dirname, '../public/plugin/preload'))) deleder('../public/plugin/preload');
 // copyFolder('../src/main/apis/plugin/preload', '../public/plugin/preload');
@@ -90,14 +91,36 @@ webpack(
     {
         entry: path.join(__dirname, '../third_party/translation-server/src/server.js'),
         output: {
-            path: path.join(__dirname, '../translation-server'),
+            path: path.join(__dirname, '../public/dist'),
             filename: 'translation-server-build.js',
         },
+        externals: ['canvas'],
         resolve: {
-            extensions: ['.js', '.ts', '.json'],
+            extensions: ['.js', '.json'],
         },
         // vm2 requires
         module: {
+            rules: [
+                // For node binary relocations, include ".node" files as well here
+                {
+                    test: /\.(m?js|node)$/,
+                    // it is recommended for Node builds to turn off AMD support
+                    parser: { amd: false },
+                    use: {
+                        loader: '@vercel/webpack-asset-relocator-loader',
+                    },
+                },
+                // {
+                //     test: /\.node$/,
+                //     use: {
+                //         loader: 'node-loader', // npm install file-loader -D
+                //         // options: {
+                //         //     name: '[name]_[hash].[ext]', // 打包出的图片的名称[ext]代表后缀
+                //         //     outputPath: 'images/' // 图片打包到images/文件夹
+                //         // }
+                //     },
+                // },
+            ],
             parser: {
                 javascript: {
                     commonjsMagicComments: true,
@@ -105,7 +128,7 @@ webpack(
             },
         },
         optimization: {
-            minimize: true,
+            minimize: false,
         },
         devtool: 'source-map', // 打包出的js文件是否生成map文件（方便浏览器调试）
         mode: 'production',
@@ -113,7 +136,7 @@ webpack(
     },
     (err, stats) => {
         if (err || stats.hasErrors()) {
-            console.error('[Prebuild] Build pluginHostPreload/preload.js failed.', err, stats);
+            console.error('[Prebuild] Build pluginHostPreload/preload.js failed.', stats);
         } else {
             console.log('[Prebuild] Build pluginHostPreload/preload.js successfully.');
         }

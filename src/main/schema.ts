@@ -1,6 +1,7 @@
 import SaltDogMessageChannelMain from './apis/plugin/api/messageChannel';
 const TAG = '[Main/Schema]';
 export default function schemaParser(args: string) {
+    if (!args || typeof args != 'string') return;
     if (!args.startsWith('saltdog://')) return;
     const content = args.substring('saltdog://'.length);
     const firstContent = content.split('/')[0];

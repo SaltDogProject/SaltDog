@@ -1,5 +1,5 @@
 import { ref, getCurrentInstance } from 'vue';
-import { WebviewTag, ipcRenderer } from 'electron';
+import { ipcRenderer } from 'electron';
 import { noop, uniqueId } from 'lodash';
 import { ITabConfig, ITabManager } from '@/utils/panelTab';
 import MessageHandler from '../components/tabs/messageHandler';
@@ -50,7 +50,7 @@ class MainTabManager implements ITabManager {
     private currentTab = ref('');
     private tabList = ref<Array<ITabConfig>>([]);
     private messageHandler: any;
-    private webviewMap = new Map<string, WebviewTag>();
+    private webviewMap = new Map<string, Electron.WebviewTag>();
     private webviewMessageHandler = new Map<string, MessageHandler>();
     private webviewId2Info = new Map<string, any>();
     private webviewPendingFunction = {}; // {"MainPanelWebview-1":[fn1,fn2]}
@@ -84,8 +84,8 @@ class MainTabManager implements ITabManager {
     public getTabList(): Array<any> {
         return this.tabList.value;
     }
-    public getWebviewById(id: string): WebviewTag | null {
-        if (this.webviewMap.has(id)) return this.webviewMap.get(id) as WebviewTag;
+    public getWebviewById(id: string): Electron.WebviewTag | null {
+        if (this.webviewMap.has(id)) return this.webviewMap.get(id) as Electron.WebviewTag;
         else return null;
     }
     public getInfoById(id: string): any | null {
@@ -220,7 +220,7 @@ class MainTabManager implements ITabManager {
         }
     }
     private addWebviewTabEventListener(v: ITabConfig) {
-        const element = document.getElementById(v.webviewId) as WebviewTag;
+        const element = document.getElementById(v.webviewId) as Electron.WebviewTag;
         if (!element) return;
         if (!this.webviewMap.has(v.webviewId)) {
             this.webviewMap.set(v.webviewId, element);

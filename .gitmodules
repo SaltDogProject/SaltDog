@@ -10,6 +10,3 @@
 [submodule "third_party/translation-server"]
 	path = third_party/translation-server
 	url = https://github.com/SaltDogProject/translation-server.git
-[submodule "public/translators"]
-	path = public/translators
-	url = https://github.com/SaltDogProject/translators.git

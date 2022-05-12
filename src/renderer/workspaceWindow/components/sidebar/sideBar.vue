@@ -42,7 +42,6 @@
 <script lang="ts">
 import Outline from './outline.vue';
 import Search from './search.vue';
-import { WebviewTag } from 'electron';
 import { defineComponent, DefineComponent, getCurrentInstance, onMounted, onUpdated, ref } from 'vue';
 import plugins from '../../controller/plugin/plugin';
 const TAG = '[Sidebar]';
@@ -63,7 +62,7 @@ export default defineComponent({
         onMounted(() => {
             const views = document.getElementsByClassName('sidebar-webview');
             for (let i = 0; i < views.length; i++) {
-                const webviewTag = views[i] as WebviewTag;
+                const webviewTag = views[i] as any;
                 console.log(TAG, `Mount with webview`, webviewTag);
                 plugins.registerSidebarView(webviewTag);
                 mountedViews.set(webviewTag.id, true);
@@ -72,7 +71,7 @@ export default defineComponent({
         onUpdated(() => {
             const views = document.getElementsByClassName('sidebar-webview');
             for (let i = 0; i < views.length; i++) {
-                const webviewTag = views[i] as WebviewTag;
+                const webviewTag = views[i] as any;
                 if (!mountedViews.has(webviewTag.id)) {
                     plugins.registerSidebarView(webviewTag);
                     mountedViews.set(webviewTag.id, true);

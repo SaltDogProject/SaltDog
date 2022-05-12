@@ -9,7 +9,12 @@ const TAG = '[Main/parser]';
 export default class Parser {
     private static _instance: Parser | null = null;
     private _isDev = process.env.NODE_ENV === 'development';
-    private _serverPath = this._isDev ? resolve(__static, '../third_party/translation-server/src/server.js') : '';
+    private _serverPath = this._isDev
+        ? resolve(__static, '../third_party/translation-server/src/server.js')
+        : resolve(__static, 'dist/translation-server-build.js');
+    // FIXME: download path
+    private _downloadURL = 'https://github.com/SaltDogProject/translators/archive/refs/tags/0.0.1.zip';
+
     private _server: ChildProcess | null = null;
     public isServerReady = false;
     private _serverPort = 1969;
@@ -123,7 +128,7 @@ export default class Parser {
         const translatorFilePaths = (await new Promise((resolve, reject) =>
             fs.readdir(translatorsDirPath, (err, files) => (err ? reject(err) : resolve(files)))
         )) as any[];
-        const translators = [];
+        const translators: any[] = [];
         for (let filePath of translatorFilePaths) {
             if (filePath[0] === '.' || filePath.substr(filePath.length - 3) !== '.js') continue;
             filePath = path.resolve(translatorsDirPath, filePath);

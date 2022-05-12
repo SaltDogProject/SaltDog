@@ -31,3 +31,4 @@ pnpm-debug.log*
 
 #others
 my_notice
+/public/dist/**
