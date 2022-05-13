@@ -38,6 +38,13 @@ function activate() {
             }
         });
     });
+    const statusbar = saltdog.statusbar.createStatusBarItem('translate', saltdog.StatusBarAlignment.Left, 0);
+    statusbar.text = '$(mdi-star) 这里是翻译君~';
+    statusbar.tooltip = '选中内容后悬停在此查看翻译！';
+    statusbar.command = 'translate.translateNow';
+    statusbar.color = 'white';
+    statusbar.backgroundColor = '#409EFF';
+    statusbar.show();
     const sidebar = saltdog.sidebar.getSidebarView('SaltDogTranslate.translateView');
     if (!sidebar) {
         console.error(`sidebar not exist`);
@@ -45,6 +52,9 @@ function activate() {
     saltdog.reader.onTextSelect((txt) => {
         if (txt.trim().length == 0)
             return;
+        statusbar.text = '$(mdi-autorenew) 正在翻译~';
+        statusbar.backgroundColor = '#409EFF';
+        statusbar.tooltip = `## 原文 \n ${txt}`;
         const text = (0, formatter_js_1.normalizeAppend)(txt);
         sidebar.send('translate_getText', txt);
         if (text && text.trim().length != 0)
@@ -53,6 +63,14 @@ function activate() {
                     sidebar.send('translate_error', res.error);
                 }
                 else {
+                    let restxt = '';
+                    for (const a of res.sentences) {
+                        if (a.trans)
+                            restxt += a.trans;
+                    }
+                    statusbar.text = '$(mdi-check-all) 翻译完成';
+                    statusbar.backgroundColor = '#67C23A';
+                    statusbar.tooltip = `## 原文 \n ${txt} \n ## 译文 \n ${restxt}`;
                     sidebar.send('translate_result', res);
                 }
             });

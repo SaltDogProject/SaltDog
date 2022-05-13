@@ -249,7 +249,7 @@ class MainTabManager implements ITabManager {
                 if (process.env.NODE_ENV === 'development') element.openDevTools();
             });
             element.addEventListener('console-message', (e) => {
-                console.log('[webview]: ' + e.message);
+                console.log('[webview]: ', e.message);
             });
         }
     }

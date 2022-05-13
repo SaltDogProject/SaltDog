@@ -57,14 +57,14 @@ class SaltDogPlugin {
             }
         });
         //FIXME: 懒加载，workspace初始化的时候就要msgchannel了，而msgchannel实在activate生成的，应该提出来
-        //ipcMain.once('WorkspaceWindowReady',()=>{
-        this._plugins.forEach((item) => {
-            // TODO: 依据激活事件激活插件 延迟激活(现在的问题是延迟激活以后会出现messageChannelTicket undefined)
-            //process.nextTick(()=>{
-            this._activator!.activatePlugin(item);
-            //})
+        ipcMain.once('WorkspaceWindowReady', () => {
+            this._plugins.forEach((item) => {
+                // TODO: 依据激活事件激活插件 延迟激活(现在的问题是延迟激活以后会出现messageChannelTicket undefined)
+                //process.nextTick(()=>{
+                this._activator!.activatePlugin(item);
+                //})
+            });
         });
-        //});
     }
     public setPluginHost(host: BrowserWindow): void {
         this._pluginHost = host;

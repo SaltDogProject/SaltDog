@@ -31,7 +31,7 @@ interface ISaltDogPluginApi {
     [key: string]: any;
 }
 interface ISaltDogPluginInvoke {
-    windowId?: string|null;
+    windowId?: string | null;
     api: string;
     args: any;
     callbackId: string;
@@ -49,8 +49,8 @@ interface ISaltDogPluginInvokeCallback {
     callbackId: string;
 }
 interface ISaltDogPluginWebviewInvoke {
-    channel:string;
-    data:any;
+    channel: string;
+    data: any;
 }
 interface ISaltDogPluginHostEventToPlugin {
     type: ISaltDogPluginMessageType;
@@ -62,4 +62,17 @@ interface IPluginWebviewIPC {
     data: any;
     ticket: string;
     callbackId: string;
+}
+
+interface IStatusBarItem {
+    alignment: StatusBarAlignment;
+    backgroundColor?: string;
+    color?: string;
+    command?: string;
+    id: string;
+    name?: string;
+    priority?: number;
+    text: string;
+    tooltip?: string;
+    show?: boolean;
 }
