@@ -13,11 +13,12 @@ class StatusBarManager {
         html: true,
         breaks: false,
     }).use((mdit) => {
+        const original = mdit.normalizeLink;
         mdit.normalizeLink = (link) => {
             if (link.startsWith('command:')) {
                 return `saltdog://command/${link.substring('command:'.length)}`;
             } else {
-                return `saltdog://command/saltdog.openExternal/${link}`;
+                return original(link);
             }
         };
     });

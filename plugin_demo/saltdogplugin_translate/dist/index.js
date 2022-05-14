@@ -40,7 +40,7 @@ function activate() {
     });
     const statusbar = saltdog.statusbar.createStatusBarItem('translate', saltdog.StatusBarAlignment.Left, 0);
     statusbar.text = '$(mdi-star) 这里是翻译君~';
-    statusbar.tooltip = '选中内容后悬停在此查看翻译！';
+    statusbar.tooltip = '选中内容后悬停在此查看翻译！[haha](http://www.baidu.com)';
     statusbar.command = 'translate.translateNow';
     statusbar.color = 'white';
     statusbar.backgroundColor = '#409EFF';

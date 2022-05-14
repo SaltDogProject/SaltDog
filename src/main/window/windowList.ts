@@ -4,8 +4,10 @@ import { app, ipcMain } from 'electron';
 import { IBrowserWindowOptions } from '#/types/browserWindow';
 import { IpcMainEvent } from 'electron/main';
 import saltDogPlugin from '../apis/plugin/index';
+import SaltDogMessageChannelMain from '../apis/plugin/api/messageChannel';
 const windowList = new Map<IWindowList, IWindowListItem>();
 declare const __static: string;
+const TAG = '[Main/WindowList]';
 // entry
 windowList.set(IWindowList.ENTRY_WINDOW, {
     isValid: true,
@@ -91,6 +93,12 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
         window.webContents.openDevTools();
         ipcMain.on('getWindowId', (e: IpcMainEvent, str: string) => {
             e.returnValue = window.id;
+        });
+        // 阻止页面跳转，等待用户确认
+        window.webContents.on('will-navigate', (event, url) => {
+            console.log(TAG, 'will-navigate', url);
+            SaltDogMessageChannelMain.getInstance().publish('onCommand:saltdog.openExternal', url);
+            event.preventDefault();
         });
         window.on('closed', () => {
             // 在处理schema时，异步可能导致第二个app获取不到单例锁已经quit还会调这个，跳过这个错误。
