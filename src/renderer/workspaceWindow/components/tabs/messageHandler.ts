@@ -4,6 +4,7 @@ import { ipcRenderer } from 'electron';
 import bus from '../../controller/systemBus';
 import SaltDogMessageChannelRenderer from '../../controller/messageChannel';
 import { getSDPDFCoreAnnotate } from '../../controller/library';
+const TAG = '[Renderer/WebviewMessageChannel]';
 export default class MessageHandler {
     private webview: Electron.WebviewTag;
     private callbacks: { [key: string]: (args: any[]) => void } = {};
@@ -29,7 +30,9 @@ export default class MessageHandler {
         const { method, data, callbackId } = args[0];
         switch (method) {
             case 'reader.getAnnotations':
+                console.log(TAG, 'reader.getAnnotations', data);
                 getSDPDFCoreAnnotate(data).then((res) => {
+                    console.log(TAG, 'reader.getAnnotations Reply', res);
                     this.webview.send('HOST_INVOKE_CALLBACK', {
                         data: res,
                         callbackId,

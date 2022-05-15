@@ -25,7 +25,7 @@ See https://github.com/adobe-type-tools/cmap-resources
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
         <meta name="google" content="notranslate" />
-        <title>PDF.js viewer</title>
+        <title>SaltDog PDF Viewer</title>
         <link rel="resource" type="application/l10n" href="locale/locale.properties" />
         <link rel="stylesheet" href="viewer.css" />
     <script defer src="SDPDFCore.js"></script></head>
@@ -256,8 +256,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                         <div class="custom-ribbons-container">
                             <div class="ribbons-container centered-on-empty-space">
                                 <div id="ribbonsContainer" class="ribbons">
-                                    <button  data-pdf-mode="View" class="ribbon-group">阅览</button>
-                                    <button  data-pdf-mode="Annotate" class="ribbon-group active">批注</button>
+                                    <button data-pdf-mode="View" class="ribbon-group">阅览</button>
+                                    <button data-pdf-mode="Annotate" class="ribbon-group active">批注</button>
                                 </div>
                             </div>
                         </div>
@@ -324,7 +324,6 @@ See https://github.com/adobe-type-tools/cmap-resources
                                         <button data-tooltype="highlight" class="Button" data-element="highlightToolGroupButton" aria-label="Highlight" aria-keyshortcuts="H" type="button">
                                             <div class="Icon">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-
                                                     <title>icon - line - tool - highlight</title>
                                                     <path fill="currentColor" d="M9.91,13.07h3.86L11.84,8.46Zm5.46,3.68L14.62,15H9.05L7.77,18H5.63L10.45,6.64a1,1,0,0,1,1-.64h1a1.23,1.23,0,0,1,1,.64l2,4.91V4H5.85A2.22,2.22,0,0,0,3.63,6.22V17.78A2.22,2.22,0,0,0,5.85,20h9.52Z"></path>
                                                     <path fill="default" class="cls-1" d="M20.37,2V22h-2V2Z"></path>
@@ -347,80 +346,73 @@ See https://github.com/adobe-type-tools/cmap-resources
                                         <button data-tooltype="strikeout" class="Button" data-element="strikeoutToolGroupButton" aria-label="Strikeout" aria-keyshortcuts="K" type="button">
                                             <div class="Icon">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                    
                                                     <title>icon - tool - text manipulation - strikethrough</title>
-                                                    <rect fill="currentColor"  x="3.13" y="11.31" width="17.74" height="1.7"></rect>
+                                                    <rect fill="currentColor" x="3.13" y="11.31" width="17.74" height="1.7"></rect>
                                                     <path fill="default" class="cls-1" d="M12,5l2.4,5.77h2.68l-3.28-8A1.49,1.49,0,0,0,12.64,2H11.49a1.24,1.24,0,0,0-1.16.77L7,10.73H9.59Zm3.25,8.62,2,4.74h2.57l-2-4.74ZM4.17,18.32H6.74l2-4.74H6.18Z"></path>
                                                 </svg>
                                             </div>
                                         </button>
                                     </div>
-                                    <div data-element="squigglyToolGroupButton" class="tool-group-button">
+                                    <!-- <div data-element="squigglyToolGroupButton" class="tool-group-button">
                                         <button class="Button" data-element="squigglyToolGroupButton" aria-label="Squiggly" aria-keyshortcuts="G" type="button">
                                             <div class="Icon">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                   
                                                     <title>icon - tool - text manipulation - squiggly</title>
-                                                    <path fill="currentColor"  d="M21,20V22a3,3,0,0,1-2.56-1.41c-.38-.51-.64-.64-1-.64s-.51.13-1,.64A3.34,3.34,0,0,1,13.79,22a3,3,0,0,1-2.56-1.41c-.38-.51-.64-.64-1-.64s-.52.13-1,.64A3.34,3.34,0,0,1,6.62,22a3,3,0,0,1-2.57-1.41c-.38-.51-.64-.64-1-.64V17.9a3,3,0,0,1,2.56,1.41c.38.51.64.64,1,.64s.51-.13,1-.64a3.32,3.32,0,0,1,2.57-1.41,3,3,0,0,1,2.56,1.41c.38.51.64.64,1,.64s.52-.13,1-.64a3.31,3.31,0,0,1,2.56-1.41A3,3,0,0,1,20,19.31C20.33,19.82,20.59,20,21,20Z"></path>
+                                                    <path fill="currentColor" d="M21,20V22a3,3,0,0,1-2.56-1.41c-.38-.51-.64-.64-1-.64s-.51.13-1,.64A3.34,3.34,0,0,1,13.79,22a3,3,0,0,1-2.56-1.41c-.38-.51-.64-.64-1-.64s-.52.13-1,.64A3.34,3.34,0,0,1,6.62,22a3,3,0,0,1-2.57-1.41c-.38-.51-.64-.64-1-.64V17.9a3,3,0,0,1,2.56,1.41c.38.51.64.64,1,.64s.51-.13,1-.64a3.32,3.32,0,0,1,2.57-1.41,3,3,0,0,1,2.56,1.41c.38.51.64.64,1,.64s.52-.13,1-.64a3.31,3.31,0,0,1,2.56-1.41A3,3,0,0,1,20,19.31C20.33,19.82,20.59,20,21,20Z"></path>
                                                     <path fill="default" class="cls-1" d="M8.79,12.77h6.67L17,16.36h2.56L13.92,2.64A1.34,1.34,0,0,0,12.77,2H11.62a1.24,1.24,0,0,0-1.16.77L4.69,16.36H7.26Zm3.34-7.95,2.31,5.51H9.82Z"></path>
                                                 </svg>
                                             </div>
                                         </button>
-                                    </div>
-                                    <div data-element="stickyToolGroupButton" class="tool-group-button">
+                                    </div> -->
+                                    <!-- <div data-element="stickyToolGroupButton" class="tool-group-button">
                                         <button class="Button" data-element="stickyToolGroupButton" aria-label="Note" aria-keyshortcuts="N" type="button">
                                             <div class="Icon">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                   
                                                     <title>icon - tool - comment - line</title>
-                                                    <path fill="currentColor"  d="M20,2.46H4a2,2,0,0,0-2,2v10a2,2,0,0,0,2,2H7v5.08l6.35-5.08H20a2,2,0,0,0,2-2v-10A2,2,0,0,0,20,2.46Zm0,12H12.65L9,17.38V14.46H4v-10H20Z"></path>
+                                                    <path fill="currentColor" d="M20,2.46H4a2,2,0,0,0-2,2v10a2,2,0,0,0,2,2H7v5.08l6.35-5.08H20a2,2,0,0,0,2-2v-10A2,2,0,0,0,20,2.46Zm0,12H12.65L9,17.38V14.46H4v-10H20Z"></path>
                                                     <path fill="default" class="cls-1" d="M18,8.46H6v-2H18Zm-2.5,4H6v-2h9.5Z"></path>
                                                 </svg>
                                             </div>
                                         </button>
-                                    </div>
+                                    </div> -->
                                     <div data-element="freeTextToolGroupButton" class="tool-group-button">
-                                        <button class="Button" data-element="freeTextToolGroupButton" aria-label="Free Text" aria-keyshortcuts="T" type="button">
+                                        <button class="Button" data-tooltype="text" data-element="freeTextToolGroupButton" aria-label="Free Text" aria-keyshortcuts="T" type="button">
                                             <div class="Icon">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                   
                                                     <title>icon - tool - text - free text</title>
-                                                    <g><path fill="currentColor"  d="M19.39,4.77V7.64A.43.43,0,0,1,19,8h-.82a.41.41,0,0,1-.4-.41V6.51H13.34V18h1.54a.41.41,0,0,1,.41.41v.81a.41.41,0,0,1-.41.41H9.14a.41.41,0,0,1-.41-.41v-.81A.41.41,0,0,1,9.14,18h1.54V6.51H6.27V7.64A.41.41,0,0,1,5.86,8H5A.43.43,0,0,1,4.6,7.6V4.77A.41.41,0,0,1,5,4.36H19A.39.39,0,0,1,19.39,4.77Z"></path></g>
+                                                    <g><path fill="currentColor" d="M19.39,4.77V7.64A.43.43,0,0,1,19,8h-.82a.41.41,0,0,1-.4-.41V6.51H13.34V18h1.54a.41.41,0,0,1,.41.41v.81a.41.41,0,0,1-.41.41H9.14a.41.41,0,0,1-.41-.41v-.81A.41.41,0,0,1,9.14,18h1.54V6.51H6.27V7.64A.41.41,0,0,1,5.86,8H5A.43.43,0,0,1,4.6,7.6V4.77A.41.41,0,0,1,5,4.36H19A.39.39,0,0,1,19.39,4.77Z"></path></g>
                                                 </svg>
                                             </div>
                                         </button>
                                     </div>
                                     <div data-element="shapeToolGroupButton" class="tool-group-button">
-                                        <button class="Button" data-element="shapeToolGroupButton" aria-label="Rectangle" aria-keyshortcuts="R" type="button">
+                                        <button class="Button" data-tooltype="area" data-element="shapeToolGroupButton" aria-label="Rectangle" aria-keyshortcuts="R" type="button">
                                             <div class="Icon">
                                                 <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background: new 0 0 24 24" xml:space="preserve">
-                                                   
-                                                    <path fill="currentColor"  class="st0" d="M19.3,3.8H4.7c-1,0-1.8,0.8-1.8,1.8v12.8c0,1,0.8,1.8,1.8,1.8h14.7c1,0,1.8-0.8,1.8-1.8V5.6 C21.2,4.6,20.3,3.7,19.3,3.8z M5.1,18V6h13.8v12H5.1z"></path>
+                                                    <path fill="currentColor" class="st0" d="M19.3,3.8H4.7c-1,0-1.8,0.8-1.8,1.8v12.8c0,1,0.8,1.8,1.8,1.8h14.7c1,0,1.8-0.8,1.8-1.8V5.6 C21.2,4.6,20.3,3.7,19.3,3.8z M5.1,18V6h13.8v12H5.1z"></path>
                                                     <rect fill="none" x="5.1" y="6" width="13.8" height="12"></rect>
                                                 </svg>
                                             </div>
                                         </button>
                                     </div>
                                     <div data-element="freeHandToolGroupButton" class="tool-group-button">
-                                        <button class="Button" data-element="freeHandToolGroupButton" aria-label="Free Hand" aria-keyshortcuts="F" type="button">
+                                        <button class="Button" data-tooltype="draw" data-element="freeHandToolGroupButton" aria-label="Free Hand" aria-keyshortcuts="F" type="button">
                                             <div class="Icon">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                  
                                                     <title>icon - tool - pen - line</title>
-                                                    <path fill="currentColor"  d="M18.91,19.66a1.13,1.13,0,0,1-1.35,1.82,5.82,5.82,0,0,0-2.09-1c-3.22-.85-4.57-.29-6.82.63l-.55.23A7.42,7.42,0,0,1,5.42,22a3,3,0,0,1-2-.69,2.38,2.38,0,0,1-.87-1.66,1.81,1.81,0,0,1,.59-1.36,9.16,9.16,0,0,1,.93-.78,1.13,1.13,0,0,1,1.58.23,1.14,1.14,0,0,1-.23,1.59,2.93,2.93,0,0,0-.42.33c.27.13.84.17,2.25-.4L7.8,19a10.81,10.81,0,0,1,8.25-.72A7.89,7.89,0,0,1,18.91,19.66Z"></path>
+                                                    <path fill="currentColor" d="M18.91,19.66a1.13,1.13,0,0,1-1.35,1.82,5.82,5.82,0,0,0-2.09-1c-3.22-.85-4.57-.29-6.82.63l-.55.23A7.42,7.42,0,0,1,5.42,22a3,3,0,0,1-2-.69,2.38,2.38,0,0,1-.87-1.66,1.81,1.81,0,0,1,.59-1.36,9.16,9.16,0,0,1,.93-.78,1.13,1.13,0,0,1,1.58.23,1.14,1.14,0,0,1-.23,1.59,2.93,2.93,0,0,0-.42.33c.27.13.84.17,2.25-.4L7.8,19a10.81,10.81,0,0,1,8.25-.72A7.89,7.89,0,0,1,18.91,19.66Z"></path>
                                                     <path fill="default" class="cls-1" d="M21.45,5.77a2.09,2.09,0,0,1-.62,1.51l-9.16,9.16c-.09.08-.26.26-.44.26,0,0-4.18.9-4.42.89a1,1,0,0,1-.72-.13.67.67,0,0,1-.16-.73l.8-4.53c0-.18.08-.27.26-.45L13,5.8l3.2-3.2a2.2,2.2,0,0,1,3,0l1.66,1.66A2.34,2.34,0,0,1,21.45,5.77ZM16.21,9.06,14.37,7.22,8.59,13l1.84,1.84Zm3.2-3.2L17.57,4,15.88,5.71l1.84,1.84Z"></path>
                                                 </svg>
                                             </div>
                                         </button>
                                     </div>
                                     <div data-element="freeHandHighlightToolGroupButton" class="tool-group-button">
-                                        <button class="Button" data-element="freeHandHighlightToolGroupButton" aria-label="Free Hand Highlight" type="button">
+                                        <button class="Button" data-tooltype="freeHandHighlight" data-element="freeHandHighlightToolGroupButton" aria-label="Free Hand Highlight" type="button">
                                             <div class="Icon">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                  
                                                     <title>icon - tool - pen - highlight</title>
                                                     <path fill="default" class="cls-1" d="M19.9658 6.91017H19.92L16.2992 3.25267C16.1376 3.0909 15.9183 3 15.6896 3C15.4609 3 15.2416 3.0909 15.08 3.25267L7.82917 10.4118C7.68847 10.5239 7.59386 10.6837 7.56334 10.861L6.56417 15.2518L4.8225 17.4427H7.6275L8.73667 16.3335L12.2567 15.5452C12.4386 15.5144 12.6023 15.4162 12.715 15.2702L19.92 8.12934C20.2428 7.7936 20.2625 7.2692 19.9658 6.91017V6.91017ZM11.9083 13.5377L9.54334 11.1727L15.7583 5.0585L18.1233 7.4235L11.9083 13.5377Z"></path>
-                                                    <path fill="currentColor"  d="M18.4167 17.2685C18.744 18.2557 18.9773 19.2716 19.1133 20.3027C18.2719 19.3853 17.15 18.7728 15.9233 18.561C14.8314 18.4146 13.7204 18.5244 12.6783 18.8818C11.4047 19.3332 10.1589 19.8597 8.9475 20.4585C7.81125 21.1097 6.50296 21.3975 5.19833 21.2835C4.80235 21.1839 4.45663 20.9426 4.22666 20.6052C4.14173 20.4738 4.07395 20.3321 4.025 20.1835C4.01028 20.0885 3.98252 19.9959 3.9425 19.9085C3.80542 19.4227 3.84105 18.9043 4.04333 18.4418C4.15136 18.1403 4.32695 17.8675 4.55667 17.6443L4.905 19.4135C4.79615 19.4335 4.71381 19.5233 4.70333 19.6335C4.70333 19.8993 5.79417 19.7527 6.67417 19.4227C7.31069 19.1708 7.92412 18.8641 8.5075 18.506C9.77851 17.691 11.1416 17.0294 12.5683 16.5352C13.7125 16.1519 14.9299 16.0389 16.125 16.2052C16.6842 16.3049 17.2193 16.5102 17.7017 16.8102C17.8758 16.8927 18.4167 17.2685 18.4167 17.2685Z"></path>
+                                                    <path fill="currentColor" d="M18.4167 17.2685C18.744 18.2557 18.9773 19.2716 19.1133 20.3027C18.2719 19.3853 17.15 18.7728 15.9233 18.561C14.8314 18.4146 13.7204 18.5244 12.6783 18.8818C11.4047 19.3332 10.1589 19.8597 8.9475 20.4585C7.81125 21.1097 6.50296 21.3975 5.19833 21.2835C4.80235 21.1839 4.45663 20.9426 4.22666 20.6052C4.14173 20.4738 4.07395 20.3321 4.025 20.1835C4.01028 20.0885 3.98252 19.9959 3.9425 19.9085C3.80542 19.4227 3.84105 18.9043 4.04333 18.4418C4.15136 18.1403 4.32695 17.8675 4.55667 17.6443L4.905 19.4135C4.79615 19.4335 4.71381 19.5233 4.70333 19.6335C4.70333 19.8993 5.79417 19.7527 6.67417 19.4227C7.31069 19.1708 7.92412 18.8641 8.5075 18.506C9.77851 17.691 11.1416 17.0294 12.5683 16.5352C13.7125 16.1519 14.9299 16.0389 16.125 16.2052C16.6842 16.3049 17.2193 16.5102 17.7017 16.8102C17.8758 16.8927 18.4167 17.2685 18.4167 17.2685Z"></path>
                                                 </svg>
                                             </div>
                                         </button>
@@ -430,12 +422,15 @@ See https://github.com/adobe-type-tools/cmap-resources
                             <div class="divider"></div>
                             <div class="CustomElement">
                                 <div class="ToolsOverlayContainer">
-                                    <div class="Overlay ToolsOverlay">
-                                        <div class="tools-container"><div class="no-presets">无可用选项</div></div>
+                                    <div id="presetOuterContainer" class="Overlay ToolsOverlay">
+                                        <div id="presetsContainer" class="tools-container">
+                                            <div class="no-presets">无可用选项</div>
+                                        </div>
+                                        <!--Color panel will insert here-->
                                     </div>
                                 </div>
                             </div>
-                            <button class="Button disabled ActionButton" data-element="undoButton" aria-label="Undo" aria-keyshortcuts="Meta+Z" type="button" disabled="" style="margin-left: 0px">
+                            <!-- <button class="Button disabled ActionButton" data-element="undoButton" aria-label="Undo" aria-keyshortcuts="Meta+Z" type="button" disabled="" style="margin-left: 0px">
                                 <div class="Icon disabled">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <defs>
@@ -449,8 +444,8 @@ See https://github.com/adobe-type-tools/cmap-resources
                                         <path class="cls-1" d="M8.25,10.12h7.39a3.82,3.82,0,0,1,3.78,3,3.76,3.76,0,0,1-3.67,4.53H12.6a.6.6,0,0,0-.6.61v1.3a.6.6,0,0,0,.6.6h2.93A6.41,6.41,0,0,0,22,14.7a6.26,6.26,0,0,0-6.2-7.08H8.25V4.71a.4.4,0,0,0-.65-.32L2.39,8.56a.41.41,0,0,0,0,.63L7.6,13.36A.4.4,0,0,0,8.25,13Z"></path>
                                     </svg>
                                 </div>
-                            </button>
-                            <button class="Button disabled ActionButton" data-element="redoButton" aria-label="Redo" aria-keyshortcuts="Meta+Shift+Z" type="button" disabled="">
+                            </button> -->
+                            <!-- <button class="Button disabled ActionButton" data-element="redoButton" aria-label="Redo" aria-keyshortcuts="Meta+Shift+Z" type="button" disabled="">
                                 <div class="Icon disabled">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <defs>
@@ -464,19 +459,16 @@ See https://github.com/adobe-type-tools/cmap-resources
                                         <path class="cls-1" d="M8.47,20.13H11.4a.6.6,0,0,0,.6-.6v-1.3a.6.6,0,0,0-.6-.6h-3a3.82,3.82,0,0,1-3.78-3,3.76,3.76,0,0,1,3.67-4.54h7.5V13a.4.4,0,0,0,.65.32l5.21-4.17a.41.41,0,0,0,0-.63L16.4,4.39a.4.4,0,0,0-.65.32V7.62H8.25a6.26,6.26,0,0,0-6.2,7.08A6.41,6.41,0,0,0,8.47,20.13Z"></path>
                                     </svg>
                                 </div>
-                            </button>
-                            <button class="Button tool-button hasStyles" data-element="eraserToolButton" aria-label="Eraser" aria-keyshortcuts="E" type="button">
+                            </button> -->
+                            <button data-tooltype="eraser" class="Button tool-button hasStyles" data-element="eraserToolButton" aria-label="Eraser" aria-keyshortcuts="E" type="button">
                                 <div class="Icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <defs>
                                             <style>
-                                                .cls-1 {
-                                                    fill: #abb0c4;
-                                                }
                                             </style>
                                         </defs>
                                         <title>icon - operation - eraser</title>
-                                        <path class="cls-1" d="M12.93,3.1,7.78,8.25,2.62,13.5a2.18,2.18,0,0,0,0,3.05L7.3,21.22a1.07,1.07,0,0,0,.76.32H20.68a.4.4,0,0,0,.4-.4V19.77a.4.4,0,0,0-.4-.4H13.53l7.84-7.84a2.17,2.17,0,0,0,0-3.06L16,3.1A2.17,2.17,0,0,0,12.93,3.1ZM8.51,19.37,4.17,15,9.32,9.78l.8-.81,5.37,5.37-4.94,4.94-.08.09h-2Z"></path>
+                                        <path fill="default" class="cls-1" d="M12.93,3.1,7.78,8.25,2.62,13.5a2.18,2.18,0,0,0,0,3.05L7.3,21.22a1.07,1.07,0,0,0,.76.32H20.68a.4.4,0,0,0,.4-.4V19.77a.4.4,0,0,0-.4-.4H13.53l7.84-7.84a2.17,2.17,0,0,0,0-3.06L16,3.1A2.17,2.17,0,0,0,12.93,3.1ZM8.51,19.37,4.17,15,9.32,9.78l.8-.81,5.37,5.37-4.94,4.94-.08.09h-2Z"></path>
                                     </svg>
                                 </div>
                             </button>

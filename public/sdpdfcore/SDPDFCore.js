@@ -38866,7 +38866,7 @@ const PDFViewerApplication = {
  },
  run(config) {
   this.initialize(config).then(()=>{
-    webViewerInitialized();
+    window.__sdJSBridge?'':webViewerInitialized();
     // debuglgy
     window.__sdJSBridge&&window.__sdJSBridge.publish(`SDPDFCore_Ready`);
     this.eventBus.on('SDPDFCore_loadPDF',()=>{
@@ -42692,450 +42692,894 @@ const NullL10n = {
 const PDFJSAnnotate = (__webpack_require__(/*! ./online_annotate/PDFJSAnnotate.js */ "./src/online_annotate/PDFJSAnnotate.js")["default"]);
 const initColorPicker = (__webpack_require__(/*! ./online_annotate/initColorPicker */ "./src/online_annotate/initColorPicker.js")["default"]);
 
-function initOnlineAnnotation(){
-window.PDFJSAnnotate = PDFJSAnnotate;
-function htmlEscape(text) {
-    return text
-      .replace('&', '&amp;')
-      .replace('>', '&gt;')
-      .replace('<', '&lt;')
-      .replace('"', '&quot;')
-      .replace("'", '&#39;');
-  }
-  
-  const { UI } = PDFJSAnnotate;
-  // FIXME: docid;
-  const documentId = 'example.pdf';
-  window._PAGE_HEIGHT;
-  window._RENDER_OPTIONS = {
-    documentId: documentId,
-    pdfDocument: null,
-    scale: 1,
-    rotate: 0
-  };
-  
-  PDFJSAnnotate.setStoreAdapter(new PDFJSAnnotate.LocalStoreAdapter());
-  // Render stuff
-  let NUM_PAGES = 0;
-  function setScaleRotate(scale, rotate) {
-    scale = parseFloat(scale, 10);
-    rotate = parseInt(rotate, 10);
-  
-    if (window._RENDER_OPTIONS.scale !== scale || window._RENDER_OPTIONS.rotate !== rotate) {
-      window._RENDER_OPTIONS.scale = scale;
-      window._RENDER_OPTIONS.rotate = rotate;
+function initOnlineAnnotation(id, pref) {
+    window.PDFJSAnnotate = PDFJSAnnotate;
+    function htmlEscape(text) {
+        return text.replace('&', '&amp;').replace('>', '&gt;').replace('<', '&lt;').replace('"', '&quot;').replace("'", '&#39;');
     }
-  }
-  
-  function handleScaleChange(scale) {
-    setScaleRotate(scale, window._RENDER_OPTIONS.rotate);
-  }
-  
-  function handleRotateCWClick() {
-    setScaleRotate(window._RENDER_OPTIONS.scale, window._RENDER_OPTIONS.rotate + 90);
-  }
-  
-  function handleRotateCCWClick() {
-    setScaleRotate(window._RENDER_OPTIONS.scale, window._RENDER_OPTIONS.rotate - 90);
-  }
-  
-  
-  window.__initPDFJSAnnotate = function(pdfDocument){
-    window._RENDER_OPTIONS.pdfDocument = pdfDocument;
-  
-    // window._RENDER_OPTIONS.scale = window.PDFViewerApplication.pdfViewer._currentScale || 1;
-    // window._RENDER_OPTIONS.rotate = window.PDFViewerApplication.pdfViewer._pagesRotation || 0;
-    window.PDFViewerApplication.eventBus._on('scalechanging',(e)=>{
-      handleScaleChange(e.scale);
-    })
-    window.PDFViewerApplication.eventBus._on('rotatecw',(e)=>{
-      handleRotateCWClick();
-    })
-    window.PDFViewerApplication.eventBus._on('rotateccw',(e)=>{
-      handleRotateCCWClick();
-    })
-      // let viewer = document.getElementById('viewer');
-      // viewer.innerHTML = '';
-      NUM_PAGES = pdfDocument.numPages;
-      // for (let i = 0; i < NUM_PAGES; i++) {
-      //   // let page = UI.createPage(i + 1);
-      //   viewer.appendChild(page);
-      // }
-  };
-  // Hotspot color stuff
-  (function() {
-    let hotspotColor = localStorage.getItem(`${window._RENDER_OPTIONS.documentId}/hotspot/color`) || 'darkgoldenrod';
-    let currentTarget;
-  
-    function handleAnnotationClick(target) {
-      let type = target.getAttribute('data-pdf-annotate-type');
-      if (['fillcircle', 'arrow'].indexOf(type) === -1) {
-        return; // nothing to do
-      }
-      currentTarget = target;
-      hotspotColor = currentTarget.getAttribute('stroke');
-  
-      UI.setArrow(10, hotspotColor);
-      UI.setCircle(10, hotspotColor);
-  
-      let a = document.querySelector('.hotspot-color .color');
-      if (a) {
-        a.setAttribute('data-color', hotspotColor);
-        a.style.background = hotspotColor;
-      }
-    }
-  
-    function handleAnnotationBlur(target) {
-      if (currentTarget === target) {
-        currentTarget = undefined;
-      }
-    }
-  
-    // initColorPicker(document.querySelector('.hotspot-color'), hotspotColor, function(value) {
-    //   if (value === hotspotColor) {
-    //     return; // nothing to do
-    //   }
-    //   localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/hotspot/color`, value);
-    //   hotspotColor = value;
-  
-    //   UI.setArrow(10, hotspotColor);
-    //   UI.setCircle(10, hotspotColor);
-  
-    //   if (!currentTarget) {
-    //     return; // nothing to do
-    //   }
-  
-    //   let type = currentTarget.getAttribute('data-pdf-annotate-type');
-    //   let annotationId = currentTarget.getAttribute('data-pdf-annotate-id');
-    //   if (['fillcircle', 'arrow'].indexOf(type) === -1) {
-    //     return; // nothing to do
-    //   }
-  
-    //   // update target
-    //   currentTarget.setAttribute('stroke', hotspotColor);
-    //   currentTarget.setAttribute('fill', hotspotColor);
-  
-    //   // update annotation
-    //   PDFJSAnnotate.getStoreAdapter().getAnnotation(documentId, annotationId).then((annotation) => {
-    //     annotation.color = hotspotColor;
-    //     PDFJSAnnotate.getStoreAdapter().editAnnotation(documentId, annotationId, annotation);
-    //   });
-    // });
-  
-    UI.addEventListener('annotation:click', handleAnnotationClick);
-    UI.addEventListener('annotation:blur', handleAnnotationBlur);
-  })();
-  
-  // // Text stuff
-  // (function() {
-  //   let textSize;
-  //   let textColor;
-  
-  //   function initText() {
-  //     // let size = document.querySelector('.AnnotationBtns .text-size');
-  //     // [8, 9, 10, 11, 12, 14, 18, 24, 30, 36, 48, 60, 72, 96].forEach((s) => {
-  //     //   size.appendChild(new Option(s, s));
-  //     // });
-  //     // setText(
-  //     //   localStorage.getItem(`${window._RENDER_OPTIONS.documentId}/text/size`) || 10,
-  //     //   localStorage.getItem(`${window._RENDER_OPTIONS.documentId}/text/color`) || '#000000'
-  //     // );
-  
-  //     // initColorPicker(document.querySelector('.text-color'), textColor, function(value) {
-  //     //   setText(textSize, value);
-  //     // });
-  //   }
-  
-  //   function setText(size, color) {
-  //     let modified = false;
-  
-  //     if (textSize !== size) {
-  //       modified = true;
-  //       textSize = size;
-  //       localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/text/size`, textSize);
-        
-  //       document.querySelector('.AnnotationBtns .text-size').value = textSize;
-  //     }
-  
-  //     if (textColor !== color) {
-  //       modified = true;
-  //       textColor = color;
-  //       localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/text/color`, textColor);
-  
-  //       let selected = document.querySelector('.AnnotationBtns .text-color.color-selected');
-  //       if (selected) {
-  //         selected.classList.remove('color-selected');
-  //         selected.removeAttribute('aria-selected');
-  //       }
-  
-  //       selected = document.querySelector(`.AnnotationBtns .text-color[data-color="${color}"]`);
-  //       if (selected) {
-  //         selected.classList.add('color-selected');
-  //         selected.setAttribute('aria-selected', true);
-  //       }
-  //     }
-  
-  //     if (modified) {
-  //       UI.setText(textSize, textColor);
-  //     }
-  //   }
-  
-  //   function handleTextSizeChange(e) {
-  //     setText(e.target.value, textColor);
-  //   }
-  
-  //   //document.querySelector('.AnnotationBtns .text-size').addEventListener('change', handleTextSizeChange);
-  
-  //   initText();
-  // })();
-  
-  // Pen stuff
-  // (function() {
-  //   let penSize;
-  //   let penColor;
-  
-  //   function initPen() {
-  //     let size = document.querySelector('.AnnotationBtns .pen-size');
-  //     for (let i = 0; i < 20; i++) {
-  //       size.appendChild(new Option(i + 1, i + 1));
-  //     }
-  
-  //     setPen(
-  //       localStorage.getItem(`${window._RENDER_OPTIONS.documentId}/pen/size`) || 1,
-  //       localStorage.getItem(`${window._RENDER_OPTIONS.documentId}/pen/color`) || '#000000'
-  //     );
-  
-  //     initColorPicker(document.querySelector('.pen-color'), penColor, function(value) {
-  //       setPen(penSize, value);
-  //     });
-  //   }
-  
-  //   function setPen(size, color) {
-  //     let modified = false;
-  
-  //     if (penSize !== size) {
-  //       modified = true;
-  //       penSize = size;
-  //       localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/pen/size`, penSize);
-  //       document.querySelector('.AnnotationBtns .pen-size').value = penSize;
-  //     }
-  
-  //     if (penColor !== color) {
-  //       modified = true;
-  //       penColor = color;
-  //       localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/pen/color`, penColor);
-  
-  //       let selected = document.querySelector('.AnnotationBtns .pen-color.color-selected');
-  //       if (selected) {
-  //         selected.classList.remove('color-selected');
-  //         selected.removeAttribute('aria-selected');
-  //       }
-  
-  //       selected = document.querySelector(`.AnnotationBtns .pen-color[data-color="${color}"]`);
-  //       if (selected) {
-  //         selected.classList.add('color-selected');
-  //         selected.setAttribute('aria-selected', true);
-  //       }
-  //     }
-  
-  //     if (modified) {
-  //       UI.setPen(penSize, penColor);
-  //     }
-  //   }
-  
-  //   function handlePenSizeChange(e) {
-  //     setPen(e.target.value, penColor);
-  //   }
-  
-  //   //document.querySelector('.AnnotationBtns .pen-size').addEventListener('change', handlePenSizeChange);
-  
-  //   initPen();
-  // })();
-  
-  // Toolbar buttons
-(function(){
-    let tooltype = 'cursor';
-    setActiveToolbarItem(tooltype, document.querySelector(`.AnnotationBtns button[data-tooltype=${tooltype}]`));
 
-  
-    function setActiveToolbarItem(type, button) {
-      // 取消pdfjs的工具选择
-      if(type!='cursor'){
-      document.getElementById(`cursorSelectTool`).classList.remove(`active`);
-      document.getElementById(`cursorHandTool`).classList.remove(`active`);
-      }
-      let active = document.querySelector('.AnnotationBtns button.active');
-      if (active) {
-        active.classList.remove('active');
-        switch (tooltype) {
-          case 'cursor':
-            UI.disableEdit();
-            break;
-          case 'eraser':
-            UI.disableEraser();
-            break;
-          case 'draw':
-            UI.disablePen();
-            break;
-          case 'arrow':
-            UI.disableArrow();
-            break;
-          case 'text':
-            UI.disableText();
-            break;
-          case 'point':
-            UI.disablePoint();
-            break;
-          case 'area':
-          case 'highlight':
-          case 'strikeout':
-            case 'underline':
-            UI.disableRect();
-            break;
-          case 'circle':
-          case 'emptycircle':
-          case 'fillcircle':
-            UI.disableCircle();
-            break;
+    const { UI } = PDFJSAnnotate;
+    // FIXME: docid;
+    const documentId = id || 'UntitledDocument';
+    window.user;
+    window._PAGE_HEIGHT;
+    window._RENDER_OPTIONS = {
+        documentId: documentId,
+        pdfDocument: null,
+        scale: 1,
+        rotate: 0,
+    };
+    window.currentAnnoteColor = '#000000';
+    window.currentAnnoteSize = '2';
+    window.currentOpacity = 0.5;
+    window.colorPaletteOpen = false;
+    window.userPresets = pref || {
+        colors: {
+            highlight: [
+                {
+                    color: '#ff0000',
+                    // opacity: 0.5,
+                },
+                {
+                    color: '#00ff00',
+                    // opacity: 0.5,
+                },
+                {
+                    color: '#0000ff',
+                    // opacity: 0.5,
+                },
+                {
+                    color: '#ff00ff',
+                    // opacity: 0.5,
+                },
+            ],
+            underline: [
+                {
+                    color: '#ff0000',
+                    // opacity: 1,
+                },
+                {
+                    color: '#00ff00',
+                    // opacity: 1,
+                },
+                {
+                    color: '#0000ff',
+                    // opacity: 1,
+                },
+                {
+                    color: '#ff00ff',
+                    // opacity: 1,
+                },
+            ],
+            strikeout: [
+                {
+                    color: '#ff0000',
+                    // opacity: 1,
+                },
+                {
+                    color: '#00ff00',
+                    // opacity: 1,
+                },
+                {
+                    color: '#0000ff',
+                    // opacity: 1,
+                },
+                {
+                    color: '#ff00ff',
+                    // opacity: 1,
+                },
+            ],
+            area: [
+                {
+                    color: '#ff0000',
+                    // opacity: 1,
+                },
+                {
+                    color: '#00ff00',
+                    // opacity: 1,
+                },
+                {
+                    color: '#0000ff',
+                    // opacity: 1,
+                },
+                {
+                    color: '#ff00ff',
+                    // opacity: 1,
+                },
+            ],
+            text: [
+                {
+                    color: '#000000',
+                    size: 10,
+                    // opacity: 1,
+                },
+                {
+                    color: '#00ff00',
+                    size: 10,
+                    // opacity: 1,
+                },
+                {
+                    color: '#0000ff',
+                    size: 5,
+                    // opacity: 1,
+                },
+                {
+                    color: '#ff00ff',
+                    size: 5,
+                    // opacity: 1,
+                },
+            ],
+            draw: [
+                {
+                    color: '#ff0000',
+                    opacity: 1,
+                    size: 2,
+                },
+                {
+                    color: '#00ff00',
+                    opacity: 1,
+                    size: 2,
+                },
+                {
+                    color: '#0000ff',
+                    opacity: 1,
+                    size: 2,
+                },
+                {
+                    color: '#ff00ff',
+                    opacity: 1,
+                    size: 2,
+                },
+            ],
+            freeHandHighlight: [
+                {
+                    color: '#ff0000',
+                    opacity: 0.2,
+                    size: 10,
+                },
+                {
+                    color: '#00ff00',
+                    opacity: 0.2,
+                    size: 10,
+                },
+                {
+                    color: '#0000ff',
+                    opacity: 0.2,
+                    size: 10,
+                },
+                {
+                    color: '#ff00ff',
+                    opacity: 0.2,
+                    size: 10,
+                },
+            ],
+        },
+        activePresetIndex: {
+            highlight: 0,
+            underline: 0,
+            strikeout: 0,
+            text: 0,
+            area: 0,
+            draw: 0,
+            freeHandHighlight: 0,
+        },
+    };
+    console.log(`window.__sdJSBridge status:`, window.__sdJSBridge);
+    PDFJSAnnotate.setStoreAdapter(window.__sdJSBridge ? new PDFJSAnnotate.SaltDogAdapter() : new PDFJSAnnotate.LocalStoreAdapter());
+    // Render stuff
+    let NUM_PAGES = 0;
+    function setScaleRotate(scale, rotate) {
+        scale = parseFloat(scale, 10);
+        rotate = parseInt(rotate, 10);
+
+        if (window._RENDER_OPTIONS.scale !== scale || window._RENDER_OPTIONS.rotate !== rotate) {
+            window._RENDER_OPTIONS.scale = scale;
+            window._RENDER_OPTIONS.rotate = rotate;
         }
-      }
-      if(tooltype==type){
-        // 再次点击回归curser模式
-        tooltype='cursor';
-        UI.enableEdit();
-        return
-      }
-      if (button) {
-        button.classList.add('active');
-      }
-      if (tooltype !== type) {
-        localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/tooltype`, type);
-      }
-      tooltype = type;
-  
-      switch (type) {
-        case 'cursor':
-          UI.enableEdit();
-          break;
-        case 'eraser':
-          UI.enableEraser();
-          break;
-        case 'draw':
-          UI.enablePen();
-          break;
-        case 'arrow':
-          UI.enableArrow();
-          break;
-        case 'text':
-          UI.enableText();
-          break;
-        case 'point':
-          UI.enablePoint();
-          break;
-        case 'area':
+    }
+
+    function handleScaleChange(scale) {
+        setScaleRotate(scale, window._RENDER_OPTIONS.rotate);
+    }
+
+    function handleRotateCWClick() {
+        setScaleRotate(window._RENDER_OPTIONS.scale, window._RENDER_OPTIONS.rotate + 90);
+    }
+
+    function handleRotateCCWClick() {
+        setScaleRotate(window._RENDER_OPTIONS.scale, window._RENDER_OPTIONS.rotate - 90);
+    }
+
+    window.__initPDFJSAnnotate = function (pdfDocument) {
+        window._RENDER_OPTIONS.pdfDocument = pdfDocument;
+
+        // window._RENDER_OPTIONS.scale = window.PDFViewerApplication.pdfViewer._currentScale || 1;
+        // window._RENDER_OPTIONS.rotate = window.PDFViewerApplication.pdfViewer._pagesRotation || 0;
+        window.PDFViewerApplication.eventBus._on('scalechanging', (e) => {
+            handleScaleChange(e.scale);
+        });
+        window.PDFViewerApplication.eventBus._on('rotatecw', (e) => {
+            handleRotateCWClick();
+        });
+        window.PDFViewerApplication.eventBus._on('rotateccw', (e) => {
+            handleRotateCCWClick();
+        });
+        // let viewer = document.getElementById('viewer');
+        // viewer.innerHTML = '';
+        NUM_PAGES = pdfDocument.numPages;
+        // for (let i = 0; i < NUM_PAGES; i++) {
+        //   // let page = UI.createPage(i + 1);
+        //   viewer.appendChild(page);
+        // }
+    };
+    // Hotspot color stuff
+    (function () {
+        let hotspotColor = localStorage.getItem(`${window._RENDER_OPTIONS.documentId}/hotspot/color`) || 'darkgoldenrod';
+        let currentTarget;
+
+        function handleAnnotationClick(target) {
+            let type = target.getAttribute('data-pdf-annotate-type');
+            if (['fillcircle', 'arrow'].indexOf(type) === -1) {
+                return; // nothing to do
+            }
+            currentTarget = target;
+            hotspotColor = currentTarget.getAttribute('stroke');
+
+            UI.setArrow(10, hotspotColor);
+            UI.setCircle(10, hotspotColor);
+
+            let a = document.querySelector('.hotspot-color .color');
+            if (a) {
+                a.setAttribute('data-color', hotspotColor);
+                a.style.background = hotspotColor;
+            }
+        }
+
+        function handleAnnotationBlur(target) {
+            if (currentTarget === target) {
+                currentTarget = undefined;
+            }
+        }
+        UI.addEventListener('annotation:click', handleAnnotationClick);
+        UI.addEventListener('annotation:blur', handleAnnotationBlur);
+    })();
+
+    // Toolbar buttons
+    (function () {
+        let tooltype = 'cursor';
+        setActiveToolbarItem(tooltype, document.querySelector(`.AnnotationBtns button[data-tooltype=${tooltype}]`));
+
+        function setActiveToolbarItem(type, button) {
+            // 取消pdfjs的工具选择
+            if (type != 'cursor') {
+                document.getElementById(`cursorSelectTool`).classList.remove(`active`);
+                document.getElementById(`cursorHandTool`).classList.remove(`active`);
+            }
+            let active = document.querySelector('.AnnotationBtns button.active');
+            if (active) {
+                active.classList.remove('active');
+                active.children[0].removeAttribute('style');
+                document.getElementById('presetsContainer').innerHTML = window.generatePresetsDom('');
+                switch (tooltype) {
+                    case 'cursor':
+                        UI.disableEdit();
+                        break;
+                    case 'eraser':
+                        UI.disableEraser();
+                        break;
+                    case 'draw':
+                    case 'freeHandHighlight':
+                        UI.disablePen();
+                        break;
+                    case 'arrow':
+                        UI.disableArrow();
+                        break;
+                    case 'text':
+                        UI.disableText();
+                        break;
+                    case 'point':
+                        UI.disablePoint();
+                        break;
+                    case 'area':
+                    case 'highlight':
+                    case 'strikeout':
+                    case 'underline':
+                        UI.disableRect();
+                        break;
+                    case 'circle':
+                    case 'emptycircle':
+                    case 'fillcircle':
+                        UI.disableCircle();
+                        break;
+                }
+            }
+            if (tooltype == type) {
+                // 再次点击回归curser模式
+                tooltype = 'cursor';
+                UI.enableEdit();
+                return;
+            }
+            if (button) {
+                button.classList.add('active');
+            }
+            if (tooltype !== type) {
+                localStorage.setItem(`${window._RENDER_OPTIONS.documentId}/tooltype`, type);
+            }
+            tooltype = type;
+            dealPresetsDom(type);
+            switch (type) {
+                case 'cursor':
+                    UI.enableEdit();
+                    break;
+                case 'eraser':
+                    UI.enableEraser();
+                    break;
+                case 'draw':
+                case 'freeHandHighlight':
+                    UI.enablePen();
+                    break;
+                // case 'arrow':
+                //     UI.enableArrow();
+                //     break;
+                case 'text':
+                    UI.enableText();
+                    break;
+                // case 'point':
+                //     UI.enablePoint();
+                //     break;
+                case 'area':
+                case 'highlight':
+                case 'strikeout':
+                case 'underline':
+                    UI.enableRect(type);
+                    break;
+                // case 'circle':
+                // case 'emptycircle':
+                // case 'fillcircle':
+                //     UI.enableCircle(type);
+                //     break;
+            }
+        }
+        function dealPresetsDom(type) {
+            document.getElementById('presetsContainer').innerHTML = window.generatePresetsDom(type);
+            const activePresetIndex = window.userPresets['activePresetIndex'][type] || 0;
+            setActivePresetItem(document.getElementById(`presets_${type}_${activePresetIndex}`), type, activePresetIndex);
+        }
+        window._setActiveToolbarItem = setActiveToolbarItem;
+        function handleToolbarClick(e) {
+            if (e.target.nodeName === 'BUTTON' && e.target.dataset.tooltype) {
+                setActiveToolbarItem(e.target.getAttribute('data-tooltype'), e.target);
+            }
+        }
+        window._activePresetItem = null;
+        function setActivePresetItem(e, type, index) {
+            if (!e) return;
+            window._activePresetItem = e;
+            for (let elem of document.getElementById('presetsContainer').children[0].children) {
+                elem.children[0].classList.remove('active');
+            }
+            window.userPresets['activePresetIndex'][e.getAttribute('data-tooltype')] = Number(index);
+            window.currentAnnoteColor = window.userPresets['colors'][e.getAttribute('data-tooltype')][index]['color'];
+            window.currentOpacity = window.userPresets['colors'][e.getAttribute('data-tooltype')][index]['opacity'];
+            window.currentAnnoteSize = window.userPresets['colors'][e.getAttribute('data-tooltype')][index]['size'];
+            const mainbtn = document.querySelector(`button.active[data-tooltype="${type}"]`).children[0];
+            mainbtn.style.color = window.parseRGBA(window.currentAnnoteColor, window.currentOpacity);
+            // mainbtn.style.opacity=window.currentOpacity;
+            e.classList.add('active');
+        }
+        function handlePresetsClick(e) {
+            if (e.target.nodeName === 'BUTTON') {
+                setActivePresetItem(e.target, e.target.getAttribute('data-tooltype'), e.target.getAttribute('data-index'));
+            }
+            e.stopPropagation();
+        }
+        document.getElementById('presetsContainer').addEventListener('click', handlePresetsClick);
+        document.querySelector('.AnnotationBtns').addEventListener('click', handleToolbarClick);
+    })();
+
+    // Clear toolbar button
+    (function () {
+        function handleClearClick(e) {
+            if (confirm('Are you sure you want to clear annotations?')) {
+                for (let i = 0; i < NUM_PAGES; i++) {
+                    document.querySelector(`div#page${i + 1} svg.onlineAnnotationLayer`).innerHTML = '';
+                }
+
+                localStorage.removeItem(`${window._RENDER_OPTIONS.documentId}/annotations`);
+            }
+        }
+        //document.querySelector('a.clear').addEventListener('click', handleClearClick);
+    })();
+
+    // Comment stuff
+    //   (function(window, document) {
+    //     let commentList = document.querySelector('#comment-wrapper .comment-list-container');
+    //     let commentForm = document.querySelector('#comment-wrapper .comment-list-form');
+    //     let commentText = commentForm.querySelector('input[type="text"]');
+
+    //     function supportsComments(target) {
+    //       let type = target.getAttribute('data-pdf-annotate-type');
+    //       return ['point', 'highlight', 'area'].indexOf(type) > -1;
+    //     }
+
+    //     function insertComment(comment) {
+    //       let child = document.createElement('div');
+    //       child.className = 'comment-list-item';
+    //       child.innerHTML = htmlEscape(comment.content);
+
+    //       commentList.appendChild(child);
+    //     }
+
+    //     function handleAnnotationClick(target) {
+    //       if (supportsComments(target)) {
+    //         let documentId = target.parentNode.getAttribute('data-pdf-annotate-document');
+    //         let annotationId = target.getAttribute('data-pdf-annotate-id');
+
+    //         PDFJSAnnotate.getStoreAdapter().getComments(documentId, annotationId).then((comments) => {
+    //           commentList.innerHTML = '';
+    //           commentForm.style.display = '';
+    //           commentText.focus();
+
+    //           commentForm.onsubmit = function() {
+    //             PDFJSAnnotate.getStoreAdapter().addComment(documentId, annotationId, commentText.value.trim())
+    //               .then(insertComment)
+    //               .then(() => {
+    //                 commentText.value = '';
+    //                 commentText.focus();
+    //               });
+
+    //             return false;
+    //           };
+
+    //           comments.forEach(insertComment);
+    //         });
+    //       }
+    //     }
+
+    //     function handleAnnotationBlur(target) {
+    //       if (supportsComments(target)) {
+    //         commentList.innerHTML = '';
+    //         commentForm.style.display = 'none';
+    //         commentForm.onsubmit = null;
+
+    //         insertComment({content: 'No comments'});
+    //       }
+    //     }
+
+    //     UI.addEventListener('annotation:click', handleAnnotationClick);
+    //     UI.addEventListener('annotation:blur', handleAnnotationBlur);
+
+    //     UI.setArrow(10, 'darkgoldenrod');
+    //     UI.setCircle(10, 'darkgoldenrod');
+    //   })(window, document);
+}
+window.currentAnnoteColor = '#000000';
+window.currentAnnoteSize = '2';
+window.currentOpacity = 0.5;
+window.colorPaletteOpen = false;
+window.userPresets = {
+    colors: {
+        highlight: [
+            {
+                color: '#ff0000',
+                // opacity: 0.5,
+            },
+            {
+                color: '#00ff00',
+                // opacity: 0.5,
+            },
+            {
+                color: '#0000ff',
+                // opacity: 0.5,
+            },
+            {
+                color: '#ff00ff',
+                // opacity: 0.5,
+            },
+        ],
+        underline: [
+            {
+                color: '#ff0000',
+                // opacity: 1,
+            },
+            {
+                color: '#00ff00',
+                // opacity: 1,
+            },
+            {
+                color: '#0000ff',
+                // opacity: 1,
+            },
+            {
+                color: '#ff00ff',
+                // opacity: 1,
+            },
+        ],
+        strikeout: [
+            {
+                color: '#ff0000',
+                // opacity: 1,
+            },
+            {
+                color: '#00ff00',
+                // opacity: 1,
+            },
+            {
+                color: '#0000ff',
+                // opacity: 1,
+            },
+            {
+                color: '#ff00ff',
+                // opacity: 1,
+            },
+        ],
+        area: [
+            {
+                color: '#ff0000',
+                // opacity: 1,
+            },
+            {
+                color: '#00ff00',
+                // opacity: 1,
+            },
+            {
+                color: '#0000ff',
+                // opacity: 1,
+            },
+            {
+                color: '#ff00ff',
+                // opacity: 1,
+            },
+        ],
+        text: [
+            {
+                color: '#000000',
+                size: 10,
+                // opacity: 1,
+            },
+            {
+                color: '#00ff00',
+                size: 10,
+                // opacity: 1,
+            },
+            {
+                color: '#0000ff',
+                size: 5,
+                // opacity: 1,
+            },
+            {
+                color: '#ff00ff',
+                size: 5,
+                // opacity: 1,
+            },
+        ],
+        draw: [
+            {
+                color: '#ff0000',
+                opacity: 1,
+                size: 2,
+            },
+            {
+                color: '#00ff00',
+                opacity: 1,
+                size: 2,
+            },
+            {
+                color: '#0000ff',
+                opacity: 1,
+                size: 2,
+            },
+            {
+                color: '#ff00ff',
+                opacity: 1,
+                size: 2,
+            },
+        ],
+        freeHandHighlight: [
+            {
+                color: '#ff0000',
+                opacity: 0.2,
+                size: 10,
+            },
+            {
+                color: '#00ff00',
+                opacity: 0.2,
+                size: 10,
+            },
+            {
+                color: '#0000ff',
+                opacity: 0.2,
+                size: 10,
+            },
+            {
+                color: '#ff00ff',
+                opacity: 0.2,
+                size: 10,
+            },
+        ],
+    },
+    activePresetIndex: {
+        highlight: 0,
+        underline: 0,
+        strikeout: 0,
+        text: 0,
+        area: 0,
+        draw: 0,
+        freeHandHighlight: 0,
+    },
+};
+window.generatePresetsDom = function (type) {
+    function buildPresetsBtn(type, color, opacity, id, index) {
+        function getSVG(type) {
+            switch (type) {
+                case 'highlight':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <title>icon - line - tool - highlight</title>
+          <path fill="currentColor" d="M9.91,13.07h3.86L11.84,8.46Zm5.46,3.68L14.62,15H9.05L7.77,18H5.63L10.45,6.64a1,1,0,0,1,1-.64h1a1.23,1.23,0,0,1,1,.64l2,4.91V4H5.85A2.22,2.22,0,0,0,3.63,6.22V17.78A2.22,2.22,0,0,0,5.85,20h9.52Z"></path>
+          <path fill="default" class="cls-1" d="M20.37,2V22h-2V2Z"></path>
+          </svg>`;
+                case 'underline':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <title>icon - tool - text manipulation - underline</title>
+          <rect fill="currentColor" x="2.8" y="20.29" width="18.4" height="1.7"></rect>
+          <path fill="default" class="cls-1" d="M8.53,13.2h6.94l1.6,3.74h2.66L13.87,2.8a1.54,1.54,0,0,0-1.2-.8h-1.2a1.27,1.27,0,0,0-1.2.8l-6,14.14H6.93ZM12,5.07l2.4,5.73H9.6Z"></path>
+      </svg>`;
+                case 'strikeout':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <title>icon - tool - text manipulation - strikethrough</title>
+          <rect fill="currentColor" x="3.13" y="11.31" width="17.74" height="1.7"></rect>
+          <path fill="default" class="cls-1" d="M12,5l2.4,5.77h2.68l-3.28-8A1.49,1.49,0,0,0,12.64,2H11.49a1.24,1.24,0,0,0-1.16.77L7,10.73H9.59Zm3.25,8.62,2,4.74h2.57l-2-4.74ZM4.17,18.32H6.74l2-4.74H6.18Z"></path>
+      </svg>`;
+                case 'area':
+                    return `
+          <svg version="1.1" id="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background: new 0 0 24 24" xml:space="preserve">
+              <path fill="currentColor" class="st0" d="M19.3,3.8H4.7c-1,0-1.8,0.8-1.8,1.8v12.8c0,1,0.8,1.8,1.8,1.8h14.7c1,0,1.8-0.8,1.8-1.8V5.6 C21.2,4.6,20.3,3.7,19.3,3.8z M5.1,18V6h13.8v12H5.1z"></path>
+              <rect fill="none" x="5.1" y="6" width="13.8" height="12"></rect>
+          </svg>`;
+                case 'draw':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M18.91,19.66a1.13,1.13,0,0,1-1.35,1.82,5.82,5.82,0,0,0-2.09-1c-3.22-.85-4.57-.29-6.82.63l-.55.23A7.42,7.42,0,0,1,5.42,22a3,3,0,0,1-2-.69,2.38,2.38,0,0,1-.87-1.66,1.81,1.81,0,0,1,.59-1.36,9.16,9.16,0,0,1,.93-.78,1.13,1.13,0,0,1,1.58.23,1.14,1.14,0,0,1-.23,1.59,2.93,2.93,0,0,0-.42.33c.27.13.84.17,2.25-.4L7.8,19a10.81,10.81,0,0,1,8.25-.72A7.89,7.89,0,0,1,18.91,19.66Z"></path>
+          <path fill="default" class="cls-1" d="M21.45,5.77a2.09,2.09,0,0,1-.62,1.51l-9.16,9.16c-.09.08-.26.26-.44.26,0,0-4.18.9-4.42.89a1,1,0,0,1-.72-.13.67.67,0,0,1-.16-.73l.8-4.53c0-.18.08-.27.26-.45L13,5.8l3.2-3.2a2.2,2.2,0,0,1,3,0l1.66,1.66A2.34,2.34,0,0,1,21.45,5.77ZM16.21,9.06,14.37,7.22,8.59,13l1.84,1.84Zm3.2-3.2L17.57,4,15.88,5.71l1.84,1.84Z"></path>
+      </svg>`;
+                case 'freeHandHighlight':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <title>icon - tool - pen - highlight</title>
+        <path fill="default" class="cls-1" d="M19.9658 6.91017H19.92L16.2992 3.25267C16.1376 3.0909 15.9183 3 15.6896 3C15.4609 3 15.2416 3.0909 15.08 3.25267L7.82917 10.4118C7.68847 10.5239 7.59386 10.6837 7.56334 10.861L6.56417 15.2518L4.8225 17.4427H7.6275L8.73667 16.3335L12.2567 15.5452C12.4386 15.5144 12.6023 15.4162 12.715 15.2702L19.92 8.12934C20.2428 7.7936 20.2625 7.2692 19.9658 6.91017V6.91017ZM11.9083 13.5377L9.54334 11.1727L15.7583 5.0585L18.1233 7.4235L11.9083 13.5377Z"></path>
+        <path fill="currentColor" d="M18.4167 17.2685C18.744 18.2557 18.9773 19.2716 19.1133 20.3027C18.2719 19.3853 17.15 18.7728 15.9233 18.561C14.8314 18.4146 13.7204 18.5244 12.6783 18.8818C11.4047 19.3332 10.1589 19.8597 8.9475 20.4585C7.81125 21.1097 6.50296 21.3975 5.19833 21.2835C4.80235 21.1839 4.45663 20.9426 4.22666 20.6052C4.14173 20.4738 4.07395 20.3321 4.025 20.1835C4.01028 20.0885 3.98252 19.9959 3.9425 19.9085C3.80542 19.4227 3.84105 18.9043 4.04333 18.4418C4.15136 18.1403 4.32695 17.8675 4.55667 17.6443L4.905 19.4135C4.79615 19.4335 4.71381 19.5233 4.70333 19.6335C4.70333 19.8993 5.79417 19.7527 6.67417 19.4227C7.31069 19.1708 7.92412 18.8641 8.5075 18.506C9.77851 17.691 11.1416 17.0294 12.5683 16.5352C13.7125 16.1519 14.9299 16.0389 16.125 16.2052C16.6842 16.3049 17.2193 16.5102 17.7017 16.8102C17.8758 16.8927 18.4167 17.2685 18.4167 17.2685Z"></path>
+    </svg>`;
+                case 'text':
+                    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <title>icon - tool - text - free text</title>
+      <g><path fill="currentColor" d="M19.39,4.77V7.64A.43.43,0,0,1,19,8h-.82a.41.41,0,0,1-.4-.41V6.51H13.34V18h1.54a.41.41,0,0,1,.41.41v.81a.41.41,0,0,1-.41.41H9.14a.41.41,0,0,1-.41-.41v-.81A.41.41,0,0,1,9.14,18h1.54V6.51H6.27V7.64A.41.41,0,0,1,5.86,8H5A.43.43,0,0,1,4.6,7.6V4.77A.41.41,0,0,1,5,4.36H19A.39.39,0,0,1,19.39,4.77Z"></path></g>
+  </svg>`;
+            }
+        }
+        let html = `<div class="tool-button-container">
+    <button class="Button tool-button hasStyles" id="${id}" data-index="${index}" style="color:${window.parseRGBA(color, opacity)};" data-tooltype="${type}" data-color="${color}" data-opacity="${opacity}" data-element="${type}ToolPresetButton" aria-label="${type}" type="button">
+                                                        <div class="Icon" style="color:inherit">
+                                                            ${getSVG(type)}
+                                                        </div>
+                                                    </button>
+                                                    <div onclick="setCustomColor('${type}','${id}',${index})" class="tool-button-arrow-container">
+                                                        <div class="tool-button-arrow-inner-container">
+                                                            <div class="Icon tool-button-arrow-down">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+                                                                    <defs>
+                                                                        <style>
+                                                                            .cls-1 {
+                                                                                fill: #abb0c4;
+                                                                            }
+                                                                        </style>
+                                                                    </defs>
+                                                                    <title>icon - chevron - down</title>
+                                                                    <path class="cls-1" d="M9,3.5l-3,3-3-3-1,1,4,4,4-4Z"></path>
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+    </div>`;
+        return html;
+    }
+    let html = '<div class="tool-buttons-container">';
+    let curr_preset;
+    switch (type) {
+        case 'underline':
         case 'highlight':
         case 'strikeout':
-          case 'underline':
-          UI.enableRect(type);
-          break;
-        case 'circle':
-        case 'emptycircle':
-        case 'fillcircle':
-          UI.enableCircle(type);
-          break;
-      }
+        case 'area':
+        case 'draw':
+        case 'freeHandHighlight':
+        case 'text':
+            curr_preset = window.userPresets['colors'][type];
+            for (let i = 0; i < curr_preset.length; i++) {
+                html += buildPresetsBtn(type, curr_preset[i].color, curr_preset[i].opacity, `presets_${type}_${i}`, i);
+            }
+            break;
+        default:
+            return `<div class="no-presets">无可用选项</div>`;
     }
-    window._setActiveToolbarItem = setActiveToolbarItem;
-    function handleToolbarClick(e) {
-      if (e.target.nodeName === 'BUTTON') {
-        setActiveToolbarItem(e.target.getAttribute('data-tooltype'), e.target);
-      }
-    }
-  
-    document.querySelector('.AnnotationBtns').addEventListener('click', handleToolbarClick);
-})();
-  
-  
-  
-  // Clear toolbar button
-  (function() {
-    function handleClearClick(e) {
-      if (confirm('Are you sure you want to clear annotations?')) {
-        for (let i = 0; i < NUM_PAGES; i++) {
-          document.querySelector(`div#page${i + 1} svg.onlineAnnotationLayer`).innerHTML = '';
+    html += '</div>';
+    return html;
+};
+
+window.setCustomColor = function (type, id, index) {
+    const color = ['rgb(241, 160, 153)', 'rgb(255, 198, 123)', 'rgb(255, 230, 162)', 'rgb(128, 229, 177)', 'rgb(146, 232, 232)', 'rgb(166, 161, 230)', 'rgb(228, 66, 52)', 'rgb(255, 141, 0)', 'rgb(255, 205, 69)', 'rgb(0, 204, 99)', 'rgb(37, 210, 209)', 'rgb(78, 125, 233)', 'rgb(197, 68, 206)', 'rgb(136, 39, 31)', 'rgb(181, 72, 0)', 'rgb(246, 154, 0)', 'rgb(0, 122, 59)', 'rgb(22, 126, 125)', 'rgb(46, 75, 139)', 'rgb(118, 40, 123)', 'rgb(255, 255, 255)', 'rgb(205, 205, 205)', 'rgb(156, 156, 156)', 'rgb(105, 105, 105)', 'rgb(39, 39, 39)', 'rgb(0, 0, 0)'];
+    function buildColorHtml(color) {
+        const div = document.createElement('div');
+        div.classList.add('ToolStylePopup');
+        div.id = 'colorPanel';
+        let html = `
+    <div class="Popup StylePopup" data-element="stylePopup">
+        <div class="divider-container"><div class="divider-horizontal"></div></div>
+        <div id="colorPalette" class="ColorPalette">`;
+        for (let i in color) {
+            html += `<button class="cell-container" aria-label="Color ${i}" data-color="${color[i]}">
+              <div class="cell-outer"><div class="cell" data-color="${color[i]}" style="background-color: ${color[i]}"></div></div>
+          </button>`;
         }
-  
-        localStorage.removeItem(`${window._RENDER_OPTIONS.documentId}/annotations`);
-      }
+        html += `</div><div class="sliders-container">`;
+        if (type == 'draw')
+            html += `
+        
+                                                    <div class="slider" data-element="opacitySlider">
+                                                        <div class="slider-property">不透明度</div>
+                                                        <div class="slider-svg-container">
+                                                            <input id="colorPalette_slider_opacity" type="range" min="10" max="100"
+                                                             />
+                                                            <div class="slider-value" id="colorPalette_slider_opacity_value"></div>
+                                                        </div>
+                                                    </div>`;
+        if (type == 'draw' || type == 'text')
+            html += `<div class="slider" data-element="opacitySlider">
+          <div class="slider-property">大小</div>
+          <div class="slider-svg-container">
+              <input id="colorPalette_slider_size" type="range" min="1" max="50"
+               />
+              <div class="slider-value" id="colorPalette_slider_size_value"></div>
+          </div>
+      </div>`;
+        html += `</div>`;
+
+        div.innerHTML = html;
+        return div;
     }
-    //document.querySelector('a.clear').addEventListener('click', handleClearClick);
-  })();
-  
-  // Comment stuff
-//   (function(window, document) {
-//     let commentList = document.querySelector('#comment-wrapper .comment-list-container');
-//     let commentForm = document.querySelector('#comment-wrapper .comment-list-form');
-//     let commentText = commentForm.querySelector('input[type="text"]');
-  
-//     function supportsComments(target) {
-//       let type = target.getAttribute('data-pdf-annotate-type');
-//       return ['point', 'highlight', 'area'].indexOf(type) > -1;
-//     }
-  
-//     function insertComment(comment) {
-//       let child = document.createElement('div');
-//       child.className = 'comment-list-item';
-//       child.innerHTML = htmlEscape(comment.content);
-  
-//       commentList.appendChild(child);
-//     }
-  
-//     function handleAnnotationClick(target) {
-//       if (supportsComments(target)) {
-//         let documentId = target.parentNode.getAttribute('data-pdf-annotate-document');
-//         let annotationId = target.getAttribute('data-pdf-annotate-id');
-  
-//         PDFJSAnnotate.getStoreAdapter().getComments(documentId, annotationId).then((comments) => {
-//           commentList.innerHTML = '';
-//           commentForm.style.display = '';
-//           commentText.focus();
-  
-//           commentForm.onsubmit = function() {
-//             PDFJSAnnotate.getStoreAdapter().addComment(documentId, annotationId, commentText.value.trim())
-//               .then(insertComment)
-//               .then(() => {
-//                 commentText.value = '';
-//                 commentText.focus();
-//               });
-  
-//             return false;
-//           };
-  
-//           comments.forEach(insertComment);
-//         });
-//       }
-//     }
-  
-//     function handleAnnotationBlur(target) {
-//       if (supportsComments(target)) {
-//         commentList.innerHTML = '';
-//         commentForm.style.display = 'none';
-//         commentForm.onsubmit = null;
-  
-//         insertComment({content: 'No comments'});
-//       }
-//     }
-  
-//     UI.addEventListener('annotation:click', handleAnnotationClick);
-//     UI.addEventListener('annotation:blur', handleAnnotationBlur);
-  
-//     UI.setArrow(10, 'darkgoldenrod');
-//     UI.setCircle(10, 'darkgoldenrod');
-//   })(window, document);
-}
+    /**
+   
+   */
 
+    const oc = document.getElementById('presetOuterContainer');
+    function closeColorPalette() {
+        window.colorPaletteOpen = false;
+        oc.classList.remove('shadow');
+        oc.removeChild(window._colorPanel);
+        window._colorPanel = null;
+    }
+    if (oc.classList.contains('shadow') && window._colorPanel) {
+        closeColorPalette();
+    } else {
+        oc.classList.add('shadow');
+        window._colorPanel = oc.appendChild(buildColorHtml(color));
+        window.colorPaletteOpen = true;
+        const presetbtn = document.getElementById(id);
+        window._colorPanel.addEventListener('click', function (e) {
+            if (e.target.classList.contains('cell')) {
+                for (let ele of document.getElementById('colorPalette').children) {
+                    ele.children[0].classList.remove('active');
+                }
+                e.target.parentNode.classList.add('active');
+                presetbtn.style.color = window.parseRGBA(e.target.dataset.color, window.userPresets['colors'][type][Number(index)].opacity);
+                presetbtn.dataset.color = e.target.dataset.color;
+                window.userPresets['colors'][type][Number(index)].color = e.target.dataset.color;
+                if (window._activePresetItem.id == id) {
+                    window.currentAnnoteColor = e.target.dataset.color;
+                    window.currentOpacity = window.userPresets['colors'][type][Number(index)].opacity;
+                    const primBtn = document.querySelector(`button.active[data-tooltype="${type}"]`);
+                    if (primBtn) {
+                        primBtn.children[0].style.color = presetbtn.style.color;
+                    }
+                }
+                // console.log(e.target.dataset.color);
+            }
+            e.stopPropagation();
+        });
 
-module.exports = {initOnlineAnnotation}
+        const opacitySlider = document.getElementById('colorPalette_slider_opacity');
+        const opacitySliderValue = document.getElementById('colorPalette_slider_opacity_value');
+        if (opacitySlider && opacitySliderValue) {
+            opacitySlider.value = window.userPresets['colors'][type][Number(index)].opacity * 100;
+            opacitySliderValue.innerText = opacitySlider.value + ' %';
+
+            opacitySlider.addEventListener('pointermove', (e) => {
+                opacitySliderValue.innerText = e.target.value + ' %';
+            });
+
+            opacitySlider.addEventListener('change', (e) => {
+                window.userPresets['colors'][type][Number(index)].opacity = e.target.value / 100;
+                presetbtn.dataset.opacity = e.target.value / 100;
+                presetbtn.style.color = window.parseRGBA(window.userPresets['colors'][type][Number(index)].color, e.target.value / 100);
+                presetbtn.dataset.color = window.userPresets['colors'][type][Number(index)].color;
+                if (window._activePresetItem.id == id) {
+                    window.currentOpacity = e.target.value / 100;
+                    window.currentAnnoteColor = window.userPresets['colors'][type][Number(index)].color;
+                    const primBtn = document.querySelector(`button.active[data-tooltype="${type}"]`);
+                    if (primBtn) {
+                        primBtn.children[0].style.color = window.parseRGBA(window.userPresets['colors'][type][Number(index)].color, e.target.value / 100);
+                    }
+                }
+            });
+        }
+
+        const sizeSlider = document.getElementById('colorPalette_slider_size');
+        const sizeSliderValue = document.getElementById('colorPalette_slider_size_value');
+        if (sizeSlider && sizeSliderValue) {
+            sizeSlider.value = window.userPresets['colors'][type][Number(index)].size;
+            sizeSliderValue.innerText = sizeSlider.value + ' px';
+
+            sizeSlider.addEventListener('pointermove', (e) => {
+                sizeSliderValue.innerText = e.target.value + ' px';
+            });
+
+            sizeSlider.addEventListener('change', (e) => {
+                window.userPresets['colors'][type][Number(index)].size = e.target.value;
+                presetbtn.dataset.size = e.target.value;
+                if (window._activePresetItem.id == id) {
+                    window.currentAnnoteSize = e.target.value;
+                    window.currentAnnoteColor = window.userPresets['colors'][type][Number(index)].color;
+                }
+            });
+        }
+
+        window._colorPanel.addEventListener('mouseleave', function () {
+            closeColorPalette();
+        });
+    }
+    console.log(type, id);
+};
+
+window.parseRGBA = function (color, opacity) {
+    if (!color) return;
+    let r, g, b;
+    if (color.startsWith('rgba')) {
+        const rgb = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+        r = rgb[1];
+        g = rgb[2];
+        b = rgb[3];
+    }
+    if (color.startsWith('rgb')) {
+        const rgb = color.match(/^rgb?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+        r = rgb[1];
+        g = rgb[2];
+        b = rgb[3];
+    } else {
+        // 16进制颜色值的正则
+        const reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+        // 把颜色值变成小写
+        let colord = color.toLowerCase();
+        if (reg.test(colord)) {
+            // 如果只有三位的值，需变成六位，如：#fff => #ffffff
+            if (colord.length === 4) {
+                let colorNew = '#';
+                for (let i = 1; i < 4; i += 1) {
+                    colorNew += colord.slice(i, i + 1).concat(colord.slice(i, i + 1));
+                }
+                colord = colorNew;
+            }
+            // 处理六位的颜色值，转为RGB
+            let colorChange = [];
+            for (let i = 1; i < 7; i += 2) {
+                colorChange.push(parseInt('0x' + colord.slice(i, i + 2)));
+            }
+            r = colorChange[0];
+            g = colorChange[1];
+            b = colorChange[2];
+        }
+    }
+    return `rgba(${r},${g},${b},${opacity || 1})`;
+};
+
+module.exports = { initOnlineAnnotation };
+
 
 /***/ }),
 
@@ -43148,13 +43592,15 @@ module.exports = {initOnlineAnnotation}
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _adapter_StoreAdapter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./adapter/StoreAdapter */ "./src/online_annotate/adapter/StoreAdapter.js");
-/* harmony import */ var _adapter_LocalStoreAdapter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./adapter/LocalStoreAdapter */ "./src/online_annotate/adapter/LocalStoreAdapter.js");
-/* harmony import */ var _adapter_LocalUserStoreAdapter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./adapter/LocalUserStoreAdapter */ "./src/online_annotate/adapter/LocalUserStoreAdapter.js");
-/* harmony import */ var _render__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./render */ "./src/online_annotate/render/index.js");
-/* harmony import */ var _UI__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./UI */ "./src/online_annotate/UI/index.js");
-/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./config */ "./src/online_annotate/config.js");
-/* harmony import */ var _utils_uuid__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./utils/uuid */ "./src/online_annotate/utils/uuid.js");
-/* harmony import */ var _UI_utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./UI/utils */ "./src/online_annotate/UI/utils.js");
+/* harmony import */ var _adapter_SaltDogAdapter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./adapter/SaltDogAdapter */ "./src/online_annotate/adapter/SaltDogAdapter.js");
+/* harmony import */ var _adapter_LocalStoreAdapter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./adapter/LocalStoreAdapter */ "./src/online_annotate/adapter/LocalStoreAdapter.js");
+/* harmony import */ var _adapter_LocalUserStoreAdapter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./adapter/LocalUserStoreAdapter */ "./src/online_annotate/adapter/LocalUserStoreAdapter.js");
+/* harmony import */ var _render__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./render */ "./src/online_annotate/render/index.js");
+/* harmony import */ var _UI__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./UI */ "./src/online_annotate/UI/index.js");
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./config */ "./src/online_annotate/config.js");
+/* harmony import */ var _utils_uuid__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./utils/uuid */ "./src/online_annotate/utils/uuid.js");
+/* harmony import */ var _UI_utils__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./UI/utils */ "./src/online_annotate/UI/utils.js");
+
 
 
 
@@ -43165,86 +43611,91 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  findAnnotationAtPoint: _UI_utils__WEBPACK_IMPORTED_MODULE_7__.findAnnotationAtPoint,
-  findSVGContainer: _UI_utils__WEBPACK_IMPORTED_MODULE_7__.findSVGContainer,
-  convertToScreenPoint: _UI_utils__WEBPACK_IMPORTED_MODULE_7__.convertToScreenPoint,
+    findAnnotationAtPoint: _UI_utils__WEBPACK_IMPORTED_MODULE_8__.findAnnotationAtPoint,
+    findSVGContainer: _UI_utils__WEBPACK_IMPORTED_MODULE_8__.findSVGContainer,
+    convertToScreenPoint: _UI_utils__WEBPACK_IMPORTED_MODULE_8__.convertToScreenPoint,
 
-  /**
-   * Abstract class that needs to be defined so PDFJSAnnotate
-   * knows how to communicate with your server.
-   */
-  StoreAdapter: _adapter_StoreAdapter__WEBPACK_IMPORTED_MODULE_0__["default"],
+    /**
+     * Abstract class that needs to be defined so PDFJSAnnotate
+     * knows how to communicate with your server.
+     */
+    StoreAdapter: _adapter_StoreAdapter__WEBPACK_IMPORTED_MODULE_0__["default"],
 
-  /**
-   * Implementation of StoreAdapter that stores annotation data to localStorage.
-   */
-  LocalStoreAdapter: _adapter_LocalStoreAdapter__WEBPACK_IMPORTED_MODULE_1__["default"],
+    /**
+     * Implementation of StoreAdapter that stores annotation data to localStorage.
+     */
+    LocalStoreAdapter: _adapter_LocalStoreAdapter__WEBPACK_IMPORTED_MODULE_2__["default"],
 
-  /**
-   * Implementation of StoreAdapter that stores annotation data to localStorage particular
-   * to a specific user
-   */
-  LocalUserStoreAdapter: _adapter_LocalUserStoreAdapter__WEBPACK_IMPORTED_MODULE_2__["default"],
+    /**
+     * Implementation of StoreAdapter that stores annotation data to localStorage particular
+     * to a specific user
+     */
+    LocalUserStoreAdapter: _adapter_LocalUserStoreAdapter__WEBPACK_IMPORTED_MODULE_3__["default"],
+    /**
+     * Implementation of StoreAdapter that stores annotation data to Saltdog particular
+     * to a specific user
+     */
+    SaltDogAdapter: _adapter_SaltDogAdapter__WEBPACK_IMPORTED_MODULE_1__["default"],
 
-  /**
-   * Abstract instance of StoreAdapter
-   */
-  __storeAdapter: new _adapter_StoreAdapter__WEBPACK_IMPORTED_MODULE_0__["default"](),
+    /**
+     * Abstract instance of StoreAdapter
+     */
+    __storeAdapter: new _adapter_StoreAdapter__WEBPACK_IMPORTED_MODULE_0__["default"](),
 
-  /**
-   * Getter for the underlying StoreAdapter property
-   *
-   * @return {StoreAdapter}
-   */
-  getStoreAdapter() {
-    return this.__storeAdapter;
-  },
+    /**
+     * Getter for the underlying StoreAdapter property
+     *
+     * @return {StoreAdapter}
+     */
+    getStoreAdapter() {
+        return this.__storeAdapter;
+    },
 
-  /**
-   * Setter for the underlying StoreAdapter property
-   *
-   * @param {StoreAdapter} adapter The StoreAdapter implementation to be used.
-   */
-  setStoreAdapter(adapter) {
-    // TODO this throws an error when bundled
-    // if (!(adapter instanceof StoreAdapter)) {
-    //   throw new Error('adapter must be an instance of StoreAdapter');
-    // }
+    /**
+     * Setter for the underlying StoreAdapter property
+     *
+     * @param {StoreAdapter} adapter The StoreAdapter implementation to be used.
+     */
+    setStoreAdapter(adapter) {
+        // TODO this throws an error when bundled
+        // if (!(adapter instanceof StoreAdapter)) {
+        //   throw new Error('adapter must be an instance of StoreAdapter');
+        // }
 
-    this.__storeAdapter = adapter;
-  },
+        this.__storeAdapter = adapter;
+    },
 
-  /**
-   * UI is a helper for instrumenting UI interactions for creating,
-   * editing, and deleting annotations in the browser.
-   */
-  UI: _UI__WEBPACK_IMPORTED_MODULE_4__["default"],
+    /**
+     * UI is a helper for instrumenting UI interactions for creating,
+     * editing, and deleting annotations in the browser.
+     */
+    UI: _UI__WEBPACK_IMPORTED_MODULE_5__["default"],
 
-  /**
-   * Render the annotations for a page in the PDF Document
-   *
-   * @param {SVGElement} svg The SVG element that annotations should be rendered to
-   * @param {PageViewport} viewport The PDFPage.getViewport data
-   * @param {Object} data The StoreAdapter.getAnnotations data
-   * @return {Promise}
-   */
-  render: _render__WEBPACK_IMPORTED_MODULE_3__["default"],
+    /**
+     * Render the annotations for a page in the PDF Document
+     *
+     * @param {SVGElement} svg The SVG element that annotations should be rendered to
+     * @param {PageViewport} viewport The PDFPage.getViewport data
+     * @param {Object} data The StoreAdapter.getAnnotations data
+     * @return {Promise}
+     */
+    render: _render__WEBPACK_IMPORTED_MODULE_4__["default"],
 
-  /**
-   * Convenience method for getting annotation data
-   *
-   * @alias StoreAdapter.getAnnotations
-   * @param {String} documentId The ID of the document
-   * @param {String} pageNumber The page number
-   * @return {Promise}
-   */
-  getAnnotations(documentId, pageNumber) {
-    return this.getStoreAdapter().getAnnotations(...arguments);
-  },
+    /**
+     * Convenience method for getting annotation data
+     *
+     * @alias StoreAdapter.getAnnotations
+     * @param {String} documentId The ID of the document
+     * @param {String} pageNumber The page number
+     * @return {Promise}
+     */
+    getAnnotations(documentId, pageNumber) {
+        return this.getStoreAdapter().getAnnotations(...arguments);
+    },
 
-  config: _config__WEBPACK_IMPORTED_MODULE_5__["default"],
+    config: _config__WEBPACK_IMPORTED_MODULE_6__["default"],
 
-  uuid: _utils_uuid__WEBPACK_IMPORTED_MODULE_6__["default"]
+    uuid: _utils_uuid__WEBPACK_IMPORTED_MODULE_7__["default"],
 });
 
 
@@ -44082,12 +44533,14 @@ function enableEraser() {
   document.addEventListener('pointermove', handleDocumentMouseMove);
   document.addEventListener('pointerdown', handleDocumentDown);
   document.addEventListener('pointerup', handleDocumentUp);
+  (0,_utils__WEBPACK_IMPORTED_MODULE_1__.disableUserSelect)();
 }
 
 function disableEraser() {
   document.removeEventListener('pointermove', handleDocumentMouseMove);
   document.removeEventListener('pointerdown', handleDocumentDown);
   document.removeEventListener('pointerup', handleDocumentUp);
+  (0,_utils__WEBPACK_IMPORTED_MODULE_1__.enableUserSelect)();
 }
 
 
@@ -44202,7 +44655,7 @@ __webpack_require__.r(__webpack_exports__);
 
   disablePen: _pen__WEBPACK_IMPORTED_MODULE_2__.disablePen,
   enablePen: _pen__WEBPACK_IMPORTED_MODULE_2__.enablePen,
-  setPen: _pen__WEBPACK_IMPORTED_MODULE_2__.setPen,
+
 
   disablePoint: _point__WEBPACK_IMPORTED_MODULE_5__.disablePoint,
   enablePoint: _point__WEBPACK_IMPORTED_MODULE_5__.enablePoint,
@@ -44254,13 +44707,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 // Template for creating a new page
-const PAGE_TEMPLATE = `
+const PAGE_TEMPLATE =
+    `
   <div style="visibility: hidden;" class="page" data-loaded="false">
     <div class="canvasWrapper">
       <canvas></canvas>
     </div>
-    <div class="` + _config__WEBPACK_IMPORTED_MODULE_1__["default"].textLayerName + `"></div>
-    <svg class="` + _config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationLayerName + `"></svg>
+    <div class="` +
+    _config__WEBPACK_IMPORTED_MODULE_1__["default"].textLayerName +
+    `"></div>
+    <svg class="` +
+    _config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationLayerName +
+    `"></svg>
   </div>
 `;
 
@@ -44271,19 +44729,19 @@ const PAGE_TEMPLATE = `
  * @return {HTMLElement}
  */
 function createPage(pageNumber) {
-  let temp = document.createElement('div');
-  temp.innerHTML = PAGE_TEMPLATE;
+    let temp = document.createElement('div');
+    temp.innerHTML = PAGE_TEMPLATE;
 
-  let page = temp.children[0];
-  let canvas = page.querySelector('canvas');
+    let page = temp.children[0];
+    let canvas = page.querySelector('canvas');
 
-  page.setAttribute('id', `page${pageNumber}`);
-  page.setAttribute('data-page-number', pageNumber);
+    page.setAttribute('id', `page${pageNumber}`);
+    page.setAttribute('data-page-number', pageNumber);
 
-  canvas.mozOpaque = true;
-  canvas.setAttribute('id', `page${pageNumber}`);
+    canvas.mozOpaque = true;
+    canvas.setAttribute('id', `page${pageNumber}`);
 
-  return page;
+    return page;
 }
 
 /**
@@ -44296,67 +44754,60 @@ function createPage(pageNumber) {
  *    - fulfilled: [pdfPage, annotations]
  *    - rejected: Error
  */
-function renderPage(pageNumber, renderOptions,pdfPage) {
-  
-  let {
-    documentId,
-    pdfDocument,
-    scale,
-    rotate
-  } = renderOptions;
+function renderPage(pageNumber, renderOptions, pdfPage) {
+    let { documentId, pdfDocument, scale, rotate } = renderOptions;
 
-  const eventBus = window.PDFViewerApplication.eventBus;
-  // Load the page and annotations
-  return Promise.all([
-    _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getAnnotations(documentId, pageNumber)
-  ]).then(([annotations]) => {
-    let page = document.getElementById(`page${pageNumber}`);
-    let svg = page.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationClassQuery());
-    let canvas = page.querySelector('.canvasWrapper canvas');
-    let canvasContext = canvas.getContext('2d', {alpha: false});
-    let totalRotation = rotate//(rotate + pdfPage.rotate) % 360;
-    let viewport = pdfPage.getViewport({scale: scale, rotation: totalRotation});
-    let transform = scalePage(pageNumber, viewport, canvasContext);
-    // Render the page
-    return Promise.all([
-      // pdfPage.render({ canvasContext, viewport, transform }).promise,
-      _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].render(svg, viewport, annotations)
-    ]).then(() => {
-      // Text content is needed for a11y, but is also necessary for creating
-      // highlight and strikeout annotations which require selecting text.
-        return new Promise((resolve, reject) => {
-          //Render text layer for a11y of text content
-          // let textLayer = page.querySelector(config.textClassQuery());
-          // let textLayerFactory = new pdfjsViewer.DefaultTextLayerFactory();
-          // let textLayerBuilder = textLayerFactory.createTextLayerBuilder(
-          //   textLayer,
-          //   pageNumber - 1,
-          //   viewport,
-          //   false,
-          //   eventBus
-          // );
-          // textLayerBuilder.setTextContent(textContent);
-          // textLayerBuilder.render();
+    const eventBus = window.PDFViewerApplication.eventBus;
+    // Load the page and annotations
+    return Promise.all([_PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getAnnotations(documentId, pageNumber)]).then(([annotations]) => {
+        let page = document.getElementById(`page${pageNumber}`);
+        let svg = page.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationClassQuery());
+        let canvas = page.querySelector('.canvasWrapper canvas');
+        let canvasContext = canvas.getContext('2d', { alpha: false });
+        let totalRotation = rotate; //(rotate + pdfPage.rotate) % 360;
+        let viewport = pdfPage.getViewport({ scale: scale, rotation: totalRotation });
+        let transform = scalePage(pageNumber, viewport, canvasContext);
+        // Render the page
+        return Promise.all([
+            // pdfPage.render({ canvasContext, viewport, transform }).promise,
+            _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].render(svg, viewport, annotations),
+        ])
+            .then(() => {
+                // Text content is needed for a11y, but is also necessary for creating
+                // highlight and strikeout annotations which require selecting text.
+                return new Promise((resolve, reject) => {
+                    //Render text layer for a11y of text content
+                    // let textLayer = page.querySelector(config.textClassQuery());
+                    // let textLayerFactory = new pdfjsViewer.DefaultTextLayerFactory();
+                    // let textLayerBuilder = textLayerFactory.createTextLayerBuilder(
+                    //   textLayer,
+                    //   pageNumber - 1,
+                    //   viewport,
+                    //   false,
+                    //   eventBus
+                    // );
+                    // textLayerBuilder.setTextContent(textContent);
+                    // textLayerBuilder.render();
 
-          //Enable a11y for annotations
-          //Timeout is needed to wait for `textLayerBuilder.render`
-          setTimeout(() => {
-            try {
-              (0,_a11y_renderScreenReaderHints__WEBPACK_IMPORTED_MODULE_2__["default"])(annotations.annotations);
-              resolve();
-            }
-            catch (e) {
-              reject(e);
-            }
-          });
-        });
-    }).then(() => {
-      // Indicate that the page was loaded
-      page.setAttribute('data-anno-loaded', 'true');
+                    //Enable a11y for annotations
+                    //Timeout is needed to wait for `textLayerBuilder.render`
+                    setTimeout(() => {
+                        try {
+                            (0,_a11y_renderScreenReaderHints__WEBPACK_IMPORTED_MODULE_2__["default"])(annotations.annotations);
+                            resolve();
+                        } catch (e) {
+                            reject(e);
+                        }
+                    });
+                });
+            })
+            .then(() => {
+                // Indicate that the page was loaded
+                page.setAttribute('data-anno-loaded', 'true');
 
-      return [pdfPage, annotations];
+                return [pdfPage, annotations];
+            });
     });
-  });
 }
 
 /**
@@ -44368,33 +44819,33 @@ function renderPage(pageNumber, renderOptions,pdfPage) {
  * @return {Array} The transform data for rendering the PDF page
  */
 function scalePage(pageNumber, viewport, context) {
-  let page = document.getElementById(`page${pageNumber}`);
-  let svg = page.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationClassQuery());
-  let wrapper = page.querySelector('.canvasWrapper');
-  let textLayer = page.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].textClassQuery());
-  let outputScale = getOutputScale(context);
-  let transform = !outputScale.scaled ? null : [outputScale.sx, 0, 0, outputScale.sy, 0, 0];
-  let sfx = approximateFraction(outputScale.sx);
-  let sfy = approximateFraction(outputScale.sy);
+    let page = document.getElementById(`page${pageNumber}`);
+    let svg = page.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationClassQuery());
+    let wrapper = page.querySelector('.canvasWrapper');
+    let textLayer = page.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].textClassQuery());
+    let outputScale = getOutputScale(context);
+    let transform = !outputScale.scaled ? null : [outputScale.sx, 0, 0, outputScale.sy, 0, 0];
+    let sfx = approximateFraction(outputScale.sx);
+    let sfy = approximateFraction(outputScale.sy);
 
-  // Adjust width/height for scale
-  page.style.visibility = '';
-  // canvas.width = roundToDivide(viewport.width * outputScale.sx, sfx[0]);
-  // canvas.height = roundToDivide(viewport.height * outputScale.sy, sfy[0]);
-  // canvas.style.width = roundToDivide(viewport.width, sfx[1]) + 'px';
-  // canvas.style.height = roundToDivide(viewport.height, sfx[1]) + 'px';
-  svg.setAttribute('width', viewport.width);
-  svg.setAttribute('height', viewport.height);
-  svg.style.width = `${viewport.width}px`;
-  svg.style.height = `${viewport.height}px`;
-  page.style.width = `${viewport.width}px`;
-  page.style.height = `${viewport.height}px`;
-  wrapper.style.width = `${viewport.width}px`;
-  wrapper.style.height = `${viewport.height}px`;
-  textLayer.style.width = `${viewport.width}px`;
-  textLayer.style.height = `${viewport.height}px`;
+    // Adjust width/height for scale
+    page.style.visibility = '';
+    // canvas.width = roundToDivide(viewport.width * outputScale.sx, sfx[0]);
+    // canvas.height = roundToDivide(viewport.height * outputScale.sy, sfy[0]);
+    // canvas.style.width = roundToDivide(viewport.width, sfx[1]) + 'px';
+    // canvas.style.height = roundToDivide(viewport.height, sfx[1]) + 'px';
+    svg.setAttribute('width', viewport.width);
+    svg.setAttribute('height', viewport.height);
+    svg.style.width = `${viewport.width}px`;
+    svg.style.height = `${viewport.height}px`;
+    page.style.width = `${viewport.width}px`;
+    page.style.height = `${viewport.height}px`;
+    wrapper.style.width = `${viewport.width}px`;
+    wrapper.style.height = `${viewport.height}px`;
+    textLayer.style.width = `${viewport.width}px`;
+    textLayer.style.height = `${viewport.height}px`;
 
-  return transform;
+    return transform;
 }
 
 /**
@@ -44405,67 +44856,66 @@ function scalePage(pageNumber, viewport, context) {
  *                 the second one is a denominator.
  */
 function approximateFraction(x) {
-  // Fast path for int numbers or their inversions.
-  if (Math.floor(x) === x) {
-    return [x, 1];
-  }
-
-  const xinv = 1 / x;
-  const limit = 8;
-  if (xinv > limit) {
-    return [1, limit];
-  }
-  else if (Math.floor(xinv) === xinv) {
-    return [1, xinv];
-  }
-
-  const x_ = x > 1 ? xinv : x;
-
-  // a/b and c/d are neighbours in Farey sequence.
-  let a = 0; let b = 1; let c = 1; let d = 1;
-
-  // Limit search to order 8.
-  while (true) {
-    // Generating next term in sequence (order of q).
-    let p = a + c; let q = b + d;
-    if (q > limit) {
-      break;
+    // Fast path for int numbers or their inversions.
+    if (Math.floor(x) === x) {
+        return [x, 1];
     }
-    if (x_ <= p / q) {
-      c = p; d = q;
-    }
-    else {
-      a = p; b = q;
-    }
-  }
 
-  // Select closest of neighbours to x.
-  if (x_ - a / b < c / d - x_) {
-    return x_ === x ? [a, b] : [b, a];
-  }
-  else {
-    return x_ === x ? [c, d] : [d, c];
-  }
+    const xinv = 1 / x;
+    const limit = 8;
+    if (xinv > limit) {
+        return [1, limit];
+    } else if (Math.floor(xinv) === xinv) {
+        return [1, xinv];
+    }
+
+    const x_ = x > 1 ? xinv : x;
+
+    // a/b and c/d are neighbours in Farey sequence.
+    let a = 0;
+    let b = 1;
+    let c = 1;
+    let d = 1;
+
+    // Limit search to order 8.
+    while (true) {
+        // Generating next term in sequence (order of q).
+        let p = a + c;
+        let q = b + d;
+        if (q > limit) {
+            break;
+        }
+        if (x_ <= p / q) {
+            c = p;
+            d = q;
+        } else {
+            a = p;
+            b = q;
+        }
+    }
+
+    // Select closest of neighbours to x.
+    if (x_ - a / b < c / d - x_) {
+        return x_ === x ? [a, b] : [b, a];
+    } else {
+        return x_ === x ? [c, d] : [d, c];
+    }
 }
 
 function getOutputScale(ctx) {
-  let devicePixelRatio = window.devicePixelRatio || 1;
-  let backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
-                          ctx.mozBackingStorePixelRatio ||
-                          ctx.msBackingStorePixelRatio ||
-                          ctx.oBackingStorePixelRatio ||
-                          ctx.backingStorePixelRatio || 1;
-  let pixelRatio = devicePixelRatio / backingStoreRatio;
-  return {
-    sx: pixelRatio,
-    sy: pixelRatio,
-    scaled: pixelRatio !== 1
-  };
+    let devicePixelRatio = window.devicePixelRatio || 1;
+    let backingStoreRatio = ctx.webkitBackingStorePixelRatio || ctx.mozBackingStorePixelRatio || ctx.msBackingStorePixelRatio || ctx.oBackingStorePixelRatio || ctx.backingStorePixelRatio || 1;
+    let pixelRatio = devicePixelRatio / backingStoreRatio;
+    return {
+        sx: pixelRatio,
+        sy: pixelRatio,
+        scaled: pixelRatio !== 1,
+    };
 }
 
 function roundToDivide(x, div) {
-  let r = x % div;
-  return r === 0 ? x : Math.round(x - r + div);
+    let r = x % div;
+    return r === 0 ? x : Math.round(x - r + div);
 }
 
 
@@ -44480,7 +44930,6 @@ function roundToDivide(x, div) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "setPen": function() { return /* binding */ setPen; },
 /* harmony export */   "getPen": function() { return /* binding */ getPen; },
 /* harmony export */   "enablePen": function() { return /* binding */ enablePen; },
 /* harmony export */   "disablePen": function() { return /* binding */ disablePen; }
@@ -44494,8 +44943,6 @@ __webpack_require__.r(__webpack_exports__);
 
 let _enabled = false;
 let _candraw = false;
-let _penSize;
-let _penColor;
 let path;
 let lines = [];
 
@@ -44504,6 +44951,7 @@ let lines = [];
  * @param {PointerEvent} e The DOM event to be handled
  */
 function handleDocumentPointerdown(e) {
+  if(window.colorPaletteOpen) return;
   path = null;
   lines = [];
   if (!(0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(e.clientX, e.clientY)) {
@@ -44519,6 +44967,7 @@ function handleDocumentPointerdown(e) {
  * @param {PointerEvent} e The DOM event to be handled
  */
 function handleDocumentPointerup(e) {
+  if(window.colorPaletteOpen) return;
   saveToStorage(e.clientX, e.clientY);
 }
 
@@ -44532,8 +44981,9 @@ function saveToStorage(x, y) {
     let { documentId, pageNumber } = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getMetadata)(svg);
     _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().addAnnotation(documentId, pageNumber, {
       type: 'drawing',
-      width: _penSize,
-      color: _penColor,
+      width: window.currentAnnoteSize,
+      color: window.currentAnnoteColor,
+      opacity:window.currentOpacity,
       lines
     }).then((annotation) => {
       if (path) {
@@ -44551,6 +45001,7 @@ function saveToStorage(x, y) {
  * @param {PointerEvent} e The DOM event to be handled
  */
 function handleDocumentPointermove(e) {
+  if(window.colorPaletteOpen) return;
   if (!(0,_utils__WEBPACK_IMPORTED_MODULE_2__.findSVGAtPoint)(e.clientX, e.clientY) || !_candraw) {
     return;
   }
@@ -44564,6 +45015,7 @@ function handleDocumentPointermove(e) {
  * } e The DOM event to be handled
  */
 function handleDocumentKeyup(e) {
+  if(window.colorPaletteOpen) return;
   // Cancel rect if Esc is pressed
   if (e.keyCode === 27) {
     lines = null;
@@ -44604,8 +45056,9 @@ function savePoint(x, y) {
 
   path = (0,_render_appendChild__WEBPACK_IMPORTED_MODULE_1__.appendChild)(svg, {
     type: 'drawing',
-    color: _penColor,
-    width: _penSize,
+    color: window.currentAnnoteColor,
+    width: window.currentAnnoteSize,
+    opacity:window.currentOpacity,
     lines
   });
 }
@@ -44616,10 +45069,6 @@ function savePoint(x, y) {
  * @param {Number} penSize The size of the lines drawn by the pen, rounded to 2 decimal places
  * @param {String} penColor The color of the lines drawn by the pen
  */
-function setPen(penSize = 1, penColor = '000000') {
-  _penSize = Math.round(parseFloat(penSize) * 1e2) / 1e2;
-  _penColor = penColor;
-}
 
 /**
  * Return pen attributes of the pen
@@ -44628,8 +45077,8 @@ function setPen(penSize = 1, penColor = '000000') {
  */
 function getPen() {
   return {
-    size: _penSize,
-    color: _penColor
+    size: window.currentAnnoteSize,
+    color: window.currentAnnoteColor
   };
 }
 
@@ -44922,7 +45371,9 @@ function handleDocumentMouseup(e) {
         width: r.width,
         height: r.height
       };
-    }));
+    }),window.currentAnnoteColor);
+    let selection = window.getSelection();
+    selection.removeAllRanges();
   }
   else if (_type === 'area' && overlay) {
     let svg = overlay.parentNode.querySelector(_config__WEBPACK_IMPORTED_MODULE_1__["default"].annotationSvgQuery());
@@ -44932,7 +45383,7 @@ function handleDocumentMouseup(e) {
       left: parseInt(overlay.style.left, 10) + rect.left,
       width: parseInt(overlay.style.width, 10),
       height: parseInt(overlay.style.height, 10)
-    }]);
+    }],window.currentAnnoteColor);
 
     overlay.parentNode.removeChild(overlay);
     overlay = null;
@@ -45087,8 +45538,6 @@ __webpack_require__.r(__webpack_exports__);
 
 let _enabled = false;
 let input;
-let _textSize;
-let _textColor;
 
 /**
  * Handle document.mouseup event
@@ -45110,7 +45559,7 @@ function handleDocumentMouseup(e) {
   input.style.position = 'absolute';
   input.style.top = `${e.clientY}px`;
   input.style.left = `${e.clientX}px`;
-  input.style.fontSize = `${_textSize}px`;
+  input.style.fontSize = `${window.currentAnnoteSize}px`;
   input.style.zIndex = '41';
   input.addEventListener('blur', handleInputBlur);
   input.addEventListener('keyup', handleInputKeyup);
@@ -45152,7 +45601,7 @@ function saveText() {
     if (!svg) {
       return;
     }
-    let height = _textSize;
+    let height = window.currentAnnoteSize;
     let { documentId, pageNumber, viewport } = (0,_utils__WEBPACK_IMPORTED_MODULE_2__.getMetadata)(svg);
     let scale = 1 / viewport.scale;
     let rect = svg.getBoundingClientRect();
@@ -45161,14 +45610,13 @@ function saveText() {
       clientY - rect.top + height], svg, viewport);
     let annotation = {
       type: 'textbox',
-      size: _textSize * scale,
-      color: _textColor,
+      size: window.currentAnnoteSize * scale,
+      color: window.currentAnnoteColor,
       content: value,
       x: pt[0],
       y: pt[1],
       rotation: -viewport.rotation
     };
-
     _PDFJSAnnotate__WEBPACK_IMPORTED_MODULE_0__["default"].getStoreAdapter().addAnnotation(documentId, pageNumber, annotation)
       .then((annotation) => {
         (0,_render_appendChild__WEBPACK_IMPORTED_MODULE_1__.appendChild)(svg, annotation);
@@ -45197,8 +45645,8 @@ function closeInput() {
  * @param {String} textColor The color of the text
  */
 function setText(textSize = 12, textColor = '000000') {
-  _textSize = parseInt(textSize, 10);
-  _textColor = textColor;
+  // window.currentAnnoteSize = parseInt(textSize, 10);
+  // window.currentAnnoteColor = textColor;
 }
 
 /**
@@ -46527,6 +46975,193 @@ function findAnnotation(documentId, userId, annotationId) {
 
 /***/ }),
 
+/***/ "./src/online_annotate/adapter/SaltDogAdapter.js":
+/*!*******************************************************!*\
+  !*** ./src/online_annotate/adapter/SaltDogAdapter.js ***!
+  \*******************************************************/
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": function() { return /* binding */ SaltDogAdapter; }
+/* harmony export */ });
+/* harmony import */ var _utils_uuid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/uuid */ "./src/online_annotate/utils/uuid.js");
+/* harmony import */ var _StoreAdapter__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./StoreAdapter */ "./src/online_annotate/adapter/StoreAdapter.js");
+
+
+
+// StoreAdapter for working with localStorage
+// This is ideal for testing, examples, and prototyping
+class SaltDogAdapter extends _StoreAdapter__WEBPACK_IMPORTED_MODULE_1__["default"] {
+    constructor() {
+        super({
+            getAnnotations(documentId, pageNumber) {
+                return new Promise((resolve, reject) => {
+                    getAnnotations(documentId).then((annotations) => {
+                        annotations.filter((i) => {
+                            return i.page === pageNumber && i.class === 'Annotation';
+                        });
+
+                        resolve({
+                            documentId,
+                            pageNumber,
+                            annotations,
+                        });
+                    });
+                });
+            },
+        });
+
+        this.getAnnotation = (documentId, annotationId) => {
+            return new Promise((resolve, reject) => {
+                getAnnotations(documentId).then((anno) => {
+                    resolve(anno[findAnnotation(anno, annotationId)]);
+                });
+            });
+        };
+
+        this.addAnnotation = (documentId, pageNumber, annotation) => {
+            //console.error('aa');
+            return new Promise((resolve, reject) => {
+                annotation.class = 'Annotation';
+                annotation.uuid = (0,_utils_uuid__WEBPACK_IMPORTED_MODULE_0__["default"])();
+                annotation.page = pageNumber;
+
+                getAnnotations(documentId).then((annotations) => {
+                    annotations.push(annotation);
+                    updateAnnotations(documentId, annotations);
+                    resolve(annotation);
+                });
+            });
+        };
+
+        this.editAnnotation = (documentId, annotationId, annotation) => {
+            return new Promise((resolve, reject) => {
+                getAnnotations(documentId).then((annotations) => {
+                    annotations[findAnnotation(annotations, annotationId)] = annotation;
+                    updateAnnotations(documentId, annotations);
+                    resolve(annotation);
+                });
+            });
+        };
+
+        this.deleteAnnotation = (documentId, annotationId) => {
+            return new Promise((resolve, reject) => {
+                getAnnotations(documentId).then((anno) => {
+                    let annotation = anno.filter((i) => i.uuid === annotationId)[0] || {};
+                    if (!annotation) {
+                        return reject('Could not find annotation');
+                    }
+                    let index = findAnnotation(anno, annotationId);
+                    if (index > -1) {
+                        let annotations = anno;
+                        annotations.splice(index, 1);
+                        updateAnnotations(documentId, annotations);
+                    }
+                    resolve(true);
+                });
+            });
+        };
+
+        this.getComments = (documentId, annotationId) => {
+            return new Promise((resolve, reject) => {
+                getAnnotations(documentId).then((anno) => {
+                    resolve(
+                        anno.filter((i) => {
+                            return i.class === 'Comment' && i.annotation === annotationId;
+                        })
+                    );
+                });
+            });
+        };
+
+        this.addComment = (documentId, annotationId, content) => {
+            return new Promise((resolve, reject) => {
+                let comment = {
+                    class: 'Comment',
+                    uuid: (0,_utils_uuid__WEBPACK_IMPORTED_MODULE_0__["default"])(),
+                    annotation: annotationId,
+                    content: content,
+                };
+                getAnnotations(documentId).then((annotations) => {
+                    annotations.push(comment);
+                    updateAnnotations(documentId, annotations);
+
+                    resolve(comment);
+                });
+            });
+        };
+
+        this.deleteComment = (documentId, commentId) => {
+            return new Promise((resolve, reject) => {
+                getAnnotations(documentId).then((anno) => {
+                    let comment = anno.filter((i) => i.uuid === commentId)[0] || {};
+                    if (!comment) {
+                        return reject('Could not find annotation');
+                    }
+                    let index = -1;
+                    let annotations = anno;
+                    for (let i = 0, l = annotations.length; i < l; i++) {
+                        if (annotations[i].uuid === commentId) {
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    if (index > -1) {
+                        annotations.splice(index, 1);
+                        updateAnnotations(documentId, annotations);
+                    }
+
+                    resolve(true);
+                });
+            });
+        };
+    }
+}
+
+function getAnnotations(documentId) {
+    if (window._annotations) return Promise.resolve(window._annotations);
+    else {
+        return new Promise((resolve, reject) => {
+            window.__sdJSBridge &&
+                window.__sdJSBridge.invoke('reader.getAnnotations', documentId, (annotations) => {
+                    window._annotations = annotations || [];
+                    console.log(`getAnnotations: ${annotations} Loaded`);
+                    resolve(window._annotations);
+                });
+        });
+    }
+}
+
+function updateAnnotations(documentId, annotations) {
+    window._annotations = annotations;
+}
+/**
+ *
+ * @param {String} documentId Document id of the annotation
+ * @param {String} annotationId The id of the annotation
+ *
+ * This function finds all the annotation made by one user.
+ *
+ * @return {int} The index of the annotation in localstorage
+ */
+function findAnnotation(anno, annotationId) {
+    let index = -1;
+    let annotations = anno;
+    for (let i = 0, l = annotations.length; i < l; i++) {
+        if (annotations[i].uuid === annotationId) {
+            index = i;
+            break;
+        }
+    }
+    return index;
+}
+
+
+/***/ }),
+
 /***/ "./src/online_annotate/adapter/StoreAdapter.js":
 /*!*****************************************************!*\
   !*** ./src/online_annotate/adapter/StoreAdapter.js ***!
@@ -47417,7 +48052,8 @@ function renderPath(a) {
     d: `${d.join(' ')}`, // `${d.join(' ')}Z`,
     stroke: (0,_utils_normalizeColor__WEBPACK_IMPORTED_MODULE_1__["default"])(a.color || '#000'),
     strokeWidth: a.width || 1,
-    fill: 'none'
+    fill: 'none',
+    strokeOpacity:a.opacity||1,
   });
 
   return path;
@@ -47460,7 +48096,7 @@ function renderPoint(a) {
     width: SIZE,
     height: SIZE,
     x: a.x,
-    y: a.y
+    y: a.y,
   });
 
   (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(innerSVG, {
@@ -47475,14 +48111,14 @@ function renderPoint(a) {
     width: SIZE,
     height: SIZE,
     stroke: '#000',
-    fill: '#ff0'
+    fill: '#ff0',
   });
 
   (0,_utils_setAttributes__WEBPACK_IMPORTED_MODULE_0__["default"])(path, {
     d: D,
     strokeWidth: 50,
     stroke: '#000',
-    fill: '#fff'
+    fill: '#fff',
   });
 
   innerSVG.appendChild(path);
@@ -54192,242 +54828,234 @@ __webpack_require__.r(__webpack_exports__);
 // THIS FILE IS GENERATED AUTOMATICALLY, DO NOT EDIT MANUALLY!
 //
 
-const {AppOptions} = __webpack_require__(/*! ./app_options.js */ "./src/app_options.js");
-const {PDFViewerApplication} = __webpack_require__(/*! ./app.js */ "./src/app.js");
-const {SDPDFCore} = __webpack_require__(/*! ./sdpdfcore.js */ "./src/sdpdfcore.js");
-const {initOnlineAnnotation} = __webpack_require__(/*! ./online_annotate.js */ "./src/online_annotate.js");
+const { AppOptions } = __webpack_require__(/*! ./app_options.js */ "./src/app_options.js");
+const { PDFViewerApplication } = __webpack_require__(/*! ./app.js */ "./src/app.js");
+const { SDPDFCore } = __webpack_require__(/*! ./sdpdfcore.js */ "./src/sdpdfcore.js");
+const { initOnlineAnnotation } = __webpack_require__(/*! ./online_annotate.js */ "./src/online_annotate.js");
 
 const pdfjsVersion = '2.12.313';
 const pdfjsBuild = '2.12.313';
 window.PDFViewerApplication = PDFViewerApplication;
 window.PDFViewerApplicationOptions = AppOptions;
 
-;
 {
- __webpack_require__(/*! ./pdf_print_service.js */ "./src/pdf_print_service.js");
+    __webpack_require__(/*! ./pdf_print_service.js */ "./src/pdf_print_service.js");
 }
-const fakediv = document.createElement('div')
-const fakebutton = document.createElement('button')
-const faketxtarea = document.createElement('textarea')
-const fakeselect = document.createElement('select')
-const fakeoption = document.createElement('option')
-const fakea = document.createElement('a')
-const fakeinput = document.createElement('input')
-const fakespan = document.createElement('span')
-const fakep = document.createElement('p')
+const fakediv = document.createElement('div');
+const fakebutton = document.createElement('button');
+const faketxtarea = document.createElement('textarea');
+const fakeselect = document.createElement('select');
+const fakeoption = document.createElement('option');
+const fakea = document.createElement('a');
+const fakeinput = document.createElement('input');
+const fakespan = document.createElement('span');
+const fakep = document.createElement('p');
 function getViewerConfiguration() {
- let errorWrapper = null;
- errorWrapper = {
-  container: document.getElementById("errorWrapper")||fakediv,
-  errorMessage: document.getElementById("errorMessage")||fakediv,
-  closeButton: document.getElementById("errorClose")||fakebutton
- };
- return {
-  appContainer: document.body,
-  mainContainer: document.getElementById("viewerContainer")||fakediv,
-  viewerContainer: document.getElementById("viewer")||fakediv,
-  toolbar: {
-   container: document.getElementById("toolbarViewer")||fakediv,
-   numPages: document.getElementById("numPages")||fakespan,
-   pageNumber: document.getElementById("pageNumber")||fakeinput,
-   scaleSelect: document.getElementById("scaleSelect")||fakeselect,
-   scaleSelectOptions:document.getElementById("scaleSelectOptions"),
-   scaleSelectShowOptionsButton:document.getElementById('scaleSelectShowOptionsButton'),
-   previous: document.getElementById("previous")||fakebutton,
-   next: document.getElementById("next")||fakebutton,
-   zoomIn: document.getElementById("zoomIn")||fakebutton,
-   zoomOut: document.getElementById("zoomOut")||fakebutton,
-   viewFind: document.getElementById("viewFind")||fakebutton,//TODO:
-   openFile: document.getElementById("openFile")||fakebutton,//TODO:
-   print: document.getElementById("print")||fakebutton,//TODO:
+    let errorWrapper = null;
+    errorWrapper = {
+        container: document.getElementById('errorWrapper') || fakediv,
+        errorMessage: document.getElementById('errorMessage') || fakediv,
+        closeButton: document.getElementById('errorClose') || fakebutton,
+    };
+    return {
+        appContainer: document.body,
+        mainContainer: document.getElementById('viewerContainer') || fakediv,
+        viewerContainer: document.getElementById('viewer') || fakediv,
+        toolbar: {
+            container: document.getElementById('toolbarViewer') || fakediv,
+            numPages: document.getElementById('numPages') || fakespan,
+            pageNumber: document.getElementById('pageNumber') || fakeinput,
+            scaleSelect: document.getElementById('scaleSelect') || fakeselect,
+            scaleSelectOptions: document.getElementById('scaleSelectOptions'),
+            scaleSelectShowOptionsButton: document.getElementById('scaleSelectShowOptionsButton'),
+            previous: document.getElementById('previous') || fakebutton,
+            next: document.getElementById('next') || fakebutton,
+            zoomIn: document.getElementById('zoomIn') || fakebutton,
+            zoomOut: document.getElementById('zoomOut') || fakebutton,
+            viewFind: document.getElementById('viewFind') || fakebutton, //TODO:
+            openFile: document.getElementById('openFile') || fakebutton, //TODO:
+            print: document.getElementById('print') || fakebutton, //TODO:
 
-   download: document.getElementById("download")||fakebutton,//TODO:
-   viewBookmark: document.getElementById("viewBookmark")||fakea//TODO:
-  },
-  secondaryToolbar: {
-   toolbar: document.getElementById("secondaryToolbar"),
-   toggleButton: document.getElementById("secondaryToolbarToggle"),
+            download: document.getElementById('download') || fakebutton, //TODO:
+            viewBookmark: document.getElementById('viewBookmark') || fakea, //TODO:
+        },
+        secondaryToolbar: {
+            toolbar: document.getElementById('secondaryToolbar'),
+            toggleButton: document.getElementById('secondaryToolbarToggle'),
 
-
-   openFileButton: document.getElementById("secondaryOpenFile")||fakebutton,
-   printButton: document.getElementById("secondaryPrint")||fakebutton,
-   downloadButton: document.getElementById("secondaryDownload")||fakebutton,
-   viewBookmarkButton: document.getElementById("secondaryViewBookmark")||fakea,
-   firstPageButton: document.getElementById("firstPage")||fakebutton,
-   lastPageButton: document.getElementById("lastPage")||fakebutton,
-   pageRotateCwButton: document.getElementById("pageRotateCw"),
-   pageRotateCcwButton: document.getElementById("pageRotateCcw"),
-   cursorSelectToolButton: document.getElementById("cursorSelectTool"),
-   cursorHandToolButton: document.getElementById("cursorHandTool"),
-   scrollPageButton: document.getElementById("scrollPage"),
-   scrollVerticalButton: document.getElementById("scrollVertical"),
-   scrollHorizontalButton: document.getElementById("scrollHorizontal"),
-   scrollWrappedButton: document.getElementById("scrollWrapped"),
-   spreadNoneButton: document.getElementById("spreadNone"),
-   spreadOddButton: document.getElementById("spreadOdd"),
-   spreadEvenButton: document.getElementById("spreadEven"),
-   // saltdog disable documentProperties
-  //  documentPropertiesButton: document.getElementById("documentProperties")
-  },
-  // sdpdfcore disable sidebar
-//   sidebar: {
-//    outerContainer: document.getElementById("outerContainer"),
-//    viewerContainer: document.getElementById("viewerContainer"),
-//    toggleButton: document.getElementById("sidebarToggle"),
-//    thumbnailButton: document.getElementById("viewThumbnail"),
-//    outlineButton: document.getElementById("viewOutline"),
-//    attachmentsButton: document.getElementById("viewAttachments"),
-//    layersButton: document.getElementById("viewLayers"),
-//    thumbnailView: document.getElementById("thumbnailView"),
-//    outlineView: document.getElementById("outlineView"),
-//    attachmentsView: document.getElementById("attachmentsView"),
-//    layersView: document.getElementById("layersView"),
-//    outlineOptionsContainer: document.getElementById("outlineOptionsContainer"),
-//    currentOutlineItemButton: document.getElementById("currentOutlineItem")
-//   },
-//   sidebarResizer: {
-//    outerContainer: document.getElementById("outerContainer"),
-//    resizer: document.getElementById("sidebarResizer")
-//   },
-  findBar: {
-   bar: document.getElementById("findbar")||fakediv,
-   toggleButton: document.getElementById("viewFind")||fakebutton,
-   findField: document.getElementById("findInput")||fakeinput,
-   highlightAllCheckbox: document.getElementById("findHighlightAll")||fakeinput,
-   caseSensitiveCheckbox: document.getElementById("findMatchCase")||fakeinput,
-   matchDiacriticsCheckbox: document.getElementById("findMatchDiacritics")||fakeinput,
-   entireWordCheckbox: document.getElementById("findEntireWord")||fakeinput,
-   findMsg: document.getElementById("findMsg")||fakespan,
-   findResultsCount: document.getElementById("findResultsCount")||fakespan,
-   findPreviousButton: document.getElementById("findPrevious")||fakebutton,
-   findNextButton: document.getElementById("findNext")||fakebutton
-  },
-  passwordOverlay: {
-   overlayName: "passwordOverlay",
-   container: document.getElementById("passwordOverlay")||fakediv,
-   label: document.getElementById("passwordText")||fakep,
-   input: document.getElementById("password")||fakeinput,
-   submitButton: document.getElementById("passwordSubmit")||fakebutton,
-   cancelButton: document.getElementById("passwordCancel")||fakebutton
-  },
-  // saltdog disable documentProperties
-  // documentProperties: {
-  //  overlayName: "documentPropertiesOverlay",
-  //  container: document.getElementById("documentPropertiesOverlay"),
-  //  closeButton: document.getElementById("documentPropertiesClose"),
-  //  fields: {
-  //   fileName: document.getElementById("fileNameField"),
-  //   fileSize: document.getElementById("fileSizeField"),
-  //   title: document.getElementById("titleField"),
-  //   author: document.getElementById("authorField"),
-  //   subject: document.getElementById("subjectField"),
-  //   keywords: document.getElementById("keywordsField"),
-  //   creationDate: document.getElementById("creationDateField"),
-  //   modificationDate: document.getElementById("modificationDateField"),
-  //   creator: document.getElementById("creatorField"),
-  //   producer: document.getElementById("producerField"),
-  //   version: document.getElementById("versionField"),
-  //   pageCount: document.getElementById("pageCountField"),
-  //   pageSize: document.getElementById("pageSizeField"),
-  //   linearized: document.getElementById("linearizedField")
-  //  }
-  // },
-  annotationButton:{
-      highLightAnnotation:document.getElementById("highLightAnno")||fakebutton
-  },
-  errorWrapper,
-  printContainer: document.getElementById("printContainer")||fakediv,
-  openFileInputName: "fileInput",
-  debuggerScriptPath: "./debugger.js"
- };
+            openFileButton: document.getElementById('secondaryOpenFile') || fakebutton,
+            printButton: document.getElementById('secondaryPrint') || fakebutton,
+            downloadButton: document.getElementById('secondaryDownload') || fakebutton,
+            viewBookmarkButton: document.getElementById('secondaryViewBookmark') || fakea,
+            firstPageButton: document.getElementById('firstPage') || fakebutton,
+            lastPageButton: document.getElementById('lastPage') || fakebutton,
+            pageRotateCwButton: document.getElementById('pageRotateCw'),
+            pageRotateCcwButton: document.getElementById('pageRotateCcw'),
+            cursorSelectToolButton: document.getElementById('cursorSelectTool'),
+            cursorHandToolButton: document.getElementById('cursorHandTool'),
+            scrollPageButton: document.getElementById('scrollPage'),
+            scrollVerticalButton: document.getElementById('scrollVertical'),
+            scrollHorizontalButton: document.getElementById('scrollHorizontal'),
+            scrollWrappedButton: document.getElementById('scrollWrapped'),
+            spreadNoneButton: document.getElementById('spreadNone'),
+            spreadOddButton: document.getElementById('spreadOdd'),
+            spreadEvenButton: document.getElementById('spreadEven'),
+            // saltdog disable documentProperties
+            //  documentPropertiesButton: document.getElementById("documentProperties")
+        },
+        // sdpdfcore disable sidebar
+        //   sidebar: {
+        //    outerContainer: document.getElementById("outerContainer"),
+        //    viewerContainer: document.getElementById("viewerContainer"),
+        //    toggleButton: document.getElementById("sidebarToggle"),
+        //    thumbnailButton: document.getElementById("viewThumbnail"),
+        //    outlineButton: document.getElementById("viewOutline"),
+        //    attachmentsButton: document.getElementById("viewAttachments"),
+        //    layersButton: document.getElementById("viewLayers"),
+        //    thumbnailView: document.getElementById("thumbnailView"),
+        //    outlineView: document.getElementById("outlineView"),
+        //    attachmentsView: document.getElementById("attachmentsView"),
+        //    layersView: document.getElementById("layersView"),
+        //    outlineOptionsContainer: document.getElementById("outlineOptionsContainer"),
+        //    currentOutlineItemButton: document.getElementById("currentOutlineItem")
+        //   },
+        //   sidebarResizer: {
+        //    outerContainer: document.getElementById("outerContainer"),
+        //    resizer: document.getElementById("sidebarResizer")
+        //   },
+        findBar: {
+            bar: document.getElementById('findbar') || fakediv,
+            toggleButton: document.getElementById('viewFind') || fakebutton,
+            findField: document.getElementById('findInput') || fakeinput,
+            highlightAllCheckbox: document.getElementById('findHighlightAll') || fakeinput,
+            caseSensitiveCheckbox: document.getElementById('findMatchCase') || fakeinput,
+            matchDiacriticsCheckbox: document.getElementById('findMatchDiacritics') || fakeinput,
+            entireWordCheckbox: document.getElementById('findEntireWord') || fakeinput,
+            findMsg: document.getElementById('findMsg') || fakespan,
+            findResultsCount: document.getElementById('findResultsCount') || fakespan,
+            findPreviousButton: document.getElementById('findPrevious') || fakebutton,
+            findNextButton: document.getElementById('findNext') || fakebutton,
+        },
+        passwordOverlay: {
+            overlayName: 'passwordOverlay',
+            container: document.getElementById('passwordOverlay') || fakediv,
+            label: document.getElementById('passwordText') || fakep,
+            input: document.getElementById('password') || fakeinput,
+            submitButton: document.getElementById('passwordSubmit') || fakebutton,
+            cancelButton: document.getElementById('passwordCancel') || fakebutton,
+        },
+        // saltdog disable documentProperties
+        // documentProperties: {
+        //  overlayName: "documentPropertiesOverlay",
+        //  container: document.getElementById("documentPropertiesOverlay"),
+        //  closeButton: document.getElementById("documentPropertiesClose"),
+        //  fields: {
+        //   fileName: document.getElementById("fileNameField"),
+        //   fileSize: document.getElementById("fileSizeField"),
+        //   title: document.getElementById("titleField"),
+        //   author: document.getElementById("authorField"),
+        //   subject: document.getElementById("subjectField"),
+        //   keywords: document.getElementById("keywordsField"),
+        //   creationDate: document.getElementById("creationDateField"),
+        //   modificationDate: document.getElementById("modificationDateField"),
+        //   creator: document.getElementById("creatorField"),
+        //   producer: document.getElementById("producerField"),
+        //   version: document.getElementById("versionField"),
+        //   pageCount: document.getElementById("pageCountField"),
+        //   pageSize: document.getElementById("pageSizeField"),
+        //   linearized: document.getElementById("linearizedField")
+        //  }
+        // },
+        annotationButton: {
+            highLightAnnotation: document.getElementById('highLightAnno') || fakebutton,
+        },
+        errorWrapper,
+        printContainer: document.getElementById('printContainer') || fakediv,
+        openFileInputName: 'fileInput',
+        debuggerScriptPath: './debugger.js',
+    };
 }
 
 function webViewerLoad() {
     console.log(`webViewerLoad`);
- const config = getViewerConfiguration();
- Promise.all([
-  __webpack_require__.e(/*! import() */ "src_genericcom_js").then(__webpack_require__.bind(__webpack_require__, /*! ./genericcom.js */ "./src/genericcom.js")),
-  Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! ./pdf_print_service.js */ "./src/pdf_print_service.js"))
- ]).then(function ([genericCom, pdfPrintService]) {
-  console.log(`SDPDFCore Ready`);
-  // wait to run app
-    PDFViewerApplication.run(config)
- });
+    const config = getViewerConfiguration();
+    Promise.all([__webpack_require__.e(/*! import() */ "src_genericcom_js").then(__webpack_require__.bind(__webpack_require__, /*! ./genericcom.js */ "./src/genericcom.js")), Promise.resolve(/*! import() */).then(__webpack_require__.bind(__webpack_require__, /*! ./pdf_print_service.js */ "./src/pdf_print_service.js"))]).then(function ([genericCom, pdfPrintService]) {
+        // console.log(`SDPDFCore Ready`);
+        // wait to run app
+        PDFViewerApplication.run(config);
+    });
 }
 ///////PDF MODE INIT BEGIN/////////////
-function closeSubToolbar(){
-  const toolContainer = document.querySelector('.HeaderToolsContainer');
-  if(toolContainer){
-    toolContainer.style.display='none';
-  }
-  const viewer = document.getElementById(`viewerContainer`);
-  viewer.style.top='42px';
+function closeSubToolbar() {
+    const toolContainer = document.querySelector('.HeaderToolsContainer');
+    if (toolContainer) {
+        toolContainer.style.display = 'none';
+    }
+    const viewer = document.getElementById(`viewerContainer`);
+    viewer.style.top = '42px';
 }
-function openSubToolbar(modeName){
-  if(modeName=='View') return;
-  const toolContainer = document.querySelector('.HeaderToolsContainer');
-  if(toolContainer){
-    toolContainer.style.display='block';
-  }
-  const viewer = document.getElementById(`viewerContainer`);
-  viewer.style.top='82px';
-  const btnGroups = document.querySelector(`.Header .Tools`);
-  for(let i=0;i<btnGroups.children.length;i++){
-    btnGroups[i].classList.add('hidden');
-  }
-  switch(modeName){
-    case 'Annotate':
-      document.querySelector(`.AnnotationBtns`).classList.classList.remove('hidden');
-  }
+function openSubToolbar(modeName) {
+    if (modeName == 'View') return;
+    const toolContainer = document.querySelector('.HeaderToolsContainer');
+    if (toolContainer) {
+        toolContainer.style.display = 'block';
+    }
+    const viewer = document.getElementById(`viewerContainer`);
+    viewer.style.top = '82px';
+    const btnGroups = document.querySelector(`.Header .Tools`);
+    for (let i = 0; i < btnGroups.children.length; i++) {
+        btnGroups[i].classList.add('hidden');
+    }
+    switch (modeName) {
+        case 'Annotate':
+            document.querySelector(`.AnnotationBtns`).classList.classList.remove('hidden');
+    }
 }
 let ribbons = document.getElementById(`ribbonsContainer`);
-ribbons.addEventListener('click',(e)=>{
-  if(e.target.tagName!='BUTTON')return;
-  const btn = e.target;
-  const mode = btn.getAttribute('data-pdf-mode')||'View';
-  const ribbonsChild = ribbons.children;
-  // 按钮状态
-  for(let i=0;i<ribbonsChild.length;i++){
-    if(ribbonsChild[i].getAttribute('data-pdf-mode')!=mode)
-      ribbonsChild[i].classList.remove('active');
-    else
-    ribbonsChild[i].classList.add('active');
-  }
-  switch(mode){
-    case 'View':
-      closeSubToolbar();
-    break;
-    case 'Annotate':
-      openSubToolbar(mode);
-    break;
-  }
-})
+ribbons.addEventListener('click', (e) => {
+    if (e.target.tagName != 'BUTTON') return;
+    const btn = e.target;
+    const mode = btn.getAttribute('data-pdf-mode') || 'View';
+    const ribbonsChild = ribbons.children;
+    // 按钮状态
+    for (let i = 0; i < ribbonsChild.length; i++) {
+        if (ribbonsChild[i].getAttribute('data-pdf-mode') != mode) ribbonsChild[i].classList.remove('active');
+        else ribbonsChild[i].classList.add('active');
+    }
+    switch (mode) {
+        case 'View':
+            closeSubToolbar();
+            break;
+        case 'Annotate':
+            openSubToolbar(mode);
+            break;
+    }
+});
 // if(ribbons){
 //   ribbons = ribbons.children;
 //   for(let i=0;i<ribbons.length;i++){
-    
+
 //   }
 // }
 ///////PDF MODE INIT END/////////////
 ///////PDF ANNOTATE JS INIT BEGIN//////////////
-try{
-initOnlineAnnotation();
-}catch(e){
-  console.error('Init Online Annotation failed, detail:',e);
-}
+window.initAnnotation = function (id, preference) {
+    try {
+        initOnlineAnnotation(id, preference);
+    } catch (e) {
+        console.error('Init Online Annotation failed, detail:', e);
+    }
+};
 ////////PDF ANNOTATE JS INIT END/////////////
 
-
 if (document.blockUnblockOnload) {
-  document.blockUnblockOnload(true);
- }
- if (document.readyState === "interactive" || document.readyState === "complete") {
-  webViewerLoad();
- } else {
-  document.addEventListener("DOMContentLoaded", webViewerLoad, true);
- }
-
- 
+    document.blockUnblockOnload(true);
+}
+if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    webViewerLoad();
+} else {
+    document.addEventListener('DOMContentLoaded', webViewerLoad, true);
+}
 
 
 
