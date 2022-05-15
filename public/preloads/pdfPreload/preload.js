@@ -13,6 +13,9 @@ const callbacks = {};
 console.log('LOAD PDF PRELOAD SCRIPTS');
 window.__sdConfig = {};
 const __sdJSBridge = {
+    invokeMain: (method, ...args) => {
+        electron.ipcRenderer.send('SALTDOG_IPC_INVOKE', method, args, uniqId());
+    },
     // 向host发送信息
     invoke: function (method, params, callback) {
         const id = uniqId();

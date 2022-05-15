@@ -45,3 +45,9 @@ export function insertItem(item: any, libraryID: number, dirID: number): Promise
 export function getItemInfo(itemID: number): Promise<any> {
     return invokeLibraryMethodAsync('getItemInfo', itemID) as Promise<any>;
 }
+export function getSDPDFCoreAnnotate(docID: string): Promise<any> {
+    return invokeLibraryMethodAsync('getSDPDFCoreAnnotate', docID) as Promise<any>;
+}
+export function setSDPDFCoreAnnotate(docID: string, annotations: string): void {
+    invokeLibraryMethodAsync('setSDPDFCoreAnnotate', docID, annotations);
+}

@@ -51,7 +51,6 @@ export default class SaltDogMessageChannelMain extends EventEmitter {
     }
     public invokeWorkspace(api: string, args: any, callback?: (data: any) => void): void {
         this._refreshBindingIfNeeded();
-        this._refreshBindingIfNeeded();
         const id = uniqueId();
         this._callbackIDMap.set(
             id,

@@ -112,6 +112,8 @@ export default class SaltDogItemDB extends Database {
         insertTag: 'INSERT INTO tags (name) VALUES (?);',
         insertItemTagRelation: 'INSERT INTO itemTags (itemID,tagID,color,type) VALUES (?,?,?,?);',
         insertAttachments: 'INSERT INTO itemAttachments (parentItemID,name,contentType,url) VALUES (?,?,?,?);',
+        getSDPDFCoreAnnotate: 'SELECT annotations from pdfAnnotations WHERE key=?;',
+        setSDPDFCoreAnnotate: 'REPLACE INTO pdfAnnotations (key,annotations) VALUES (?,?);',
     };
     public insertItem(item: any, libraryID: number, dirID: number): any {
         const itemTypeID = this._type2id.get(item.itemType);
@@ -355,6 +357,13 @@ export default class SaltDogItemDB extends Database {
             tags,
             attachments,
         };
+    }
+    public getSDPDFCoreAnnotate(docID: string) {
+        const doc = this.prepare(this._sqlTemplate.getSDPDFCoreAnnotate).get(docID);
+        return doc;
+    }
+    public setSDPDFCoreAnnotate(docID: string, annotations: string) {
+        this.prepare(this._sqlTemplate.setSDPDFCoreAnnotate).run(docID, annotations);
     }
 }
 

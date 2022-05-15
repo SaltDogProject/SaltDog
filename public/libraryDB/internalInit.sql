@@ -216,6 +216,10 @@ CREATE TABLE IF NOT EXISTS itemCreators (
 );
 CREATE INDEX IF NOT EXISTS itemCreators_creatorTypeID ON itemCreators(creatorTypeID);
 
-
+CREATE TABLE IF NOT EXISTS pdfAnnotations (
+    key TEXT NOT NULL,
+    annotations TEXT,
+    PRIMARY KEY (key)
+);
 
 

@@ -3,6 +3,7 @@ import { noop } from 'lodash';
 import { ipcRenderer } from 'electron';
 import bus from '../../controller/systemBus';
 import SaltDogMessageChannelRenderer from '../../controller/messageChannel';
+import { getSDPDFCoreAnnotate } from '../../controller/library';
 export default class MessageHandler {
     private webview: Electron.WebviewTag;
     private callbacks: { [key: string]: (args: any[]) => void } = {};
@@ -25,11 +26,21 @@ export default class MessageHandler {
         }
     }
     public webviewInvokeHandler(args: any[]): void {
-        const arg = {
-            data: {},
-            callbackId: 0,
-        };
-        this.webview.send('HOST_INVOKE_CALLBACK', arg);
+        const { method, data, callbackId } = args[0];
+        switch (method) {
+            case 'reader.getAnnotations':
+                getSDPDFCoreAnnotate(data).then((res) => {
+                    this.webview.send('HOST_INVOKE_CALLBACK', {
+                        data: res,
+                        callbackId,
+                    });
+                });
+                break;
+        }
+        // const arg = {
+        //     data: {},
+        //     callbackId: 0,
+        // };
     }
     public webviewCallbackHandler(args: any[]): void {
         const arg = args[0];
