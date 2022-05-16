@@ -47027,7 +47027,7 @@ class SaltDogAdapter extends _StoreAdapter__WEBPACK_IMPORTED_MODULE_1__["default
                 annotation.class = 'Annotation';
                 annotation.uuid = (0,_utils_uuid__WEBPACK_IMPORTED_MODULE_0__["default"])();
                 annotation.page = pageNumber;
-
+                if (annotation.documentId) delete annotation.documentId;
                 getAnnotations(documentId).then((annotations) => {
                     annotations.push(annotation);
                     updateAnnotations(documentId, annotations);
@@ -47137,6 +47137,7 @@ function getAnnotations(documentId) {
 
 function updateAnnotations(documentId, annotations) {
     window._annotations = annotations;
+    window.__sdJSBridge && window.__sdJSBridge.publish('pdfModified');
 }
 /**
  *

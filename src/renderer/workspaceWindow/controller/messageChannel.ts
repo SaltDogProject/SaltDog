@@ -89,6 +89,7 @@ export default class SaltDogMessageChannelRenderer extends EventEmitter implemen
         }
         ipcRenderer.sendTo(targetid, 'SALTDOG_IPC_PUBLISH', event, ...args);
         ipcRenderer.send('SALTDOG_IPC_PUBLISH', event, ...args);
+        this.emit(event, ...args);
     }
     public subscribe(e: string, callback: (...args: any) => void): void {
         this.on(e, callback);

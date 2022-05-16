@@ -9,7 +9,9 @@ import fs from 'fs';
 import bus from './systemBus';
 import SaltDogMessageChannelRenderer from './messageChannel';
 import { uuid } from 'licia';
-const TAG = '[TabManager]';
+import ReaderManager from './reader';
+import { Action, ElMessage, ElMessageBox } from 'element-plus';
+const TAG = '[Renderer/TabManager]';
 class MainTabManager implements ITabManager {
     private _eventList = [
         'load-commit',
@@ -180,7 +182,7 @@ class MainTabManager implements ITabManager {
         return id;
     }
 
-    public removeTab(name: string) {
+    private _dealRemove(name: string) {
         const tabs = this.tabList.value;
         let activeName = this.currentTab.value;
         if (activeName === name) {
@@ -196,6 +198,41 @@ class MainTabManager implements ITabManager {
         this.currentTab.value = activeName;
         this.tabList.value = tabs.filter((tab) => tab.name !== name);
         if (this.webviewMap.has(name)) this.webviewMap.delete(name);
+    }
+    public removeTab(name: string) {
+        const tabInfo = this.getInfoById(name);
+        if (tabInfo && tabInfo.isPdf) {
+            const modified = ReaderManager.getInstance().checkIfModified(name);
+            if (modified) {
+                ElMessageBox.confirm('文件已经修改，是否保存？', '提示', {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: '保存',
+                    cancelButtonText: '忽略更改',
+                })
+                    .then(() => {
+                        // save
+                        ReaderManager.getInstance()
+                            .saveChanges(name)
+                            .then(() => {
+                                ReaderManager.getInstance().distroyReader(name);
+                                this._dealRemove(name);
+                            })
+                            .catch(() => {
+                                ElMessage.error('保存失败，可能是数据库损坏，请联系开发人员');
+                            });
+                    })
+                    .catch((action: Action) => {
+                        if (action === 'close') return;
+                        // 不保存，直接关闭
+                        ReaderManager.getInstance().distroyReader(name);
+                        this._dealRemove(name);
+                        return;
+                    });
+                return;
+            }
+        }
+        ReaderManager.getInstance().distroyReader(name);
+        this._dealRemove(name);
     }
     onMounted() {
         if (this.tabList.value.length == 0) return;
@@ -224,7 +261,6 @@ class MainTabManager implements ITabManager {
         if (!element) return;
         if (!this.webviewMap.has(v.webviewId)) {
             this.webviewMap.set(v.webviewId, element);
-
             // 事件转发
             for (const e of this._eventList) {
                 element.addEventListener(e, (...args) => {
@@ -246,6 +282,13 @@ class MainTabManager implements ITabManager {
                     this.webviewMessageHandler.set(v.webviewId, new MessageHandler(element));
                 }
                 bus.emit(`${v.webviewId}_domReady`);
+                if (v.isPdf) {
+                    ReaderManager.getInstance().setReader(
+                        v.webviewId,
+                        element,
+                        this.getMessageHandler(v.webviewId) as MessageHandler
+                    );
+                }
                 if (process.env.NODE_ENV === 'development') element.openDevTools();
             });
             element.addEventListener('console-message', (e) => {

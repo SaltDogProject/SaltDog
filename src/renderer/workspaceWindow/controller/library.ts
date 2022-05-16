@@ -48,6 +48,6 @@ export function getItemInfo(itemID: number): Promise<any> {
 export function getSDPDFCoreAnnotate(docID: string): Promise<any> {
     return invokeLibraryMethodAsync('getSDPDFCoreAnnotate', docID) as Promise<any>;
 }
-export function setSDPDFCoreAnnotate(docID: string, annotations: string): void {
-    invokeLibraryMethodAsync('setSDPDFCoreAnnotate', docID, annotations);
+export function setSDPDFCoreAnnotate(docID: string, annotations: any): Promise<any> {
+    return invokeLibraryMethodAsync('setSDPDFCoreAnnotate', docID, annotations);
 }

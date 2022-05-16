@@ -365,6 +365,7 @@ export default class SaltDogItemDB extends Database {
     }
     public setSDPDFCoreAnnotate(docID: string, annotations: string) {
         this.prepare(this._sqlTemplate.setSDPDFCoreAnnotate).run(docID, JSON.stringify(annotations));
+        return true;
     }
 }
 

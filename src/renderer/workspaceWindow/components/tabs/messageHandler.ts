@@ -32,7 +32,7 @@ export default class MessageHandler {
             case 'reader.getAnnotations':
                 console.log(TAG, 'reader.getAnnotations', data);
                 getSDPDFCoreAnnotate(data).then((res) => {
-                    console.log(TAG, 'reader.getAnnotations Reply', res);
+                    // console.log(TAG, 'reader.getAnnotations Reply', res);
                     this.webview.send('HOST_INVOKE_CALLBACK', {
                         data: res,
                         callbackId,

@@ -97,8 +97,10 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
         // 阻止页面跳转，等待用户确认
         window.webContents.on('will-navigate', (event, url) => {
             console.log(TAG, 'will-navigate', url);
-            SaltDogMessageChannelMain.getInstance().publish('onCommand:saltdog.openExternal', url);
-            event.preventDefault();
+            if (process.env.NODE_ENV === 'development') {
+                SaltDogMessageChannelMain.getInstance().publish('onCommand:saltdog.openExternal', url);
+                event.preventDefault();
+            }
         });
         window.on('closed', () => {
             // 在处理schema时，异步可能导致第二个app获取不到单例锁已经quit还会调这个，跳过这个错误。
