@@ -76,11 +76,12 @@ export default defineComponent({
                 tabManager.addTab('New Tab', 'about:blank');
             }
             if (action === 'remove') {
-                tabManager.removeTab(targetName);
-                if (!showWelcome.value && editableTabs.value.length == 0) {
-                    showWelcome.value = true;
-                    bus.emit('_setWindowTitle', '欢迎');
-                }
+                tabManager.removeTab(targetName).then(() => {
+                    if (!showWelcome.value && editableTabs.value.length == 0) {
+                        showWelcome.value = true;
+                        bus.emit('_setWindowTitle', '欢迎');
+                    }
+                });
             }
         }
         function handleSettingsView() {

@@ -46999,14 +46999,14 @@ class SaltDogAdapter extends _StoreAdapter__WEBPACK_IMPORTED_MODULE_1__["default
             getAnnotations(documentId, pageNumber) {
                 return new Promise((resolve, reject) => {
                     getAnnotations(documentId).then((annotations) => {
-                        annotations.filter((i) => {
+                        const annotation = annotations.filter((i) => {
                             return i.page === pageNumber && i.class === 'Annotation';
                         });
 
                         resolve({
                             documentId,
                             pageNumber,
-                            annotations,
+                            annotations: annotation,
                         });
                     });
                 });

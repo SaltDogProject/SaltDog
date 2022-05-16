@@ -27,6 +27,11 @@ export default class ReaderManager {
     private _messageHandlerMap: Map<string, MessageHandler> = new Map();
     public setReader(id: string, webview: Electron.WebviewTag, messageHandler: MessageHandler) {
         console.log(TAG, `Set reader ${id}`, messageHandler);
+        SaltDogMessageChannelRenderer.getInstance().publish(
+            'reader.readerCreated',
+            webview.id,
+            webview.getWebContentsId()
+        );
         this._readerMap.set(webview.id, webview);
         this._modifiedStatusMap.set(webview.id, false);
         this._messageHandlerMap.set(webview.id, messageHandler);
@@ -43,6 +48,11 @@ export default class ReaderManager {
     }
     public distroyReader(id: string) {
         console.log(TAG, `Destroy reader ${id}`);
+        SaltDogMessageChannelRenderer.getInstance().publish(
+            'reader.readerDestroyed',
+            id,
+            this._readerMap.get(id)!.getWebContentsId()
+        );
         this._readerMap.delete(id);
         this._modifiedStatusMap.delete(id);
         this._messageHandlerMap.delete(id);

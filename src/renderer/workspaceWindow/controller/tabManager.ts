@@ -200,39 +200,44 @@ class MainTabManager implements ITabManager {
         if (this.webviewMap.has(name)) this.webviewMap.delete(name);
     }
     public removeTab(name: string) {
-        const tabInfo = this.getInfoById(name);
-        if (tabInfo && tabInfo.isPdf) {
-            const modified = ReaderManager.getInstance().checkIfModified(name);
-            if (modified) {
-                ElMessageBox.confirm('文件已经修改，是否保存？', '提示', {
-                    distinguishCancelAndClose: true,
-                    confirmButtonText: '保存',
-                    cancelButtonText: '忽略更改',
-                })
-                    .then(() => {
-                        // save
-                        ReaderManager.getInstance()
-                            .saveChanges(name)
-                            .then(() => {
-                                ReaderManager.getInstance().distroyReader(name);
-                                this._dealRemove(name);
-                            })
-                            .catch(() => {
-                                ElMessage.error('保存失败，可能是数据库损坏，请联系开发人员');
-                            });
+        return new Promise((resolve, reject) => {
+            const tabInfo = this.getInfoById(name);
+            if (tabInfo && tabInfo.isPdf) {
+                const modified = ReaderManager.getInstance().checkIfModified(name);
+                if (modified) {
+                    ElMessageBox.confirm('文件已经修改，是否保存？', '提示', {
+                        distinguishCancelAndClose: true,
+                        confirmButtonText: '保存',
+                        cancelButtonText: '忽略更改',
                     })
-                    .catch((action: Action) => {
-                        if (action === 'close') return;
-                        // 不保存，直接关闭
-                        ReaderManager.getInstance().distroyReader(name);
-                        this._dealRemove(name);
-                        return;
-                    });
-                return;
+                        .then(() => {
+                            // save
+                            ReaderManager.getInstance()
+                                .saveChanges(name)
+                                .then(() => {
+                                    ReaderManager.getInstance().distroyReader(name);
+                                    this._dealRemove(name);
+                                    resolve(true);
+                                })
+                                .catch(() => {
+                                    ElMessage.error('保存失败，可能是数据库损坏，请联系开发人员');
+                                    reject(false);
+                                });
+                        })
+                        .catch((action: Action) => {
+                            if (action === 'close') return;
+                            // 不保存，直接关闭
+                            ReaderManager.getInstance().distroyReader(name);
+                            this._dealRemove(name);
+                            resolve(true);
+                        });
+                }
+            } else {
+                ReaderManager.getInstance().distroyReader(name);
+                this._dealRemove(name);
+                resolve(true);
             }
-        }
-        ReaderManager.getInstance().distroyReader(name);
-        this._dealRemove(name);
+        });
     }
     onMounted() {
         if (this.tabList.value.length == 0) return;
@@ -288,6 +293,10 @@ class MainTabManager implements ITabManager {
                         element,
                         this.getMessageHandler(v.webviewId) as MessageHandler
                     );
+                    // element.addEventListener('will-navigate', (e) => {
+                    //     console.log(e.url);
+                    //     e.preventDefault();
+                    // });
                 }
                 if (process.env.NODE_ENV === 'development') element.openDevTools();
             });
