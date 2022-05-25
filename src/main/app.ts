@@ -1,6 +1,6 @@
 'use strict';
 import * as path from 'path';
-import { app, protocol, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, shell,nativeTheme } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import { IWindowList } from './window/constants';
 // import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
@@ -53,6 +53,8 @@ class LifeCycle {
         app.on('browser-window-focus', (e, window) => {
             windowManager.setFocusWindow(window);
         });
+        // FIXME: disable 
+        nativeTheme.themeSource='light';
         // ipcMain.on('_rendererToPluginEvents', (e, events, data) => {
         //     this.pluginManager.publishEventToPluginHost(events, data);
         // });
