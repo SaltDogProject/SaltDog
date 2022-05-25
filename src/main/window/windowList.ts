@@ -38,7 +38,7 @@ windowList.set(IWindowList.ENTRY_WINDOW, {
             options.frame = false;
             options.backgroundColor = '#3f3c37';
             options.transparent = false;
-            options.icon = `${__static}/images/logo.png`;
+            options.icon = `${'file:///'+__static}/images/logo.png`;
         }
         return options;
     },
@@ -85,7 +85,7 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
             options.frame = false;
             //options.backgroundColor = '#3f3c37';
             options.transparent = false;
-            options.icon = `${__static}/images/logo.png`;
+            options.icon = `${'file:///'+__static}/images/logo.png`;
         }
         return options;
     },
@@ -149,7 +149,7 @@ windowList.set(IWindowList.PLUGIN_HOST, {
             options.frame = false;
             //options.backgroundColor = '#3f3c37';
             options.transparent = false;
-            options.icon = `${__static}/images/logo.png`;
+            options.icon = `${'file:///'+__static}/images/logo.png`;
         }
         return options;
     },

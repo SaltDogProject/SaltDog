@@ -1,4 +1,4 @@
-const libImgPath = `${__static}/images/workspace/library`;
+const libImgPath = `${'file:///'+__static}/images/workspace/library`;
 export function getMIMEImage(type: string) {
     if (!type) return;
     type = type.toLowerCase().trim();

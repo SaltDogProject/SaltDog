@@ -84,7 +84,7 @@ const App = defineComponent({
             version,
             defaultActive,
             handleSelect,
-            logoSrc: ref(`${__static}/images/logo.png`),
+            logoSrc: ref(`${'file:///'+__static}/images/logo.png`),
         };
     },
 });

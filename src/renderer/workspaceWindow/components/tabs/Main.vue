@@ -62,7 +62,7 @@ export default defineComponent({
     components: { WelcomePage, Settings, Library },
     //item.webviewUrl
     setup() {
-        const pdfViewerPreload = `${__static}/preloads/pdfPreload${isDevelopment ? '' : '/build'}/preload.js`;
+        const pdfViewerPreload = `${'file:///'+__static}/preloads/pdfPreload${isDevelopment ? '' : '/build'}/preload.js`;
         const editableTabs = tabManager.getTabListRef();
         const editableTabsValue = tabManager.getCurrentTabRef();
         const { proxy } = getCurrentInstance()!;

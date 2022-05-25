@@ -79,7 +79,7 @@ const App = defineComponent({
         const documentName = ref('欢迎');
         const os = ref(process.platform);
         const version = ref('');
-        const iconPath = ref(`${__static}/images/logo.png`);
+        const iconPath = ref(`${'file:///'+__static}/images/logo.png`);
         const { proxy } = getCurrentInstance()!;
         version.value = process.env.NOCE_ENV === 'production' ? pkg.version : 'Dev';
         bus.on('_setWindowTitle', (title) => {

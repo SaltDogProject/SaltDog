@@ -118,7 +118,7 @@ export function initIpc(windowManager: IWindowManager): void {
                 e.sender.send('invokeLibraryMethodReply', id, 'Bad Method', null);
             }
         } catch (err: any) {
-            console.error(err);
+            console.error('library Err:', err);
             e.sender.send(`invokeLibraryMethodReply`, id, err.message ? err.message : JSON.stringify(err), null);
         }
     });
