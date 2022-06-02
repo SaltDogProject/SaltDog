@@ -1,0 +1,83 @@
+# release.yml
+name: Build&Release Saltdog For Win/Mac
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    name: build and release saltdog
+    runs-on: ${{ matrix.os }}
+
+    # create a build matrix for jobs
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+
+    # create steps
+    steps:
+      # step1: check out repository
+      - name: Check out git repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      # step2: install node env
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.14.2
+
+      # step3: npm install
+      - name: npm install
+        run: |
+          npm install -g yarn && yarn install
+          
+      - name: install submodules dependencies
+        run: |
+          cd third_party/translation-server && yarn install && cd ..
+
+      # step4: build app for mac/win
+      - name: build windows app
+        if: matrix.os == 'windows-latest'
+        run: |
+          yarn run electron:build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: build mac app
+        if: matrix.os == 'macos-latest'
+        run: |
+          yarn run electron:build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # step5: cleanup artifacts in saltdog_dist
+      - name: cleanup artifacts for windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          npx rimraf "saltdog_dist/!(*.exe)"
+
+      - name: cleanup artifacts for macos
+        if: matrix.os == 'macos-latest'
+        run: |
+          npx rimraf "saltdog_dist/!(*.dmg)"
+
+      # step6: upload artifacts
+      - name: upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.os }}
+          path: saltdog_dist
+
+      # step7: create release
+      - name: release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: "saltdog_dist/**"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
