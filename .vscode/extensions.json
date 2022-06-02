@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "dbaeumer.vscode-eslint",
+        "abusaidm.html-snippets",
+        "esbenp.prettier-vscode",
+        "wayou.vscode-todo-highlight",
+        "vue.volar",
+        "eamodio.gitlens"
+    ]
+}

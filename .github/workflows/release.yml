@@ -1,13 +1,15 @@
 # release.yml
 name: Build&Release Saltdog For Win/Mac
 
+# on: workflow_dispatch
 on:
   push:
     tags:
-      - "v*"
+      - 'v*.*.*'
 
 jobs:
   release:
+    environment: build&release
     name: build and release saltdog
     runs-on: ${{ matrix.os }}
 
@@ -23,18 +25,19 @@ jobs:
       - name: Check out git repository
         uses: actions/checkout@v3
         with:
-          submodules: true
+          token: ${{secrets.PERSIONAL_TOKEN}}
+          submodules: recursive
 
       # step2: install node env
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16.14.2
-
-      # step3: npm install
+      
+      # step3: npm install !!! remove lockfile to make yarn use npmjs.org registory instead of npmirror in china.
       - name: npm install
         run: |
-          npm install -g yarn && yarn install
+          npx rimraf yarn.lock && npx rimraf package-lock.json && npm install -g yarn && yarn install
           
       - name: install submodules dependencies
         run: |
@@ -59,12 +62,12 @@ jobs:
       - name: cleanup artifacts for windows
         if: matrix.os == 'windows-latest'
         run: |
-          npx rimraf "saltdog_dist/!(*.exe)"
+          npx rimraf "saltdog_dist/win-unpacked"
 
       - name: cleanup artifacts for macos
         if: matrix.os == 'macos-latest'
         run: |
-          npx rimraf "saltdog_dist/!(*.dmg)"
+          npx rimraf "saltdog_dist/mac"
 
       # step6: upload artifacts
       - name: upload artifacts
@@ -80,4 +83,4 @@ jobs:
         with:
           files: "saltdog_dist/**"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PERSIONAL_TOKEN }}
