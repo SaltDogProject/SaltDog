@@ -1,14 +1,19 @@
 <template>
     <div id="workspace">
-        <div class="fake-title-bar" :class="{ darwin: os === 'darwin' }">
-            <div class="titlebar-icon">
-                <img :src="iconPath" alt="icon" />
+        <div class="fake-title-bar">
+            <div class="titlebar-icon" v-if="os !== 'darwin'">
+                <img  :src="iconPath" alt="icon" />
             </div>
-            <div style="display: inline-block; position: absolute; top: 0; left: 40px">
+            <div :class="{'titleMenu':true,'darwin':os === 'darwin'}">
                 <TitleMenu />
             </div>
 
             <div class="fake-title-bar__title">{{ documentName }} - SaltDog - {{ version }}</div>
+            <div class="handle-bar" v-if="os === 'darwin'">
+                <div v-if="version == 'Dev'" class="window__button" @click="refreshWindow">
+                    <el-icon><Refresh /></el-icon>
+                </div>
+            </div>
             <div class="handle-bar" v-if="os !== 'darwin'">
                 <div v-if="version == 'Dev'" class="window__button" @click="refreshWindow">
                     <el-icon><Refresh /></el-icon>
@@ -170,7 +175,6 @@ side_bar_icons_width = 48px
 side_bar_width = 180px
 bottom_panel_height = 200px
 resizer_width_or_height = 4px;
-$darwinBg = transparentify(#172426, #000, 0.7)
 .saltdog-fade
   &-enter,
   &-leave,
@@ -194,6 +198,13 @@ $darwinBg = transparentify(#172426, #000, 0.7)
         line-height @height
         position fixed
         z-index 100
+        .titleMenu
+            display: inline-block;
+            position: absolute;
+            top: 0;
+            left: 40px
+            &.darwin
+                left:60px
         &.darwin
             background transparent
             background-image linear-gradient(
