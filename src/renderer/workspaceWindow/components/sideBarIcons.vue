@@ -26,9 +26,9 @@ import plugins from '../controller/plugin/plugin';
 export default defineComponent({
     setup() {
         // eslint-disable-next-line no-undef
-        const settingsIcon = `${__static}/images/workspace/settings.svg`;
+        const settingsIcon = `${'file:///'+__static}/images/workspace/settings.svg`;
         // eslint-disable-next-line no-undef
-        const libraryIcon = `${__static}/images/workspace/library.svg`;
+        const libraryIcon = `${'file:///'+__static}/images/workspace/library.svg`;
         const iconList = plugins.getSidebarIconListRef();
         function iconClick(index: number) {
             if (iconList.value[index].active) {

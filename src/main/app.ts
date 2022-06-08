@@ -1,6 +1,6 @@
 'use strict';
 import * as path from 'path';
-import { app, protocol, BrowserWindow, ipcMain, shell } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, shell,nativeTheme } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import { IWindowList } from './window/constants';
 // import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
@@ -53,12 +53,15 @@ class LifeCycle {
         app.on('browser-window-focus', (e, window) => {
             windowManager.setFocusWindow(window);
         });
+        // FIXME: disable 
+        nativeTheme.themeSource='light';
         // ipcMain.on('_rendererToPluginEvents', (e, events, data) => {
         //     this.pluginManager.publishEventToPluginHost(events, data);
         // });
     }
     onReady() {
         const readyFunction = async () => {
+            console.log('App ready')
             /* disable this to accelerate launch speed in debug mode*/
             // if (isDevelopment && !process.env.IS_TEST) {
             //     // Install Vue Devtools
@@ -70,7 +73,6 @@ class LifeCycle {
             // }
             // Create the entry window.
             //windowManager.create(IWindowList.ENTRY_WINDOW, {});
-            // FIXME: debug create the WORKSPACE window
             windowManager.create(IWindowList.WORKSPACE_WINDOW);
             windowManager.create(IWindowList.PLUGIN_HOST);
 
@@ -103,16 +105,18 @@ class LifeCycle {
         }
     }
     onRunning() {
-        app.on('activate', () => {
-            createProtocol('saltdog');
+        app.on('activate', (ev,hasVisibleWindows) => {
+            // createProtocol('saltdog');
             // On macOS it's common to re-create a window in the app when the
             // dock icon is clicked and there are no other windows open.
-            // if (!windowManager.has(IWindowList.ENTRY_WINDOW)) {
-            //     windowManager.create(IWindowList.ENTRY_WINDOW);
-            // }
+            // app.emit('ready')
             // app.setLoginItemSettings({
             //     openAtLogin: db.get('settings.autoStart') || false
             //   })
+            if(app.isReady()&&!hasVisibleWindows){
+                if(!windowManager.has(IWindowList.WORKSPACE_WINDOW)) windowManager.create(IWindowList.WORKSPACE_WINDOW)
+                if(!windowManager.has(IWindowList.PLUGIN_HOST)) windowManager.create(IWindowList.PLUGIN_HOST)
+            }
             if (process.platform === 'win32') {
                 app.setAppUserModelId('top.lgyserver.saltdog');
             }
@@ -124,24 +128,27 @@ class LifeCycle {
             // On macOS it is common for applications and their menu bar
             // to stay active until the user quits explicitly with Cmd + Q
             console.log('window-all-closed');
-            if (process.platform !== 'darwin') {
+            // if (process.platform !== 'darwin') {
                 // this.pluginManager.destroyAllPluginHosts();
                 app.quit();
-            }
+            // }
         });
         app.on('will-quit', () => {
             // TODO: quit之前调用
+            console.log('will-quit');
         });
         // Exit cleanly on request from parent process in development mode.
         if (isDevelopment) {
             if (process.platform === 'win32') {
                 process.on('message', (data) => {
                     if (data === 'graceful-exit') {
+                        console.log('Exit with:',data);
                         app.quit();
                     }
                 });
             } else {
                 process.on('SIGTERM', () => {
+                    console.log('Exit with SIGTERM');
                     app.quit();
                 });
             }
@@ -150,8 +157,10 @@ class LifeCycle {
     launchApp() {
         // 获取单实例锁
         const gotTheLock = app.requestSingleInstanceLock();
-        if (!gotTheLock) {
+        // 貌似macos会常驻，到时候直接创建窗口就行？
+        if (!gotTheLock&&process.platform != 'darwin') {
             // 如果获取失败，说明已经有实例在运行了，直接退出
+            console.log('Already running ,exit');
             app.quit();
         }
         this.beforeReady();

@@ -16,7 +16,7 @@ class Reader {
             this._readerWebviewContent.set(webContentsId, true);
             webContents.fromId(webContentsId).on('will-navigate', (e, url) => {
                 SaltDogMessageChannelMain.getInstance().publish('onCommand:saltdog.openExternal', url);
-                e.preventDefault();
+                // e.preventDefault();
             });
         });
         SaltDogMessageChannelMain.getInstance().on('reader.readerDestroyed', (webviewId, webContentsId) => {

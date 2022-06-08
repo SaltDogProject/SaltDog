@@ -27,7 +27,7 @@ app.config.globalProperties.__basicInfo = basicInfo; //arg;
 console.log('[Workspace load]', basicInfo);
 pluginManager.init(basicInfo.plugins, windowId, pluginHostWebcontentsID);
 
-app.use(store)
+app.use(store as any)
     .use(ElementPlus, {
         zIndex: 3000,
         locale: zhCn,

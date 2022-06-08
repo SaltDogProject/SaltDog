@@ -173,7 +173,7 @@ class MainTabManager implements ITabManager {
             name: id,
             isPdf: webviewUrl == 'PDFVIEWER',
             type,
-            webviewUrl: webviewUrl == 'PDFVIEWER' ? `${__static}/sdpdfcore/index.html?webviewId=${id}` : webviewUrl,
+            webviewUrl: webviewUrl == 'PDFVIEWER' ? `${'file:///'+__static}/sdpdfcore/index.html?webviewId=${id}` : webviewUrl,
             webviewId: id,
         };
         this.getTabList().push(baseInfo);
@@ -231,9 +231,12 @@ class MainTabManager implements ITabManager {
                             this._dealRemove(name);
                             resolve(true);
                         });
+                }else{
+                    ReaderManager.getInstance().distroyReader(name);
+                    this._dealRemove(name);
+                resolve(true);
                 }
             } else {
-                ReaderManager.getInstance().distroyReader(name);
                 this._dealRemove(name);
                 resolve(true);
             }

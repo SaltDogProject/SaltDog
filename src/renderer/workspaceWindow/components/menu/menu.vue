@@ -15,7 +15,7 @@
             @mouseover="mouseOverSubmenu"
             @mouseleave="onMouseLeave"
             :class="{ titleMenuItems: true, hidden: !hasMenuDisplay }"
-            :style="{ left: 'calc(40px + ' + activeMenuIndex * 50 + 'px)' }"
+            :style="{ left: menuLeft }"
         >
             <ul>
                 <li
@@ -41,6 +41,7 @@ interface ISaltdogMenuItem {
     title: string;
     children?: ISaltdogSubMenuItem[];
 }
+const os = process.platform;
 const menuList = [
     {
         title: '文件',
@@ -85,6 +86,7 @@ const menuList = [
 let judgeTimer: any = null;
 const hasMenuDisplay = ref(false);
 const activeMenuIndex = ref(-1);
+const menuLeft = ref('40px');
 const displayedMenuItem = ref<null | ISaltdogSubMenuItem[]>(null);
 function execCommand(cmd: string, ...arg: any) {
     SaltDogMessageChannelRenderer.getInstance().execCommand(cmd, ...arg);
@@ -101,6 +103,7 @@ function renderMenu(index: number) {
     hasMenuDisplay.value = true;
     activeMenuIndex.value = index;
     displayedMenuItem.value = menuList[index].children as ISaltdogSubMenuItem[];
+    menuLeft.value = (activeMenuIndex.value * 50+(os==='darwin'?60:40)) +'px';
     console.log('render', index);
 }
 function onMouseLeave() {

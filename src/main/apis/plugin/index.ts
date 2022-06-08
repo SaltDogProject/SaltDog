@@ -113,7 +113,7 @@ class SaltDogPlugin {
                     try {
                         // @ts-ignore
                         info.sidebarIcon.push({
-                            iconPath: path.normalize(plugin.rootDir + '/' + item.icon),
+                            iconPath: 'file:///'+path.normalize(plugin.rootDir + '/' + item.icon),
                             command: `${plugin.name}.${item.id}`,
                         });
                     } catch (e) {

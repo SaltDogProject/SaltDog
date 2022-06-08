@@ -153,7 +153,7 @@ function getImagesByType(item: any) {
     switch (item.type) {
         case 'dir':
             // eslint-disable-next-line no-undef
-            return __static + '/images/workspace/folder.svg';
+            return 'file:///'+__static + '/images/workspace/folder.svg';
         case 'item':
             return getItemTypeImage(item.itemType);
         default:

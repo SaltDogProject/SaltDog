@@ -15,7 +15,6 @@ pnpm-debug.log*
 
 # Editor directories and files
 .idea
-.vscode
 *.suo
 *.ntvs*
 *.njsproj
@@ -32,3 +31,4 @@ pnpm-debug.log*
 #others
 my_notice
 /public/dist/**
+/public/translators

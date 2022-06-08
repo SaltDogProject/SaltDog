@@ -51,7 +51,7 @@ export default defineComponent({
     components: { Outline, Search },
     setup() {
         // eslint-disable-next-line no-undef
-        const staticPath = __static;
+        const staticPath = 'file:///'+__static;
         const sidebarPreload = ref(
             `${staticPath}/preloads/pluginWebviewPreload${isDevelopment ? '' : '/build'}/preload.js`
         );

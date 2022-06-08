@@ -21,7 +21,7 @@
         "lint-fix": "eslint --ext .vue,.ts --fix ./src",
         "set-proxy": "set http_proxy=http://127.0.0.1:7890 & set https_proxy=http://127.0.0.1:7890"
     },
-    "main": "background.js",
+    "main": "index.js",
     "dependencies": {
         "@element-plus/icons": "^0.0.11",
         "@element-plus/icons-vue": "^1.1.4",
@@ -52,11 +52,11 @@
         "markdown-it": "^13.0.1",
         "node-loader": "^2.0.0",
         "pdfjs-dist": "^2.0.489",
+        "saltdog": "^0.0.1",
         "stylus": "^0.55.0",
         "stylus-loader": "3.0.2",
         "utf-8-validate": "^5.0.7",
-        "vm2": "^3.9.5",
-        "vue": "^3.2.20",
+        "vue": "^3.2.29",
         "vue-class-component": "^8.0.0-0",
         "vue-router": "^4.0.0-0",
         "vuex": "^4.0.0-0"
@@ -74,7 +74,7 @@
         "@vue/eslint-config-prettier": "^6.0.0",
         "@vue/eslint-config-typescript": "^7.0.0",
         "docsify-cli": "^4.4.3",
-        "electron": "^18.0.0",
+        "electron": "^19.0.0",
         "electron-devtools-installer": "^3.1.0",
         "eslint": "^7.24.0",
         "eslint-plugin-prettier": "^3.4.0",

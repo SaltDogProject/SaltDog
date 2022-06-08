@@ -47,7 +47,7 @@ class SaltDogPlugin {
         });
     }
     public getSidebarIconListRef(): any {
-        const buildinIconPath = __static + '/images/workspace';
+        const buildinIconPath = 'file:///'+__static + '/images/workspace';
         const iconList = [
             {
                 iconImg: `${buildinIconPath}/library.svg`,
@@ -197,7 +197,7 @@ class SaltDogPlugin {
         webview.addEventListener('dom-ready', () => {
             console.log('[Sidebar View] Dom Ready');
             const cssPath = path
-                .normalize(__static + '/preloads/pluginWebviewPreload/sidebar.css')
+                .normalize('file:///'+__static + '/preloads/pluginWebviewPreload/sidebar.css')
                 .replaceAll('\\', '/');
 
             console.log('Inject CSS', cssPath);
@@ -210,7 +210,7 @@ class SaltDogPlugin {
                 // 避免结构化克隆报错，加;0
                 ;0
             `);
-            const jsPath = path.normalize(__static + '/preloads/pluginWebviewPreload/sidebar.js').replaceAll('\\', '/');
+            const jsPath = path.normalize('file:///'+__static + '/preloads/pluginWebviewPreload/sidebar.js').replaceAll('\\', '/');
             console.log('Inject JS', jsPath);
             webview.executeJavaScript(`
                 const js=document.createElement('script');

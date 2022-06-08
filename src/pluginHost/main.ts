@@ -2,7 +2,6 @@ import { ipcRenderer } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import { ISaltDogPluginMessageType } from '~/main/apis/plugin/constant';
-import { NodeVM } from 'vm2';
 import SaltDogApiModule from './api';
 import { Module } from 'module';
 import SaltDogMessageChannelRenderer from './messageChannel';
