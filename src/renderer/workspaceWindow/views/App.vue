@@ -52,6 +52,13 @@
                 <StatusBar />
             </div>
         </div>
+        <div class="globalDialogs">
+            <ImportDialog
+                v-model:show-import-panel="showImportPanel"
+                :current-lib="ImportPanel_currentLib"
+                :current-dir="ImportPanel_currentDir"
+            />
+        </div>
     </div>
 </template>
 <script lang="ts">
@@ -66,15 +73,16 @@ import SidebarIcons from '../components/sideBarIcons.vue';
 import sidebar from '../components/sidebar/sideBar.vue';
 import TitleMenu from '../components/menu/menu.vue';
 import StatusBar from '../components/statusBar/statusBar.vue';
+import ImportDialog from '../components/dialogs/importDialog.vue';
 import tabManager from '../controller/tabManager';
 import { ipcRenderer } from 'electron';
 import bus from '../controller/systemBus';
 import { Minus, Refresh, Close } from '@element-plus/icons-vue';
-
+import SaltDogMessageChannelRenderer from '../controller/messageChannel';
 declare var __static: string;
 
 const App = defineComponent({
-    components: { Tabs, SidebarIcons, sidebar, Minus, Refresh, Close, TitleMenu, StatusBar },
+    components: { Tabs, SidebarIcons, sidebar, Minus, Refresh, Close, TitleMenu, StatusBar, ImportDialog },
     setup() {
         const documentName = ref('欢迎');
         const os = ref(process.platform);
@@ -148,6 +156,22 @@ const App = defineComponent({
             //panelManager.showSecondaryPanel();
             //panelManager.showSideBar();
         });
+
+        // dialogs
+        const showImportPanel = ref(false);
+        const ImportPanel_currentLib = ref(1);
+        const ImportPanel_currentDir = ref(1);
+        SaltDogMessageChannelRenderer.getInstance().registerCommand('saltdog.showImportPanel', (lib, dir) => {
+            ImportPanel_currentLib.value = lib;
+            ImportPanel_currentDir.value = dir;
+            showImportPanel.value = true;
+        });
+        SaltDogMessageChannelRenderer.getInstance().registerCommand('saltdog.closeImportPanel', () => {
+            ImportPanel_currentLib.value = 1;
+            ImportPanel_currentDir.value = 1;
+            showImportPanel.value = false;
+        });
+
         return {
             iconPath,
             documentName,
@@ -156,6 +180,11 @@ const App = defineComponent({
             refreshWindow,
             minimizeWindow,
             closeWindow,
+
+            // dialogs
+            showImportPanel,
+            ImportPanel_currentLib,
+            ImportPanel_currentDir,
         };
     },
 });
