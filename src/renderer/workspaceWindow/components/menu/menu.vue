@@ -72,6 +72,10 @@ const menuList = [
         title: '工具',
         children: [
             {
+                title: '导入文献',
+                command: 'saltdog.showImportPanel',
+            },
+            {
                 title: '查找文献',
                 command: 'saltdog.librarySearch',
                 args: '',

@@ -67,6 +67,7 @@ import { FolderAdd, Upload, Document } from '@element-plus/icons-vue';
 import { locateDir, listDir, getLibraryInfoByID, mkdir, getItemInfo } from '../../../controller/library';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { trim } from 'lodash';
+import SaltDogMessageChannelRenderer from '../../../controller/messageChannel';
 const TAG = '[Renderer/Library/Library]';
 interface User {
     title: string;
@@ -86,7 +87,9 @@ onMounted(() => {
 function doImport() {
     showImportPanel.value = true;
 }
-
+SaltDogMessageChannelRenderer.getInstance().on('saltdog.refreshLibrary', (lib, dir) => {
+    updateView(lib, dir);
+});
 function updateView(libraryID: number, dirID: number) {
     console.log(TAG, 'updateView', libraryID, dirID);
     _dirID = dirID;
