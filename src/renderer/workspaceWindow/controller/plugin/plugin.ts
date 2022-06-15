@@ -2,10 +2,11 @@ import { ipcRenderer } from 'electron';
 import { getCurrentInstance, ref, nextTick } from 'vue';
 import sysBus from '../systemBus';
 import path from 'path';
-import { uuid, extend } from 'licia';
+import { uuid, extend, fs } from 'licia';
 import api from './api';
 import panelManager from '../panelManager';
 import { ElMessage } from 'element-plus';
+import {readFile} from 'fs'
 import SaltDogMessageChannelRenderer from '../messageChannel';
 const TAG = '[SaltDogPlugin]';
 class SaltDogPlugin {
@@ -152,7 +153,7 @@ class SaltDogPlugin {
                 id: `sidebarView_${alreadyLoadedViewsLen}`,
                 isBuildIn: false,
                 viewName,
-                viewSrc: `${_view.src.split('?')[0]}?windowId=${this.windowId}&webviewId=${id}&name=${
+                viewSrc: `file:///${_view.src.split('?')[0]}?windowId=${this.windowId}&webviewId=${id}&name=${
                     _view.name
                 }&pluginName=${viewName.split('.')[0]}`,
                 name: _view.name,
@@ -197,25 +198,29 @@ class SaltDogPlugin {
         webview.addEventListener('dom-ready', () => {
             console.log('[Sidebar View] Dom Ready');
             const cssPath = path
-                .normalize('file:///'+__static + '/preloads/pluginWebviewPreload/sidebar.css')
-                .replaceAll('\\', '/');
-
+                .normalize(__static + '/preloads/pluginWebviewPreload/sidebar.css')
             console.log('Inject CSS', cssPath);
-            webview.executeJavaScript(`
-                const css=document.createElement('link');
-                css.rel="stylesheet";
-                css.type="text/css";
-                css.href="${cssPath}";
-                document.head.appendChild(css);
-                // 避免结构化克隆报错，加;0
-                ;0
-            `);
-            const jsPath = path.normalize('file:///'+__static + '/preloads/pluginWebviewPreload/sidebar.js').replaceAll('\\', '/');
+            readFile(cssPath,(err,data)=>{
+                if(err){
+                    console.error(err);return;
+                }else{
+                    webview.insertCSS(data.toString('utf-8'))
+                }
+            });
+            // webview.executeJavaScript(`
+            //     // 避免结构化克隆报错，加;0
+            //     ;0
+            // `);
+            const jsPath = path.normalize(__static + '/preloads/pluginWebviewPreload/sidebar.js')
             console.log('Inject JS', jsPath);
+            readFile(jsPath,(err,data)=>{
+                if(err){
+                    console.error(err);return;
+                }else{
+                    webview.executeJavaScript(data.toString('utf-8'))
+                }
+            });
             webview.executeJavaScript(`
-                const js=document.createElement('script');
-                js.src='${jsPath}';
-                document.head.appendChild(js);
                 // 避免结构化克隆报错，加;0
                 ;0
             `);
