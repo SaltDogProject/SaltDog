@@ -24,7 +24,7 @@ app.config.globalProperties.__workspaceInfo = {
     // pdfPath:'C:/Users/Dorapocket/Desktop/Xilinx Doc/Xilinx Doc/ug1399-vitis-hls.pdf',
 }; //arg;
 app.config.globalProperties.__basicInfo = basicInfo; //arg;
-console.log('[Workspace load]', basicInfo);
+console.log('[Workspace load]', basicInfo, pluginHostWebcontentsID);
 pluginManager.init(basicInfo.plugins, windowId, pluginHostWebcontentsID);
 
 app.use(store as any)

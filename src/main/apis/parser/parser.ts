@@ -4,6 +4,7 @@ import { ChildProcess, fork } from 'child_process';
 import got from 'got';
 import * as fs from 'fs';
 import * as path from 'path';
+import SaltDogMessageChannelMain from '../plugin/api/messageChannel';
 const TAG = '[Main/parser]';
 
 export default class Parser {
@@ -65,24 +66,40 @@ export default class Parser {
         return this._instance;
     }
     public _query(type: 'import' | 'web' | 'export' | 'search', data: string) {
-        console.log(TAG, `Execute query ${type} with payload: ${data}`);
         return new Promise((resolve, reject) => {
-            try {
-                const url = `http://127.0.0.1:${this._serverPort}/${type}`;
-                const res = got
-                    .post(url, {
-                        headers: {
-                            'Content-Type': 'text/plain',
-                        },
-                        body: data,
-                    })
-                    .json();
-                resolve(res);
-            } catch (e) {
-                reject(e);
-            }
+            SaltDogMessageChannelMain.getInstance().invokePluginHost(
+                '_beforeRetrieve',
+                { type, data },
+                ({ type, data }) => {
+                    console.log(TAG, `Execute query ${type} with payload: ${data}`);
+
+                    try {
+                        const url = `http://127.0.0.1:${this._serverPort}/${type}`;
+                        const res = got
+                            .post(url, {
+                                headers: {
+                                    'Content-Type': 'text/plain',
+                                },
+                                body: data,
+                            })
+                            .json()
+                            .then((res) => {
+                                SaltDogMessageChannelMain.getInstance().invokePluginHost(
+                                    '_afterRetrieve',
+                                    JSON.parse(JSON.stringify(res)),
+                                    (res) => {
+                                        resolve(res);
+                                    }
+                                );
+                            });
+                    } catch (e) {
+                        reject(e);
+                    }
+                }
+            );
         });
     }
+
     public query(type: 'import' | 'web' | 'export' | 'search', data: string, callback: any) {
         if (this.isServerReady) {
             this._query(type, data)

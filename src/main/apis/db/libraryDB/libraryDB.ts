@@ -87,6 +87,8 @@ export default class SaltDogItemDB extends Database {
         getParentDirID: 'SELECT parentDirID FROM dirs WHERE dirID=?;',
         getDirItems: 'SELECT * FROM items LEFT JOIN itemTypes USING(itemTypeID) WHERE dirID=?;',
         getDirInfoByID: 'SELECT * FROM dirs WHERE dirID=?;',
+        getLibraries:
+            'SELECT * FROM libraries l LEFT JOIN dirs d WHERE d.parentDirID=d.dirID AND d.libraryID=l.libraryID',
         getLibraryInfoByID: `SELECT * FROM libraries l LEFT JOIN dirs d WHERE l.libraryID=d.libraryID AND d.dirname='root' AND l.libraryID=?`,
         checkDirSameName: 'SELECT * FROM dirs WHERE parentDirID=? AND dirname=?',
 
@@ -206,9 +208,12 @@ export default class SaltDogItemDB extends Database {
                     // 设置对应关系
                     this.prepare(this._sqlTemplate.insertItemCreatorRelation).run(itemID, insertCreatorID, ctid, c);
                 }
+                const tags = {};
                 // 处理tags
                 for (const c in item.tags) {
                     const tag = item.tags[c];
+                    if (tags[tag.tag]) continue;
+
                     const row = this.prepare(this._sqlTemplate.getTagID).get(tag.tag);
                     let tagID: number | bigint = -1;
                     if (row && row.tagID > 0) tagID = row.tagID;
@@ -216,6 +221,7 @@ export default class SaltDogItemDB extends Database {
                         tagID = this.prepare(this._sqlTemplate.insertTag).run(tag.tag).lastInsertRowid;
                     }
                     this.prepare(this._sqlTemplate.insertItemTagRelation).run(itemID, tagID, '#D9ECFF', tag.type || 1);
+                    tags[tag.tag] = true;
                 }
                 // 'seeAlso' 暂时让用户手动设置，在这里不处理。
                 // 处理 attachments
@@ -300,6 +306,24 @@ export default class SaltDogItemDB extends Database {
             dateModified: info.dateModified,
         };
     }
+    // 获取libraries列表
+    public listLib(): ILibList[] {
+        const libs = this.prepare(this._sqlTemplate.getLibraries).all();
+        const l: ILibList[] = [];
+        for (const i of libs) {
+            l.push({
+                libraryID: i.libraryID,
+                libraryName: i.libraryName,
+                type: i.type,
+                rootDir: i.dirID,
+                archived: i.archived == 1,
+                editable: i.editable == 1,
+                filesEditable: i.filesEditable == 1,
+            });
+        }
+        return l;
+    }
+    //
     public listDir(libraryID: number, dirID: number): IDirList {
         const itemList = {
             meta: { parentDirID: dirID, libraryID, isRoot: false },
@@ -361,9 +385,9 @@ export default class SaltDogItemDB extends Database {
     public getSDPDFCoreAnnotate(docID: string) {
         const doc = this.prepare(this._sqlTemplate.getSDPDFCoreAnnotate).get(docID);
         // console.log(doc);
-        try{
-        return JSON.parse(doc.annotations)
-        }catch(e){
+        try {
+            return JSON.parse(doc.annotations);
+        } catch (e) {
             return null;
         }
     }

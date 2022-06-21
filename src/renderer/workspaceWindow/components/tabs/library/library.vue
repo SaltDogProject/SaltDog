@@ -23,7 +23,7 @@
 
         <el-table
             ref="singleTableRef"
-            :data="itemData"
+            :data="itemData.row"
             highlight-current-row
             style="width: 100%"
             @row-dblclick="handleRowDbClick"
@@ -39,6 +39,33 @@
                             alt=""
                         />
                         {{ scope.row.name }}
+                    </div>
+                </template>
+            </el-table-column>
+            <el-table-column
+                v-for="(customColumn, index) in itemData.column"
+                :key="index"
+                show-overflow-tooltip
+                :property="customColumn.indexName"
+                :label="customColumn.displayName"
+                :min-width="customColumn.minWidth || 50"
+            >
+                <template #default="scope">
+                    <span v-if="!scope.row.customFields || !scope.row.customFields[customColumn.indexName]">-</span>
+                    <div v-else style="display: flex; align-items: center">
+                        <el-tag
+                            v-if="
+                                scope.row.customFields[customColumn.indexName].displayType &&
+                                scope.row.customFields[customColumn.indexName].displayType == 'tag'
+                            "
+                            class="ml-2"
+                            :color="scope.row.customFields[customColumn.indexName].backgroundColor"
+                        >
+                            {{ scope.row.customFields[customColumn.indexName].text }}
+                        </el-tag>
+                        <span v-else>
+                            {{ scope.row.customFields[customColumn.indexName].text }}
+                        </span>
                     </div>
                 </template>
             </el-table-column>
@@ -76,7 +103,7 @@ const showImportPanel = ref<boolean>(false);
 const currentPath = ref<any[]>([]);
 const currentLib = ref<any>({});
 const currentDir = ref<any>(-1);
-const itemData = ref<any[]>([]);
+const itemData = ref<any>({});
 const itemInfo = ref<any>({});
 const showInfo = ref(false);
 let _dirID = 1;
@@ -104,6 +131,7 @@ function updateView(libraryID: number, dirID: number) {
                     id: i.dirID,
                     name: i.name,
                     type: 'dir',
+                    customFields: {},
                 });
             }
             for (let i of res2.items) {
@@ -112,11 +140,18 @@ function updateView(libraryID: number, dirID: number) {
                     itemType: i.itemType,
                     name: i.name,
                     type: 'item',
+                    customFields: {},
                 });
             }
-            itemData.value = list;
-            currentLib.value = res3;
-            console.log(TAG, `Load View `, res1, list, res3);
+            let regularTableData = {
+                column: [],
+                row: list,
+            };
+            SaltDogMessageChannelRenderer.getInstance().invoke('_beforeDisplay', regularTableData, (finalData: any) => {
+                itemData.value = finalData;
+                currentLib.value = res3;
+                console.log(TAG, `Load View `, res1, finalData, res3);
+            });
         }
     );
 }
@@ -153,7 +188,7 @@ function getImagesByType(item: any) {
     switch (item.type) {
         case 'dir':
             // eslint-disable-next-line no-undef
-            return 'file:///'+__static + '/images/workspace/folder.svg';
+            return 'file:///' + __static + '/images/workspace/folder.svg';
         case 'item':
             return getItemTypeImage(item.itemType);
         default:

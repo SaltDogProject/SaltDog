@@ -26,6 +26,9 @@ function invokeLibraryMethodAsync(fn: string, ...args: any[]) {
 export function listDir(libraryID: number, dirID: number): Promise<IDirList> {
     return invokeLibraryMethodAsync('listDir', libraryID, dirID) as Promise<IDirList>;
 }
+export function listLib(): Promise<ILibList[]> {
+    return invokeLibraryMethodAsync('listLib') as Promise<ILibList[]>;
+}
 export function mkdir(libraryID: number, parentDirID: number, dirname: string) {
     return invokeLibraryMethodAsync('mkdir', libraryID, parentDirID, dirname);
 }

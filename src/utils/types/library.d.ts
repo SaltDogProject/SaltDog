@@ -37,6 +37,15 @@ interface IDirList {
     items: Array<IDirListItems>;
 }
 
+interface ILibList {
+    libraryID: number;
+    libraryName: string;
+    type: string;
+    rootDir: number;
+    archived: boolean;
+    editable: boolean;
+    filesEditable: boolean;
+}
 interface ILibInfo {
     libraryID: number;
     rootDirID: number;

@@ -25,11 +25,16 @@ export default class LibraryManager {
             '_afterRetrieve',
             (this._dealAfterRetrive as (args: any) => any).bind(this)
         );
+        SaltDogMessageChannelRenderer.getInstance().onInvoke(
+            '_beforeDisplay',
+            (this._dealBeforeDisplay as (args: any) => any).bind(this)
+        );
     }
     private _beforeRetriveHooks: Array<
         (retrieveConfig: { type: string; data: string }) => { type: string; data: string }
     > = [];
     private _afterRetriveHooks: Array<(data: any) => any> = [];
+    private _beforeDisplayHooks: Array<(data: any) => any> = [];
     public addBeforeRetrieveHook(
         fn: (retrieveConfig: { type: string; data: string }) => { type: string; data: string }
     ) {
@@ -38,18 +43,29 @@ export default class LibraryManager {
     public addAfterRetrieveHook(fn: (data: any) => any) {
         this._afterRetriveHooks.push(fn);
     }
+    public addBeforeDisplayHook(fn: (data: any) => any) {
+        this._beforeDisplayHooks.push(fn);
+    }
     private async _dealBeforeRetrive(args: { type: string; data: string }) {
         const result = [];
         for (let i = 0; i < this._beforeRetriveHooks.length; i++) {
             const fn = this._beforeRetriveHooks[i];
             result.push((await fn(args)) || null);
         }
-        return result;
+        if (result.length != 0) return result[0];
+        else return args;
     }
     private async _dealAfterRetrive(args: any) {
         for (let i = 0; i < this._afterRetriveHooks.length; i++) {
             const fn = this._afterRetriveHooks[i];
             extend(args, await fn(args));
+        }
+        return args;
+    }
+    private async _dealBeforeDisplay(args: any) {
+        for (let i = 0; i < this._beforeDisplayHooks.length; i++) {
+            const fn = this._beforeDisplayHooks[i];
+            await fn(args);
         }
         return args;
     }

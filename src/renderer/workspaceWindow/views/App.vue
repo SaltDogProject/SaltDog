@@ -2,9 +2,9 @@
     <div id="workspace">
         <div class="fake-title-bar">
             <div class="titlebar-icon" v-if="os !== 'darwin'">
-                <img  :src="iconPath" alt="icon" />
+                <img :src="iconPath" alt="icon" />
             </div>
-            <div :class="{'titleMenu':true,'darwin':os === 'darwin'}">
+            <div :class="{ titleMenu: true, darwin: os === 'darwin' }">
                 <TitleMenu />
             </div>
 
@@ -92,7 +92,7 @@ const App = defineComponent({
         const documentName = ref('欢迎');
         const os = ref(process.platform);
         const version = ref('');
-        const iconPath = ref(`${'file:///'+__static}/images/logo.png`);
+        const iconPath = ref(`${'file:///' + __static}/images/logo.png`);
         const { proxy } = getCurrentInstance()!;
         version.value = process.env.NOCE_ENV === 'production' ? pkg.version : 'Dev';
         bus.on('_setWindowTitle', (title) => {
@@ -235,14 +235,6 @@ resizer_width_or_height = 4px;
             &.darwin
                 left:60px
         &.darwin
-            background transparent
-            background-image linear-gradient(
-                to right,
-                transparent 0%,
-                transparent 167px,
-                $darwinBg 167px,
-                $darwinBg 100%
-            )
             .fake-title-bar__title
                 display inline-block
                 // padding-left 167px

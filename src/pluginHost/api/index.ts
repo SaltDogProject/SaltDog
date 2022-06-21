@@ -4,6 +4,7 @@ import webview from './webview';
 import sidebar from './sidebar';
 import statusbar from './statusbar';
 import { StatusBarAlignment } from './enum';
+import library from './library/index';
 export default {
     StatusBarAlignment,
     commands,
@@ -11,4 +12,5 @@ export default {
     webview,
     sidebar,
     statusbar,
+    library,
 };

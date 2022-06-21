@@ -51,14 +51,7 @@
                 </el-tab-pane>
                 <div class="libPosition">
                     保存位置:
-                    <el-cascader
-                        placeholder="搜索.."
-                        filterable
-                        v-model="posvalue"
-                        :options="posoptions"
-                        :props="posprops"
-                        @change="handlePosChange"
-                    />
+                    <el-cascader placeholder="选择..." v-model="posvalue" :props="posprops" @change="handlePosChange" />
                 </div>
                 <div class="libraryImportBtnGroup">
                     <el-button @click="closeSelf">取消</el-button>
@@ -73,8 +66,8 @@ import { ref, defineProps, toRefs, defineEmits, onMounted, onUpdated } from 'vue
 import { QuestionFilled } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { ipcRenderer } from 'electron';
-import { uniqueId } from 'lodash';
-import { insertItem } from '../../controller/library';
+import { uniqueId, values } from 'lodash';
+import { insertItem, listDir, listLib, getDirInfoByID } from '../../controller/library';
 import SaltDogMessageChannelRenderer from '../../controller/messageChannel';
 const TAG = '[Library/Import]';
 const uploadRef = ref<any>();
@@ -83,32 +76,58 @@ const doiInput = ref('');
 const urlInput = ref('');
 const retriveLoading = ref(false);
 const posvalue = ref('');
-const posoptions = ref([
-    {
-        value: '1-1',
-        label: '我的图书馆',
-        children: [
-            {
-                value: '1-2',
-                label: '我的书架',
-                children: [
-                    {
-                        value: '1-3',
-                        label: '我的书籍',
-                    },
-                ],
-            },
-        ],
-    },
-]);
+let id = 0;
 const posprops = ref({
-    value: 'value',
-    label: 'label',
-    children: 'children',
+    lazy: true,
+    lazyLoad(node: any, resolve: any) {
+        const { level } = node;
+        const nodes = [] as any;
+        if (level == 0) {
+            listLib().then((liblist) => {
+                const queue = [];
+                for (const i of liblist) {
+                    queue.push(listDir(i.libraryID, i.rootDir));
+                }
+                Promise.all(queue).then((libdirs) => {
+                    for (let j = 0; j < libdirs.length; j++) {
+                        let hasChild = false;
+                        if (libdirs[j].dirs.length != 0) hasChild = true;
+                        nodes.push({
+                            value: `${liblist[j].libraryID}-${liblist[j].rootDir}`,
+                            label: liblist[j].libraryName,
+                            leaf: !hasChild,
+                        });
+                    }
+                    resolve(nodes);
+                });
+            });
+        } else {
+            const { value } = node;
+            const [libID, dirID] = value.split('-');
+            listDir(libID, dirID).then((libdirs) => {
+                const queue = [];
+                for (const i of libdirs.dirs) {
+                    queue.push(listDir(libID, i.dirID));
+                }
+                Promise.all(queue).then((nxtdirs) => {
+                    for (let j = 0; j < libdirs.dirs.length; j++) {
+                        let hasChild = false;
+                        if (nxtdirs[j].dirs.length != 0) hasChild = true;
+                        nodes.push({
+                            value: `${libID}-${libdirs.dirs[j].dirID}`,
+                            label: libdirs.dirs[j].name,
+                            leaf: !hasChild,
+                        });
+                    }
+                    resolve(nodes);
+                });
+            });
+        }
+    },
 });
 const handlePosChange = (value: any) => {
     console.log(TAG, 'handlePosChange', value);
-    posvalue.value = value;
+    posvalue.value = value[value.length - 1];
 };
 const handleClick = (tab: any, event: Event) => {
     console.log(tab, event);
@@ -126,6 +145,12 @@ const _show = ref(false);
 
 // 由于elementui的限制只能先这样更新showImportPanel了。。
 function closeSelf() {
+    const uploadRef = ref<any>();
+    activeName.value = 'doi';
+    doiInput.value = '';
+    urlInput.value = '';
+    retriveLoading.value = false;
+    posvalue.value = '';
     SaltDogMessageChannelRenderer.getInstance().execCommand('saltdog.closeImportPanel');
 }
 onMounted(() => {
@@ -135,6 +160,11 @@ onUpdated(() => {
     _show.value = showImportPanel.value;
 });
 function doRetrieveMetadata() {
+    if (posvalue.value.split('-').length == 0) {
+        ElMessage.error(`请先选择存储路径`);
+        return;
+    }
+    const [libID, dirID] = posvalue.value.split('-');
     const type = activeName.value;
     let reqType = null;
     let inputData = null;
@@ -163,15 +193,13 @@ function doRetrieveMetadata() {
             return;
         }
         doiInput.value = urlInput.value = '';
-        console.log(TAG, 'Import', data, 'Library:', currentLib.value.libraryID, 'DirID:', currentDir.value);
-        insertItem(data[0], currentLib.value.libraryID, currentDir.value)
+        const targetLibID = libID || currentLib.value.libraryID;
+        const targetDirID = dirID || currentDir.value;
+        console.log(TAG, 'Import', data, 'Library:', targetLibID, 'DirID:', targetDirID);
+        insertItem(data[0], targetLibID, targetDirID)
             .then(() => {
                 ElMessage.success(`添加成功`);
-                SaltDogMessageChannelRenderer.getInstance().emit(
-                    'saltdog.refreshLibrary',
-                    currentLib.value,
-                    currentDir.value
-                );
+                SaltDogMessageChannelRenderer.getInstance().emit('saltdog.refreshLibrary', targetLibID, targetDirID);
             })
             .catch((e) => {
                 ElMessage.error(`导入出错，${e}`);
