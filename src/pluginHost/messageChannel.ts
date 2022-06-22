@@ -30,7 +30,6 @@ export default class SaltDogMessageChannelRenderer extends EventEmitter implemen
                 return;
             }
             const result = await fn(args);
-            console.log('__SENDCALLBACK', id, result, e.sender, e.senderId);
             if (e.senderId == 0) {
                 // main不知道为啥不能sendto
                 e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, result);
