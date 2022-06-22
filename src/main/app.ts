@@ -1,10 +1,10 @@
 'use strict';
 import * as path from 'path';
-import { app, protocol, BrowserWindow, ipcMain, shell,nativeTheme } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain, shell, nativeTheme, dialog } from 'electron';
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib';
 import { IWindowList } from './window/constants';
 // import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
-const isDevelopment = process.env.NODE_ENV !== 'production';
+
 import windowManager from './window/windowManager';
 import { dbChecker } from './apis/db/dbChecker';
 import SaltDogMessageChannelMain from './apis/plugin/api/messageChannel';
@@ -13,6 +13,10 @@ import { initIpc } from './window/ipcMessage';
 import { ISaltDogPluginMessageType } from './apis/plugin/constant';
 import Parser from './apis/parser/parser';
 import schemaParser from './schema';
+import log from 'electron-log';
+import { initLog } from './utils/logger';
+import { checkUpdate } from './utils/updater';
+const isDevelopment = process.env.NODE_ENV !== 'production';
 class LifeCycle {
     private pluginManager = saltDogPlugin;
     beforeReady() {
@@ -49,19 +53,21 @@ class LifeCycle {
         SaltDogMessageChannelMain.getInstance().subscribe('_pluginHostReady', () => {
             console.log('[Main] _pluginHostReady');
             saltDogPlugin.init();
+            // 确保Renderer进程启动完毕在检查更新，不然没法弹出更新提示
+            checkUpdate();
         });
         app.on('browser-window-focus', (e, window) => {
             windowManager.setFocusWindow(window);
         });
-        // FIXME: disable 
-        nativeTheme.themeSource='light';
+        // FIXME: disable
+        nativeTheme.themeSource = 'light';
         // ipcMain.on('_rendererToPluginEvents', (e, events, data) => {
         //     this.pluginManager.publishEventToPluginHost(events, data);
         // });
     }
     onReady() {
         const readyFunction = async () => {
-            console.log('App ready')
+            console.log('App ready');
             /* disable this to accelerate launch speed in debug mode*/
             // if (isDevelopment && !process.env.IS_TEST) {
             //     // Install Vue Devtools
@@ -105,7 +111,7 @@ class LifeCycle {
         }
     }
     onRunning() {
-        app.on('activate', (ev,hasVisibleWindows) => {
+        app.on('activate', (ev, hasVisibleWindows) => {
             // createProtocol('saltdog');
             // On macOS it's common to re-create a window in the app when the
             // dock icon is clicked and there are no other windows open.
@@ -113,9 +119,10 @@ class LifeCycle {
             // app.setLoginItemSettings({
             //     openAtLogin: db.get('settings.autoStart') || false
             //   })
-            if(app.isReady()&&!hasVisibleWindows){
-                if(!windowManager.has(IWindowList.WORKSPACE_WINDOW)) windowManager.create(IWindowList.WORKSPACE_WINDOW)
-                if(!windowManager.has(IWindowList.PLUGIN_HOST)) windowManager.create(IWindowList.PLUGIN_HOST)
+            if (app.isReady() && !hasVisibleWindows) {
+                if (!windowManager.has(IWindowList.WORKSPACE_WINDOW))
+                    windowManager.create(IWindowList.WORKSPACE_WINDOW);
+                if (!windowManager.has(IWindowList.PLUGIN_HOST)) windowManager.create(IWindowList.PLUGIN_HOST);
             }
             if (process.platform === 'win32') {
                 app.setAppUserModelId('top.lgyserver.saltdog');
@@ -129,8 +136,8 @@ class LifeCycle {
             // to stay active until the user quits explicitly with Cmd + Q
             console.log('window-all-closed');
             // if (process.platform !== 'darwin') {
-                // this.pluginManager.destroyAllPluginHosts();
-                app.quit();
+            // this.pluginManager.destroyAllPluginHosts();
+            app.quit();
             // }
         });
         app.on('will-quit', () => {
@@ -142,7 +149,7 @@ class LifeCycle {
             if (process.platform === 'win32') {
                 process.on('message', (data) => {
                     if (data === 'graceful-exit') {
-                        console.log('Exit with:',data);
+                        console.log('Exit with:', data);
                         app.quit();
                     }
                 });
@@ -155,10 +162,11 @@ class LifeCycle {
         }
     }
     launchApp() {
+        initLog();
         // 获取单实例锁
         const gotTheLock = app.requestSingleInstanceLock();
         // 貌似macos会常驻，到时候直接创建窗口就行？
-        if (!gotTheLock&&process.platform != 'darwin') {
+        if (!gotTheLock && process.platform != 'darwin') {
             // 如果获取失败，说明已经有实例在运行了，直接退出
             console.log('Already running ,exit');
             app.quit();

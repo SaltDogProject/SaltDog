@@ -29,7 +29,10 @@ export default class SaltDogMessageChannelRenderer extends EventEmitter implemen
                 return;
             }
             const result = await fn(args);
-            ipcRenderer.sendTo(e.senderId, 'SALTDOG_IPC_INVOKE_CALLBACK', id, result);
+            if (e.senderId == 0) {
+                // main不知道为啥不能sendto
+                e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, result);
+            } else ipcRenderer.sendTo(e.senderId, 'SALTDOG_IPC_INVOKE_CALLBACK', id, result);
         });
         ipcRenderer.on('SALTDOG_IPC_INVOKE_CALLBACK', (e, id: string, result: any) => {
             console.log('SALTDOG_IPC_INVOKE_CALLBACK', e, id, result);

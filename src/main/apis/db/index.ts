@@ -7,6 +7,7 @@ import LodashId from 'lodash-id';
 import { dbPathChecker, dbPathDir } from './dbChecker';
 import { extend } from 'lodash';
 import defaultSettingsTemplate from './settings_buildin';
+import log from 'electron-log';
 const STORE_PATH = dbPathDir();
 
 if (!fs.pathExistsSync(STORE_PATH)) {
@@ -20,6 +21,9 @@ class ConfigStore {
         const adapter = new FileSync(CONFIG_PATH);
         this.db = Datastore(adapter);
         this.db._.mixin(LodashId);
+        if (!this.get('_inited')) {
+            this.initDefault();
+        }
     }
     read() {
         return this.db.read();
@@ -50,6 +54,19 @@ class ConfigStore {
     }
     getConfigPath() {
         return CONFIG_PATH;
+    }
+    initDefault() {
+        log.info('First init default configs.');
+        this.set('_inited', true);
+        for (const i of Object.keys(defaultSettingsTemplate)) {
+            const grp = defaultSettingsTemplate[i].subGroup || [];
+            for (const j of grp) {
+                const chi = j.children || {};
+                for (const k of Object.keys(chi)) {
+                    this.set(chi[k].id, chi[k].value);
+                }
+            }
+        }
     }
 }
 

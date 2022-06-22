@@ -3,20 +3,21 @@ export default {
         title: '首选项',
         subGroup: [
             {
-                title: '常规',
+                title: '自动更新',
                 children: {
                     loginOnStart: {
-                        title: '开机自启',
-                        desc: 'SaltDog是否随开机自启动',
+                        title: '自动检查更新',
+                        desc: '在开启程序时自动检查更新',
                         type: 'boolean',
-                        id: 'preferences.loginOnStart',
+                        id: 'preferences.autoCheckUpdate',
+                        value: true,
                     },
                     welcomeMessage: {
-                        title: '欢迎信息',
-                        desc: '每次点开时显示的用户昵称',
+                        title: '更新服务器地址',
+                        desc: 'SaltDog获取更新的服务器位置',
                         type: 'text',
-                        id: 'preferences.welcomeMessage',
-                        value: '121',
+                        id: 'preferences.updateURL',
+                        value: 'https://saltdog.oss-cn-hangzhou.aliyuncs.com/versions/',
                     },
                 },
             },
