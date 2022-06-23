@@ -9,6 +9,7 @@ import { ipcRenderer } from 'electron';
 import pluginManager from './controller/plugin/plugin';
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import initCommandListener from './utils/generalCommands';
+import { initWorkspace } from './initWorkspace';
 const app = createApp(Frame);
 // FIXME: debug
 //ipcRenderer.once('initWorkspace', (e, arg) => {
@@ -36,6 +37,7 @@ app.use(store as any)
 
 // listenen Commands
 initCommandListener();
+initWorkspace();
 
 ipcRenderer.send('WorkspaceWindowReady');
 //});

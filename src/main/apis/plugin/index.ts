@@ -6,12 +6,13 @@ import path from 'path';
 import process from 'process';
 import { ChildProcess } from 'child_process';
 import SaltDogMessageChannel from './api/messageChannel';
-import { loggerWriter } from '~/main/utils/logger';
+import { log } from 'electron-log';
 const TAG = 'SaltDogPlugin';
 class SaltDogPlugin {
     private _plugins: Map<string, ISaltDogPluginInfo> = new Map();
     private _pluginHost: BrowserWindow | null = null;
     private _activator: SaltDogPluginActivator | null = null;
+    private _installer;
     private isDevelopment = process.env.NODE_ENV == 'development';
     // 开发模式下加载文件路径内的插件，方便调试
     public pluginPath = path.normalize(
@@ -26,6 +27,7 @@ class SaltDogPlugin {
         // ipcMain.on('onTabsChange', (e, tabid) => {
         //     this.broadcastToPluginHost('onTabsChange', tabid);
         // });
+        this._installer = new SaltDogPluginInstaller(this.pluginPath);
     }
     // 加载appdata/SaltDogPlugins下的所有插件
     // TODO: 禁用插件
@@ -113,7 +115,7 @@ class SaltDogPlugin {
                     try {
                         // @ts-ignore
                         info.sidebarIcon.push({
-                            iconPath: 'file:///'+path.normalize(plugin.rootDir + '/' + item.icon),
+                            iconPath: 'file:///' + path.normalize(plugin.rootDir + '/' + item.icon),
                             command: `${plugin.name}.${item.id}`,
                         });
                     } catch (e) {
