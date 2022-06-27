@@ -6,7 +6,7 @@ import { uuid, extend, fs } from 'licia';
 import api from './api';
 import panelManager from '../panelManager';
 import { ElMessage } from 'element-plus';
-import {readFile} from 'fs'
+import { readFile } from 'fs';
 import SaltDogMessageChannelRenderer from '../messageChannel';
 const TAG = '[SaltDogPlugin]';
 class SaltDogPlugin {
@@ -48,7 +48,7 @@ class SaltDogPlugin {
         });
     }
     public getSidebarIconListRef(): any {
-        const buildinIconPath = 'file:///'+__static + '/images/workspace';
+        const buildinIconPath = 'file:///' + __static + '/images/workspace';
         const iconList = [
             {
                 iconImg: `${buildinIconPath}/library.svg`,
@@ -67,6 +67,12 @@ class SaltDogPlugin {
                 description: '搜索',
                 active: false,
                 command: 'onClickSidebarIcon:saltdog.search',
+            },
+            {
+                iconImg: `${buildinIconPath}/plugin.svg`,
+                description: '插件',
+                active: false,
+                command: 'onClickSidebarIcon:saltdog.plugin',
             },
         ];
         if (this._basicInfo) {
@@ -94,6 +100,7 @@ class SaltDogPlugin {
             'saltdog.library': '图书馆',
             'saltdog.outline': '目录',
             'saltdog.search': '搜索',
+            'saltdog.plugin': '插件',
         };
         // @ts-ignore
         if (!knownBuildInPlugins[viewName]) {
@@ -197,27 +204,28 @@ class SaltDogPlugin {
         })[0];
         webview.addEventListener('dom-ready', () => {
             console.log('[Sidebar View] Dom Ready');
-            const cssPath = path
-                .normalize(__static + '/preloads/pluginWebviewPreload/sidebar.css')
+            const cssPath = path.normalize(__static + '/preloads/pluginWebviewPreload/sidebar.css');
             console.log('Inject CSS', cssPath);
-            readFile(cssPath,(err,data)=>{
-                if(err){
-                    console.error(err);return;
-                }else{
-                    webview.insertCSS(data.toString('utf-8'))
+            readFile(cssPath, (err, data) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                } else {
+                    webview.insertCSS(data.toString('utf-8'));
                 }
             });
             // webview.executeJavaScript(`
             //     // 避免结构化克隆报错，加;0
             //     ;0
             // `);
-            const jsPath = path.normalize(__static + '/preloads/pluginWebviewPreload/sidebar.js')
+            const jsPath = path.normalize(__static + '/preloads/pluginWebviewPreload/sidebar.js');
             console.log('Inject JS', jsPath);
-            readFile(jsPath,(err,data)=>{
-                if(err){
-                    console.error(err);return;
-                }else{
-                    webview.executeJavaScript(data.toString('utf-8'))
+            readFile(jsPath, (err, data) => {
+                if (err) {
+                    console.error(err);
+                    return;
+                } else {
+                    webview.executeJavaScript(data.toString('utf-8'));
                 }
             });
             webview.executeJavaScript(`

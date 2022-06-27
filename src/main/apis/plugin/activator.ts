@@ -4,7 +4,6 @@ import apiFactory from './api/index';
 import windowManager from '~/main/window/windowManager';
 import path from 'path';
 import SaltDogMessageChannelMain from './api/messageChannel';
-import { loggerWriter } from '~/main/utils/logger';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { IWindowList } from '~/main/window/constants';
 const TAG = '[Plugin Activator]';
@@ -24,8 +23,7 @@ export class SaltDogPluginActivator {
         SaltDogMessageChannelMain.getInstance().invokePluginHost(
             '_pluginHostConfig',
             {
-                logDir: app.getPath('userData'),
-                rootDir: app.getPath('userData'),
+                pluginDir: this._pluginManager!.pluginPath,
                 // plugins: this._pluginManager.getPluginInfoJSON(),
             },
             (data) => {

@@ -1,8 +1,11 @@
 import { ElMessageBox, ElNotification } from 'element-plus';
 import SaltDogMessageChannelRenderer from './controller/messageChannel';
 import MarkdownIt from 'markdown-it';
+import { openExternal } from './utils/external';
+import log from 'electron-log';
 
 export function initWorkspace() {
+    const msgChannel = SaltDogMessageChannelRenderer.getInstance();
     SaltDogMessageChannelRenderer.getInstance().onInvoke('update._askUpdateDownload', (info) => {
         return new Promise((resolve, reject) => {
             const _mdParser = new MarkdownIt({
@@ -50,6 +53,19 @@ export function initWorkspace() {
                 .catch(() => {
                     resolve(false);
                 });
+        });
+    });
+    log.log('reg');
+    msgChannel.on('plugin._envInvalid', () => {
+        ElMessageBox.alert(
+            'SaltDog的插件依赖于Node.js环境，监测到您还未安装，再用最后一分钟安装一下就能使用啦！安装过后，请重启SaltDog。',
+            '最后一步',
+            {
+                confirmButtonText: '转到下载',
+                showClose: false,
+            }
+        ).then(() => {
+            openExternal('https://nodejs.org/zh-cn/', false);
         });
     });
 }

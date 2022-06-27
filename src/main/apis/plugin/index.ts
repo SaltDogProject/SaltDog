@@ -7,6 +7,8 @@ import process from 'process';
 import { ChildProcess } from 'child_process';
 import SaltDogMessageChannel from './api/messageChannel';
 import { log } from 'electron-log';
+import { writeFileSync } from 'fs';
+import SaltDogPluginInstaller from './installer';
 const TAG = 'SaltDogPlugin';
 class SaltDogPlugin {
     private _plugins: Map<string, ISaltDogPluginInfo> = new Map();
@@ -34,25 +36,37 @@ class SaltDogPlugin {
     public init(): void {
         this._activator = new SaltDogPluginActivator(this);
         this._activator.initPluginHost();
-        if (!existsSync(this.pluginPath)) {
-            mkdirSync(this.pluginPath);
+        if (!existsSync(path.resolve(this.pluginPath, 'node_modules'))) {
+            mkdirSync(path.resolve(this.pluginPath, 'node_modules'), { recursive: true });
+            const pkg = {
+                name: 'saltdog-plugins',
+                description: 'saltdog-plugins',
+                repository: 'https://github.com/SaltDogProject/Saltdog',
+                license: 'MIT',
+            };
+            writeFileSync(path.resolve(this.pluginPath, 'package.json'), JSON.stringify(pkg), 'utf8');
+            this._installer.initNodeDependents();
         }
-        const plugindir = readdirSync(this.pluginPath).filter((item) => {
+        const plugindir = readdirSync(path.resolve(this.pluginPath, 'node_modules')).filter((item) => {
             return item.startsWith('saltdogplugin_');
         });
         // 读取插件manifest.json
         plugindir.forEach((item) => {
-            if (existsSync(this.pluginPath + '/' + item + '/manifest.json')) {
+            if (existsSync(path.resolve(this.pluginPath, 'node_modules', item, 'manifest.json'))) {
                 try {
-                    const pluginInfo = readJsonSync(this.pluginPath + '/' + item + '/manifest.json');
+                    const pluginInfo = readJsonSync(
+                        path.resolve(this.pluginPath, 'node_modules', item, 'manifest.json')
+                    );
                     this._plugins.set(
                         pluginInfo.name,
-                        extend(pluginInfo, { rootDir: path.normalize(this.pluginPath + '/' + item) })
+                        extend(pluginInfo, {
+                            rootDir: path.resolve(this.pluginPath, 'node_modules', item),
+                        })
                     );
                 } catch (e) {
                     console.log(
                         'Read plugin manifest.json error, path:',
-                        path.normalize(this.pluginPath + '/' + item + '/manifest.json'),
+                        path.resolve(this.pluginPath, 'node_modules', item, 'manifest.json'),
                         e
                     );
                 }

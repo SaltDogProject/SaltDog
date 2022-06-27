@@ -17,17 +17,23 @@ declare global {
 window._plugins = {};
 SaltDogMessageChannelRenderer.getInstance().onInvoke('_pluginHostConfig', async (config) => {
     console.log(config);
+    __non_webpack_require__.cache[path.resolve(config.pluginDir, 'node_modules', 'saltdog', 'index.ts')] = {
+        exports: SaltDogApiModule,
+    };
     return {};
 });
 
-__non_webpack_require__.cache[__non_webpack_require__.resolve('saltdog')] = {
-    exports: SaltDogApiModule,
-};
+// __non_webpack_require__.cache[__non_webpack_require__.resolve('saltdog')] = {
+//     exports: SaltDogApiModule,
+// };
 
 SaltDogMessageChannelRenderer.getInstance().onInvoke('_activatePlugin', async (msg: any) => {
     console.log(TAG, ` Activate Plugin ${msg.mainjs}`);
     window._plugins[msg.name] = msg.pluginManifest;
     const plugin = __non_webpack_require__(msg.mainjs);
+    __non_webpack_require__.cache[path.resolve(msg.pluginManifest.rootDir, 'node_modules', 'saltdog', 'index.ts')] = {
+        exports: SaltDogApiModule,
+    };
     pluginMap.set(msg.name, plugin);
     plugin.activate();
 });

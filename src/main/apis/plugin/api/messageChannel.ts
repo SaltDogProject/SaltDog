@@ -8,6 +8,7 @@ export default class SaltDogMessageChannelMain extends EventEmitter {
     private _host: BrowserWindow | null = null;
     private _workspace: BrowserWindow | null = null;
     private _callbackIDMap: Map<string, (data: any) => void> = new Map();
+    private _bindFns: Map<string, any> = new Map();
     public static getInstance(): SaltDogMessageChannelMain {
         if (!this._instance) {
             this._instance = new SaltDogMessageChannelMain();
@@ -17,6 +18,17 @@ export default class SaltDogMessageChannelMain extends EventEmitter {
     constructor() {
         super();
         this._refreshBindingIfNeeded();
+        ipcMain.on('SALTDOG_IPC_INVOKE', async (e, api, args, id) => {
+            // console.log('__ONINCVOKE', e, api, args, id);
+            const fn = this._bindFns.get(api);
+            if (!fn || typeof fn !== 'function') {
+                console.error(`${api} is not a function`);
+                return;
+            }
+            const result = await fn(args);
+            e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, result);
+            // e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, result);
+        });
         ipcMain.on('SALTDOG_IPC_INVOKE_CALLBACK', (e, id: string, result: any) => {
             const cbfn = this._callbackIDMap.get(id);
             if (!cbfn || typeof cbfn !== 'function') {
@@ -69,5 +81,14 @@ export default class SaltDogMessageChannelMain extends EventEmitter {
     }
     public subscribe(events: string, callback: (...args: any) => any) {
         this.on(events, callback);
+    }
+    public onInvoke(api: string, fn: (args: any) => Promise<any>): void {
+        if (this._bindFns.has(api)) {
+            console.warn(`Already regist ${api}, this will override`);
+        }
+        this._bindFns.set(api, fn);
+    }
+    public onInvokeSync(api: string, fn: (e: Electron.IpcMainEvent, ...args: any[]) => void): void {
+        ipcMain.on(api, fn);
     }
 }
