@@ -35,7 +35,7 @@ export default class SaltDogMessageChannelRenderer extends EventEmitter implemen
             } else ipcRenderer.sendTo(e.senderId, 'SALTDOG_IPC_INVOKE_CALLBACK', id, result);
         });
         ipcRenderer.on('SALTDOG_IPC_INVOKE_CALLBACK', (e, id: string, result: any) => {
-            console.log('SALTDOG_IPC_INVOKE_CALLBACK', e, id, result);
+            // console.log('SALTDOG_IPC_INVOKE_CALLBACK', e, id, result);
             const cbfn = this._callbackIDMap.get(id);
             if (!cbfn || typeof cbfn !== 'function') {
                 console.error(`callback ${id} is not a function`);

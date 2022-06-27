@@ -38,7 +38,7 @@ windowList.set(IWindowList.ENTRY_WINDOW, {
             options.frame = false;
             options.backgroundColor = '#3f3c37';
             options.transparent = false;
-            options.icon = `${'file:///'+__static}/images/logo.png`;
+            options.icon = `${'file:///' + __static}/images/logo.png`;
         }
         return options;
     },
@@ -85,7 +85,7 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
             options.frame = false;
             //options.backgroundColor = '#3f3c37';
             options.transparent = false;
-            options.icon = `${'file:///'+__static}/images/logo.png`;
+            options.icon = `${'file:///' + __static}/images/logo.png`;
         }
         return options;
     },
@@ -99,7 +99,10 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
         // 阻止页面跳转，等待用户确认
         window.webContents.on('will-navigate', (event, url) => {
             console.log(TAG, 'will-navigate', url);
-            if (process.env.NODE_ENV !== 'development') {
+            if (
+                process.env.NODE_ENV !== 'development' ||
+                (process.env.NODE_ENV === 'development' && !url.startsWith('http://localhost'))
+            ) {
                 SaltDogMessageChannelMain.getInstance().publish('onCommand:saltdog.openExternal', url);
                 event.preventDefault();
             }
@@ -149,7 +152,7 @@ windowList.set(IWindowList.PLUGIN_HOST, {
             options.frame = false;
             //options.backgroundColor = '#3f3c37';
             options.transparent = false;
-            options.icon = `${'file:///'+__static}/images/logo.png`;
+            options.icon = `${'file:///' + __static}/images/logo.png`;
         }
         return options;
     },

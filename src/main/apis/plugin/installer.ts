@@ -6,6 +6,9 @@ import SaltDogMessageChannelMain from './api/messageChannel';
 import log from 'electron-log';
 import { resolve } from 'path';
 import { reject } from 'lodash';
+import { Parser, DomUtils, DomHandler } from 'htmlparser2';
+import render from 'dom-serializer';
+import xss from 'xss';
 const TAG = '[Main/PluginInstaller]';
 export default class SaltDogPluginInstaller {
     private _searchURL = '';
@@ -31,6 +34,9 @@ export default class SaltDogPluginInstaller {
         });
         this._msgChannel.onInvoke('plugin.install', async (name: string) => {
             return this.install(name);
+        });
+        this._msgChannel.onInvoke('plugin.getReadme', async (npmurl: string) => {
+            return await this.getReadme(npmurl);
         });
     }
     public checkEnv(): Promise<boolean> {
@@ -72,6 +78,45 @@ export default class SaltDogPluginInstaller {
          * ],time,total
          */
     }
+    public getReadme(npmlink: string): Promise<any> {
+        const xssoptions = {
+            whiteList: {
+                a: ['href', 'title', 'target'],
+                img: ['src'],
+                p: [],
+                span: [],
+                h1: [],
+                h2: [],
+                h3: [],
+                h4: [],
+                h5: [],
+                h6: [],
+                pre: [],
+                div: ['id'],
+                code: [],
+                hr: [],
+            },
+        };
+        return new Promise((resolve, reject) => {
+            got(npmlink, { cache: false }).then((req) => {
+                const content = xss(req.body, xssoptions);
+                const handler = new DomHandler((error, dom) => {
+                    if (error) {
+                        throw error;
+                    } else {
+                        const nodes = DomUtils.getElementById('readme', dom);
+                        // @ts-ignore
+                        if (nodes) resolve(render(nodes));
+                        else reject('No readme.');
+                    }
+                });
+                const parser = new Parser(handler);
+                parser.write(content);
+                parser.end();
+            });
+        });
+    }
+
     public install(pluginName: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
             if (typeof pluginName != 'string' || pluginName.length == 0 || !pluginName.startsWith('saltdogplugin_'))

@@ -23,6 +23,7 @@
                     <library v-if="view.isBuildIn && view.viewName == 'saltdog.library'"></library>
                     <outline v-if="view.isBuildIn && view.viewName == 'saltdog.outline'"></outline>
                     <search v-if="view.isBuildIn && view.viewName == 'saltdog.search'"></search>
+                    <plugin v-if="view.isBuildIn && view.viewName == 'saltdog.plugin'"></plugin>
                     <webview
                         v-else
                         class="sidebar-webview"
@@ -42,16 +43,17 @@
 <script lang="ts">
 import Outline from './outline.vue';
 import Search from './search.vue';
+import Plugin from './plugin.vue';
 import { defineComponent, DefineComponent, getCurrentInstance, onMounted, onUpdated, ref } from 'vue';
 import plugins from '../../controller/plugin/plugin';
 const TAG = '[Sidebar]';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 export default defineComponent({
-    components: { Outline, Search },
+    components: { Outline, Search, Plugin },
     setup() {
         // eslint-disable-next-line no-undef
-        const staticPath = 'file:///'+__static;
+        const staticPath = 'file:///' + __static;
         const sidebarPreload = ref(
             `${staticPath}/preloads/pluginWebviewPreload${isDevelopment ? '' : '/build'}/preload.js`
         );

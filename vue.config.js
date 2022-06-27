@@ -65,6 +65,15 @@ const config = {
                     .set('@', resolve('src/renderer'))
                     .set('~', resolve('src'))
                     .set('root', resolve('./'));
+                config.module
+                    .rule('babel')
+                    .test(/\.js$/)
+                    // .test(/node_modules\/([cheerio])?([parse5])?(([\s\S])*?)\.js$/)
+                    .pre()
+                    .include.add(resolve('node_modules/htmlparser2'))
+                    .end()
+                    .use('babel')
+                    .loader('babel-loader');
             },
             chainWebpackRendererProcess: (config) => {
                 config.resolve.alias
