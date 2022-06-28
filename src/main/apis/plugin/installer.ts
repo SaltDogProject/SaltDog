@@ -9,17 +9,23 @@ import { reject } from 'lodash';
 import { Parser, DomUtils, DomHandler } from 'htmlparser2';
 import render from 'dom-serializer';
 import xss from 'xss';
+import { SaltDogPlugin } from '.';
 const TAG = '[Main/PluginInstaller]';
 export default class SaltDogPluginInstaller {
     private _searchURL = '';
     private _pluginPath = '';
     private _npmmirror = 'https://registry.npmmirror.com';
     private _msgChannel = SaltDogMessageChannelMain.getInstance();
-    constructor(pluginPath: string) {
+    private _manager: SaltDogPlugin | null = null;
+    constructor(manager: SaltDogPlugin, pluginPath: string) {
         this._pluginPath = pluginPath;
+        this._manager = manager;
         this._msgChannel.onInvoke('plugin.search', async (key: string) => {
             const res = (await this.search(key)) as any;
             res.objects = res.objects.filter((obj: any) => {
+                const { isInstalled, needUpdate } = this.checkInstallStatus(obj.package.name, obj.package.version);
+                obj.package.isInstalled = isInstalled;
+                obj.package.needUpdate = needUpdate;
                 return obj.package.name.startsWith('saltdogplugin_');
             });
             return res;
@@ -33,11 +39,32 @@ export default class SaltDogPluginInstaller {
             });
         });
         this._msgChannel.onInvoke('plugin.install', async (name: string) => {
-            return this.install(name);
+            try {
+                return { error: null, status: await this.install(name) };
+            } catch (e) {
+                return { error: e, status: false };
+            }
+        });
+        this._msgChannel.onInvoke('plugin.uninstall', async (name: string) => {
+            try {
+                return { error: null, status: await this.uninstall(name) };
+            } catch (e) {
+                return { error: e, status: false };
+            }
         });
         this._msgChannel.onInvoke('plugin.getReadme', async (npmurl: string) => {
             return await this.getReadme(npmurl);
         });
+    }
+    public checkInstallStatus(name: string, version: string) {
+        let isInstalled = false;
+        let needUpdate = false;
+        const info = this._manager!.getPluginInfo(name);
+        if (!info) return { isInstalled, needUpdate };
+        if (info) isInstalled = true;
+        if (info.version !== version) needUpdate = true;
+        console.log(info, version);
+        return { isInstalled, needUpdate };
     }
     public checkEnv(): Promise<boolean> {
         return new Promise((resolve, reject) => {
@@ -117,23 +144,44 @@ export default class SaltDogPluginInstaller {
         });
     }
 
-    public install(pluginName: string): Promise<boolean> {
+    public install(pluginName: string) {
         return new Promise((resolve, reject) => {
             if (typeof pluginName != 'string' || pluginName.length == 0 || !pluginName.startsWith('saltdogplugin_'))
-                throw new Error('Invalid pluginName');
+                reject('Invalid pluginName');
             pluginName = pluginName.split(' ')[0];
             exec(
                 `npm install ${pluginName} ${this._npmmirror.length != 0 ? '--registry ' + this._npmmirror : ''}`,
+                { cwd: this._pluginPath },
                 (e, stdout, stderr) => {
                     if (e || stderr) {
                         log.error(TAG, `Installed failed for plugin ${pluginName}`, e);
-                        throw e;
+                        reject(e || stderr);
                     }
-                    const pattern = /added [0-9]+ packages/;
-                    const isSuccess = pattern.test(stdout);
-                    if (isSuccess) resolve(true);
+                    // const pattern = /added [0-9]+ packages/;
+                    // const isSuccess = pattern.test(stdout);
+                    // if (isSuccess)
+                    resolve(true);
                 }
             );
+        });
+    }
+    public uninstall(pluginName: string) {
+        return new Promise((resolve, reject) => {
+            if (typeof pluginName != 'string' || pluginName.length == 0 || !pluginName.startsWith('saltdogplugin_'))
+                reject('Invalid pluginName');
+            pluginName = pluginName.split(' ')[0];
+            exec(`npm remove ${pluginName}`, { cwd: this._pluginPath }, (e, stdout, stderr) => {
+                if (e || stderr) {
+                    log.error(TAG, `Installed failed for plugin ${pluginName}`, e);
+                    reject(e || stderr);
+                }
+                // const pattern = /(removed [0-9]+ packages)?(up to date)?/;
+                // const isSuccess = pattern.test(stdout);
+                // console.log(isSuccess);
+                // if (isSuccess)
+                resolve(true);
+                // reject('Unknown error');
+            });
         });
     }
 }

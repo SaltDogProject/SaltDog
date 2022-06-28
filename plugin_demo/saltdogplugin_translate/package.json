@@ -1,6 +1,6 @@
 {
     "name": "saltdogplugin_translate",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "在SaltDog阅读器中进行划词翻译和阅读",
     "main": "dist/index.js",
     "type": "commonjs",

@@ -1,10 +1,6 @@
 {
     "name": "SaltDogTranslate",
-    "version": "1.0.0",
-    "description": "Translate Plugin for SaltDog",
-    "author": "dorapocket",
     "main": "dist/index.js",
-    "type": "module",
     "contributes": {
         "viewsContainers": {
             "activitybar": [

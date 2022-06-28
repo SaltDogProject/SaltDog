@@ -10,8 +10,9 @@ import { log } from 'electron-log';
 import { writeFileSync } from 'fs';
 import SaltDogPluginInstaller from './installer';
 const TAG = 'SaltDogPlugin';
-class SaltDogPlugin {
+export class SaltDogPlugin {
     private _plugins: Map<string, ISaltDogPluginInfo> = new Map();
+    private _nameMap: Map<string, string> = new Map(); //映射packagejson到manifestjson的名字
     private _pluginHost: BrowserWindow | null = null;
     private _activator: SaltDogPluginActivator | null = null;
     private _installer;
@@ -29,7 +30,7 @@ class SaltDogPlugin {
         // ipcMain.on('onTabsChange', (e, tabid) => {
         //     this.broadcastToPluginHost('onTabsChange', tabid);
         // });
-        this._installer = new SaltDogPluginInstaller(this.pluginPath);
+        this._installer = new SaltDogPluginInstaller(this, this.pluginPath);
     }
     // 加载appdata/SaltDogPlugins下的所有插件
     // TODO: 禁用插件
@@ -57,12 +58,17 @@ class SaltDogPlugin {
                     const pluginInfo = readJsonSync(
                         path.resolve(this.pluginPath, 'node_modules', item, 'manifest.json')
                     );
+                    const pkgjson = readJsonSync(path.resolve(this.pluginPath, 'node_modules', item, 'package.json'));
                     this._plugins.set(
                         pluginInfo.name,
                         extend(pluginInfo, {
                             rootDir: path.resolve(this.pluginPath, 'node_modules', item),
+                            version: pkgjson.version,
+                            author: pkgjson.author,
+                            description: pkgjson.description || '',
                         })
                     );
+                    this._nameMap.set(item, pluginInfo.name);
                 } catch (e) {
                     console.log(
                         'Read plugin manifest.json error, path:',
@@ -117,6 +123,13 @@ class SaltDogPlugin {
     //     if (!this._pluginHost) return;
     //     this._pluginHost.kill();
     // }
+    public getPluginInfo(name: string) {
+        return this._plugins.get(name)
+            ? this._plugins.get(name)
+            : this._nameMap.get(name)
+            ? this._plugins.get(this._nameMap.get(name) || '')
+            : null;
+    }
     public workspaceGetBasicPluginInfo(): any {
         const pluginInfo: any = {};
         this._plugins.forEach((plugin) => {

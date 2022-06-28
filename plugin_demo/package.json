@@ -1,1 +1,1 @@
-{"name":"saltdog-plugins","description":"saltdog-plugins","repository":"https://github.com/SaltDogProject/Saltdog","license":"MIT","dependencies":{"saltdog":"^0.0.1","saltdogplugin_translate":"^1.0.0"}}
+{"name":"saltdog-plugins","description":"saltdog-plugins","repository":"https://github.com/SaltDogProject/Saltdog","license":"MIT","dependencies":{"saltdog":"^0.0.1"}}

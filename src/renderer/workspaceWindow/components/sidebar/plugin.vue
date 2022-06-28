@@ -1,16 +1,28 @@
 <template>
     <div class="searchInput">
-        <el-input v-model="input" size="small" placeholder="搜索插件" />
+        <el-input @change="searchChange" v-model="input" size="small" placeholder="搜索插件" />
     </div>
     <div class="searchLoading"></div>
     <div v-loading="loading" element-loading-background="rgba(122, 122, 122, 0.1)" class="searchResultContainer">
+        <div v-if="searchData.length == 0 && !firstSearch" style="width: 100%; margin-top: 20px; text-align: center">
+            滴滴，查无此插件
+        </div>
         <div @click="showMoreInfo(data)" v-for="(data, index) in searchData" :key="index" class="searchResultItem">
             <div class="searchTitle">{{ data.package.name && data.package.name.replace('saltdogplugin_', '') }}</div>
             <div class="searchDesc">
                 {{ data.package.description || '暂无介绍' }}
             </div>
             <div class="searchAuther">
-                {{ data.package.author.name }}
+                <span>{{ data.package.author.name }}</span>
+                <span
+                    :style="{
+                        position: 'absolute',
+                        right: '0px',
+                        color: data.package.needUpdate ? '#409eff' : '#67C23A',
+                    }"
+                >
+                    {{ data.package.needUpdate ? '可升级' : data.package.isInstalled ? '已安装' : '' }}
+                </span>
             </div>
         </div>
     </div>
@@ -42,11 +54,28 @@
             </div>
         </div>
         <div style="font-weight: 700; margin-top: 15px; font-size: 16px">详细介绍</div>
-        <div class="readme" v-html="readmeHTML"></div>
+        <div v-loading="readmeLoading" class="readme" v-html="readmeHTML" style="min-height: 50px"></div>
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">安装</el-button>
+                <el-button
+                    v-if="currentPluginData.isInstalled"
+                    :loading="uninstallLoading"
+                    @click="uninstall(currentPluginData.name)"
+                >
+                    卸载
+                </el-button>
+                <el-button v-if="currentPluginData.needUpdate" type="primary" @click="dialogVisible = false">
+                    更新
+                </el-button>
+                <el-button
+                    v-if="!currentPluginData.isInstalled"
+                    type="primary"
+                    :loading="installLoading"
+                    @click="install(currentPluginData.name)"
+                >
+                    安装
+                </el-button>
             </span>
         </template>
     </el-dialog>
@@ -54,25 +83,85 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 import SaltDogMessageChannelRenderer from '@/workspaceWindow/controller/messageChannel';
+import { Action, ElMessage, ElMessageBox, ElNotification } from 'element-plus';
 const input = ref('');
+const firstSearch = ref(true);
 const dialogVisible = ref(false);
+const readmeLoading = ref(true);
 const searchData = ref<any>([]);
 const currentPluginData = ref<any>({});
 const loading = ref(true);
+const installLoading = ref(false);
+const uninstallLoading = ref(false);
 const readmeHTML = ref('');
 const _msgChannel = SaltDogMessageChannelRenderer.getInstance();
 _msgChannel.invokeMain('plugin.search', '', (res) => {
-    console.log(res);
+    firstSearch.value = false;
     res.objects && (searchData.value = res.objects);
     loading.value = false;
 });
+function searchChange(value: any) {
+    firstSearch.value = false;
+    loading.value = true;
+    _msgChannel.invokeMain('plugin.search', value, (res) => {
+        res.objects && (searchData.value = res.objects);
+        loading.value = false;
+    });
+}
 function showMoreInfo(data: any) {
     currentPluginData.value = data.package;
     dialogVisible.value = true;
-    //currentPluginData.value!.links!.npm
+    readmeLoading.value = true;
     _msgChannel.invokeMain('plugin.getReadme', currentPluginData.value!.links!.npm, (data) => {
-        console.log('getReadme', data);
         readmeHTML.value = data;
+        readmeLoading.value = false;
+    });
+}
+function uninstall(name: string) {
+    uninstallLoading.value = true;
+    ElMessageBox.alert(`您真的要卸载插件 ${name.replace('saltdogplugin_', '')} 吗？`, '卸载', {
+        confirmButtonText: '确认卸载',
+        callback: (action: Action) => {
+            _msgChannel.invokeMain('plugin.uninstall', name, ({ error, status }) => {
+                uninstallLoading.value = false;
+                if (error)
+                    ElNotification({
+                        title: '卸载出错',
+                        message: error,
+                        type: 'error',
+                    });
+                else
+                    ElNotification({
+                        title: '成功',
+                        message: '卸载成功，你可能需要重启SaltDog来应用更改。',
+                        type: 'success',
+                    });
+                dialogVisible.value = false;
+                searchChange(input.value);
+            });
+        },
+    });
+}
+
+function install(name: string) {
+    installLoading.value = true;
+    _msgChannel.invokeMain('plugin.install', name, ({ error, status }) => {
+        installLoading.value = false;
+        if (error) {
+            ElNotification({
+                title: '安装出错',
+                message: error,
+                type: 'error',
+            });
+        } else {
+            ElNotification({
+                title: '成功',
+                message: '安装成功，你可能需要重启SaltDog来让插件生效。',
+                type: 'success',
+            });
+            searchChange(input.value);
+            dialogVisible.value = false;
+        }
     });
 }
 </script>
@@ -107,6 +196,7 @@ function showMoreInfo(data: any) {
             padding-bottom: 1px;
             margin-bottom 5px
         &>.searchAuther
+            position:relative
             font-size:11px;
             font-weight 700
             color:var(--el-text-color-secondary)
