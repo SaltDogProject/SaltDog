@@ -1,4 +1,4 @@
-import { ipcMain, dialog, shell } from 'electron';
+import { ipcMain, dialog, shell, app } from 'electron';
 import { IWindowManager } from '~/utils/types/electron';
 import { IWindowList } from './constants';
 import { extend } from 'lodash';
@@ -7,10 +7,22 @@ import db from '../apis/db/index';
 import LibraryDB from '../apis/db/libraryDB/libraryDB';
 import Parser from '../apis/parser/parser';
 import { buildSettingsTemplate } from '../apis/db/index';
+import log from 'electron-log';
 // import SaltDogMessageChannelMain from '../apis/plugin/api/messageChannel';
+const isDevelopment = process.env.NODE_ENV !== 'production';
 const TAG = '[Main/IPC]';
 export function initIpc(windowManager: IWindowManager): void {
     console.log('[IPC] inited');
+    ipcMain.on('saltdog.restart', () => {
+        // NOTE: Restart在dev模式下无效！(会导致server退出)
+        log.warn(TAG, 'Rerstart called.');
+        if (isDevelopment) {
+            log.warn(TAG, 'Rerstart will be baned in dev mode. Restart manually.');
+        } else {
+            app.relaunch();
+            app.quit();
+        }
+    });
     ipcMain.on('openFileDialog', (e, msg) => {
         dialog
             .showOpenDialog({ properties: ['openFile'], filters: [{ name: 'Documents', extensions: ['pdf'] }] })

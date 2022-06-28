@@ -9,5 +9,15 @@
     "prettier.htmlWhitespaceSensitivity": "ignore",
     "prettier.tabWidth": 4,
     "editor.formatOnPaste": true,
-    "editor.tabSize": 4
+    "editor.tabSize": 4,
+    "todohighlight.keywords": [
+        "DEBUG:",
+        "REVIEW:",
+        {
+            "text": "NOTE:",
+            "color": "#ffffff",
+            "backgroundColor": "#409EFF",
+            "overviewRulerColor": "grey"
+        }
+    ]
 }

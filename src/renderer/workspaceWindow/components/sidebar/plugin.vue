@@ -27,34 +27,45 @@
         </div>
     </div>
 
-    <el-dialog v-model="dialogVisible" custom-class="plugindialog" :title="'插件信息'" width="80%">
-        <div style="margin-top: -20px">
+    <el-dialog v-model="dialogVisible" top="10vh" custom-class="plugindialog" :title="'插件信息'" width="80%">
+        <div style="margin-top: -20px; padding: 25px">
             <span style="font-size: 25px; display: inline-block; padding-right: 10px">
                 {{ currentPluginData.name.replace('saltdogplugin_', '') }}
             </span>
-            <span style="font-size:15px color:gray">v{{ currentPluginData.version }}</span>
-            <div style="font-size:15px color:gray">{{ currentPluginData.description || '无描述' }}</div>
-        </div>
-        <div>
-            <div style="font-weight: 700; margin-top: 15px; font-size: 16px">详细信息</div>
-            <div style="font-size: 12px">
-                <span>发布日期：</span>
-                <span>{{ new Date(currentPluginData.date).toLocaleString() }}</span>
-            </div>
-            <div style="font-size: 12px">
-                <span>发布者：</span>
-                <span>{{ `${currentPluginData.publisher.username} (${currentPluginData.publisher.email})` }}</span>
-            </div>
-            <div class="links" style="font-size: 12px">
-                <span>链接：</span>
-                <a v-if="currentPluginData.links.npm" :href="currentPluginData.links.npm">NPM</a>
-                <a v-if="currentPluginData.links.homepage" :href="currentPluginData.links.homepage">项目主页</a>
-                <a v-if="currentPluginData.links.bugs" :href="currentPluginData.links.bugs">BUG上报</a>
-                <a v-if="currentPluginData.links.repository" :href="currentPluginData.links.repository">仓库地址</a>
+            <el-tag style="font-size: 15px">v{{ currentPluginData.version }}</el-tag>
+            <div style="font-size:15px color:gray;margin-top:10px;">
+                {{ currentPluginData.description || '无描述' }}
             </div>
         </div>
-        <div style="font-weight: 700; margin-top: 15px; font-size: 16px">详细介绍</div>
-        <div v-loading="readmeLoading" class="readme" v-html="readmeHTML" style="min-height: 50px"></div>
+        <el-tabs :tab-position="'left'" style="height: 40vh" class="Infotabs">
+            <el-tab-pane label="简介" style="overflow-y: scroll">
+                <div v-loading="readmeLoading" class="readme" v-html="readmeHTML" style="min-height: 50px"></div>
+            </el-tab-pane>
+            <el-tab-pane label="更多">
+                <div style="padding-left: 15px">
+                    <div style="font-weight: 700; margin-top: 10px; font-size: 16px">详细信息</div>
+                    <div>
+                        <span>发布日期：</span>
+                        <span>{{ new Date(currentPluginData.date).toLocaleString() }}</span>
+                    </div>
+                    <div>
+                        <span>发布者：</span>
+                        <span>
+                            {{ `${currentPluginData.publisher.username} (${currentPluginData.publisher.email})` }}
+                        </span>
+                    </div>
+                    <div class="links">
+                        <span>链接：</span>
+                        <a v-if="currentPluginData.links.npm" :href="currentPluginData.links.npm">NPM</a>
+                        <a v-if="currentPluginData.links.homepage" :href="currentPluginData.links.homepage">项目主页</a>
+                        <a v-if="currentPluginData.links.bugs" :href="currentPluginData.links.bugs">BUG上报</a>
+                        <a v-if="currentPluginData.links.repository" :href="currentPluginData.links.repository">
+                            仓库地址
+                        </a>
+                    </div>
+                </div>
+            </el-tab-pane>
+        </el-tabs>
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogVisible = false">取消</el-button>
@@ -65,7 +76,12 @@
                 >
                     卸载
                 </el-button>
-                <el-button v-if="currentPluginData.needUpdate" type="primary" @click="dialogVisible = false">
+                <el-button
+                    v-if="currentPluginData.needUpdate"
+                    type="primary"
+                    :loading="updateLoading"
+                    @click="update(currentPluginData.name)"
+                >
                     更新
                 </el-button>
                 <el-button
@@ -84,6 +100,7 @@
 import { ref } from 'vue';
 import SaltDogMessageChannelRenderer from '@/workspaceWindow/controller/messageChannel';
 import { Action, ElMessage, ElMessageBox, ElNotification } from 'element-plus';
+import { ipcRenderer } from 'electron';
 const input = ref('');
 const firstSearch = ref(true);
 const dialogVisible = ref(false);
@@ -93,6 +110,7 @@ const currentPluginData = ref<any>({});
 const loading = ref(true);
 const installLoading = ref(false);
 const uninstallLoading = ref(false);
+const updateLoading = ref(false);
 const readmeHTML = ref('');
 const _msgChannel = SaltDogMessageChannelRenderer.getInstance();
 _msgChannel.invokeMain('plugin.search', '', (res) => {
@@ -137,6 +155,7 @@ function uninstall(name: string) {
                         type: 'success',
                     });
                 dialogVisible.value = false;
+                restartSaltDog();
                 searchChange(input.value);
             });
         },
@@ -159,14 +178,45 @@ function install(name: string) {
                 message: '安装成功，你可能需要重启SaltDog来让插件生效。',
                 type: 'success',
             });
+            restartSaltDog();
             searchChange(input.value);
             dialogVisible.value = false;
         }
     });
 }
+
+function update(name: string) {
+    updateLoading.value = true;
+    _msgChannel.invokeMain('plugin.update', name, ({ error, status }) => {
+        updateLoading.value = false;
+        if (error) {
+            ElNotification({
+                title: '更新出错',
+                message: error,
+                type: 'error',
+            });
+        } else {
+            ElNotification({
+                title: '成功',
+                message: '更新成功，更新内容将在SaltDog重启后生效。',
+                type: 'success',
+            });
+            restartSaltDog();
+            searchChange(input.value);
+            dialogVisible.value = false;
+        }
+    });
+}
+function restartSaltDog() {
+    ipcRenderer.send('saltdog.restart');
+}
 </script>
 <style scoped lang="stylus">
-
+.Infotabs
+    margin-top:30px;
+    .el-tabs__content
+        height 100%
+        overflow scroll
 .searchInput
     margin:10px 5px 5px 5px
 .searchResultContainer
@@ -203,6 +253,7 @@ function install(name: string) {
             line-height 11px
             padding-bottom: 1px;
 .readme
+    padding-left:15px;
     max-height: 50vh
     word-wrap break-word
     overflow-y: scroll;

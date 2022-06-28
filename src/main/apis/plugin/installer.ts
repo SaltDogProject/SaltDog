@@ -52,6 +52,13 @@ export default class SaltDogPluginInstaller {
                 return { error: e, status: false };
             }
         });
+        this._msgChannel.onInvoke('plugin.update', async (name: string) => {
+            try {
+                return { error: null, status: await this.update(name) };
+            } catch (e) {
+                return { error: e, status: false };
+            }
+        });
         this._msgChannel.onInvoke('plugin.getReadme', async (npmurl: string) => {
             return await this.getReadme(npmurl);
         });
@@ -63,7 +70,6 @@ export default class SaltDogPluginInstaller {
         if (!info) return { isInstalled, needUpdate };
         if (info) isInstalled = true;
         if (info.version !== version) needUpdate = true;
-        console.log(info, version);
         return { isInstalled, needUpdate };
     }
     public checkEnv(): Promise<boolean> {
@@ -150,7 +156,9 @@ export default class SaltDogPluginInstaller {
                 reject('Invalid pluginName');
             pluginName = pluginName.split(' ')[0];
             exec(
-                `npm install ${pluginName} ${this._npmmirror.length != 0 ? '--registry ' + this._npmmirror : ''}`,
+                `npm install ${pluginName} --save ${
+                    this._npmmirror.length != 0 ? '--registry ' + this._npmmirror : ''
+                }`,
                 { cwd: this._pluginPath },
                 (e, stdout, stderr) => {
                     if (e || stderr) {
@@ -172,7 +180,26 @@ export default class SaltDogPluginInstaller {
             pluginName = pluginName.split(' ')[0];
             exec(`npm remove ${pluginName}`, { cwd: this._pluginPath }, (e, stdout, stderr) => {
                 if (e || stderr) {
-                    log.error(TAG, `Installed failed for plugin ${pluginName}`, e);
+                    log.error(TAG, `Uninstall failed for plugin ${pluginName}`, e);
+                    reject(e || stderr);
+                }
+                // const pattern = /(removed [0-9]+ packages)?(up to date)?/;
+                // const isSuccess = pattern.test(stdout);
+                // console.log(isSuccess);
+                // if (isSuccess)
+                resolve(true);
+                // reject('Unknown error');
+            });
+        });
+    }
+    public update(pluginName: string) {
+        return new Promise((resolve, reject) => {
+            if (typeof pluginName != 'string' || pluginName.length == 0 || !pluginName.startsWith('saltdogplugin_'))
+                reject('Invalid pluginName');
+            pluginName = pluginName.split(' ')[0];
+            exec(`npm update ${pluginName} --save`, { cwd: this._pluginPath }, (e, stdout, stderr) => {
+                if (e || stderr) {
+                    log.error(TAG, `Update failed for plugin ${pluginName}`, e);
                     reject(e || stderr);
                 }
                 // const pattern = /(removed [0-9]+ packages)?(up to date)?/;
