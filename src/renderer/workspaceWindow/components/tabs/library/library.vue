@@ -150,7 +150,7 @@ function updateView(libraryID: number, dirID: number) {
             SaltDogMessageChannelRenderer.getInstance().invoke('_beforeDisplay', regularTableData, (finalData: any) => {
                 itemData.value = finalData;
                 currentLib.value = res3;
-                console.log(TAG, `Load View `, res1, finalData, res3);
+                // console.log(TAG, `Load View `, res1, finalData, res3);
             });
         }
     );

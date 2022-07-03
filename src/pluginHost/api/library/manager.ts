@@ -70,3 +70,4 @@ export default class LibraryManager {
         return args;
     }
 }
+LibraryManager.getInstance();
