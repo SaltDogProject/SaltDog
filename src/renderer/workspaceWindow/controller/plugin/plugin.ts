@@ -187,12 +187,12 @@ class SaltDogPlugin {
             this._sidebarViews.value[i].show = should;
         }
         console.log({
-            from: from ? JSON.stringify(this._sidebarViews.value[from]) : undefined,
-            to: to ? this._sidebarViews.value[to] : undefined,
+            from: from !== null ? JSON.stringify(this._sidebarViews.value[from]) : undefined,
+            to: to !== null ? this._sidebarViews.value[to] : undefined,
         });
         SaltDogMessageChannelRenderer.getInstance().publish('sidebar.onChange', {
-            from: from ? JSON.parse(JSON.stringify(this._sidebarViews.value[from])) : undefined,
-            to: to ? JSON.parse(JSON.stringify(this._sidebarViews.value[to])) : undefined,
+            from: from !== null ? JSON.parse(JSON.stringify(this._sidebarViews.value[from])) : undefined,
+            to: to !== null ? JSON.parse(JSON.stringify(this._sidebarViews.value[to])) : undefined,
         });
         return true;
     }

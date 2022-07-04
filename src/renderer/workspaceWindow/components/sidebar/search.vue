@@ -1,7 +1,10 @@
 <template>
     <div v-if="canSearch">
-        <el-input v-model="searchText" placeholder="搜索内容" clearable @input="handleSearchinput" />
-        <div>共找到{{ totalNumber }}个结果</div>
+        <div style="margin: 10px 5px 5px 5px">
+            <el-input v-model="searchText" size="small" placeholder="搜索内容" clearable @input="handleSearchinput" />
+        </div>
+
+        <div style="font-size: 13px; margin: 0px 5px 5px 8px; font-weight: 700">共找到{{ totalNumber }}个结果</div>
 
         <div>
             <el-tree
@@ -34,6 +37,7 @@ import {
 import mainTabManager from '../../controller/tabManager';
 import bus from '../../controller/systemBus';
 import { debounce } from 'licia';
+import SaltDogMessageChannelRenderer from '../../controller/messageChannel';
 const TAG = '[Sidebar/Search]';
 interface ResultDigest {
     digestHtml: string;
@@ -110,6 +114,7 @@ export default defineComponent({
                 const listenerName = `PDFVIEW_${currentId}:find_digests`;
                 listenedEvents[listenerName] = listenerName;
                 bus.on(listenerName, (digest) => {
+                    console.warn('digest', digest);
                     appendDigest(digest);
                 });
                 const countListener = `PDFVIEW_${currentId}:find_matchCount`;
@@ -126,7 +131,9 @@ export default defineComponent({
             }
         }
         function handleResultClick(node: ResultDigest) {
-            if (!node.pageIndex || !node.pageIndex) return;
+            console.log(node);
+            if (typeof node.pageIndex !== 'number' || typeof node.pageIndex !== 'number') return;
+            console.log('go');
             const currentTab = mainTabManager.getCurrentTab();
             mainTabManager.whenPdfTabReady(currentTab, () => {
                 const handler = mainTabManager.getMessageHandler(currentTab);
@@ -143,6 +150,10 @@ export default defineComponent({
         onMounted(searchBarActivated);
         onActivated(searchBarActivated);
         onDeactivated(searchBarDeactivated);
+        SaltDogMessageChannelRenderer.getInstance().on('sidebar.onChange', (obj) => {
+            if (obj.to.viewName == 'saltdog.search') searchBarActivated();
+        });
+        bus.on('onTabsChange', searchBarActivated);
         return {
             searchText,
             canSearch,
@@ -154,11 +165,7 @@ export default defineComponent({
     },
 });
 </script>
-<style>
-.SeatchTree .__searchHighLight {
-}
-</style>
-<style lang="stylus" scoped>
+<style lang="stylus">
 .SearchTree
     background: var(--saltdog-sidebar-background-color)!important;
     border-radius:5px;
@@ -166,13 +173,26 @@ export default defineComponent({
     --el-tree-font-color:var(--saltdog-sidebar-title-font-color)!important;
     --el-tree-node-hover-background-color: #f5f7fa!important;
     --el-tree-expand-icon-color: var(--saltdog-sidebar-title-font-color)!important;
-    .__searchHighLight
-        background-color: rgba(0,255,255,50)
-.el-tree-node
-    white-space:initial!important
-.el-tree-node__content
-    height:auto!important
-    padding-top:2px!important
-    padding-bottom:2px!important
-    font-size: 12px;
+    .el-tree-node__content
+        height:auto!important
+        padding-top:2px!important
+        padding-bottom:2px!important
+        font-size: 12px;
+        &>div
+            font-size:13px;
+            white-space:initial!important
+        .__searchHighLight
+            background-color: var(--el-color-primary-light-9);
+            border-color: var(--el-tag-border-color);
+            color: var(--el-color-primary);
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0px 9px;
+            line-height: 1;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: var(--el-tag-border-radius);
+            box-sizing: border-box;
+            white-space: nowrap;
 </style>

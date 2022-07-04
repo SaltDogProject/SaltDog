@@ -25,7 +25,7 @@
                     <search v-if="view.isBuildIn && view.viewName == 'saltdog.search'"></search>
                     <plugin v-if="view.isBuildIn && view.viewName == 'saltdog.plugin'"></plugin>
                     <webview
-                        v-else
+                        v-if="!view.isBuildIn"
                         class="sidebar-webview"
                         :id="view.id"
                         :src="view.viewSrc"
