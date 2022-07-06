@@ -45,6 +45,7 @@ const config = {
             .set('#', resolve('utils'));
         config.externals = {
             'better-sqlite3': 'commonjs better-sqlite3',
+            canvas: 'commonjs canvas',
         };
         // build web
         // config.entry('entryWindow').add('src/renderer/entryWindow/main.ts').end().output.filename('entryWindow.js');

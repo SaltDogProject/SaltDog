@@ -48,6 +48,16 @@
                             <el-icon><question-filled /></el-icon>
                         </span>
                     </el-tooltip>
+                    <el-upload class="upload-demo" drag :file-list="uploadRef" :limit="1" :auto-upload="false">
+                        <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+                        <div class="el-upload__text">
+                            拖拽至此或
+                            <em>点此上传</em>
+                        </div>
+                        <template #tip>
+                            <div class="el-upload__tip">仅支持PDF文件</div>
+                        </template>
+                    </el-upload>
                 </el-tab-pane>
                 <div class="libPosition">
                     保存位置:
@@ -70,7 +80,7 @@ import { uniqueId, values } from 'lodash';
 import { insertItem, listDir, listLib, getDirInfoByID } from '../../controller/library';
 import SaltDogMessageChannelRenderer from '../../controller/messageChannel';
 const TAG = '[Library/Import]';
-const uploadRef = ref<any>();
+const uploadRef = ref<any[]>([]);
 const activeName = ref('doi');
 const doiInput = ref('');
 const urlInput = ref('');
@@ -177,6 +187,10 @@ function doRetrieveMetadata() {
         case 'url':
             reqType = 'web';
             inputData = urlInput.value;
+            break;
+        case 'file':
+            reqType = 'file';
+            inputData = uploadRef.value[0].raw.path || null;
             break;
     }
     if (!reqType || !inputData || inputData == '') {
