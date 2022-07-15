@@ -21,10 +21,13 @@
                         @click="handleAttachmentClick(a)"
                         :key="a.attachmentID"
                         v-for="a in displayInfo.attachments"
-                        class="attacment_item"
+                        :class="{ attacment_item: true, attachment_downloading: a.syncState == -1 }"
                     >
                         <img style="width: 20px; height: 20px" :src="getMIMEImage(a.contentType)" alt="" />
-                        <span class="attacment_title">{{ a.name }}</span>
+                        <span class="attacment_title">
+                            {{ a.name }}
+                            <span v-if="a.syncState == -1">(下载中)</span>
+                        </span>
                     </div>
                 </div>
                 <div style="font-size: 20px">详情</div>
@@ -106,11 +109,12 @@
 </template>
 
 <script setup lang="ts">
-import i18N from './i18n.ts';
-import { openExternal } from '../../../utils/external.ts';
+import i18N from './i18n';
+import { openExternal } from '../../../utils/external';
 import { getMIMEImage, getItemTypeImage } from './utils';
 import { computed, onMounted, ref, defineProps, defineEmits, toRefs, onUpdated } from 'vue';
 import { Close } from '@element-plus/icons-vue';
+import reader from '../../../controller/reader';
 const TAG = '[Renderer/Library/Info]';
 const p = defineProps<{
     itemInfo: any;
@@ -213,6 +217,13 @@ function handleAttachmentClick(attachment: any) {
     console.log(attachment);
     if (attachment.contentType == 'text/html') {
         openExternal(attachment.url);
+    } else if (attachment.contentType == 'application/pdf') {
+        if (attachment.path) {
+            reader.getInstance().addReader(attachment.title, attachment.path);
+            // openExternal(attachment.path);
+        } else if (attachment.url) {
+            openExternal(attachment.url);
+        }
     }
 }
 </script>
@@ -311,6 +322,10 @@ function handleAttachmentClick(attachment: any) {
     /* animation: hoverAnim 0.3s; */
     color: #409eff;
     background: rgba(64, 158, 255, 0.1);
+}
+.attachment_group .attachment_downloading:hover{
+    color: #409eff;
+    background: rgba(64, 64, 64, 0.1);
 }
 .itemTags-group {
     margin: 10px;

@@ -47,6 +47,7 @@
         "lodash-id": "^0.14.1",
         "lowdb": "^1.0.0",
         "markdown-it": "^13.0.1",
+        "md5-file": "^5.0.0",
         "pdfjs-dist": "^2.14.305",
         "saltdog": "^0.0.1",
         "utf-8-validate": "^5.0.7",

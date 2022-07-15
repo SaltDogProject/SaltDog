@@ -1,6 +1,7 @@
 import MessageHandler from '../components/tabs/messageHandler';
 import SaltDogMessageChannelRenderer from './messageChannel';
 import { setSDPDFCoreAnnotate } from './library';
+import tabManager from './tabManager';
 import { ElMessage } from 'element-plus';
 const TAG = '[Renderer/Reader]';
 export default class ReaderManager {
@@ -74,5 +75,8 @@ export default class ReaderManager {
                     });
             });
         });
+    }
+    public addReader(tabName: string, path: string) {
+        tabManager.addPdfTab(tabName, path);
     }
 }

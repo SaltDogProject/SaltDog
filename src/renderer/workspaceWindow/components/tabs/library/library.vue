@@ -28,6 +28,7 @@
             style="width: 100%"
             @row-dblclick="handleRowDbClick"
             @row-click="handleRowClick"
+            @row-contextmenu="handleRowContextMenu"
         >
             <!-- @current-change="handleCurrentChange" -->
             <el-table-column show-overflow-tooltip property="title" label="标题" min-width="240">
@@ -82,19 +83,38 @@
             @updateView="updateView"
         />
     </div>
+
+    <!--右键菜单-->
+    <ul
+        v-show="contextMenuVisible"
+        :style="{ left: contextMenuLeft + 'px', top: contextMenuTop + 'px' }"
+        class="contextmenu"
+    >
+        <li class="contextMenuSelect" @click="handleLibraryEdit('edit')">
+            <el-icon><EditPen /></el-icon>
+            <span>编辑</span>
+        </li>
+        <li class="contextMenuSelect" @click="handleLibraryEdit('delete')">
+            <el-icon><Remove /></el-icon>
+            <span>删除</span>
+        </li>
+    </ul>
 </template>
 <script setup lang="ts">
-import { ref, defineProps, onMounted } from 'vue';
+import { ref, defineProps, onMounted, watchEffect } from 'vue';
 // @ts-ignore
 import Info from './info.vue';
 import Navi from './navi.vue';
 import ImportDialog from './import.vue';
 import { getItemTypeImage } from './utils';
-import { FolderAdd, Upload, Document } from '@element-plus/icons-vue';
-import { locateDir, listDir, getLibraryInfoByID, mkdir, getItemInfo } from '../../../controller/library';
+import { FolderAdd, Upload, Document, EditPen, Remove } from '@element-plus/icons-vue';
+import { locateDir, listDir, getLibraryInfoByID, mkdir, getItemInfo, deleteItem } from '../../../controller/library';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { trim } from 'lodash';
 import SaltDogMessageChannelRenderer from '../../../controller/messageChannel';
+import reader from '../../../controller/reader';
+import { EventEmitter } from 'stream';
+import log from 'electron-log';
 const TAG = '[Renderer/Library/Library]';
 interface User {
     title: string;
@@ -106,11 +126,34 @@ const currentDir = ref<any>(-1);
 const itemData = ref<any>({});
 const itemInfo = ref<any>({});
 const showInfo = ref(false);
+let contextMenuActiveItem: any = null;
+const contextMenuVisible = ref(false);
+const contextMenuLeft = ref(0);
+const contextMenuTop = ref(0);
 let _dirID = 1;
 let _libraryID = 1;
 onMounted(() => {
     updateView(_libraryID, _dirID);
 });
+watchEffect(
+    (onInvalidate) => {
+        log.debug(TAG, 'Library context:', contextMenuVisible.value);
+        if (contextMenuVisible.value) {
+            document.body.addEventListener('click', closeContextMenu);
+        } else {
+            document.body.removeEventListener('click', closeContextMenu);
+        }
+        onInvalidate(() => {
+            //当组件失效，watchEffect被主动停止或者副作用即将重新执行时
+        });
+    },
+    {
+        flush: 'post', //在组件更新后触发
+    }
+);
+function closeContextMenu() {
+    contextMenuVisible.value = false;
+}
 function doImport() {
     showImportPanel.value = true;
 }
@@ -118,7 +161,7 @@ SaltDogMessageChannelRenderer.getInstance().on('saltdog.refreshLibrary', (lib, d
     updateView(lib, dir);
 });
 function updateView(libraryID: number, dirID: number) {
-    console.log(TAG, 'updateView', libraryID, dirID);
+    log.debug(TAG, 'updateView', libraryID, dirID);
     _dirID = dirID;
     _libraryID = libraryID;
     currentDir.value = dirID;
@@ -150,7 +193,7 @@ function updateView(libraryID: number, dirID: number) {
             SaltDogMessageChannelRenderer.getInstance().invoke('_beforeDisplay', regularTableData, (finalData: any) => {
                 itemData.value = finalData;
                 currentLib.value = res3;
-                // console.log(TAG, `Load View `, res1, finalData, res3);
+                // log.debug(TAG, `Load View `, res1, finalData, res3);
             });
         }
     );
@@ -178,10 +221,10 @@ function createDir() {
                         message: `新建文件夹失败：${err}`,
                     });
                 });
-            console.log(TAG, `Create Dir Success.`, value);
+            log.debug(TAG, `Create Dir Success.`, value);
         })
         .catch(() => {
-            console.log(TAG, `Create Dir Candeled.`);
+            log.debug(TAG, `Create Dir Candeled.`);
         });
 }
 function getImagesByType(item: any) {
@@ -195,18 +238,28 @@ function getImagesByType(item: any) {
     }
 }
 function gotoPath(path: any) {
-    console.log(path);
+    log.debug(path);
 }
 function closeInfoPanel() {
     showInfo.value = false;
     itemInfo.value = {};
 }
 function handleRowDbClick(e: any) {
-    console.log(TAG, 'handleRowDbClick', e);
+    log.debug(TAG, 'handleRowDbClick', e);
     // getItemInfo(e)
     if (e && e.type == 'dir') {
         _dirID = e.id;
         updateView(_libraryID, _dirID);
+    } else {
+        getItemInfo(e.id).then((res: any) => {
+            const attachments = res.attachments;
+            for (const att of attachments) {
+                if (att.path && att.contentType == 'application/pdf') {
+                    reader.getInstance().addReader(e.name, att.path);
+                    return;
+                }
+            }
+        });
     }
 }
 
@@ -219,13 +272,56 @@ function handleRowClick(e: any) {
         closeInfoPanel();
         return;
     }
-    console.log(TAG, 'handleCurrentChange', e);
+    log.debug(TAG, 'handleCurrentChange', e);
 
     getItemInfo(e.id).then((res: any) => {
         itemInfo.value = res;
-        console.log(TAG, 'getItemInfo', res);
+        log.debug(TAG, 'getItemInfo', res);
     });
     showInfo.value = true;
+}
+function handleRowContextMenu(data: any, _: any, pointer: PointerEvent) {
+    contextMenuTop.value = pointer.pageY;
+    contextMenuLeft.value = pointer.pageX;
+    contextMenuVisible.value = true; //显示菜单
+    contextMenuActiveItem = data;
+}
+
+function handleLibraryEdit(type: 'edit' | 'delete') {
+    switch (type) {
+        case 'edit':
+            log.debug(TAG, 'EditMode');
+            break;
+        case 'delete':
+            log.debug(TAG, 'Delete');
+            ElMessageBox.confirm('确认删除条目 ' + contextMenuActiveItem.name + ' 吗？', '删除', {
+                confirmButtonText: '删除',
+                cancelButtonText: '再想想',
+                type: 'warning',
+            })
+                .then(() => {
+                    log.debug(TAG, 'DeleteItem ' + contextMenuActiveItem.id, ' permitted.');
+                    deleteItem(contextMenuActiveItem.id)
+                        .then((res: any) => {
+                            updateView(_libraryID, _dirID);
+                            ElMessage({
+                                type: 'success',
+                                message: '删除成功',
+                            });
+                        })
+                        .catch((err: any) => {
+                            log.error(TAG, 'Delete Item failed.', err);
+                            ElMessage({
+                                type: 'error',
+                                message: `删除失败`,
+                            });
+                        });
+                })
+                .catch((err) => {
+                    log.debug(TAG, 'Delete Canceled');
+                });
+            break;
+    }
 }
 </script>
 
@@ -253,5 +349,37 @@ function handleRowClick(e: any) {
 }
 .pathBreadcrumb {
     margin: 20px 0px;
+}
+
+
+.contextmenu {
+  margin: 0;
+  background: #fff;
+  z-index: 3000;
+  min-width:100px;
+  position: fixed; //关键样式设置固定定位
+  list-style-type: none;
+  padding: 5px 0;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #333;
+  box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+.contextmenu li {
+  margin: 0;
+  padding: 7px 16px;
+  cursor: pointer;
+}
+.contextmenu li:hover {
+  background: #eee;
+}
+.contextMenuSelect > i ,.contextMenuSelect >span {
+    display: inline-block;
+    vertical-align: middle;
+}
+.contextMenuSelect > span {
+    margin-left: 10px;
 }
 </style>

@@ -73,7 +73,7 @@
 </template>
 <script setup lang="ts">
 import { ref, defineProps, toRefs, defineEmits, onMounted, onUpdated } from 'vue';
-import { QuestionFilled } from '@element-plus/icons-vue';
+import { QuestionFilled, UploadFilled } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { ipcRenderer } from 'electron';
 import { uniqueId, values } from 'lodash';
@@ -204,6 +204,7 @@ function doRetrieveMetadata() {
         if (err) {
             console.error(err);
             ElMessage.error(`获取出错：${err}`);
+            retriveLoading.value = false;
             return;
         }
         doiInput.value = urlInput.value = '';
@@ -218,6 +219,7 @@ function doRetrieveMetadata() {
             .catch((e) => {
                 ElMessage.error(`导入出错，${e}`);
                 console.error(e);
+                retriveLoading.value = false;
                 return;
             });
         closeSelf();

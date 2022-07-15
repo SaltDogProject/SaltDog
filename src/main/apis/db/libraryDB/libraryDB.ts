@@ -1,10 +1,12 @@
 import Database from 'better-sqlite3';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, Stats } from 'fs-extra';
 import lodash from 'lodash';
 import uuid from 'licia/uuid';
 import { join } from 'path';
 import { app } from 'electron';
 import * as path from 'path';
+import log from 'electron-log';
+import { LocalFileDB, LocalFileDesc } from './localFileDB';
 const TAG = '[Main/LibraryDB]';
 const schemaJSOHPath = path.resolve(__static, 'libraryDB', './schema.json');
 const internalInitSQLPath = path.resolve(__static, 'libraryDB', './internalInit.sql');
@@ -22,8 +24,10 @@ export default class SaltDogItemDB extends Database {
         _initSchemaData(this);
         _initLibrary(this);
         this._cacheDBMaps();
+        this._localFileDB = new LocalFileDB();
     }
     private static saltdogItemDB: SaltDogItemDB;
+    private _localFileDB: LocalFileDB | null = null;
     private static dbPath: string;
     static getInstance(): SaltDogItemDB {
         const isDev = process.env.NODE_ENV === 'development';
@@ -114,6 +118,8 @@ export default class SaltDogItemDB extends Database {
         insertTag: 'INSERT INTO tags (name) VALUES (?);',
         insertItemTagRelation: 'INSERT INTO itemTags (itemID,tagID,color,type) VALUES (?,?,?,?);',
         insertAttachments: 'INSERT INTO itemAttachments (parentItemID,name,contentType,url) VALUES (?,?,?,?);',
+        updateAttachments:
+            'UPDATE itemAttachments SET path=?,syncState=?,storageModTime=?,storageHash=?,lastProcessedModificationTime=? WHERE attachmentID=?;',
         getSDPDFCoreAnnotate: 'SELECT annotations from pdfAnnotations WHERE key=?;',
         setSDPDFCoreAnnotate: 'REPLACE INTO pdfAnnotations (key,annotations) VALUES (?,?);',
     };
@@ -144,6 +150,7 @@ export default class SaltDogItemDB extends Database {
             }
         }
         try {
+            const localFileDB = this._localFileDB as LocalFileDB;
             this.transaction((item: any, libraryID: number, dirID: number) => {
                 // 插入条目
                 const itemID = this.prepare(this._sqlTemplate.insertItem).run(
@@ -227,11 +234,64 @@ export default class SaltDogItemDB extends Database {
                 // 处理 attachments
                 for (const a in item.attachments) {
                     const att = item.attachments[a];
-                    this.prepare(this._sqlTemplate.insertAttachments).run(itemID, att.title, att.mimeType, att.url);
+                    if (att.mimeType == 'application/pdf' && att.url) {
+                        log.debug(TAG, 'Begin downloading attachment:', att.url);
+                        this._bindingAttachment(insert_key, itemID, att);
+                    } else {
+                        this.prepare(this._sqlTemplate.insertAttachments).run(itemID, att.title, att.mimeType, att.url);
+                    }
                 }
             })(item, libraryID, dirID);
         } catch (e) {
             console.error(`Failed to insert items`);
+            throw e;
+        }
+    }
+
+    public deleteItem(itemID: number) {
+        try {
+            this.transaction((itemID: number) => {
+                // 查询并移除单一作者
+                const creatorIDs = this.prepare(this._sqlTemplate.getItemCreator).all(itemID);
+                for (const c of creatorIDs) {
+                    const creatorID = c.creatorID;
+                    const creatorCount = this.prepare('SELECT creatorID from itemCreators WHERE creatorID=?;').all(
+                        creatorID
+                    );
+                    this.prepare('DELETE from itemCreators WHERE itemID=?;').run(itemID);
+                    if (creatorCount.length == 1) {
+                        this.prepare('DELETE from creators WHERE creatorID=?;').run(creatorID);
+                    }
+                }
+                // 查询并移除单一标签
+                const tagIDs = this.prepare(this._sqlTemplate.getItemTags).all(itemID);
+                for (const t of tagIDs) {
+                    const tagID = t.tagID;
+                    const tagCount = this.prepare('SELECT tagID,type from itemTags WHERE tagID=?;').all(tagID);
+                    this.prepare('DELETE from itemTags WHERE itemID=?;').run(itemID);
+                    if (tagCount.length == 1 && tagCount[0].type == 1) {
+                        this.prepare('DELETE from tags WHERE tagID=?;').run(tagID);
+                    }
+                }
+                // 查询并移除单一附件
+                const itemKey = this.prepare('SELECT key from items WHERE itemID=?;').get(itemID).key;
+                this.prepare('DELETE from itemAttachments WHERE parentItemID=?;').run(itemID);
+                this._localFileDB!.deleteItem(itemKey);
+                // 移除itemFields
+                const fields = this.prepare('SELECT itemID,valueID from itemData WHERE itemID=?;').all(itemID);
+                for (const f of fields) {
+                    const valueID = f.valueID;
+                    const valueCount = this.prepare('SELECT valueID from itemData WHERE valueID=?;').all(valueID);
+                    this.prepare('DELETE from itemData WHERE itemID=?;').run(itemID);
+                    if (valueCount.length == 1) {
+                        this.prepare('DELETE from itemDataValues WHERE valueID=?;').run(valueID);
+                    }
+                }
+                // 移除items
+                this.prepare('DELETE from items WHERE itemID=?;').run(itemID);
+            })(itemID);
+        } catch (e) {
+            log.error('Delete Failed', e);
             throw e;
         }
     }
@@ -395,6 +455,35 @@ export default class SaltDogItemDB extends Database {
         this.prepare(this._sqlTemplate.setSDPDFCoreAnnotate).run(docID, JSON.stringify(annotations));
         return true;
     }
+    private _bindingAttachment(key: string, itemID: number | bigint, att: any) {
+        const attID = this.prepare(this._sqlTemplate.insertAttachments).run(
+            itemID,
+            att.title,
+            att.mimeType,
+            att.url
+        ).lastInsertRowid;
+        // path=?,syncState=?,storageModTime=?,storageHash=?,lastProcessedModificationTime=?
+        this.prepare(this._sqlTemplate.updateAttachments).run(null, -1, null, null, null, attID);
+        // TODO: 等待条
+        this._localFileDB!.downloadAndSave(key, att.title + '.pdf', att.url)
+            .then((stats: LocalFileDesc) => {
+                log.debug('Downloaded attachment:', stats.path, stats.md5);
+                const time = new Date().getTime();
+                this.prepare(this._sqlTemplate.updateAttachments).run(
+                    stats.path,
+                    0,
+                    stats.stats.mtime.getTime(),
+                    stats.md5,
+                    time,
+                    attID
+                );
+            })
+            .catch((err) => {
+                log.error('Download attachment Error:', err);
+                const time = new Date().getTime();
+                this.prepare(this._sqlTemplate.updateAttachments).run(null, -2, null, null, time, attID);
+            });
+    }
 }
 
 function _initDBSchema(db: SaltDogItemDB) {
@@ -442,7 +531,6 @@ function _initLibrary(db: SaltDogItemDB): void {
         throw e;
     }
 }
-
 function _initSchemaData(db: SaltDogItemDB): void {
     const _schemaJSON = JSON.parse(readFileSync(schemaJSOHPath, 'utf-8'));
     const currentVersion = db.prepare(db._sqlTemplate.getVersion).get('globalSchema');

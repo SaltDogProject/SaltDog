@@ -107,7 +107,7 @@ export default class Parser {
                 const doi = await this.extractID(data);
                 if (doi.value) {
                     log.debug(TAG, 'DOI found: ' + doi.value);
-                    type = 'import';
+                    type = 'search';
                     data = doi.value;
                 }
             } catch (e) {
@@ -310,7 +310,7 @@ export default class Parser {
                         try {
                             doi = {
                                 type: 'arXiv',
-                                value:await this._getDOIFromArxiv(pdf),
+                                value: await this._getDOIFromArxiv(pdf),
                             };
                         } catch (e) {
                             console.error("PDF don't have arxiv id", e);
