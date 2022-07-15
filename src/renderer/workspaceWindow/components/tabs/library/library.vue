@@ -75,15 +75,13 @@
         <div v-show="showInfo" :class="{ itemInfoPanel: true }">
             <Info :item-info="itemInfo" @closePanel="closeInfoPanel" />
         </div>
-
-        <ImportDialog
-            v-model:show-import-panel="showImportPanel"
-            :current-lib="currentLib"
-            :current-dir="currentDir"
-            @updateView="updateView"
-        />
     </div>
-
+    <ImportDialog
+        v-model:show-import-panel="showImportPanel"
+        :current-lib="currentLib"
+        :current-dir="currentDir"
+        @updateView="updateView"
+    />
     <!--右键菜单-->
     <ul
         v-show="contextMenuVisible"
@@ -115,6 +113,7 @@ import SaltDogMessageChannelRenderer from '../../../controller/messageChannel';
 import reader from '../../../controller/reader';
 import { EventEmitter } from 'stream';
 import log from 'electron-log';
+import { showMessage } from '@/workspaceWindow/controller/notification';
 const TAG = '[Renderer/Library/Library]';
 interface User {
     title: string;
@@ -126,10 +125,13 @@ const currentDir = ref<any>(-1);
 const itemData = ref<any>({});
 const itemInfo = ref<any>({});
 const showInfo = ref(false);
+
+// contextMenu
 let contextMenuActiveItem: any = null;
 const contextMenuVisible = ref(false);
 const contextMenuLeft = ref(0);
 const contextMenuTop = ref(0);
+
 let _dirID = 1;
 let _libraryID = 1;
 onMounted(() => {
@@ -137,12 +139,22 @@ onMounted(() => {
 });
 watchEffect(
     (onInvalidate) => {
-        log.debug(TAG, 'Library context:', contextMenuVisible.value);
         if (contextMenuVisible.value) {
             document.body.addEventListener('click', closeContextMenu);
         } else {
             document.body.removeEventListener('click', closeContextMenu);
         }
+
+        if (showInfo.value) {
+            log.debug(TAG, 'setlis');
+            setTimeout(() => {
+                document.body.addEventListener('click', closeInfoPanel);
+            }, 500);
+        } else {
+            log.debug(TAG, 'remlis');
+            document.body.removeEventListener('click', closeInfoPanel);
+        }
+
         onInvalidate(() => {
             //当组件失效，watchEffect被主动停止或者副作用即将重新执行时
         });
@@ -151,6 +163,7 @@ watchEffect(
         flush: 'post', //在组件更新后触发
     }
 );
+
 function closeContextMenu() {
     contextMenuVisible.value = false;
 }
@@ -240,9 +253,26 @@ function getImagesByType(item: any) {
 function gotoPath(path: any) {
     log.debug(path);
 }
-function closeInfoPanel() {
-    showInfo.value = false;
-    itemInfo.value = {};
+function closeInfoPanel(e?: any) {
+    const ppath = e ? e.path.reverse() : [];
+    let allowClose = ppath.length == 0 ? true : false;
+    for (const p of ppath) {
+        if (!p || !p.nodeName || !p.classList) continue;
+        if (p.classList.contains('el-tabs__content')) {
+            allowClose = true;
+        }
+        if (p.nodeName == 'TR') {
+            return;
+        }
+        if (p.classList.contains('itemInfoPanel')) {
+            return;
+        }
+    }
+    if (allowClose) {
+        log.log('closeInfoPanel');
+        showInfo.value = false;
+        itemInfo.value = {};
+    }
 }
 function handleRowDbClick(e: any) {
     log.debug(TAG, 'handleRowDbClick', e);
@@ -268,7 +298,7 @@ function handleRowClick(e: any) {
     if (!e) return;
     if (_currentItem && _currentItem.id == e.id && _currentItem.type == e.type && showInfo.value) return;
     _currentItem = { id: e.id, type: e.type };
-    if (e.type == 'dir') {
+    if (e.type === 'dir') {
         closeInfoPanel();
         return;
     }
