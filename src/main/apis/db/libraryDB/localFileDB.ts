@@ -1,10 +1,11 @@
 import { app } from 'electron';
-import { mkdirSync, existsSync, writeFile, stat, Stats, rmdir } from 'fs-extra';
+import { mkdirSync, existsSync, writeFile, stat, Stats, rmdir, readFileSync } from 'fs-extra';
 import { extend } from 'lodash';
 import * as path from 'path';
 import log from 'electron-log';
 import got, { Method } from 'got';
 import md5 from 'md5-file';
+import { readFile } from 'licia/fs';
 const TAG = '[Main/DB/localFileDB]';
 export type LocalFileDesc = {
     md5: string;
@@ -78,5 +79,17 @@ export class LocalFileDB {
         const p = path.resolve(this._root, key);
         if (existsSync(p)) return rmdir(p, { recursive: true });
         else return Promise.resolve();
+    }
+    public bindLocalFile(key: string, filename: string, filePath: string): Promise<LocalFileDesc> {
+        log.debug(TAG, 'bindLocalFile', key, filename, filePath);
+        return new Promise((resolve, reject) => {
+            this.createFile(key, filename, readFileSync(filePath))
+                .then((stats) => {
+                    resolve(stats);
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+        });
     }
 }

@@ -219,7 +219,8 @@ function handleAttachmentClick(attachment: any) {
         openExternal(attachment.url);
     } else if (attachment.contentType == 'application/pdf') {
         if (attachment.path) {
-            reader.getInstance().addReader(attachment.title, attachment.path);
+            console.log('aaaa', itemInfo);
+            reader.getInstance().addReader(itemInfo.value.title, attachment.path);
             // openExternal(attachment.path);
         } else if (attachment.url) {
             openExternal(attachment.url);

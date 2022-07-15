@@ -176,8 +176,8 @@ function doRetrieveMetadata() {
     }
     const [libID, dirID] = posvalue.value.split('-');
     const type = activeName.value;
-    let reqType = null;
-    let inputData = null;
+    let reqType: any = null;
+    let inputData: any = null;
     const reqId = uniqueId();
     switch (type) {
         case 'doi':
@@ -211,7 +211,12 @@ function doRetrieveMetadata() {
         const targetLibID = libID || currentLib.value.libraryID;
         const targetDirID = dirID || currentDir.value;
         console.log(TAG, 'Import', data, 'Library:', targetLibID, 'DirID:', targetDirID);
-        insertItem(data[0], targetLibID, targetDirID)
+        insertItem(
+            data[0],
+            targetLibID,
+            targetDirID,
+            reqType == 'file' ? { title: 'Full Text PDF.pdf', path: inputData } : null
+        )
             .then(() => {
                 ElMessage.success(`添加成功`);
                 SaltDogMessageChannelRenderer.getInstance().emit('saltdog.refreshLibrary', targetLibID, targetDirID);

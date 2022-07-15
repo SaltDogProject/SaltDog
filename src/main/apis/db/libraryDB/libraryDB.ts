@@ -123,7 +123,7 @@ export default class SaltDogItemDB extends Database {
         getSDPDFCoreAnnotate: 'SELECT annotations from pdfAnnotations WHERE key=?;',
         setSDPDFCoreAnnotate: 'REPLACE INTO pdfAnnotations (key,annotations) VALUES (?,?);',
     };
-    public insertItem(item: any, libraryID: number, dirID: number): any {
+    public insertItem(item: any, libraryID: number, dirID: number, localFile: any): any {
         const itemTypeID = this._type2id.get(item.itemType);
         if (!itemTypeID) {
             console.error(`Unsupport type ${item.itemType}`);
@@ -234,9 +234,9 @@ export default class SaltDogItemDB extends Database {
                 // 处理 attachments
                 for (const a in item.attachments) {
                     const att = item.attachments[a];
-                    if (att.mimeType == 'application/pdf' && att.url) {
+                    if (att.mimeType == 'application/pdf') {
                         log.debug(TAG, 'Begin downloading attachment:', att.url);
-                        this._bindingAttachment(insert_key, itemID, att);
+                        this._bindingAttachment(insert_key, itemID, att, localFile);
                     } else {
                         this.prepare(this._sqlTemplate.insertAttachments).run(itemID, att.title, att.mimeType, att.url);
                     }
@@ -455,7 +455,7 @@ export default class SaltDogItemDB extends Database {
         this.prepare(this._sqlTemplate.setSDPDFCoreAnnotate).run(docID, JSON.stringify(annotations));
         return true;
     }
-    private _bindingAttachment(key: string, itemID: number | bigint, att: any) {
+    private _bindingAttachment(key: string, itemID: number | bigint, att: any, localFile: any) {
         const attID = this.prepare(this._sqlTemplate.insertAttachments).run(
             itemID,
             att.title,
@@ -464,25 +464,27 @@ export default class SaltDogItemDB extends Database {
         ).lastInsertRowid;
         // path=?,syncState=?,storageModTime=?,storageHash=?,lastProcessedModificationTime=?
         this.prepare(this._sqlTemplate.updateAttachments).run(null, -1, null, null, null, attID);
+        localFile ? log.debug(TAG, 'Import attachment with localFile', localFile.path) : null;
         // TODO: 等待条
-        this._localFileDB!.downloadAndSave(key, att.title + '.pdf', att.url)
-            .then((stats: LocalFileDesc) => {
-                log.debug('Downloaded attachment:', stats.path, stats.md5);
-                const time = new Date().getTime();
-                this.prepare(this._sqlTemplate.updateAttachments).run(
-                    stats.path,
-                    0,
-                    stats.stats.mtime.getTime(),
-                    stats.md5,
-                    time,
-                    attID
-                );
-            })
-            .catch((err) => {
-                log.error('Download attachment Error:', err);
-                const time = new Date().getTime();
-                this.prepare(this._sqlTemplate.updateAttachments).run(null, -2, null, null, time, attID);
-            });
+        const task = localFile
+            ? this._localFileDB!.bindLocalFile(key, path.parse(localFile.path).base, localFile.path)
+            : this._localFileDB!.downloadAndSave(key, att.title + '.pdf', att.url);
+        task.then((stats: LocalFileDesc) => {
+            log.debug('Downloaded attachment:', stats.path, stats.md5);
+            const time = new Date().getTime();
+            this.prepare(this._sqlTemplate.updateAttachments).run(
+                stats.path,
+                0,
+                stats.stats.mtime.getTime(),
+                stats.md5,
+                time,
+                attID
+            );
+        }).catch((err: any) => {
+            log.error('Download attachment Error:', err);
+            const time = new Date().getTime();
+            this.prepare(this._sqlTemplate.updateAttachments).run(null, -2, null, null, time, attID);
+        });
     }
 }
 

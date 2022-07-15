@@ -12,7 +12,7 @@
         <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
             <!--disable node integration for security-->
             <keep-alive>
-                <div style="width: 100%; height: 100%; overflow-y: scroll">
+                <div style="width: 100%; height: 100%; overflow: hidden">
                     <webview
                         v-if="item.type == 'webview'"
                         :id="item.webviewId"
