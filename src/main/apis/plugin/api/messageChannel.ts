@@ -48,6 +48,15 @@ export default class SaltDogMessageChannelMain extends EventEmitter {
             this._workspace = windowManager.get(IWindowList.WORKSPACE_WINDOW);
         }
     }
+    public invokeSelf(api: string, args: any, callback: (data: any) => void): void {
+        const fn = this._bindFns.get(api);
+        if (!fn || typeof fn !== 'function') {
+            console.error(`${api} is not a function`);
+            return;
+        }
+        callback(fn(args));
+    }
+
     public invokePluginHost(api: string, args: any, callback?: (data: any) => void): void {
         this._refreshBindingIfNeeded();
         const id = uniqueId();

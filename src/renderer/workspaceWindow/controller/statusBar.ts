@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import SaltDogMessageChannelRenderer from './messageChannel';
 import MarkdownIt from 'markdown-it';
 const TAG = `[Renderer/StatusBar]`;
-enum StatusBarAlignment {
+export enum StatusBarAlignment {
     Right = 0,
     Left = 1,
 }

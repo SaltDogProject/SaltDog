@@ -55,6 +55,14 @@ export default class SaltDogMessageChannelRenderer extends EventEmitter implemen
         this._callbackIDMap.set(id, callback || noop);
         ipcRenderer.send('SALTDOG_IPC_INVOKE', api, args, id);
     }
+    public invokeSelf(api: string, args: any, callback: (data: any) => void): void {
+        const fn = this._bindFns.get(api);
+        if (!fn || typeof fn !== 'function') {
+            console.error(`${api} is not a function`);
+            return;
+        }
+        callback(fn(args));
+    }
     public invoke(api: string, args: any, callback: (data: any) => void): void {
         let targetid = null;
         switch (this._whoami) {

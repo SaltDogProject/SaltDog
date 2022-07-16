@@ -30,6 +30,7 @@
             </div>
         </div>
         <div class="space"></div>
+
         <div class="statusbar_right_container">
             <div
                 v-for="(status, index) in rightStatusBar"
@@ -58,11 +59,13 @@
                     class="statusbar_display"
                 ></span>
             </div>
+            <LoadingQueue></LoadingQueue>
         </div>
     </div>
 </template>
 <script setup lang="ts">
 import statusBar from '../../controller/statusBar';
+import LoadingQueue from './loadingQueue.vue';
 const leftStatusBar = statusBar.getLeftStatusBarRef();
 const rightStatusBar = statusBar.getRightStatusBarRef();
 function onClickStatusBarItem(id: string, name: string | undefined, command: string | undefined) {
