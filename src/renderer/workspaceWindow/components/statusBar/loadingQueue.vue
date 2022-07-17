@@ -1,7 +1,7 @@
 <template>
     <div :class="{ statusbar_item_container: true }" :style="{ order: -999, backgroundColor: '' }">
         <el-tooltip placement="top-start" :show-after="500" :content="loadingJobsText">
-            <el-icon :class="{ loadingQueueIcon: true, active: true }"><Refresh /></el-icon>
+            <el-icon :class="{ loadingQueueIcon: true, active: taskNum != 0 }"><Refresh /></el-icon>
         </el-tooltip>
         <span v-if="taskNum != 0" style="vertical-align: middle; display: inline-block; margin-left: 3px">
             {{ taskNum }}
@@ -10,52 +10,60 @@
 </template>
 <script lang="ts" setup>
 import { Refresh } from '@element-plus/icons';
-import { toRefs, computed, ref } from 'vue';
+import { toRefs, computed, ref, reactive } from 'vue';
 import type { ILoadingQueueTask } from '#/types/renderer';
 import SaltDogMessageChannelRenderer from '../../controller/messageChannel';
 import log from 'electron-log';
 import { uniqueId } from 'lodash';
 const TAG = '[Renderer/LoadingQueue]';
 const taskMap = new Map<string, ILoadingQueueTask>();
-const loadingTasks = ref<ILoadingQueueTask[]>([
-    {
-        id: 0,
-        name: '文献下载',
-        percent: 0,
-        cancelCmd: 'cancelDownload',
-    },
+let loadingTasks = reactive<ILoadingQueueTask[]>([
+    // {
+    //     id: 0,
+    //     name: '文献下载',
+    //     percent: 0,
+    //     cancelCmd: 'cancelDownload',
+    // },
 ]);
 const loadingJobsText = computed(() => {
     if (taskNum.value == 0) {
-        return '无后台运行任务';
+        return '暂无正在运行的任务';
     } else {
-        return `${taskNum.value} 项任务进行中: ${loadingTasks.value.map((task) => task.name).join(', ')}`;
+        return `${taskNum.value} 项任务进行中: ${loadingTasks.map((task) => task.name).join(', ')}`;
     }
 });
-const taskNum = computed(() => loadingTasks.value.length);
-SaltDogMessageChannelRenderer.getInstance().onInvoke('salltdog.updateLoadingQueue', async (task: any) => {
+const taskNum = computed(() => loadingTasks.length);
+console.log('listening!', SaltDogMessageChannelRenderer.getInstance());
+SaltDogMessageChannelRenderer.getInstance().subscribe('saltdog.updateLoadingQueue', (task: any) => {
     if (task.id) {
+        task = reactive(task);
         if (!taskMap.has(task.id)) {
-            log.warn(TAG, 'Target task not availiable. Task id:', task.id);
-            throw new Error('Target task not availiable.');
+            loadingTasks.push(task);
+            taskMap.set(task.id, task);
         }
+
         const targetTask = taskMap.get(task.id) as ILoadingQueueTask;
+
         targetTask.percent = task.percent;
         targetTask.name = task.name;
         targetTask.cancelCmd = task.cancelCmd;
         if (task.percent == 100) {
             taskMap.delete(task.id);
-            loadingTasks.value = loadingTasks.value.filter((task) => task.id != task.id);
+            loadingTasks.splice(loadingTasks.indexOf(targetTask), 1);
+            // loadingTasks = loadingTasks.filter((t) => t.id != task.id);
         }
+
         return task.id;
     } else {
-        const i = uniqueId();
-        log.log(TAG, 'Create task ' + task.name + ' assign id ' + i);
-        task.id = i;
-        loadingTasks.value.push(task);
-        taskMap.set(i, task);
-        return i;
+        log.warn(TAG, 'Task id not found');
     }
+});
+SaltDogMessageChannelRenderer.getInstance().subscribe('saltdog.cancelLoadingQueue', (id) => {
+    if (!taskMap.has(id)) {
+        log.warn(TAG, 'Target task not availiable. Task id:', id);
+    }
+    taskMap.delete(id);
+    loadingTasks = loadingTasks.filter((task) => task.id != id);
 });
 </script>
 <style lang="stylus" scoped>

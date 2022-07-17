@@ -3,6 +3,30 @@ export default {
         title: '首选项',
         subGroup: [
             {
+                title: '网络',
+                children: {
+                    allowNetworkProxy: {
+                        title: '允许网络代理',
+                        desc: '允许使用网络代理(按如下配置进行代理，默认跟随系统代理)',
+                        type: 'boolean',
+                        id: 'preferences.allowNetworkProxy',
+                        value: false,
+                    },
+                    httpProxyAddress: {
+                        title: 'HTTP代理服务器地址',
+                        desc: '设置SaltDog内部请求的HTTP网络代理服务器地址与端口,如：http://127.0.0.1:1234',
+                        type: 'text',
+                        id: 'preferences.httpProxyAddress',
+                    },
+                    httpsProxyAddress: {
+                        title: 'HTTPS代理服务器地址',
+                        desc: '设置SaltDog内部请求的HTTPS网络代理服务器地址与端口,如：http://127.0.0.1:1234',
+                        type: 'text',
+                        id: 'preferences.httpsProxyAddress',
+                    },
+                },
+            },
+            {
                 title: '自动更新',
                 children: {
                     loginOnStart: {

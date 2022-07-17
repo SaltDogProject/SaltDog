@@ -41,6 +41,7 @@
         "eventemitter3": "^4.0.7",
         "fs-extra": "^10.0.0",
         "got": "^11.8.3",
+        "hpagent": "^1.0.0",
         "htmlparser2": "^8.0.1",
         "licia": "^1.31.1",
         "lodash": "^4.17.21",

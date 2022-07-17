@@ -1,5 +1,5 @@
 export type ILoadingQueueTask = {
-    id: number;
+    id: string;
     name: string;
     percent: number;
     cancelCmd: string;
