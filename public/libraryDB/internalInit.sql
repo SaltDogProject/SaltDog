@@ -222,4 +222,11 @@ CREATE TABLE IF NOT EXISTS pdfAnnotations (
     PRIMARY KEY (key)
 );
 
+CREATE TABLE IF NOT EXISTS readHistory (
+    historyID INTEGER PRIMARY KEY,
+    operationType TEXT NOT NULL,
+    operationDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    filePath TEXT NOT NULL,
+    title TEXT
+);
 

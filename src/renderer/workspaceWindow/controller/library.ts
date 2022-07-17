@@ -57,3 +57,9 @@ export function getSDPDFCoreAnnotate(docID: string): Promise<any> {
 export function setSDPDFCoreAnnotate(docID: string, annotations: any): Promise<any> {
     return invokeLibraryMethodAsync('setSDPDFCoreAnnotate', docID, annotations);
 }
+export function setReadHistory(title: string, filePath: string, operationType = 'open'): Promise<any> {
+    return invokeLibraryMethodAsync('setReadHistory', title, filePath, operationType);
+}
+export function getReadHistory(operationType = 'open', limit = 5): Promise<IReadHistory[]> {
+    return invokeLibraryMethodAsync('getReadHistory', operationType, limit) as Promise<IReadHistory[]>;
+}

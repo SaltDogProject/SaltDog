@@ -455,6 +455,21 @@ export default class SaltDogItemDB extends Database {
         this.prepare(this._sqlTemplate.setSDPDFCoreAnnotate).run(docID, JSON.stringify(annotations));
         return true;
     }
+
+    public setReadHistory(title: string, filePath: string, operationType = 'open') {
+        this.prepare('INSERT INTO readHistory (operationType,title,filePath) VALUES (?,?,?)').run(
+            operationType,
+            title,
+            filePath
+        );
+    }
+    public getReadHistory(operationType = 'open', limit = 5) {
+        const history = this.prepare(
+            "SELECT historyID,operationType,filePath,title,DATETIME(max(operationDate), 'localtime') as operationDate FROM readHistory WHERE operationType=? GROUP BY filePath ORDER BY operationDate DESC LIMIT ?"
+        ).all(operationType, limit);
+        return history as IReadHistory[];
+    }
+
     private _bindingAttachment(key: string, itemID: number | bigint, att: any, localFile: any) {
         const attID = this.prepare(this._sqlTemplate.insertAttachments).run(
             itemID,

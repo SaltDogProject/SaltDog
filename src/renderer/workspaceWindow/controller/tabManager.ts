@@ -4,13 +4,14 @@ import { noop, uniqueId } from 'lodash';
 import { ITabConfig, ITabManager } from '@/utils/panelTab';
 import MessageHandler from '../components/tabs/messageHandler';
 import path from 'path';
-import fs from 'fs';
+import { existsSync } from 'fs-extra';
 // FIXME:
 import bus from './systemBus';
 import SaltDogMessageChannelRenderer from './messageChannel';
 import { uuid } from 'licia';
 import ReaderManager from './reader';
-import { Action, ElMessage, ElMessageBox } from 'element-plus';
+import { Action, ElMessage, ElMessageBox, ElNotification } from 'element-plus';
+import { setReadHistory } from './library';
 const TAG = '[Renderer/TabManager]';
 class MainTabManager implements ITabManager {
     private _eventList = [
@@ -122,6 +123,14 @@ class MainTabManager implements ITabManager {
         if (!pdfPath) {
             console.error(TAG, 'Can not create pdf tab: No pdfPath');
         }
+        if (!existsSync(pdfPath)) {
+            ElNotification({
+                title: '打开失败',
+                message: 'PDF文件找不到啦😭，可能是文件被移动或删除。',
+                type: 'error',
+            });
+            return;
+        }
         const name = tabName;
         const tabid = this.addTab(name, 'PDFVIEWER');
         this.pdfTabReadyState[tabid] = false;
@@ -152,6 +161,7 @@ class MainTabManager implements ITabManager {
             this.pdfTabReadyState[tabid] = true;
             // handler.invokeWebview('jumpToTarget', '_OPENTOPIC_TOC_PROCESSING_d114e60114');
         });
+        setReadHistory(tabName, pdfPath);
         //
         // bus.on(`PDFVIEW_${tabid}:_WebviewContentEvent`, (args) => {
         //     console.log(TAG, 'Custom Event dispatch', args);

@@ -55,3 +55,11 @@ interface ILibInfo {
     filesEditable: boolean;
     archived: boolean;
 }
+
+interface IReadHistory {
+    historyID: number;
+    operationType: string;
+    operationDate: string;
+    filePath: string;
+    title: string;
+}

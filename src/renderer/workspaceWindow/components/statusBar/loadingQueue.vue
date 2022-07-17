@@ -61,9 +61,11 @@ SaltDogMessageChannelRenderer.getInstance().subscribe('saltdog.updateLoadingQueu
 SaltDogMessageChannelRenderer.getInstance().subscribe('saltdog.cancelLoadingQueue', (id) => {
     if (!taskMap.has(id)) {
         log.warn(TAG, 'Target task not availiable. Task id:', id);
+        return;
     }
+    const targetTask = taskMap.get(id) as ILoadingQueueTask;
     taskMap.delete(id);
-    loadingTasks = loadingTasks.filter((task) => task.id != id);
+    loadingTasks.splice(loadingTasks.indexOf(targetTask), 1);
 });
 </script>
 <style lang="stylus" scoped>

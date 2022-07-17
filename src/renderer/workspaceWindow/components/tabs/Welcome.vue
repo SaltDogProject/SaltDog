@@ -14,9 +14,9 @@
                             打开文档
                         </el-button>
                     </div>
-                    <el-table :data="tableData" style="width: 100%">
+                    <el-table @row-dblclick="handleHistoryClick" :data="tableData" style="width: 100%">
                         <el-table-column prop="title" label="标题" />
-                        <el-table-column prop="info" label="信息" width="180" />
+                        <!-- <el-table-column prop="info" label="信息" width="180" /> -->
                         <el-table-column prop="date" label="打开日期" width="180" />
                     </el-table>
                 </div>
@@ -37,41 +37,38 @@
     </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref, onBeforeUpdate, onUpdated, getCurrentInstance } from 'vue';
+import { defineComponent, onMounted, ref, onBeforeUpdate, onUpdated, getCurrentInstance, onActivated } from 'vue';
 import { ipcRenderer } from 'electron';
 import tabManager from '../../controller/tabManager';
 import path from 'path';
 import { Plus } from '@element-plus/icons-vue';
+import { getReadHistory } from '../../controller/library';
 const TAG = '[Renderer/Welcome]';
 export default defineComponent({
     components: { Plus },
     setup() {
-        const tableData = [
-            {
-                date: '2022-03-26',
-                title: 'A Survey of Neuromorphic Computing and Neural Networks in Hardware',
-                info: 'arXiv:1705.06963',
-            },
-            {
-                date: '2022-03-26',
-                title: 'A Survey of Neuromorphic Computing and Neural Networks in Hardware',
-                info: 'arXiv:1705.06963',
-            },
-            {
-                date: '2022-03-26',
-                title: 'A Survey of Neuromorphic Computing and Neural Networks in Hardware',
-                info: 'arXiv:1705.06963',
-            },
-            {
-                date: '2022-03-26',
-                title: 'A Survey of Neuromorphic Computing and Neural Networks in Hardware',
-                info: 'arXiv:1705.06963',
-            },
-        ];
+        onMounted(() => {
+            getReadHistory().then((res) => {
+                const history = [];
+                for (const his of res) {
+                    history.push({
+                        date: his.operationDate,
+                        title: his.title,
+                        path: his.filePath,
+                    });
+                }
+                tableData.value = history;
+            });
+        });
+        const tableData = ref<any>([]);
         function openDocument() {
             tabManager.pickAndOpenPDF();
         }
-        return { tableData, openDocument };
+        function handleHistoryClick(e: any) {
+            console.log(e);
+            tabManager.addPdfTab(e.title, e.path);
+        }
+        return { tableData, openDocument, handleHistoryClick };
     },
 });
 </script>

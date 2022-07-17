@@ -1,5 +1,5 @@
 <template>
-    <welcome-page v-show="showWelcome"></welcome-page>
+    <welcome-page v-if="showWelcome"></welcome-page>
     <el-tabs
         v-show="!showWelcome"
         class="tabview"
