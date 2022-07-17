@@ -106,7 +106,7 @@ export class LocalFileDB {
             defaultOptions = extend(defaultOptions, options);
         }
         createLoading({
-            id: 'downloadPDF_' + filename,
+            id: 'downloadPDF_' + dirKey + '_' + filename,
             name: '文献下载',
             percent: 0,
             cancelCmd: 'cancelDownloadPDF_' + filename,
@@ -124,7 +124,7 @@ export class LocalFileDB {
                 const percentage = Math.round(percent * 100);
                 const tloading = throttle(createLoading, 500);
                 tloading({
-                    id: 'downloadPDF_' + filename,
+                    id: 'downloadPDF_' + dirKey + '_' + filename,
                     name: `文献下载(${percentage}%)`,
                     percent: percentage,
                     cancelCmd: 'cancelDownloadPDF_' + filename,
@@ -132,21 +132,20 @@ export class LocalFileDB {
             });
             pipeline(downloadStream, fileWriterStream)
                 .then(() => {
-                    return new Promise((resolve, reject) => {
-                        cancelLoading('downloadPDF_' + filename);
-                        stat(fpath).then((stats) => {
-                            resolve({
-                                stats,
-                                path: fpath,
-                                md5: md5.sync(fpath),
-                            });
-                            // https://www.nodeapp.cn/fs.html#fs_class_fs_stats
+                    cancelLoading('downloadPDF_' + dirKey + '_' + filename);
+                    stat(fpath).then((stats) => {
+                        resolve({
+                            stats,
+                            path: fpath,
+                            md5: md5.sync(fpath),
                         });
+                        // https://www.nodeapp.cn/fs.html#fs_class_fs_stats
                     });
                 })
                 .catch((error) => {
                     cancelLoading('downloadPDF_' + filename);
                     log.error(TAG, 'download Error', error);
+                    reject('下载失败' + error.message || '');
                 });
         });
     }

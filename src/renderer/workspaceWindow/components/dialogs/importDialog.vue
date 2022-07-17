@@ -88,6 +88,7 @@ const retriveLoading = ref(false);
 const posvalue = ref('');
 let id = 0;
 const posprops = ref({
+    checkStrictly: true,
     lazy: true,
     lazyLoad(node: any, resolve: any) {
         const { level } = node;

@@ -47,6 +47,7 @@ import {
     onUnmounted,
 } from 'vue';
 import tabManager from '../../controller/tabManager';
+import SaltDogMessageChannelRenderer from '../../controller/messageChannel';
 import Viewer from './pdfViewer/viewer.vue';
 import path from 'path';
 import { existsSync } from 'fs';
@@ -81,7 +82,7 @@ export default defineComponent({
                 tabManager.removeTab(targetName).then(() => {
                     if (!showWelcome.value && editableTabs.value.length == 0) {
                         showWelcome.value = true;
-                        bus.emit('_setWindowTitle', '欢迎');
+                        SaltDogMessageChannelRenderer.getInstance().publish('saltdog.setWindowTitle', '欢迎');
                     }
                 });
             }
@@ -127,7 +128,10 @@ export default defineComponent({
             tabManager.onBeforeUpdate();
             if (showWelcome.value && editableTabs.value.length != 0) {
                 showWelcome.value = false;
-                bus.emit('_setWindowTitle', tabManager.getTabInfo(tabManager.getCurrentTab()).title);
+                SaltDogMessageChannelRenderer.getInstance().publish(
+                    'saltdog.setWindowTitle',
+                    tabManager.getTabInfo(tabManager.getCurrentTab()).title
+                );
             }
             bus.emit('onTabsChange', editableTabsValue.value);
         });
@@ -135,7 +139,10 @@ export default defineComponent({
             tabManager.onUpdated();
         });
         function handleTabsChange(e: any) {
-            console.error(TAG, e);
+            SaltDogMessageChannelRenderer.getInstance().publish(
+                'saltdog.setWindowTitle',
+                tabManager.getTabInfo(tabManager.getCurrentTab()).title
+            );
         }
         return {
             showWelcome,

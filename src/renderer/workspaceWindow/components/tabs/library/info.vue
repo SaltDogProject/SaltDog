@@ -271,6 +271,7 @@ function handleAttachmentClick(attachment: any) {
     word-wrap: break-all;
 }
 .itemInfoHead_title {
+    padding-right 20px
     font-size: 20px;
     font-variant-ligatures: no-contextual;
     font-weight: 400;

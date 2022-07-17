@@ -8,7 +8,9 @@
                 <TitleMenu />
             </div>
 
-            <div class="fake-title-bar__title">{{ documentName }} - SaltDog - {{ version }}</div>
+            <div class="fake-title-bar__title">
+                {{ documentName && documentName.length != 0 ? `${documentName} - ` : '' }}SaltDog - {{ version }}
+            </div>
             <div class="handle-bar" v-if="os === 'darwin'">
                 <div v-if="version == 'Dev'" class="window__button" @click="refreshWindow">
                     <el-icon><Refresh /></el-icon>
@@ -95,8 +97,9 @@ const App = defineComponent({
         const iconPath = ref(`${'file:///' + __static}/images/logo.png`);
         const { proxy } = getCurrentInstance()!;
         version.value = process.env.NOCE_ENV === 'production' ? pkg.version : 'Dev';
-        bus.on('_setWindowTitle', (title) => {
+        SaltDogMessageChannelRenderer.getInstance().subscribe('saltdog.setWindowTitle', (title: string) => {
             documentName.value = title;
+            document.title = `${title && title.length != 0 ? title + ' - ' : ''}SaltDog`;
         });
         function refreshWindow() {
             location.reload();

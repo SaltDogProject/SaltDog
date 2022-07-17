@@ -84,7 +84,7 @@ const App = defineComponent({
             version,
             defaultActive,
             handleSelect,
-            logoSrc: ref(`${'file:///'+__static}/images/logo.png`),
+            logoSrc: ref(`${'file:///' + __static}/images/logo.png`),
         };
     },
 });
@@ -93,7 +93,6 @@ export default App;
 
 <style lang="stylus">
 title_bar_height = 22px
-$darwinBg = transparentify(#172426, #000, 0.7)
 .saltdog-fade
   &-enter,
   &-leave,
@@ -115,14 +114,6 @@ $darwinBg = transparentify(#172426, #000, 0.7)
         position fixed
         z-index 100
         &.darwin
-            background transparent
-            background-image linear-gradient(
-                to right,
-                transparent 0%,
-                transparent 167px,
-                $darwinBg 167px,
-                $darwinBg 100%
-            )
             .fake-title-bar__title
                 padding-left 167px
         .handle-bar

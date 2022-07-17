@@ -78,6 +78,7 @@ export default defineComponent({
 <style lang="stylus">
 
 .welcome-layout
+    background-color #ffffff
     color:#303133;
     height:100%
     .welcome-header
