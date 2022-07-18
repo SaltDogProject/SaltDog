@@ -224,6 +224,7 @@ CREATE TABLE IF NOT EXISTS pdfAnnotations (
 
 CREATE TABLE IF NOT EXISTS readHistory (
     historyID INTEGER PRIMARY KEY,
+    itemID INT DEFAULT -1,
     operationType TEXT NOT NULL,
     operationDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     filePath TEXT NOT NULL,

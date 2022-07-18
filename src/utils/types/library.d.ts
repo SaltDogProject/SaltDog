@@ -58,6 +58,7 @@ interface ILibInfo {
 
 interface IReadHistory {
     historyID: number;
+    itemID: number;
     operationType: string;
     operationDate: string;
     filePath: string;

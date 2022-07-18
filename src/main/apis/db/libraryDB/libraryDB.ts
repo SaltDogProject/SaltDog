@@ -457,15 +457,19 @@ export default class SaltDogItemDB extends Database {
     }
 
     public setReadHistory(title: string, filePath: string, operationType = 'open') {
-        this.prepare('INSERT INTO readHistory (operationType,title,filePath) VALUES (?,?,?)').run(
+        const res = this.prepare('SELECT parentItemID FROM itemAttachments WHERE path=?').get(filePath);
+        const itemID = res && res.length != 0 ? res.parentItemID : -1;
+        log.log(TAG, 'Set read history', title, itemID);
+        this.prepare('INSERT INTO readHistory (operationType,title,filePath,itemID) VALUES (?,?,?,?)').run(
             operationType,
             title,
-            filePath
+            filePath,
+            itemID
         );
     }
     public getReadHistory(operationType = 'open', limit = 5) {
         const history = this.prepare(
-            "SELECT historyID,operationType,filePath,title,DATETIME(max(operationDate), 'localtime') as operationDate FROM readHistory WHERE operationType=? GROUP BY filePath ORDER BY operationDate DESC LIMIT ?"
+            "SELECT historyID,itemID,operationType,filePath,title,DATETIME(max(operationDate), 'localtime') as operationDate FROM readHistory WHERE operationType=? GROUP BY filePath ORDER BY operationDate DESC LIMIT ?"
         ).all(operationType, limit);
         return history as IReadHistory[];
     }

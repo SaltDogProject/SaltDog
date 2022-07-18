@@ -55,6 +55,7 @@ export default defineComponent({
                         date: his.operationDate,
                         title: his.title,
                         path: his.filePath,
+                        itemID: his.itemID,
                     });
                 }
                 tableData.value = history;

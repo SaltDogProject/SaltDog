@@ -87,6 +87,7 @@
         v-show="contextMenuVisible"
         :style="{ left: contextMenuLeft + 'px', top: contextMenuTop + 'px' }"
         class="contextmenu"
+        ref="contextMenuRef"
     >
         <li class="contextMenuSelect" @click="handleLibraryEdit('edit')">
             <el-icon><EditPen /></el-icon>
@@ -99,7 +100,7 @@
     </ul>
 </template>
 <script setup lang="ts">
-import { ref, defineProps, onMounted, watchEffect } from 'vue';
+import { ref, defineProps, onMounted, watchEffect, getCurrentInstance } from 'vue';
 // @ts-ignore
 import Info from './info.vue';
 import Navi from './navi.vue';
@@ -125,13 +126,12 @@ const currentDir = ref<any>(-1);
 const itemData = ref<any>({});
 const itemInfo = ref<any>({});
 const showInfo = ref(false);
-
+const contextMenuRef = ref<any>(null);
 // contextMenu
 let contextMenuActiveItem: any = null;
 const contextMenuVisible = ref(false);
 const contextMenuLeft = ref(0);
 const contextMenuTop = ref(0);
-
 let _dirID = 1;
 let _libraryID = 1;
 onMounted(() => {
@@ -314,6 +314,16 @@ function handleRowContextMenu(data: any, _: any, pointer: PointerEvent) {
     contextMenuTop.value = pointer.pageY;
     contextMenuLeft.value = pointer.pageX;
     contextMenuVisible.value = true; //显示菜单
+    setTimeout(() => {
+        const { width, height } = contextMenuRef.value.getBoundingClientRect();
+        if (pointer.pageY + height > window.innerHeight - 40) {
+            contextMenuTop.value = pointer.pageY - height;
+        }
+        if (pointer.pageX + width > window.innerWidth - 40) {
+            contextMenuLeft.value = pointer.pageX - width;
+        }
+    }, 0);
+
     contextMenuActiveItem = data;
 }
 
@@ -356,10 +366,13 @@ function handleLibraryEdit(type: 'edit' | 'delete') {
 </script>
 
 <style lang="stylus">
-.libraryContainer {
+.libraryContainer
     margin: 20px 40px;
     overflow-y:scroll;
-}
+    display:flex;
+    flex-direction:column;
+    .el-table__body-wrapper
+        flex:1
 
 .libraryContainer > .itemInfoPanel {
     height: 100%;
@@ -401,6 +414,7 @@ function handleLibraryEdit(type: 'edit' | 'delete') {
   margin: 0;
   padding: 7px 16px;
   cursor: pointer;
+  width:150px;
 }
 .contextmenu li:hover {
   background: #eee;

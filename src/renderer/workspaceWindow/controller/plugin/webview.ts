@@ -97,8 +97,7 @@ function getTabInfo(arg: any, callback?: any) {
 
 function createPDFView(arg: any, callback?: any) {
     console.log(TAG, 'Create PDFView', arg);
-    const webviewId = uuid();
-    const id = mainTabManager.addPdfTab(arg.title, arg.pdfPath, webviewId);
+    const id = mainTabManager.addPdfTab(arg.title, arg.pdfPath);
     callback && callback(id);
 }
 function _handlePDFViewMethod(arg: any, callback?: any) {

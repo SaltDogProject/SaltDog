@@ -12,7 +12,8 @@
         <el-tab-pane v-for="item in editableTabs" :key="item.name" :label="item.title" :name="item.name">
             <!--disable node integration for security-->
             <keep-alive>
-                <div style="width: 100%; height: 100%; overflow: hidden">
+                <!--如果这里不是scroll会导致library/settings不能滚动-->
+                <div style="width: 100%; height: 100%; overflow: scroll">
                     <webview
                         v-if="item.type == 'webview'"
                         :id="item.webviewId"

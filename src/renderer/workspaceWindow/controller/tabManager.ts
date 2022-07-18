@@ -119,7 +119,7 @@ class MainTabManager implements ITabManager {
             this.webviewPendingFunction[tabid] = fn;
         }
     }
-    public addPdfTab(tabName: string, pdfPath: string) {
+    public addPdfTab(tabName: string, pdfPath: string, itemID = -1) {
         if (!pdfPath) {
             console.error(TAG, 'Can not create pdf tab: No pdfPath');
         }
