@@ -43,6 +43,7 @@
         "got": "^11.8.3",
         "hpagent": "^1.0.0",
         "htmlparser2": "^8.0.1",
+        "keytar-sync": "^7.7.1",
         "licia": "^1.31.1",
         "lodash": "^4.17.21",
         "lodash-id": "^0.14.1",

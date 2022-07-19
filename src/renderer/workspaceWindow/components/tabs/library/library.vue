@@ -115,7 +115,9 @@ import reader from '../../../controller/reader';
 import { EventEmitter } from 'stream';
 import log from 'electron-log';
 import { showMessage } from '@/workspaceWindow/controller/notification';
+import db from '../../../../utils/db';
 const TAG = '[Renderer/Library/Library]';
+
 interface User {
     title: string;
 }

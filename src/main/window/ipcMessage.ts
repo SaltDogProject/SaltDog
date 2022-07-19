@@ -90,6 +90,12 @@ export function initIpc(windowManager: IWindowManager): void {
             case 'set':
                 returnValue = db.set(key, value);
                 break;
+            case 'safeGet':
+                returnValue = db.safeGet(key);
+                break;
+            case 'safeSet':
+                returnValue = db.safeSet(key, value);
+                break;
             case 'has':
                 returnValue = db.has(key);
                 break;
