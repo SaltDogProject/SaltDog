@@ -134,10 +134,14 @@ export default defineComponent({
                     tabManager.getTabInfo(tabManager.getCurrentTab()).title
                 );
             }
-            bus.emit('onTabsChange', editableTabsValue.value);
         });
         onUpdated(() => {
             tabManager.onUpdated();
+            if (tabManager.getTabListRef().value.length == 0) {
+                editableTabsValue.value = null;
+            }
+            bus.emit('onTabsChange', editableTabsValue.value);
+            SaltDogMessageChannelRenderer.getInstance().publish('saltdog.tabsChange', editableTabsValue.value);
         });
         function handleTabsChange(e: any) {
             SaltDogMessageChannelRenderer.getInstance().publish(

@@ -116,7 +116,8 @@ class MainTabManager implements ITabManager {
         if (this.pdfTabReadyState[tabid] && this.pdfTabReadyState) {
             fn();
         } else {
-            this.webviewPendingFunction[tabid] = fn;
+            if (!this.webviewPendingFunction[tabid]) this.webviewPendingFunction[tabid] = [];
+            this.webviewPendingFunction[tabid].push(fn);
         }
     }
     public addPdfTab(tabName: string, pdfPath: string, itemID = -1) {
