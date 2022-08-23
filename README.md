@@ -71,7 +71,7 @@ yarn install
 yarn dev
 ```
 
-由于 pdfjs-dist 使用了[node-canvas](https://github.com/Automattic/node-canvas#compiling),若您的操作系统在编译时出现 canvas 包相关的错误(常见于 M1 芯片的 Mac OS)，您可能需要从源码重新编译该包，相见 node-canvas [Compiling](https://github.com/Automattic/node-canvas#compiling)
+由于 pdfjs-dist 使用了[node-canvas](https://github.com/Automattic/node-canvas#compiling), 若您的操作系统在编译时出现 canvas 包相关的错误(常见于 M1 芯片的 Mac OS)，您可能需要从源码重新编译该包，相见 node-canvas [Compiling](https://github.com/Automattic/node-canvas#compiling)
 
 ## 提交规范
 

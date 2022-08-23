@@ -16,6 +16,7 @@ import schemaParser from './schema';
 import log from 'electron-log';
 import { initLog } from './utils/logger';
 import { checkUpdate } from './utils/updater';
+import { GrobidClient } from './apis/grobid';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 class LifeCycle {
     private pluginManager = saltDogPlugin;
@@ -81,7 +82,6 @@ class LifeCycle {
             //windowManager.create(IWindowList.ENTRY_WINDOW, {});
             windowManager.create(IWindowList.WORKSPACE_WINDOW);
             windowManager.create(IWindowList.PLUGIN_HOST);
-
             /**
              * Windows监听URL Schema触发时候要判断一下是否是第一次启动
              *  应用处于打开状态，会触发 second-instance 事件并接收这个 URL。

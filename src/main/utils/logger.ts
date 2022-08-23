@@ -11,9 +11,10 @@ export const initLog = function () {
         onError(error, versions, submitIssue) {
             dialog
                 .showMessageBox({
-                    title: '啊噢，SaltDog遇到了一个错误 ╥﹏╥... ，以下是详细信息。给您造成的不便，我们深表歉意。',
-                    message: error.message,
-                    detail: error.stack,
+                    title: '出错啦 ╥﹏╥... ',
+                    message:
+                        '很抱歉，SaltDog遇到了一个错误。您可以点击忽略继续运行程序，但部分功能将不可用。如果您经常看到这条信息，可以点击上报告诉我们。感激不尽！',
+                    detail: error.message,
                     type: 'error',
                     buttons: ['忽略', '上报', '退出程序'],
                 })

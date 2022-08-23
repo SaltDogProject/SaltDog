@@ -10,6 +10,7 @@
         "serve": "vue-cli-service serve",
         "serve-doc": "docsify serve docs/",
         "build": "vue-cli-service build",
+        "build:canvas": "cd node_modules/canvas && C:/Users/dorap/AppData/Local/Yarn/bin/node-gyp.cmd rebuild",
         "build-pdf": "node build/pdfjs.js",
         "rebuild": "electron-rebuild -f -w better-sqlite3",
         "lint": "vue-cli-service lint",
@@ -39,8 +40,9 @@
         "electron-updater": "^5.0.5",
         "element-plus": "^2.1.11",
         "eventemitter3": "^4.0.7",
+        "formdata-node": "^4.3.3",
         "fs-extra": "^10.0.0",
-        "got": "^11.8.3",
+        "got-cjs": "^12.0.1",
         "hpagent": "^1.0.0",
         "htmlparser2": "^8.0.1",
         "keytar-sync": "^7.7.1",
@@ -57,7 +59,8 @@
         "vue-class-component": "^8.0.0-0",
         "vue-router": "^4.0.0-0",
         "vuex": "^4.0.0-0",
-        "xss": "^1.0.13"
+        "xss": "^1.0.13",
+        "pdf-poppler": "^0.2.1"
     },
     "devDependencies": {
         "@types/electron-devtools-installer": "^2.2.0",

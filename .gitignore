@@ -32,3 +32,4 @@ pnpm-debug.log*
 my_notice
 /public/dist/**
 /public/translators
+dirty/**

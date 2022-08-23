@@ -46,6 +46,7 @@ const config = {
         config.externals = {
             'better-sqlite3': 'commonjs better-sqlite3',
             canvas: 'commonjs canvas',
+            'formdata-node': 'commonjs formdata-node',
         };
         // build web
         // config.entry('entryWindow').add('src/renderer/entryWindow/main.ts').end().output.filename('entryWindow.js');
@@ -57,7 +58,7 @@ const config = {
     },
     pluginOptions: {
         electronBuilder: {
-            externals: ['better-sqlite3'],
+            externals: ['better-sqlite3', 'formdata-node'],
             customFileProtocol: './',
             // customFileProtocol: 'saltdog://./',
             // externals: ['saltdog'],

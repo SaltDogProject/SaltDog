@@ -14,7 +14,7 @@ import {
 import { extend, throttle } from 'lodash';
 import * as path from 'path';
 import log from 'electron-log';
-import got, { Method, Options } from 'got';
+import got, { Method, Options } from 'got-cjs';
 import { HttpsProxyAgent, HttpProxyAgent } from 'hpagent';
 import md5 from 'md5-file';
 import { readFile } from 'licia/fs';

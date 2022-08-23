@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { existsSync } from 'fs';
 import { exec } from 'child_process';
-import got from 'got';
+import got from 'got-cjs';
 import SaltDogMessageChannelMain from './api/messageChannel';
 import log from 'electron-log';
 import { resolve } from 'path';
