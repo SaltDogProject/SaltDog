@@ -1,0 +1,1603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve"
+    xmlns="http://www.tei-c.org/ns/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <teiHeader xml:lang="en">
+        <fileDesc>
+            <titleStmt>
+                <title level="a" type="main">Trace-based just-in-time type specialization for dynamic languages</title>
+            </titleStmt>
+            <publicationStmt>
+                <publisher>ACM Press</publisher>
+                <availability status="unknown">
+                    <p>Copyright ACM Press</p>
+                </availability>
+                <date type="published" when="2009">2009</date>
+            </publicationStmt>
+            <sourceDesc>
+                <biblStruct>
+                    <analytic>
+                        <author>
+                            <persName coords="1,120.32,139.99,55.08,9.50;1,175.40,137.72,2.83,6.99">
+                                <forename type="first">Andreas</forename>
+                                <surname>Gal</surname>
+                            </persName>
+                            <email>gal@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName coords="1,438.47,152.94,70.63,9.50;1,509.10,150.67,1.41,6.99">
+                                <forename type="first">Jason</forename>
+                                <surname>Orendorff</surname>
+                            </persName>
+                            <email>jorendorff@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName coords="1,68.27,165.89,70.92,9.50;1,139.19,163.62,1.41,6.99">
+                                <forename type="first">Jesse</forename>
+                                <surname>Ruderman</surname>
+                            </persName>
+                            <email>jruderman@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Edwin</forename>
+                                <forename type="middle">W</forename>
+                                <surname>Smith</surname>
+                            </persName>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Rick</forename>
+                                <surname>Reitmaier</surname>
+                            </persName>
+                        </author>
+                        <author>
+                            <persName coords="1,299.68,165.89,77.61,9.50">
+                                <forename type="first">Michael</forename>
+                                <surname>Bebenita</surname>
+                            </persName>
+                            <email>mbebenit@uci.edu</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Mason</forename>
+                                <surname>Chang</surname>
+                            </persName>
+                        </author>
+                        <author>
+                            <persName coords="1,471.15,165.89,63.61,9.50">
+                                <forename type="first">Michael</forename>
+                                <surname>Franz</surname>
+                            </persName>
+                            <email>franz@uci.edu</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName coords="1,192.70,139.99,59.96,9.50;1,252.65,137.72,1.41,6.99">
+                                <forename type="first">Brendan</forename>
+                                <surname>Eich</surname>
+                            </persName>
+                            <email>brendan@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName coords="1,262.87,139.99,55.81,9.50;1,318.68,137.72,1.41,6.99">
+                                <forename type="first">Mike</forename>
+                                <surname>Shaver</surname>
+                            </persName>
+                            <email>shaver@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName coords="1,328.89,139.99,71.91,9.50;1,400.80,137.72,1.41,6.99">
+                                <forename type="first">David</forename>
+                                <surname>Anderson</surname>
+                            </persName>
+                            <email>danderson@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName coords="1,411.01,139.99,71.31,9.50;1,482.32,137.72,1.41,6.99">
+                                <forename type="first">David</forename>
+                                <surname>Mandelin</surname>
+                            </persName>
+                            <email>dmandelin@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Mohammad</forename>
+                                <forename type="middle">R</forename>
+                                <surname>Haghighat</surname>
+                            </persName>
+                        </author>
+                        <author>
+                            <persName coords="1,217.90,152.94,59.85,9.50;1,277.75,150.67,1.41,6.99">
+                                <forename type="first">Blake</forename>
+                                <surname>Kaplan</surname>
+                            </persName>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName coords="1,287.96,152.94,67.86,9.50;1,355.82,150.67,1.41,6.99">
+                                <forename type="first">Graydon</forename>
+                                <surname>Hoare</surname>
+                            </persName>
+                            <email>graydon@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName coords="1,366.03,152.94,62.23,9.50;1,428.26,150.67,1.41,6.99">
+                                <forename type="first">Boris</forename>
+                                <surname>Zbarsky</surname>
+                            </persName>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <title level="a" type="main">Trace-based just-in-time type specialization for dynamic languages</title>
+                    </analytic>
+                    <monogr>
+                        <title level="m">Proceedings of the 2009 ACM SIGPLAN conference on Programming language design and implementation - PLDI &apos;09</title>
+                        <meeting>the 2009 ACM SIGPLAN conference on Programming language design and implementation - PLDI &apos;09						</meeting>
+                        <imprint>
+                            <publisher>ACM Press</publisher>
+                            <date type="published" when="2009" />
+                        </imprint>
+                    </monogr>
+                    <idno type="MD5">9A192D8B1A7DC652A19835F6F08098BD</idno>
+                    <idno type="DOI">10.1145/1542476.1542528</idno>
+                </biblStruct>
+            </sourceDesc>
+        </fileDesc>
+        <encodingDesc>
+            <appInfo>
+                <application version="0.7.2-SNAPSHOT" ident="GROBID" when="2022-05-13T10:29+0000">
+                    <desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+                    <ref target="https://github.com/kermitt2/grobid"/>
+                </application>
+            </appInfo>
+        </encodingDesc>
+        <profileDesc>
+            <textClass>
+                <keywords>
+                    <term>D.3.4 [Programming Languages]: Processors -Incremental compilers</term>
+                    <term>code generation. General Terms Design</term>
+                    <term>Experimentation</term>
+                    <term>Measurement</term>
+                    <term>Performance JavaScript</term>
+                    <term>just-in-time compilation</term>
+                    <term>trace trees</term>
+                </keywords>
+            </textClass>
+            <abstract>
+                <div
+                    xmlns="http://www.tei-c.org/ns/1.0">
+                    <p>Dynamic languages such as JavaScript are more difficult to compile than statically typed ones. Since no concrete type information is available, traditional compilers need to emit generic code that can handle all possible type combinations at runtime. We present an alternative compilation technique for dynamically-typed languages that identifies frequently executed loop traces at run-time and then generates machine code on the fly that is specialized for the actual dynamic types occurring on each path through the loop. Our method provides cheap inter-procedural type specialization, and an elegant and efficient way of incrementally compiling lazily discovered alternative paths through nested loops. We have implemented a dynamic compiler for JavaScript based on our technique and we have measured speedups of 10x and more for certain benchmark programs.</p>
+                </div>
+            </abstract>
+        </profileDesc>
+    </teiHeader>
+    <facsimile>
+        <surface n="1" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="2" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="3" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="4" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="5" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="6" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="7" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="8" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="9" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="10" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="11" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="12" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="13" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+        <surface n="14" ulx="0.0" uly="0.0" lrx="612.0" lry="792.0"/>
+    </facsimile>
+    <text xml:lang="en">
+        <body>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="1." coords="1,54.00,569.32,78.65,9.85">Introduction</head>
+                <p>Dynamic languages such as JavaScript, Python, and Ruby, are popular since they are expressive, accessible to non-experts, and make deployment as easy as distributing a source file. They are used for small scripts as well as for complex applications. JavaScript, for example, is the de facto standard for client-side web programming and is used for the application logic of browser-based productivity applications such as Google Mail, Google Docs and Zimbra Collaboration Suite. In this domain, in order to provide a fluid user experience and enable a new generation of applications, virtual machines must provide a low startup time and high performance.</p>
+                <p>Compilers for statically typed languages rely on type information to generate efficient machine code. In a dynamically typed programming language such as JavaScript, the types of expressions may vary at runtime. This means that the compiler can no longer easily transform operations into machine instructions that operate on one specific type. Without exact type information, the compiler must emit slower generalized machine code that can deal with all potential type combinations. While compile-time static type inference might be able to gather type information to generate optimized machine code, traditional static analysis is very expensive and hence not well suited for the highly interactive environment of a web browser.</p>
+                <p>We present a trace-based compilation technique for dynamic languages that reconciles speed of compilation with excellent performance of the generated machine code. Our system uses a mixedmode execution approach: the system starts running JavaScript in a fast-starting bytecode interpreter. As the program runs, the system identifies hot (frequently executed) bytecode sequences, records them, and compiles them to fast native code. We call such a sequence of instructions a trace.</p>
+                <p>Unlike method-based dynamic compilers, our dynamic compiler operates at the granularity of individual loops. This design choice is based on the expectation that programs spend most of their time in hot loops. Even in dynamically typed languages, we expect hot loops to be mostly type-stable, meaning that the types of values are invariant. 
+                    <ref type="bibr" coords="1,390.12,637.14,14.94,7.77" target="#b23">(12)</ref> For example, we would expect loop counters that start as integers to remain integers for all iterations. When both of these expectations hold, a trace-based compiler can cover the program execution with a small number of type-specialized, efficiently compiled traces.
+                </p>
+                <p>Each compiled trace covers one path through the program with one mapping of values to types. When the VM executes a compiled trace, it cannot guarantee that the same path will be followed or that the same types will occur in subsequent loop iterations.</p>
+                <p>Hence, recording and compiling a trace speculates that the path and typing will be exactly as they were during recording for subsequent iterations of the loop.</p>
+                <p>Every compiled trace contains all the guards (checks) required to validate the speculation. If one of the guards fails (if control flow is different, or a value of a different type is generated), the trace exits. If an exit becomes hot, the VM can record a branch trace starting at the exit to cover the new path. In this way, the VM records a trace tree covering all the hot paths through the loop.</p>
+                <p>Nested loops can be difficult to optimize for tracing VMs. In a naïve implementation, inner loops would become hot first, and the VM would start tracing there. When the inner loop exits, the VM would detect that a different branch was taken. The VM would try to record a branch trace, and find that the trace reaches not the inner loop header, but the outer loop header. At this point, the VM could continue tracing until it reaches the inner loop header again, thus tracing the outer loop inside a trace tree for the inner loop. But this requires tracing a copy of the outer loop for every side exit and type combination in the inner loop. In essence, this is a form of unintended tail duplication, which can easily overflow the code cache. Alternatively, the VM could simply stop tracing, and give up on ever tracing outer loops.</p>
+                <p>We solve the nested loop problem by recording nested trace trees. Our system traces the inner loop exactly as the naïve version. The system stops extending the inner tree when it reaches an outer loop, but then it starts a new trace at the outer loop header. When the outer loop reaches the inner loop header, the system tries to call the trace tree for the inner loop. If the call succeeds, the VM records the call to the inner tree as part of the outer trace and finishes the outer trace as normal. In this way, our system can trace any number of loops nested to any depth without causing excessive tail duplication.</p>
+                <p>These techniques allow a VM to dynamically translate a program to nested, type-specialized trace trees. Because traces can cross function call boundaries, our techniques also achieve the effects of inlining. Because traces have no internal control-flow joins, they can be optimized in linear time by a simple compiler 
+                    <ref type="bibr" coords="2,275.93,432.79,13.74,7.77" target="#b21">(10)</ref>. Thus, our tracing VM efficiently performs the same kind of optimizations that would require interprocedural analysis in a static optimization setting. This makes tracing an attractive and effective tool to type specialize even complex function call-rich code.
+                </p>
+                <p>We implemented these techniques for an existing JavaScript interpreter, SpiderMonkey. We call the resulting tracing VM Trace-Monkey. TraceMonkey supports all the JavaScript features of Spi-derMonkey, with a 2x-20x speedup for traceable programs.</p>
+                <p>This paper makes the following contributions:</p>
+                <p>• We explain an algorithm for dynamically forming trace trees to cover a program, representing nested loops as nested trace trees. • We explain how to speculatively generate efficient type-specialized code for traces from dynamic language programs. • We validate our tracing techniques in an implementation based on the SpiderMonkey JavaScript interpreter, achieving 2x-20x speedups on many programs.</p>
+                <p>The remainder of this paper is organized as follows. Section 3 is a general overview of trace tree based compilation we use to capture and compile frequently executed code regions. In Section 4 we describe our approach of covering nested loops using a number of individual trace trees. In Section 5 we describe our tracecompilation based speculative type specialization approach we use to generate efficient machine code from recorded bytecode traces. Our implementation of a dynamic type-specializing compiler for JavaScript is described in Section 6. Related work is discussed in Section 8. In Section 7 we evaluate our dynamic compiler based on </p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="2." coords="2,317.01,532.68,173.70,9.85">Overview: Example Tracing Run</head>
+                <p>This section provides an overview of our system by describing how TraceMonkey executes an example program. The example program, shown in Figure 
+                    <ref type="figure" coords="2,411.87,568.28,3.36,7.77">1</ref>, computes the first 100 prime numbers with nested loops. The narrative should be read along with Figure 
+                    <ref type="figure" coords="2,549.40,578.24,3.36,7.77">2</ref>, which describes the activities TraceMonkey performs and when it transitions between the loops.
+                </p>
+                <p>TraceMonkey always begins executing a program in the bytecode interpreter. Every loop back edge is a potential trace point. When the interpreter crosses a loop edge, TraceMonkey invokes the trace monitor, which may decide to record or execute a native trace. At the start of execution, there are no compiled traces yet, so the trace monitor counts the number of times each loop back edge is executed until a loop becomes hot, currently after 2 crossings. Note that the way our loops are compiled, the loop edge is crossed before entering the loop, so the second crossing occurs immediately after the first iteration.</p>
+                <p>Here is the sequence of events broken down by outer loop iteration:</p>
+                <formula xml:id="formula_0" coords="3,54.00,72.75,89.44,7.47">v0 := ld state[748]</formula>
+                <p>// load primes from the trace activation record st sp[0], v0 // store primes to interpreter stack v1 := ld state 
+                    <ref type="bibr" coords="3,119.90,92.67,23.54,7.47">[764]</ref> // load k from the trace activation record v2 := i2f(v1) // convert k from int to double st sp 
+                    <ref type="bibr" coords="3,105.78,112.60,14.12,7.47" target="#b18">[8]</ref>, v1 // store k to interpreter stack st sp 
+                    <ref type="bibr" coords="3,105.78,122.56,18.83,7.47" target="#b27">[16]</ref>, 0 // store false to interpreter stack v3 := ld v0 
+                    <ref type="bibr" coords="3,105.78,132.52,14.12,7.47">[4]</ref> // load class word for primes v4 := and v3, -4 // mask out object class tag for primes v5 := eq v4, Array // test whether primes is an array xf v5 // side exit if v5 is false v6 := js_Array_set(v0, v2, false) // call function to set array element v7 := eq v6, 0
+                </p>
+                <p>// test return value from call xt v7 // side exit if js_Array_set returns false.</p>
+                <p>Figure 
+                    <ref type="figure" coords="3,82.38,215.03,3.36,8.06">3</ref>. LIR snippet for sample program. This is the LIR recorded for line 5 of the sample program in Figure 
+                    <ref type="figure" coords="3,482.72,215.38,3.36,7.77">1</ref>. The LIR encodes the semantics in SSA form using temporary variables. The LIR also encodes all the stores that the interpreter would do to its data stack. Sometimes these stores can be optimized away as the stack locations are live only on exits to the interpreter. Finally, the LIR records guards and side exits to verify the assumptions made in this recording: that primes is an array and that the call to set its element succeeds.  
+                    <ref type="figure" coords="3,437.75,504.08,3.36,7.77">3</ref>. Most LIR instructions compile to a single x86 instruction. Instructions marked with (*) would be omitted by an idealized compiler that knew that none of the side exits would ever be taken. The 17 instructions generated by the compiler compare favorably with the 100+ instructions that the interpreter would execute for the same code snippet, including 4 indirect jumps.
+                </p>
+                <p>i=2. This is the first iteration of the outer loop. The loop on lines 4-5 becomes hot on its second iteration, so TraceMonkey enters recording mode on line 4. In recording mode, TraceMonkey records the code along the trace in a low-level compiler intermediate representation we call LIR. The LIR trace encodes all the operations performed and the types of all operands. The LIR trace also encodes guards, which are checks that verify that the control flow and types are identical to those observed during trace recording. Thus, on later executions, if and only if all guards are passed, the trace has the required program semantics.</p>
+                <p>TraceMonkey stops recording when execution returns to the loop header or exits the loop. In this case, execution returns to the loop header on line 4.</p>
+                <p>After recording is finished, TraceMonkey compiles the trace to native code using the recorded type information for optimization. The result is a native code fragment that can be entered if the interpreter PC and the types of values match those observed when trace recording was started. The first trace in our example, T45, covers lines 4 and 5. This trace can be entered if the PC is at line 4, i and k are integers, and primes is an object. After compiling T45, TraceMonkey returns to the interpreter and loops back to line 1.</p>
+                <p>i=3. Now the loop header at line 1 has become hot, so Trace-Monkey starts recording. When recording reaches line 4, Trace-Monkey observes that it has reached an inner loop header that already has a compiled trace, so TraceMonkey attempts to nest the inner loop inside the current trace. The first step is to call the inner trace as a subroutine. This executes the loop on line 4 to completion and then returns to the recorder. TraceMonkey verifies that the call was successful and then records the call to the inner trace as part of the current trace. Recording continues until execution reaches line 1, and at which point TraceMonkey finishes and compiles a trace for the outer loop, T16. i=4. On this iteration, TraceMonkey calls T16. Because i=4, the if statement on line 2 is taken. This branch was not taken in the original trace, so this causes T16 to fail a guard and take a side exit. The exit is not yet hot, so TraceMonkey returns to the interpreter, which executes the continue statement.</p>
+                <p>i=5. TraceMonkey calls T16, which in turn calls the nested trace T45. T16 loops back to its own header, starting the next iteration without ever returning to the monitor.</p>
+                <p>i=6. On this iteration, the side exit on line 2 is taken again. This time, the side exit becomes hot, so a trace T23,1 is recorded that covers line 3 and returns to the loop header. Thus, the end of T23,1 jumps directly to the start of T16. The side exit is patched so that on future iterations, it jumps directly to T23,1.</p>
+                <p>At this point, TraceMonkey has compiled enough traces to cover the entire nested loop structure, so the rest of the program runs entirely as native code.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="3." coords="4,54.00,248.95,73.65,9.85">Trace Trees</head>
+                <p>In this section, we describe traces, trace trees, and how they are formed at run time. Although our techniques apply to any dynamic language interpreter, we will describe them assuming a bytecode interpreter to keep the exposition simple.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="3.1" coords="4,54.00,314.88,45.41,8.06">Traces</head>
+                <p>A trace is simply a program path, which may cross function call boundaries. TraceMonkey focuses on loop traces, that originate at a loop edge and represent a single iteration through the associated loop.</p>
+                <p>Similar to an extended basic block, a trace is only entered at the top, but may have many exits. In contrast to an extended basic block, a trace can contain join nodes. Since a trace always only follows one single path through the original program, however, join nodes are not recognizable as such in a trace and have a single predecessor node like regular nodes.</p>
+                <p>A typed trace is a trace annotated with a type for every variable (including temporaries) on the trace. A typed trace also has an entry type map giving the required types for variables used on the trace before they are defined. For example, a trace could have a type map (x: int, b: boolean), meaning that the trace may be entered only if the value of the variable x is of type int and the value of b is of type boolean. The entry type map is much like the signature of a function.</p>
+                <p>In this paper, we only discuss typed loop traces, and we will refer to them simply as "traces". The key property of typed loop traces is that they can be compiled to efficient machine code using the same techniques used for typed languages.</p>
+                <p>In TraceMonkey, traces are recorded in trace-flavored SSA LIR (low-level intermediate representation). In trace-flavored SSA (or TSSA), phi nodes appear only at the entry point, which is reached both on entry and via loop edges. The important LIR primitives are constant values, memory loads and stores (by address and offset), integer operators, floating-point operators, function calls, and conditional exits. Type conversions, such as integer to double, are represented by function calls. This makes the LIR used by TraceMonkey independent of the concrete type system and type conversion rules of the source language. The LIR operations are generic enough that the backend compiler is language independent. Figure 
+                    <ref type="figure" coords="4,79.65,657.94,4.48,7.77">3</ref> shows an example LIR trace.
+                </p>
+                <p>Bytecode interpreters typically represent values in a various complex data structures (e.g., hash tables) in a boxed format (i.e., with attached type tag bits). Since a trace is intended to represent efficient code that eliminates all that complexity, our traces operate on unboxed values in simple variables and arrays as much as possible.</p>
+                <p>A trace records all its intermediate values in a small activation record area. To make variable accesses fast on trace, the trace also imports local and global variables by unboxing them and copying them to its activation record. Thus, the trace can read and write these variables with simple loads and stores from a native activation recording, independently of the boxing mechanism used by the interpreter. When the trace exits, the VM boxes the values from this native storage location and copies them back to the interpreter structures.</p>
+                <p>For every control-flow branch in the source program, the recorder generates conditional exit LIR instructions. These instructions exit from the trace if required control flow is different from what it was at trace recording, ensuring that the trace instructions are run only if they are supposed to. We call these instructions guard instructions.</p>
+                <p>Most of our traces represent loops and end with the special loop LIR instruction. This is just an unconditional branch to the top of the trace. Such traces return only via guards. Now, we describe the key optimizations that are performed as part of recording LIR. All of these optimizations reduce complex dynamic language constructs to simple typed constructs by specializing for the current trace. Each optimization requires guard instructions to verify their assumptions about the state and exit the trace if necessary.</p>
+                <p>Type specialization.</p>
+                <p>All LIR primitives apply to operands of specific types. Thus, LIR traces are necessarily type-specialized, and a compiler can easily produce a translation that requires no type dispatches. A typical bytecode interpreter carries tag bits along with each value, and to perform any operation, must check the tag bits, dynamically dispatch, mask out the tag bits to recover the untagged value, perform the operation, and then reapply tags. LIR omits everything except the operation itself.</p>
+                <p>A potential problem is that some operations can produce values of unpredictable types. For example, reading a property from an object could yield a value of any type, not necessarily the type observed during recording. The recorder emits guard instructions that conditionally exit if the operation yields a value of a different type from that seen during recording. These guard instructions guarantee that as long as execution is on trace, the types of values match those of the typed trace. When the VM observes a side exit along such a type guard, a new typed trace is recorded originating at the side exit location, capturing the new type of the operation in question.</p>
+                <p>Representation specialization: objects. In JavaScript, name lookup semantics are complex and potentially expensive because they include features like object inheritance and eval. To evaluate an object property read expression like o.x, the interpreter must search the property map of o and all of its prototypes and parents. Property maps can be implemented with different data structures (e.g., per-object hash tables or shared hash tables), so the search process also must dispatch on the representation of each object found during search. TraceMonkey can simply observe the result of the search process and record the simplest possible LIR to access the property value. For example, the search might finds the value of o.x in the prototype of o, which uses a shared hash-table representation that places x in slot 2 of a property vector. Then the recorded can generate LIR that reads o.x with just two or three loads: one to get the prototype, possibly one to get the property value vector, and one more to get slot 2 from the vector. This is a vast simplification and speedup compared to the original interpreter code. Inheritance relationships and object representations can change during execution, so the simplified code requires guard instructions that ensure the object representation is the same. In TraceMonkey, objects' rep-resentations are assigned an integer key called the object shape. Thus, the guard is a simple equality check on the object shape.</p>
+                <p>Representation specialization: numbers. JavaScript has no integer type, only a Number type that is the set of 64-bit IEEE-754 floating-pointer numbers ("doubles"). But many JavaScript operators, in particular array accesses and bitwise operators, really operate on integers, so they first convert the number to an integer, and then convert any integer result back to a double. 1 Clearly, a JavaScript VM that wants to be fast must find a way to operate on integers directly and avoid these conversions.</p>
+                <p>In TraceMonkey, we support two representations for numbers: integers and doubles. The interpreter uses integer representations as much as it can, switching for results that can only be represented as doubles. When a trace is started, some values may be imported and represented as integers. Some operations on integers require guards. For example, adding two integers can produce a value too large for the integer representation.</p>
+                <p>Function inlining. LIR traces can cross function boundaries in either direction, achieving function inlining. Move instructions need to be recorded for function entry and exit to copy arguments in and return values out. These move statements are then optimized away by the compiler using copy propagation. In order to be able to return to the interpreter, the trace must also generate LIR to record that a call frame has been entered and exited. The frame entry and exit LIR saves just enough information to allow the intepreter call stack to be restored later and is much simpler than the interpreter's standard call code. If the function being entered is not constant (which in JavaScript includes any call by function name), the recorder must also emit LIR to guard that the function is the same.</p>
+                <p>Guards and side exits. Each optimization described above requires one or more guards to verify the assumptions made in doing the optimization. A guard is just a group of LIR instructions that performs a test and conditional exit. The exit branches to a side exit, a small off-trace piece of LIR that returns a pointer to a structure that describes the reason for the exit along with the interpreter PC at the exit point and any other data needed to restore the interpreter's state structures.</p>
+                <p>Aborts. Some constructs are difficult to record in LIR traces. For example, eval or calls to external functions can change the program state in unpredictable ways, making it difficult for the tracer to know the current type map in order to continue tracing. A tracing implementation can also have any number of other limitations, e.g.,a small-memory device may limit the length of traces. When any situation occurs that prevents the implementation from continuing trace recording, the implementation aborts trace recording and returns to the trace monitor.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="3.2" coords="5,54.00,556.88,64.75,8.06">Trace Trees</head>
+                <p>Especially simple loops, namely those where control flow, value types, value representations, and inlined functions are all invariant, can be represented by a single trace. But most loops have at least some variation, and so the program will take side exits from the main trace. When a side exit becomes hot, TraceMonkey starts a new branch trace from that point and patches the side exit to jump directly to that trace. In this way, a single trace expands on demand to a single-entry, multiple-exit trace tree.</p>
+                <p>This section explains how trace trees are formed during execution. The goal is to form trace trees during execution that cover all the hot paths of the program.</p>
+                <p>Starting a tree. Tree trees always start at loop headers, because they are a natural place to look for hot paths. In TraceMonkey, loop headers are easy to detect-the bytecode compiler ensures that a bytecode is a loop header iff it is the target of a backward branch. TraceMonkey starts a tree when a given loop header has been executed a certain number of times (2 in the current implementation). Starting a tree just means starting recording a trace for the current point and type map and marking the trace as the root of a tree. Each tree is associated with a loop header and type map, so there may be several trees for a given loop header.</p>
+                <p>Closing the loop. Trace recording can end in several ways. Ideally, the trace reaches the loop header where it started with the same type map as on entry. This is called a type-stable loop iteration. In this case, the end of the trace can jump right to the beginning, as all the value representations are exactly as needed to enter the trace. The jump can even skip the usual code that would copy out the state at the end of the trace and copy it back in to the trace activation record to enter a trace.</p>
+                <p>In certain cases the trace might reach the loop header with a different type map. This scenario is sometime observed for the first iteration of a loop. Some variables inside the loop might initially be undefined, before they are set to a concrete type during the first loop iteration. When recording such an iteration, the recorder cannot link the trace back to its own loop header since it is type-unstable. Instead, the iteration is terminated with a side exit that will always fail and return to the interpreter. At the same time a new trace is recorded with the new type map. Every time an additional typeunstable trace is added to a region, its exit type map is compared to the entry map of all existing traces in case they complement each other. With this approach we are able to cover type-unstable loop iterations as long they eventually form a stable equilibrium.</p>
+                <p>Finally, the trace might exit the loop before reaching the loop header, for example because execution reaches a break or return statement. In this case, the VM simply ends the trace with an exit to the trace monitor.</p>
+                <p>As mentioned previously, we may speculatively chose to represent certain Number-typed values as integers on trace. We do so when we observe that Number-typed variables contain an integer value at trace entry. If during trace recording the variable is unexpectedly assigned a non-integer value, we have to widen the type of the variable to a double. As a result, the recorded trace becomes inherently type-unstable since it starts with an integer value but ends with a double value. This represents a mis-speculation, since at trace entry we specialized the Number-typed value to an integer, assuming that at the loop edge we would again find an integer value in the variable, allowing us to close the loop. To avoid future speculative failures involving this variable, and to obtain a type-stable trace we note the fact that the variable in question as been observed to sometimes hold non-integer values in an advisory data structure which we call the "oracle".</p>
+                <p>When compiling loops, we consult the oracle before specializing values to integers. Speculation towards integers is performed only if no adverse information is known to the oracle about that particular variable. Whenever we accidentally compile a loop that is type-unstable due to mis-speculation of a Number-typed variable, we immediately trigger the recording of a new trace, which based on the now updated oracle information will start with a double value and thus become type stable.</p>
+                <p>Extending a tree. Side exits lead to different paths through the loop, or paths with different types or representations. Thus, to completely cover the loop, the VM must record traces starting at all side exits. These traces are recorded much like root traces: there is a counter for each side exit, and when the counter reaches a hotness threshold, recording starts. Recording stops exactly as for the root trace, using the loop header of the root trace as the target to reach. Our implementation does not extend at all side exits. It extends only if the side exit is for a control-flow branch, and only if the side exit does not leave the loop. In particular we do not want to extend a trace tree along a path that leads to an outer loop, because we want to cover such paths in an outer tree through tree nesting.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="3.3" coords="6,54.00,131.17,65.52,8.06">Blacklisting</head>
+                <p>Sometimes, a program follows a path that cannot be compiled into a trace, usually because of limitations in the implementation. TraceMonkey does not currently support recording throwing and catching of arbitrary exceptions. This design trade off was chosen, because exceptions are usually rare in JavaScript. However, if a program opts to use exceptions intensively, we would suddenly incur a punishing runtime overhead if we repeatedly try to record a trace for this path and repeatedly fail to do so, since we abort tracing every time we observe an exception being thrown.</p>
+                <p>As a result, if a hot loop contains traces that always fail, the VM could potentially run much more slowly than the base interpreter: the VM repeatedly spends time trying to record traces, but is never able to run any. To avoid this problem, whenever the VM is about to start tracing, it must try to predict whether it will finish the trace.</p>
+                <p>Our prediction algorithm is based on blacklisting traces that have been tried and failed. When the VM fails to finish a trace starting at a given point, the VM records that a failure has occurred. The VM also sets a counter so that it will not try to record a trace starting at that point until it is passed a few more times (32 in our implementation). This backoff counter gives temporary conditions that prevent tracing a chance to end. For example, a loop may behave differently during startup than during its steady-state execution. After a given number of failures (2 in our implementation), the VM marks the fragment as blacklisted, which means the VM will never again start recording at that point.</p>
+                <p>After implementing this basic strategy, we observed that for small loops that get blacklisted, the system can spend a noticeable amount of time just finding the loop fragment and determining that it has been blacklisted. We now avoid that problem by patching the bytecode. We define an extra no-op bytecode that indicates a loop header. The VM calls into the trace monitor every time the interpreter executes a loop header no-op. To blacklist a fragment, we simply replace the loop header no-op with a regular no-op. Thus, the interpreter will never again even call into the trace monitor.</p>
+                <p>There is a related problem we have not yet solved, which occurs when a loop meets all of these conditions:</p>
+                <p>• The VM can form at least one root trace for the loop.</p>
+                <p>• There is at least one hot side exit for which the VM cannot complete a trace. • The loop body is short.</p>
+                <p>In this case, the VM will repeatedly pass the loop header, search for a trace, find it, execute it, and fall back to the interpreter. With a short loop body, the overhead of finding and calling the trace is high, and causes performance to be even slower than the basic interpreter. So far, in this situation we have improved the implementation so that the VM can complete the branch trace. But it is hard to guarantee that this situation will never happen. As future work, this situation could be avoided by detecting and blacklisting loops for which the average trace call executes few bytecodes before returning to the interpreter.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="4." coords="6,54.00,672.16,156.16,9.85">Nested Trace Tree Formation</head>
+                <p>Figure 
+                    <ref type="figure" coords="6,79.38,687.83,4.48,7.77" target="#fig_2">7</ref> shows basic trace tree compilation 
+                    <ref type="bibr" coords="6,210.02,687.83,14.94,7.77" target="#b22">(11)</ref> applied to a nested loop where the inner loop contains two paths. Usually, the inner loop (with header at i2) becomes hot first, and a trace tree is rooted at that point. For example, the first recorded trace may be a cycle 
+                </p>
+                <note type="other">Figure 6</note>
+                <p>. We handle type-unstable loops by allowing traces to compile that cannot loop back to themselves due to a type mismatch. As such traces accumulate, we attempt to connect their loop edges to form groups of trace trees that can execute without having to side-exit to the interpreter to cover odd type cases. This is particularly important for nested trace trees where an outer tree tries to call an inner tree (or in this case a forest of inner trees), since inner loops frequently have initially undefined values which change type to a concrete value after the first iteration.</p>
+                <p>through the inner loop, {i2, i3, i5, α}. The α symbol is used to indicate that the trace loops back the tree anchor.</p>
+                <p>When execution leaves the inner loop, the basic design has two choices. First, the system can stop tracing and give up on compiling the outer loop, clearly an undesirable solution. The other choice is to continue tracing, compiling traces for the outer loop inside the inner loop's trace tree.</p>
+                <p>For example, the program might exit at i5 and record a branch trace that incorporates the outer loop: {i5, i7, i1, i6, i7, i1, α}. Later, the program might take the other branch at i2 and then exit, recording another branch trace incorporating the outer loop: {i2, i4, i5, i7, i1, i6, i7, i1, α}. Thus, the outer loop is recorded and compiled twice, and both copies must be retained in the trace cache. An inner tree captures the inner loop, and is nested inside an outer tree which "calls" the inner tree.</p>
+                <p>The inner tree returns to the outer tree once it exits along its loop condition guard (b).</p>
+                <p>In general, if loops are nested to depth k, and each loop has n paths (on geometric average), this naïve strategy yields O(n k ) traces, which can easily fill the trace cache.</p>
+                <p>In order to execute programs with nested loops efficiently, a tracing system needs a technique for covering the nested loops with native code without exponential trace duplication.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="4.1" coords="7,54.00,363.00,91.15,8.06">Nesting Algorithm</head>
+                <p>The key insight is that if each loop is represented by its own trace tree, the code for each loop can be contained only in its own tree, and outer loop paths will not be duplicated. Another key fact is that we are not tracing arbitrary bytecodes that might have irreduceable control flow graphs, but rather bytecodes produced by a compiler for a language with structured control flow. Thus, given two loop edges, the system can easily determine whether they are nested and which is the inner loop. Using this knowledge, the system can compile inner and outer loops separately, and make the outer loop's traces call the inner loop's trace tree.</p>
+                <p>The algorithm for building nested trace trees is as follows. We start tracing at loop headers exactly as in the basic tracing system. When we exit a loop (detected by comparing the interpreter PC with the range given by the loop edge), we stop the trace. The key step of the algorithm occurs when we are recording a trace for loop LR (R for loop being recorded) and we reach the header of a different loop LO (O for other loop). Note that LO must be an inner loop of LR because we stop the trace when we exit a loop.</p>
+                <p>• If LO has a type-matching compiled trace tree, we call LO as a nested trace tree. If the call succeeds, then we record the call in the trace for LR. On future executions, the trace for LR will call the inner trace directly. • If LO does not have a type-matching compiled trace tree yet, we have to obtain it before we are able to proceed. In order to do this, we simply abort recording the first trace. The trace monitor will see the inner loop header, and will immediately start recording the inner loop. 2   If all the loops in a nest are type-stable, then loop nesting creates no duplication. Otherwise, if loops are nested to a depth k, and each 2 Instead of aborting the outer recording, we could principally merely suspend the recording, but that would require the implementation to be able to record several traces simultaneously, complicating the implementation, while saving only a few iterations in the interpreter. loop is entered with m different type maps (on geometric average), then we compile O(m k ) copies of the innermost loop. As long as m is close to 1, the resulting trace trees will be tractable.</p>
+                <p>An important detail is that the call to the inner trace tree must act like a function call site: it must return to the same point every time. The goal of nesting is to make inner and outer loops independent; thus when the inner tree is called, it must exit to the same point in the outer tree every time with the same type map. Because we cannot actually guarantee this property, we must guard on it after the call, and side exit if the property does not hold. A common reason for the inner tree not to return to the same point would be if the inner tree took a new side exit for which it had never compiled a trace. At this point, the interpreter PC is in the inner tree, so we cannot continue recording or executing the outer tree. If this happens during recording, we abort the outer trace, to give the inner tree a chance to finish growing. A future execution of the outer tree would then be able to properly finish and record a call to the inner tree. If an inner tree side exit happens during execution of a compiled trace for the outer tree, we simply exit the outer trace and start recording a new branch in the inner tree.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="4.2" coords="7,317.01,481.70,115.83,8.06">Blacklisting with Nesting</head>
+                <p>The blacklisting algorithm needs modification to work well with nesting. The problem is that outer loop traces often abort during startup (because the inner tree is not available or takes a side exit), which would lead to their being quickly blacklisted by the basic algorithm.</p>
+                <p>The key observation is that when an outer trace aborts because the inner tree is not ready, this is probably a temporary condition. Thus, we should not count such aborts toward blacklisting as long as we are able to build up more traces for the inner tree.</p>
+                <p>In our implementation, when an outer tree aborts on the inner tree, we increment the outer tree's blacklist counter as usual and back off on compiling it. When the inner tree finishes a trace, we decrement the blacklist counter on the outer loop, "forgiving" the outer loop for aborting previously. We also undo the backoff so that the outer tree can start immediately trying to compile the next time we reach it.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="5." coords="7,317.01,672.16,134.24,9.85">Trace Tree Optimization</head>
+                <p>This section explains how a recorded trace is translated to an optimized machine code trace. The trace compilation subsystem, NANOJIT, is separate from the VM and can be used for other</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="5.1" coords="8,54.00,73.78,74.47,8.06">Optimizations</head>
+                <p>Because traces are in SSA form and have no join points or φnodes, certain optimizations are easy to implement. In order to get good startup performance, the optimizations must run quickly, so we chose a small set of optimizations. We implemented the optimizations as pipelined filters so that they can be turned on and off independently, and yet all run in just two loop passes over the trace: one forward and one backward.</p>
+                <p>Every time the trace recorder emits a LIR instruction, the instruction is immediately passed to the first filter in the forward pipeline. Thus, forward filter optimizations are performed as the trace is recorded. Each filter may pass each instruction to the next filter unchanged, write a different instruction to the next filter, or write no instruction at all. For example, the constant folding filter can replace a multiply instruction like v13 := mul3, 1000 with a constant instruction v13 = 3000.</p>
+                <p>We currently apply four forward filters:</p>
+                <p>• On ISAs without floating-point instructions, a soft-float filter converts floating-point LIR instructions to sequences of integer instructions.</p>
+                <p>• CSE (constant subexpression elimination),</p>
+                <p>• expression simplification, including constant folding and a few algebraic identities (e.g., a − a = 0), and • source language semantic-specific expression simplification, primarily algebraic identities that allow DOUBLE to be replaced with INT. For example, LIR that converts an INT to a DOUBLE and then back again would be removed by this filter.</p>
+                <p>When trace recording is completed, nanojit runs the backward optimization filters. These are used for optimizations that require backward program analysis. When running the backward filters, nanojit reads one LIR instruction at a time, and the reads are passed through the pipeline.</p>
+                <p>We currently apply three backward filters:</p>
+                <p>• Dead data-stack store elimination. The LIR trace encodes many stores to locations in the interpreter stack. But these values are never read back before exiting the trace (by the interpreter or another trace). Thus, stores to the stack that are overwritten before the next exit are dead. Stores to locations that are off the top of the interpreter stack at future exits are also dead. • Dead call-stack store elimination. This is the same optimization as above, except applied to the interpreter's call stack used for function call inlining. • Dead code elimination. This eliminates any operation that stores to a value that is never used.</p>
+                <p>After a LIR instruction is successfully read ("pulled") from the backward filter pipeline, nanojit's code generator emits native machine instruction(s) for it.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="5.2" coords="8,54.00,603.80,93.64,8.06">Register Allocation</head>
+                <p>We use a simple greedy register allocator that makes a single backward pass over the trace (it is integrated with the code generator). By the time the allocator has reached an instruction like v3 = add v1, v2, it has already assigned a register to v3. If v1 and v2 have not yet been assigned registers, the allocator assigns a free register to each. If there are no free registers, a value is selected for spilling. We use a class heuristic that selects the "oldest" registercarried value 
+                    <ref type="bibr" coords="8,102.57,687.83,9.52,7.77">(6)</ref>.
+                </p>
+                <p>The heuristic considers the set R of values v in registers immediately after the current instruction for spilling. Let vm be the last instruction before the current where each v is referred to. Then the  Testing tags, unboxing (extracting the untagged value) and boxing (creating tagged values) are significant costs. Avoiding these costs is a key benefit of tracing. heuristic selects v with minimum vm. The motivation is that this frees up a register for as long as possible given a single spill.</p>
+                <p>If we need to spill a value vs at this point, we generate the restore code just after the code for the current instruction. The corresponding spill code is generated just after the last point where vs was used. The register that was assigned to vs is marked free for the preceding code, because that register can now be used freely without affecting the following code</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="6." coords="8,317.01,320.34,94.06,9.85">Implementation</head>
+                <p>To demonstrate the effectiveness of our approach, we have implemented a trace-based dynamic compiler for the SpiderMonkey JavaScript Virtual Machine (4). SpiderMonkey is the JavaScript VM embedded in Mozilla's Firefox open-source web browser (2), which is used by more than 200 million users world-wide. The core of SpiderMonkey is a bytecode interpreter implemented in C++.</p>
+                <p>In SpiderMonkey, all JavaScript values are represented by the type jsval. A jsval is machine word in which up to the 3 of the least significant bits are a type tag, and the remaining bits are data. See Figure 
+                    <ref type="figure" coords="8,358.16,425.68,4.48,7.77">6</ref> for details. All pointers contained in jsvals point to GC-controlled blocks aligned on 8-byte boundaries.
+                </p>
+                <p>JavaScript object values are mappings of string-valued property names to arbitrary values. They are represented in one of two ways in SpiderMonkey. Most objects are represented by a shared structural description, called the object shape, that maps property names to array indexes using a hash table. The object stores a pointer to the shape and the array of its own property values. Objects with large, unique sets of property names store their properties directly in a hash table.</p>
+                <p>The garbage collector is an exact, non-generational, stop-theworld mark-and-sweep collector.</p>
+                <p>In the rest of this section we discuss key areas of the TraceMonkey implementation.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="6.1" coords="8,317.01,573.91,115.16,8.06">Calling Compiled Traces</head>
+                <p>Compiled traces are stored in a trace cache, indexed by intepreter PC and type map. Traces are compiled so that they may be called as functions using standard native calling conventions (e.g., FASTCALL on x86).</p>
+                <p>The interpreter must hit a loop edge and enter the monitor in order to call a native trace for the first time. The monitor computes the current type map, checks the trace cache for a trace for the current PC and type map, and if it finds one, executes the trace.</p>
+                <p>To execute a trace, the monitor must build a trace activation record containing imported local and global variables, temporary stack space, and space for arguments to native calls. The local and global values are then copied from the interpreter state to the trace activation record. Then, the trace is called like a normal C function pointer.</p>
+                <p>When a trace call returns, the monitor restores the interpreter state. First, the monitor checks the reason for the trace exit and applies blacklisting if needed. Then, it pops or synthesizes interpreter JavaScript call stack frames as needed. Finally, it copies the imported variables back from the trace activation record to the interpreter state.</p>
+                <p>At least in the current implementation, these steps have a nonnegligible runtime cost, so minimizing the number of interpreterto-trace and trace-to-interpreter transitions is essential for performance. (see also 
+                    <ref type="bibr" coords="9,119.80,163.80,43.80,7.77">Section 3.3)</ref>. Our experiments (see 
+                    <ref type="bibr" coords="9,253.99,163.80,39.12,7.77">Figure 12)</ref> show that for programs we can trace well such transitions happen infrequently and hence do not contribute significantly to total runtime. In a few programs, where the system is prevented from recording branch traces for hot side exits by aborts, this cost can rise to up to 10% of total execution time.
+                </p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="6.2" coords="9,54.00,232.19,78.54,8.06">Trace Stitching</head>
+                <p>Transitions from a trace to a branch trace at a side exit avoid the costs of calling traces from the monitor, in a feature called trace stitching. At a side exit, the exiting trace only needs to write live register-carried values back to its trace activation record. In our implementation, identical type maps yield identical activation record layouts, so the trace activation record can be reused immediately by the branch trace.</p>
+                <p>In programs with branchy trace trees with small traces, trace stitching has a noticeable cost. Although writing to memory and then soon reading back would be expected to have a L1 cache hit rate, for small traces the increased instruction count has a noticeable cost. Also, if the writes and reads are very close in the dynamic instruction stream, we have found that current x86 processors often incur penalties of 6 cycles or more (e.g., if the instructions use different base registers with equal values, the processor may not be able to detect that the addresses are the same right away).</p>
+                <p>The alternate solution is to recompile an entire trace tree, thus achieving inter-trace register allocation 
+                    <ref type="bibr" coords="9,199.98,425.81,13.74,7.77" target="#b21">(10)</ref>. The disadvantage is that tree recompilation takes time quadratic in the number of traces. We believe that the cost of recompiling a trace tree every time a branch is added would be prohibitive. That problem might be mitigated by recompiling only at certain points, or only for very hot, stable trees.
+                </p>
+                <p>In the future, multicore hardware is expected to be common, making background tree recompilation attractive. In a closely related project 
+                    <ref type="bibr" coords="9,102.89,505.52,14.94,7.77" target="#b24">(13)</ref> background recompilation yielded speedups of up to 1.25x on benchmarks with many branch traces. We plan to apply this technique to TraceMonkey as future work.
+                </p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="6.3" coords="9,54.00,544.02,84.01,8.06">Trace Recording</head>
+                <p>The job of the trace recorder is to emit LIR with identical semantics to the currently running interpreter bytecode trace. A good implementation should have low impact on non-tracing interpreter performance and a convenient way for implementers to maintain semantic equivalence.</p>
+                <p>In our implementation, the only direct modification to the interpreter is a call to the trace monitor at loop edges. In our benchmark results (see Figure 
+                    <ref type="figure" coords="9,124.11,628.06,7.97,7.77" target="#fig_0">12</ref>) the total time spent in the monitor (for all activities) is usually less than 5%, so we consider the interpreter impact requirement met. Incrementing the loop hit counter is expensive because it requires us to look up the loop in the trace cache, but we have tuned our loops to become hot and trace very quickly (on the second iteration). The hit counter implementation could be improved, which might give us a small increase in overall performance, as well as more flexibility with tuning hotness thresholds. Once a loop is blacklisted we never call into the trace monitor for that loop (see Section 3.3).
+                </p>
+                <p>Recording is activated by a pointer swap that sets the interpreter's dispatch table to call a single "interrupt" routine for every bytecode. The interrupt routine first calls a bytecode-specific recording routine. Then, it turns off recording if necessary (e.g., the trace ended). Finally, it jumps to the standard interpreter bytecode implementation. Some bytecodes have effects on the type map that cannot be predicted before executing the bytecode (e.g., calling String.charCodeAt, which returns an integer or NaN if the index argument is out of range). For these, we arrange for the interpreter to call into the recorder again after executing the bytecode. Since such hooks are relatively rare, we embed them directly into the interpreter, with an additional runtime check to see whether a recorder is currently active.</p>
+                <p>While separating the interpreter from the recorder reduces individual code complexity, it also requires careful implementation and extensive testing to achieve semantic equivalence.</p>
+                <p>In some cases achieving this equivalence is difficult since Spi-derMonkey follows a fat-bytecode design, which was found to be beneficial to pure interpreter performance.</p>
+                <p>In fat-bytecode designs, individual bytecodes can implement complex processing (e.g., the getprop bytecode, which implements full JavaScript property value access, including special cases for cached and dense array access).</p>
+                <p>Fat bytecodes have two advantages: fewer bytecodes means lower dispatch cost, and bigger bytecode implementations give the compiler more opportunities to optimize the interpreter.</p>
+                <p>Fat bytecodes are a problem for TraceMonkey because they require the recorder to reimplement the same special case logic in the same way. Also, the advantages are reduced because (a) dispatch costs are eliminated entirely in compiled traces, (b) the traces contain only one special case, not the interpreter's large chunk of code, and (c) TraceMonkey spends less time running the base interpreter.</p>
+                <p>One way we have mitigated these problems is by implementing certain complex bytecodes in the recorder as sequences of simple bytecodes. Expressing the original semantics this way is not too difficult, and recording simple bytecodes is much easier. This enables us to retain the advantages of fat bytecodes while avoiding some of their problems for trace recording. This is particularly effective for fat bytecodes that recurse back into the interpreter, for example to convert an object into a primitive value by invoking a well-known method on the object, since it lets us inline this function call.</p>
+                <p>It is important to note that we split fat opcodes into thinner opcodes only during recording. When running purely interpretatively (i.e. code that has been blacklisted), the interpreter directly and efficiently executes the fat opcodes.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="6.4" coords="9,317.01,553.98,64.84,8.06">Preemption</head>
+                <p>SpiderMonkey, like many VMs, needs to preempt the user program periodically. The main reasons are to prevent infinitely looping scripts from locking up the host system and to schedule GC.</p>
+                <p>In the interpreter, this had been implemented by setting a "preempt now" flag that was checked on every backward jump. This strategy carried over into TraceMonkey: the VM inserts a guard on the preemption flag at every loop edge. We measured less than a 1% increase in runtime on most benchmarks for this extra guard. In practice, the cost is detectable only for programs with very short loops.</p>
+                <p>We tested and rejected a solution that avoided the guards by compiling the loop edge as an unconditional jump, and patching the jump target to an exit routine when preemption is required. This solution can make the normal case slightly faster, but then preemption becomes very slow. The implementation was also very complex, especially trying to restart execution after the preemption.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="6.5" coords="10,54.00,73.78,123.66,8.06">Calling External Functions</head>
+                <p>Like most interpreters, SpiderMonkey has a foreign function interface (FFI) that allows it to call C builtins and host system functions (e.g., web browser control and DOM access). The FFI has a standard signature for JS-callable functions, the key argument of which is an array of boxed values. External functions called through the FFI interact with the program state through an interpreter API (e.g., to read a property from an argument). There are also certain interpreter builtins that do not use the FFI, but interact with the program state in the same way, such as the CallIteratorNext function used with iterator objects. TraceMonkey must support this FFI in order to speed up code that interacts with the host system inside hot loops.</p>
+                <p>Calling external functions from TraceMonkey is potentially difficult because traces do not update the interpreter state until exiting. In particular, external functions may need the call stack or the global variables, but they may be out of date.</p>
+                <p>For the out-of-date call stack problem, we refactored some of the interpreter API implementation functions to re-materialize the interpreter call stack on demand.</p>
+                <p>We developed a C++ static analysis and annotated some interpreter functions in order to verify that the call stack is refreshed at any point it needs to be used. In order to access the call stack, a function must be annotated as either FORCESSTACK or RE-QUIRESSTACK. These annotations are also required in order to call REQUIRESSTACK functions, which are presumed to access the call stack transitively. FORCESSTACK is a trusted annotation, applied to only 5 functions, that means the function refreshes the call stack. REQUIRESSTACK is an untrusted annotation that means the function may only be called if the call stack has already been refreshed.</p>
+                <p>Similarly, we detect when host functions attempt to directly read or write global variables, and force the currently running trace to side exit. This is necessary since we cache and unbox global variables into the activation record during trace execution.</p>
+                <p>Since both call-stack access and global variable access are rarely performed by host functions, performance is not significantly affected by these safety mechanisms.</p>
+                <p>Another problem is that external functions can reenter the interpreter by calling scripts, which in turn again might want to access the call stack or global variables. To address this problem, we made the VM set a flag whenever the interpreter is reentered while a compiled trace is running.</p>
+                <p>Every call to an external function then checks this flag and exits the trace immediately after returning from the external function call if it is set. There are many external functions that seldom or never reenter, and they can be called without problem, and will cause trace exit only if necessary.</p>
+                <p>The FFI's boxed value array requirement has a performance cost, so we defined a new FFI that allows C functions to be annotated with their argument types so that the tracer can call them directly, without unnecessary argument conversions.</p>
+                <p>Currently, we do not support calling native property get and set override functions or DOM functions directly from trace. Support is planned future work.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="6.6" coords="10,54.00,623.72,65.82,8.06">Correctness</head>
+                <p>During development, we had access to existing JavaScript test suites, but most of them were not designed with tracing VMs in mind and contained few loops.</p>
+                <p>One tool that helped us greatly was Mozilla's JavaScript fuzz tester, JSFUNFUZZ, which generates random JavaScript programs by nesting random language elements. We modified JSFUNFUZZ to generate loops, and also to test more heavily certain constructs we suspected would reveal flaws in our implementation. For example, we suspected bugs in TraceMonkey's handling of type-unstable Figure 
+                    <ref type="figure" coords="10,345.63,301.08,7.47,8.06">11</ref>. Fraction of dynamic bytecodes executed by interpreter and on native traces. The speedup vs. interpreter is shown in parentheses next to each test. The fraction of bytecodes executed while recording is too small to see in this figure, except for crypto-md5, where fully 3% of bytecodes are executed while recording. In most of the tests, almost all the bytecodes are executed by compiled traces. Three of the benchmarks are not traced at all and run in the interpreter. loops and heavily branching code, and a specialized fuzz tester indeed revealed several regressions which we subsequently corrected.
+                </p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="7." coords="10,317.01,433.06,70.22,9.85">Evaluation</head>
+                <p>We evaluated our JavaScript tracing implementation using Sun-Spider, the industry standard JavaScript benchmark suite. SunSpider consists of 26 short-running (less than 250ms, average 26ms) JavaScript programs. This is in stark contrast to benchmark suites such as SpecJVM98 (3) used to evaluate desktop and server Java VMs. Many programs in those benchmarks use large data sets and execute for minutes. The SunSpider programs carry out a variety of tasks, primarily 3d rendering, bit-bashing, cryptographic encoding, math kernels, and string processing.</p>
+                <p>All experiments were performed on a MacBook Pro with 2.2 GHz Core 2 processor and 2 GB RAM running MacOS 10.5.</p>
+                <p>Benchmark results. The main question is whether programs run faster with tracing. For this, we ran the standard SunSpider test driver, which starts a JavaScript interpreter, loads and runs each program once for warmup, then loads and runs each program 10 times and reports the average time taken by each. We ran 4 different configurations for comparison: (a) SpiderMonkey, the baseline interpreter, (b) TraceMonkey, (d) SquirrelFish Extreme (SFX), the call-threaded JavaScript interpreter used in Apple's WebKit, and (e) V8, the method-compiling JavaScript VM from Google.</p>
+                <p>Figure 
+                    <ref type="figure" coords="10,354.15,647.98,8.97,7.77" target="#fig_5">10</ref> shows the relative speedups achieved by tracing, SFX, and V8 against the baseline (SpiderMonkey). Tracing achieves the best speedups in integer-heavy benchmarks, up to the 25x speedup on bitops-bitwise-and.
+                </p>
+                <p>TraceMonkey is the fastest VM on 9 of the 26 benchmarks (3d-morph, bitops-3bit-bits-in-byte, bitops-bitwiseand, crypto-sha1, math-cordic, math-partial-sums, mathspectral-norm, string-base64, string-validate-input). . Speedup vs. a baseline JavaScript interpreter (SpiderMonkey) for our trace-based JIT compiler, Apple's SquirrelFish Extreme inline threading interpreter and Google's V8 JS compiler. Our system generates particularly efficient code for programs that benefit most from type specialization, which includes SunSpider Benchmark programs that perform bit manipulation. We type-specialize the code in question to use integer arithmetic, which substantially improves performance. For one of the benchmark programs we execute 25 times faster than the SpiderMonkey interpreter, and almost 5 times faster than V8 and SFX. For a large number of benchmarks all three VMs produce similar results. We perform worst on benchmark programs that we do not trace and instead fall back onto the interpreter. This includes the recursive benchmarks access-binary-trees and control-flow-recursive, for which we currently don't generate any native code.</p>
+                <p>In particular, the bitops benchmarks are short programs that perform many bitwise operations, so TraceMonkey can cover the entire program with 1 or 2 traces that operate on integers. TraceMonkey runs all the other programs in this set almost entirely as native code.</p>
+                <p>regexp-dna is dominated by regular expression matching, which is implemented in all 3 VMs by a special regular expression compiler. Thus, performance on this benchmark has little relation to the trace compilation approach discussed in this paper.</p>
+                <p>TraceMonkey's smaller speedups on the other benchmarks can be attributed to a few specific causes:</p>
+                <p>• The implementation does not currently trace recursion, so TraceMonkey achieves a small speedup or no speedup on benchmarks that use recursion extensively: 3d-cube, 3draytrace, access-binary-trees, string-tagcloud, and controlflow-recursive. • The implementation does not currently trace eval and some other functions implemented in C. Because date-formattofte and date-format-xparb use such functions in their main loops, we do not trace them. • The implementation does not currently trace through regular expression replace operations. The replace function can be passed a function object used to compute the replacement text. Our implementation currently does not trace functions called as replace functions. The run time of string-unpack-code is dominated by such a replace call.</p>
+                <p>• Two programs trace well, but have a long compilation time. access-nbody forms a large number of traces (81). crypto-md5 forms one very long trace. We expect to improve performance on this programs by improving the compilation speed of nanojit.</p>
+                <p>• Some programs trace very well, and speed up compared to the interpreter, but are not as fast as SFX and/or V8, namely bitops-bits-in-byte, bitops-nsieve-bits, accessfannkuch, access-nsieve, and crypto-aes. The reason is not clear, but all of these programs have nested loops with small bodies, so we suspect that the implementation has a relatively high cost for calling nested traces. string-fasta traces well, but its run time is dominated by string processing builtins, which are unaffected by tracing and seem to be less efficient in SpiderMonkey than in the two other VMs.</p>
+                <p>Detailed performance metrics. In Figure 
+                    <ref type="figure" coords="11,481.80,608.13,8.97,7.77">11</ref> we show the fraction of instructions interpreted and the fraction of instructions executed as native code. This figure shows that for many programs, we are able to execute almost all the code natively.
+                </p>
+                <p>Figure 
+                    <ref type="figure" coords="11,354.90,647.98,8.97,7.77" target="#fig_0">12</ref> breaks down the total execution time into four activities: interpreting bytecodes while not recording, recording traces (including time taken to interpret the recorded trace), compiling traces to native code, and executing native code traces.
+                </p>
+                <p>These detailed metrics allow us to estimate parameters for a simple model of tracing performance. These estimates should be considered very rough, as the values observed on the individual benchmarks have large standard deviations (on the order of the mean). We exclude regexp-dna from the following calculations, because most of its time is spent in the regular expression matcher, which has much different performance characteristics from the other programs. (Note that this only makes a difference of about 10% in the results.) Dividing the total execution time in processor clock cycles by the number of bytecodes executed in the base interpreter shows that on average, a bytecode executes in about 35 cycles. Native traces take about 9 cycles per bytecode, a 3.9x speedup over the interpreter. Using similar computations, we find that trace recording takes about 3800 cycles per bytecode, and compilation 3150 cycles per bytecode. Hence, during recording and compiling the VM runs at 1/200 the speed of the interpreter. Because it costs 6950 cycles to compile a bytecode, and we save 26 cycles each time that code is run natively, we break even after running a trace 270 times.</p>
+                <p>The other VMs we compared with achieve an overall speedup of 3.0x relative to our baseline interpreter. Our estimated native code speedup of 3.9x is significantly better. This suggests that our compilation techniques can generate more efficient native code than any other current JavaScript VM.</p>
+                <p>These estimates also indicate that our startup performance could be substantially better if we improved the speed of trace recording and compilation. The estimated 200x slowdown for recording and compilation is very rough, and may be influenced by startup factors in the interpreter (e.g., caches that have not warmed up yet during recording). One observation supporting this conjecture is that in the tracer, interpreted bytecodes take about 180 cycles to run. Still, recording and compilation are clearly both expensive, and a better implementation, possibly including redesign of the LIR abstract syntax or encoding, would improve startup performance.</p>
+                <p>Our performance results confirm that type specialization using trace trees substantially improves performance. We are able to outperform the fastest available JavaScript compiler (V8) and the fastest available JavaScript inline threaded interpreter (SFX) on 9 of 26 benchmarks.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="8." coords="12,317.01,433.06,84.41,9.85">Related Work</head>
+                <p>Trace optimization for dynamic languages. The closest area of related work is on applying trace optimization to type-specialize dynamic languages. Existing work shares the idea of generating type-specialized code speculatively with guards along interpreter traces.</p>
+                <p>To our knowledge, Rigo's Psyco ( 
+                    <ref type="formula" coords="12,460.69,498.54,7.47,7.77">16</ref>) is the only published type-specializing trace compiler for a dynamic language (Python). Psyco does not attempt to identify hot loops or inline function calls. Instead, Psyco transforms loops to mutual recursion before running and traces all operations.
+                </p>
+                <p>Pall's LuaJIT is a Lua VM in development that uses trace compilation ideas. 
+                    <ref type="bibr" coords="12,369.20,558.32,9.52,7.77">(1)</ref>. There are no publications on LuaJIT but the creator has told us that LuaJIT has a similar design to our system, but will use a less aggressive type speculation (e.g., using a floatingpoint representation for all number values) and does not generate nested traces for nested loops.
+                </p>
+                <p>General trace optimization. General trace optimization has a longer history that has treated mostly native code and typed languages like Java. Thus, these systems have focused less on type specialization and more on other optimizations. Dynamo (7) by Bala et al, introduced native code tracing as a replacement for profile-guided optimization (PGO). A major goal was to perform PGO online so that the profile was specific to the current execution. Dynamo used loop headers as candidate hot traces, but did not try to create loop traces specifically.</p>
+                <p>Trace trees were originally proposed by Gal et al. 
+                    <ref type="bibr" coords="12,516.89,697.79,14.94,7.77" target="#b22">(11)</ref> in the context of Java, a statically typed language. Their trace trees actually inlined parts of outer loops within the inner loops (because inner loops become hot first), leading to much greater tail duplication.
+                </p>
+                <p>YETI, from Zaleski et al. 
+                    <ref type="bibr" coords="13,165.40,418.84,14.94,7.77" target="#b30">(19)</ref> applied Dynamo-style tracing to Java in order to achieve inlining, indirect jump elimination, and other optimizations. Their primary focus was on designing an interpreter that could easily be gradually re-engineered as a tracing VM.
+                </p>
+                <p>Suganuma et al. 
+                    <ref type="bibr" coords="13,124.07,468.65,14.94,7.77" target="#b29">(18)</ref> described region-based compilation (RBC), a relative of tracing. A region is an subprogram worth optimizing that can include subsets of any number of methods. Thus, the compiler has more flexibility and can potentially generate better code, but the profiling and compilation systems are correspondingly more complex.
+                </p>
+                <p>Type specialization for dynamic languages. Dynamic language implementors have long recognized the importance of type specialization for performance. Most previous work has focused on methods instead of traces.</p>
+                <p>Chambers et. al 
+                    <ref type="bibr" coords="13,127.55,568.28,10.45,7.77" target="#b19">(9)</ref> pioneered the idea of compiling multiple versions of a procedure specialized for the input types in the language Self. In one implementation, they generated a specialized method online each time a method was called with new input types. In another, they used an offline whole-program static analysis to infer input types and constant receiver types at call sites. Interestingly, the two techniques produced nearly the same performance.
+                </p>
+                <p>Salib 
+                    <ref type="bibr" coords="13,86.39,638.02,14.94,7.77" target="#b28">(17)</ref> designed a type inference algorithm for Python based on the Cartesian Product Algorithm and used the results to specialize on types and translate the program to C++.
+                </p>
+                <p>McCloskey 
+                    <ref type="bibr" coords="13,110.93,667.91,14.94,7.77" target="#b25">(14)</ref> has work in progress based on a languageindependent type inference that is used to generate efficient C implementations of JavaScript and Python programs.
+                </p>
+                <p>Native code generation by interpreters. The traditional interpreter design is a virtual machine that directly executes ASTs or machine-code-like bytecodes. Researchers have shown how to gen-erate native code with nearly the same structure but better performance.</p>
+                <p>Call threading, also known as context threading 
+                    <ref type="bibr" coords="13,507.95,94.06,9.52,7.77" target="#b18">(8)</ref>, compiles methods by generating a native call instruction to an interpreter method for each interpreter bytecode. A call-return pair has been shown to be a potentially much more efficient dispatch mechanism than the indirect jumps used in standard bytecode interpreters.
+                </p>
+                <p>Inline threading (15) copies chunks of interpreter native code which implement the required bytecodes into a native code cache, thus acting as a simple per-method JIT compiler that eliminates the dispatch overhead.</p>
+                <p>Neither call threading nor inline threading perform type specialization.</p>
+                <p>Apple's SquirrelFish Extreme ( 
+                    <ref type="formula" coords="13,444.43,203.65,3.48,7.77">5</ref>) is a JavaScript implementation based on call threading with selective inline threading. Combined with efficient interpreter engineering, these threading techniques have given SFX excellent performance on the standard Sun-Spider benchmarks.
+                </p>
+                <p>Google's V8 is a JavaScript implementation primarily based on inline threading, with call threading only for very complex operations.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="9." coords="13,317.01,292.92,75.81,9.85">Conclusions</head>
+                <p>This paper described how to run dynamic languages efficiently by recording hot traces and generating type-specialized native code. Our technique focuses on aggressively inlined loops, and for each loop, it generates a tree of native code traces representing the paths and value types through the loop observed at run time. We explained how to identify loop nesting relationships and generate nested traces in order to avoid excessive code duplication due to the many paths through a loop nest. We described our type specialization algorithm. We also described our trace compiler, which translates a trace from an intermediate representation to optimized native code in two linear passes.</p>
+                <p>Our experimental results show that in practice loops typically are entered with only a few different combinations of value types of variables. Thus, a small number of traces per loop is sufficient to run a program efficiently. Our experiments also show that on programs amenable to tracing, we achieve speedups of 2x to 20x.</p>
+            </div>
+            <div
+                xmlns="http://www.tei-c.org/ns/1.0">
+                <head n="10." coords="13,317.01,477.56,86.04,9.85">Future Work</head>
+                <p>Work is underway in a number of areas to further improve the performance of our trace-based JavaScript compiler. We currently do not trace across recursive function calls, but plan to add the support for this capability in the near term. We are also exploring adoption of the existing work on tree recompilation in the context of the presented dynamic compiler in order to minimize JIT pause times and obtain the best of both worlds, fast tree stitching as well as the improved code quality due to tree recompilation.</p>
+                <p>We also plan on adding support for tracing across regular expression substitutions using lambda functions, function applications and expression evaluation using eval. All these language constructs are currently executed via interpretation, which limits our performance for applications that use those features.</p>
+            </div>
+            <figure
+                xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_0" coords="2,317.01,144.05,239.10,8.18;2,317.01,154.36,239.10,7.83;2,317.01,164.33,28.15,7.77">
+                <head>Figure 1 .Figure 2 .</head>
+                <label>12</label>
+                <figDesc>Figure 1. Sample program: sieve of Eratosthenes. primes is initialized to an array of 100 false values on entry to this code snippet.</figDesc>
+            </figure>
+            <figure
+                xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_1" coords="6,317.01,223.46,239.11,8.12;6,317.01,233.78,239.11,7.77;6,317.01,243.74,239.11,7.77;6,317.01,253.70,239.11,7.77;6,317.01,263.66,170.33,7.77">
+                <head>Figure 5 .</head>
+                <label>5</label>
+                <figDesc>Figure5. A tree with two traces, a trunk trace and one branch trace. The trunk trace contains a guard to which a branch trace was attached. The branch trace contain a guard that may fail and trigger a side exit. Both the trunk and the branch trace loop back to the tree anchor, which is the beginning of the trace tree.</figDesc>
+            </figure>
+            <figure
+                xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_2" coords="7,54.00,225.87,239.11,8.12;7,54.00,236.18,239.11,7.77;7,54.00,246.14,239.11,7.77;7,54.00,256.10,239.11,7.77;7,54.00,266.07,71.47,7.77">
+                <head>Figure 7 .</head>
+                <label>7</label>
+                <figDesc>Figure 7. Control flow graph of a nested loop with an if statement inside the inner most loop (a). An inner tree captures the inner loop, and is nested inside an outer tree which "calls" the inner tree. The inner tree returns to the outer tree once it exits along its loop condition guard (b).</figDesc>
+            </figure>
+            <figure
+                xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_3" coords="7,317.01,207.07,239.10,8.12;7,317.01,217.38,239.11,7.77;7,317.01,227.35,239.11,7.77;7,317.01,237.31,34.62,7.77">
+                <head>Figure 8 .</head>
+                <label>8</label>
+                <figDesc>Figure 8. Control flow graph of a loop with two nested loops (left) and its nested trace tree configuration (right). The outer tree calls the two inner nested trace trees and places guards at their side exit locations.</figDesc>
+            </figure>
+            <figure
+                xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_4" coords="8,317.01,160.39,239.11,8.06;8,317.01,170.70,239.11,7.77;8,317.01,180.66,239.11,7.77;8,317.01,190.63,92.91,7.77">
+                <head>Figure 9 .</head>
+                <label>9</label>
+                <figDesc>Figure 9. Tagged values in the SpiderMonkey JS interpreter.Testing tags, unboxing (extracting the untagged value) and boxing (creating tagged values) are significant costs. Avoiding these costs is a key benefit of tracing.</figDesc>
+            </figure>
+            <figure
+                xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_5" coords="11,54.00,354.50,502.12,8.12;11,54.00,364.81,502.12,7.77;11,54.00,374.77,502.12,7.77;11,54.00,384.73,502.12,7.77;11,54.00,394.70,502.12,7.77;11,54.00,404.66,502.12,7.77;11,54.00,414.62,456.28,7.83">
+                <head>Figure 10</head>
+                <label>10</label>
+                <figDesc>Figure 10. Speedup vs. a baseline JavaScript interpreter (SpiderMonkey) for our trace-based JIT compiler, Apple's SquirrelFish Extreme inline threading interpreter and Google's V8 JS compiler. Our system generates particularly efficient code for programs that benefit most from type specialization, which includes SunSpider Benchmark programs that perform bit manipulation. We type-specialize the code in question to use integer arithmetic, which substantially improves performance. For one of the benchmark programs we execute 25 times faster than the SpiderMonkey interpreter, and almost 5 times faster than V8 and SFX. For a large number of benchmarks all three VMs produce similar results. We perform worst on benchmark programs that we do not trace and instead fall back onto the interpreter. This includes the recursive benchmarks access-binary-trees and control-flow-recursive, for which we currently don't generate any native code.</figDesc>
+            </figure>
+            <figure
+                xmlns="http://www.tei-c.org/ns/1.0" xml:id="fig_6" coords="13,54.00,301.50,239.10,8.12;13,54.00,311.82,239.11,7.77;13,54.00,321.78,239.11,7.77;13,54.00,331.74,239.11,7.77;13,54.00,341.70,239.11,7.77;13,54.00,351.67,166.25,7.77">
+                <head>Figure 12 .</head>
+                <label>12</label>
+                <figDesc>Figure 12. Fraction of time spent on major VM activities. The speedup vs. interpreter is shown in parentheses next to each test. Most programs where the VM spends the majority of its time running native code have a good speedup. Recording and compilation costs can be substantial; speeding up those parts of the implementation would improve SunSpider performance.</figDesc>
+            </figure>
+            <figure
+                xmlns="http://www.tei-c.org/ns/1.0" type="table" xml:id="tab_2" coords="12,71.42,73.14,467.28,291.64">
+                <head></head>
+                <label></label>
+                <figDesc>Detailed trace recording statistics for the SunSpider benchmark set.</figDesc>
+                <table coords="12,71.42,73.14,467.28,291.58">
+                    <row>
+                        <cell></cell>
+                        <cell cols="9">Loops Trees Traces Aborts Flushes Trees/Loop Traces/Tree Traces/Loop Speedup</cell>
+                    </row>
+                    <row>
+                        <cell>3d-cube</cell>
+                        <cell>25</cell>
+                        <cell>27</cell>
+                        <cell>29</cell>
+                        <cell>3</cell>
+                        <cell>0</cell>
+                        <cell>1.1</cell>
+                        <cell>1.1</cell>
+                        <cell>1.2</cell>
+                        <cell>2.20x</cell>
+                    </row>
+                    <row>
+                        <cell>3d-morph</cell>
+                        <cell>5</cell>
+                        <cell>8</cell>
+                        <cell>8</cell>
+                        <cell>2</cell>
+                        <cell>0</cell>
+                        <cell>1.6</cell>
+                        <cell>1.0</cell>
+                        <cell>1.6</cell>
+                        <cell>2.86x</cell>
+                    </row>
+                    <row>
+                        <cell>3d-raytrace</cell>
+                        <cell>10</cell>
+                        <cell>25</cell>
+                        <cell>100</cell>
+                        <cell>10</cell>
+                        <cell>1</cell>
+                        <cell>2.5</cell>
+                        <cell>4.0</cell>
+                        <cell>10.0</cell>
+                        <cell>1.18x</cell>
+                    </row>
+                    <row>
+                        <cell>access-binary-trees</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>5</cell>
+                        <cell>0</cell>
+                        <cell>-</cell>
+                        <cell>-</cell>
+                        <cell>-</cell>
+                        <cell>0.93x</cell>
+                    </row>
+                    <row>
+                        <cell>access-fannkuch</cell>
+                        <cell>10</cell>
+                        <cell>34</cell>
+                        <cell>57</cell>
+                        <cell>24</cell>
+                        <cell>0</cell>
+                        <cell>3.4</cell>
+                        <cell>1.7</cell>
+                        <cell>5.7</cell>
+                        <cell>2.20x</cell>
+                    </row>
+                    <row>
+                        <cell>access-nbody</cell>
+                        <cell>8</cell>
+                        <cell>16</cell>
+                        <cell>18</cell>
+                        <cell>5</cell>
+                        <cell>0</cell>
+                        <cell>2.0</cell>
+                        <cell>1.1</cell>
+                        <cell>2.3</cell>
+                        <cell>4.19x</cell>
+                    </row>
+                    <row>
+                        <cell>access-nsieve</cell>
+                        <cell>3</cell>
+                        <cell>6</cell>
+                        <cell>8</cell>
+                        <cell>3</cell>
+                        <cell>0</cell>
+                        <cell>2.0</cell>
+                        <cell>1.3</cell>
+                        <cell>2.7</cell>
+                        <cell>3.05x</cell>
+                    </row>
+                    <row>
+                        <cell>bitops-3bit-bits-in-byte</cell>
+                        <cell>2</cell>
+                        <cell>2</cell>
+                        <cell>2</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>1.0</cell>
+                        <cell>1.0</cell>
+                        <cell>1.0</cell>
+                        <cell>25.47x</cell>
+                    </row>
+                    <row>
+                        <cell>bitops-bits-in-byte</cell>
+                        <cell>3</cell>
+                        <cell>3</cell>
+                        <cell>4</cell>
+                        <cell>1</cell>
+                        <cell>0</cell>
+                        <cell>1.0</cell>
+                        <cell>1.3</cell>
+                        <cell>1.3</cell>
+                        <cell>8.67x</cell>
+                    </row>
+                    <row>
+                        <cell>bitops-bitwise-and</cell>
+                        <cell>1</cell>
+                        <cell>1</cell>
+                        <cell>1</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>1.0</cell>
+                        <cell>1.0</cell>
+                        <cell>1.0</cell>
+                        <cell>25.20x</cell>
+                    </row>
+                    <row>
+                        <cell>bitops-nsieve-bits</cell>
+                        <cell>3</cell>
+                        <cell>3</cell>
+                        <cell>5</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>1.0</cell>
+                        <cell>1.7</cell>
+                        <cell>1.7</cell>
+                        <cell>2.75x</cell>
+                    </row>
+                    <row>
+                        <cell>controlflow-recursive</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>1</cell>
+                        <cell>0</cell>
+                        <cell>-</cell>
+                        <cell>-</cell>
+                        <cell>-</cell>
+                        <cell>0.98x</cell>
+                    </row>
+                    <row>
+                        <cell>crypto-aes</cell>
+                        <cell>50</cell>
+                        <cell>72</cell>
+                        <cell>78</cell>
+                        <cell>19</cell>
+                        <cell>0</cell>
+                        <cell>1.4</cell>
+                        <cell>1.1</cell>
+                        <cell>1.6</cell>
+                        <cell>1.64x</cell>
+                    </row>
+                    <row>
+                        <cell>crypto-md5</cell>
+                        <cell>4</cell>
+                        <cell>4</cell>
+                        <cell>5</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>1.0</cell>
+                        <cell>1.3</cell>
+                        <cell>1.3</cell>
+                        <cell>2.30x</cell>
+                    </row>
+                    <row>
+                        <cell>crypto-sha1</cell>
+                        <cell>5</cell>
+                        <cell>5</cell>
+                        <cell>10</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>1.0</cell>
+                        <cell>2.0</cell>
+                        <cell>2.0</cell>
+                        <cell>5.95x</cell>
+                    </row>
+                    <row>
+                        <cell>date-format-tofte</cell>
+                        <cell>3</cell>
+                        <cell>3</cell>
+                        <cell>4</cell>
+                        <cell>7</cell>
+                        <cell>0</cell>
+                        <cell>1.0</cell>
+                        <cell>1.3</cell>
+                        <cell>1.3</cell>
+                        <cell>1.07x</cell>
+                    </row>
+                    <row>
+                        <cell>date-format-xparb</cell>
+                        <cell>3</cell>
+                        <cell>3</cell>
+                        <cell>11</cell>
+                        <cell>3</cell>
+                        <cell>0</cell>
+                        <cell>1.0</cell>
+                        <cell>3.7</cell>
+                        <cell>3.7</cell>
+                        <cell>0.98x</cell>
+                    </row>
+                    <row>
+                        <cell>math-cordic</cell>
+                        <cell>2</cell>
+                        <cell>4</cell>
+                        <cell>5</cell>
+                        <cell>1</cell>
+                        <cell>0</cell>
+                        <cell>2.0</cell>
+                        <cell>1.3</cell>
+                        <cell>2.5</cell>
+                        <cell>4.92x</cell>
+                    </row>
+                    <row>
+                        <cell>math-partial-sums</cell>
+                        <cell>2</cell>
+                        <cell>4</cell>
+                        <cell>4</cell>
+                        <cell>1</cell>
+                        <cell>0</cell>
+                        <cell>2.0</cell>
+                        <cell>1.0</cell>
+                        <cell>2.0</cell>
+                        <cell>5.90x</cell>
+                    </row>
+                    <row>
+                        <cell>math-spectral-norm</cell>
+                        <cell>15</cell>
+                        <cell>20</cell>
+                        <cell>20</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>1.3</cell>
+                        <cell>1.0</cell>
+                        <cell>1.3</cell>
+                        <cell>7.12x</cell>
+                    </row>
+                    <row>
+                        <cell>regexp-dna</cell>
+                        <cell>2</cell>
+                        <cell>2</cell>
+                        <cell>2</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>1.0</cell>
+                        <cell>1.0</cell>
+                        <cell>1.0</cell>
+                        <cell>4.21x</cell>
+                    </row>
+                    <row>
+                        <cell>string-base64</cell>
+                        <cell>3</cell>
+                        <cell>5</cell>
+                        <cell>7</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>1.7</cell>
+                        <cell>1.4</cell>
+                        <cell>2.3</cell>
+                        <cell>2.53x</cell>
+                    </row>
+                    <row>
+                        <cell>string-fasta</cell>
+                        <cell>5</cell>
+                        <cell>11</cell>
+                        <cell>15</cell>
+                        <cell>6</cell>
+                        <cell>0</cell>
+                        <cell>2.2</cell>
+                        <cell>1.4</cell>
+                        <cell>3.0</cell>
+                        <cell>1.49x</cell>
+                    </row>
+                    <row>
+                        <cell>string-tagcloud</cell>
+                        <cell>3</cell>
+                        <cell>6</cell>
+                        <cell>6</cell>
+                        <cell>5</cell>
+                        <cell>0</cell>
+                        <cell>2.0</cell>
+                        <cell>1.0</cell>
+                        <cell>2.0</cell>
+                        <cell>1.09x</cell>
+                    </row>
+                    <row>
+                        <cell>string-unpack-code</cell>
+                        <cell>4</cell>
+                        <cell>4</cell>
+                        <cell>37</cell>
+                        <cell>0</cell>
+                        <cell>0</cell>
+                        <cell>1.0</cell>
+                        <cell>9.3</cell>
+                        <cell>9.3</cell>
+                        <cell>1.20x</cell>
+                    </row>
+                    <row>
+                        <cell>string-validate-input</cell>
+                        <cell>6</cell>
+                        <cell>10</cell>
+                        <cell>13</cell>
+                        <cell>1</cell>
+                        <cell>0</cell>
+                        <cell>1.7</cell>
+                        <cell>1.3</cell>
+                        <cell>2.2</cell>
+                        <cell>1.86x</cell>
+                    </row>
+                    <row>
+                        <cell></cell>
+                        <cell>Figure 13.</cell>
+                        <cell></cell>
+                        <cell></cell>
+                        <cell></cell>
+                        <cell></cell>
+                        <cell></cell>
+                        <cell></cell>
+                        <cell></cell>
+                        <cell></cell>
+                    </row>
+                </table>
+            </figure>
+            <note
+                xmlns="http://www.tei-c.org/ns/1.0" place="foot" n="1">Arrays are actually worse than this: if the index value is a number, it must be converted from a double to a string for the property access operator, and then to an integer internally to the array implementation.
+            </note>
+        </body>
+        <back>
+            <div type="acknowledgement">
+                <div
+                    xmlns="http://www.tei-c.org/ns/1.0">
+                    <head coords="13,317.01,632.31,85.73,9.85">Acknowledgments</head>
+                    <p>Parts of this effort have been sponsored by the National Science Foundation under grants CNS-0615443 and CNS-0627747, as well as by the California MICRO Program and industrial sponsor Sun Microsystems under Project No. 07-127.</p>
+                    <p>The U.S. Government is authorized to reproduce and distribute reprints for Governmental purposes notwithstanding any copyright annotation thereon. Any opinions, findings, and conclusions or recommendations expressed here are those of the author and should not be interpreted as necessarily representing the official views, policies or endorsements, either expressed or implied, of the National Science foundation (NSF), any other agency of the U.S. Government, or any of the companies mentioned above.</p>
+                </div>
+            </div>
+            <div type="references">
+                <listBibl>
+                    <biblStruct coords="10,377.21,255.04,182.59,6.13" xml:id="b0">
+                        <monogr>
+                            <title/>
+                            <author>
+                                <persName coords="">
+                                    <surname>!"# $!"# %!"# &amp;!"# '!"# (!"# )!"# *!"# +!"# ,!"# $!!</surname>
+                                </persName>
+                            </author>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="10,330.34,224.06,46.54,4.91;10,335.55,217.46,26.96,4.91" xml:id="b1">
+                        <monogr>
+                            <title level="m">1@A&lt;9=.&gt;922?#3!4</title>
+                            <imprint>
+                                <biblScope unit="volume">0</biblScope>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="10,362.51,217.46,14.38,4.91" xml:id="b2">
+                        <monogr>
+                            <title/>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">#</forename>
+                                    <surname>3%4%56#</surname>
+                                </persName>
+                            </author>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="10,340.68,210.87,36.18,4.91" xml:id="b3">
+                        <monogr>
+                            <title level="m">A18-=#3&apos;4%56#</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="10,340.58,204.27,36.30,4.91" xml:id="b4">
+                        <monogr>
+                            <title level="m">A?@2D2#3&amp;4!56#</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="10,323.07,197.68,53.83,4.91;10,331.82,191.09,45.04,4.91" xml:id="b5">
+                        <monogr>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">@</forename>
+                                    <surname>&gt;8</surname>
+                                </persName>
+                            </author>
+                            <title level="m">&amp;1@&gt;.1@&gt;?.@A.1=&gt;2#3%(4(56# 1@&gt;8:?.1@&gt;?.@A.1=&gt;2#3+4*56#</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="10,330.91,184.49,45.97,4.91;10,333.10,177.90,43.79,4.91" xml:id="b6">
+                        <monogr>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">@</forename>
+                                    <surname>&gt;8</surname>
+                                </persName>
+                            </author>
+                            <title level="m">1@&gt;E@?2.&lt;A-#3%(4%56# 1@&gt;8:?.A?@2D2.1@&gt;?#3%4*56#</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="10,345.92,164.71,30.97,4.91" xml:id="b7">
+                        <monogr>
+                            <title level="m">/9=:&gt;8.&lt;2?#3$4)56#</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="10,343.88,158.12,33.00,4.91;10,343.57,151.53,15.78,4.91;10,353.86,131.74,23.04,4.91;10,331.89,125.15,44.99,4.91;10,328.88,118.56,48.00,4.91;10,344.62,111.96,32.27,4.91;10,340.53,105.37,36.35,4.91;10,344.79,98.78,32.12,4.91" xml:id="b8">
+                        <monogr>
+                            <idno>3%4&amp;56# /9=:&gt;8</idno>
+                            <title level="m">2/&gt;9&lt;F.A897#3*4$56# 92J25:.-A&lt;#3&apos;4%56# ?&gt;9@AJ.1&lt;?2)&apos;#3%4(56# ?&gt;9@AJ.B&lt;?&gt;&lt;#3$4</title>
+                            <imprint>
+                                <date>56</date>
+                                <biblScope unit="page" from="56" to="57" />
+                            </imprint>
+                        </monogr>
+                        <note>89-@/#3&apos;4,56# 7&lt;&gt;;.:&lt;9I&lt;F.?07?#3</note>
+                    </biblStruct>
+                    <biblStruct coords="13,148.04,255.01,10.75,6.13;13,182.07,255.01,10.75,6.13;13,216.11,255.01,10.75,6.13;13,250.14,255.01,10.75,6.13;13,282.78,255.01,13.54,6.13" xml:id="b9">
+                        <monogr>
+                            <title/>
+                            <author>
+                                <persName coords="">
+                                    <surname>$!"# %!"# &amp;!"# '!"# (!!</surname>
+                                </persName>
+                            </author>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="13,84.19,230.73,30.89,4.91;13,68.53,224.19,22.41,4.91" xml:id="b10">
+                        <monogr>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">*</forename>
+                                    <surname>+6</surname>
+                                </persName>
+                            </author>
+                            <title level="m">/#0(1$23#</title>
+                            <imprint>
+                                <biblScope unit="volume">6</biblScope>
+                                <biblScope unit="page">6</biblScope>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="13,90.94,224.19,24.13,4.91;13,73.74,217.64,41.34,4.91;13,78.87,211.09,36.18,4.91;13,78.77,204.55,36.30,4.91;13,59.57,198.00,55.51,4.91;13,70.01,191.45,45.04,4.91;13,67.32,184.91,47.74,4.91;13,71.29,178.36,43.79,4.91;13,65.05,171.81,50.07,4.91;13,84.11,165.27,30.97,4.91;13,83.51,152.18,31.56,4.91;13,71.60,145.63,43.52,4.91;13,70.16,139.08,44.95,4.91;13,81.41,132.54,33.67,4.91;13,70.07,125.99,44.99,4.91;13,67.06,119.44,48.00,4.91" xml:id="b11">
+                        <monogr>
+                            <title level="m">5*;#0%1$23# :,/==+?=&gt;/B/#0)1!23# .&gt;&lt;57=+).&gt;&lt;+.&gt;&lt;=+&gt;?+.;&lt;/#0$C1C23# .&gt;&lt;57=+.&gt;&lt;=+&gt;?+.;&lt;/#0&apos;1D23# .&gt;&lt;57=+.&gt;&lt;E&gt;=/+:?*#0$C1$23# .&gt;&lt;57=+?=&gt;/B/+.&gt;&lt;=#0$1D23# ,5?&lt;65FG5E+6/,-6=&gt;B/#0</title>
+                            <editor>
+                                <persName>
+                                    <forename type="first">/</forename>
+                                    <surname>+&lt;6//=#0!1923# :,</surname>
+                                </persName>
+                            </editor>
+                            <editor>
+                                <persName>
+                                    <forename type="first">/</forename>
+                                    <surname>==+@:??a-,8#0$1$23# :,</surname>
+                                </persName>
+                            </editor>
+                            <editor>
+                                <persName>
+                                    <surname>==+</surname>
+                                </persName>
+                            </editor>
+                            <imprint/>
+                        </monogr>
+                        <note>1!23# ,6;7&lt;5+:/=#0(1&amp;23# 6;7&lt;5+=8:(#0C1923# *:&lt;/+@564:&lt;+&lt;5H/#0(1(23# *:&lt;/+@564:&lt;+27:6.#0(1!23# 4:&lt;8+,56*&gt;,#0%1923# 4:&lt;8+7:6I:F+=-4=#0C1923# 4:&lt;8+=7/,&lt;6:F+?564#0D1(23#</note>
+                    </biblStruct>
+                    <biblStruct coords="13,84.60,112.90,30.47,4.91;13,78.71,106.35,36.35,4.91;13,82.98,99.80,32.12,4.91;13,76.12,93.26,38.96,4.91;13,68.77,86.71,46.30,4.91;13,66.71,80.17,48.35,4.91;13,88.60,270.82,185.34,6.13" xml:id="b12">
+                        <monogr>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">/J/27+*?</forename>
+                                </persName>
+                            </author>
+                            <title level="m">#0%1$23# =&lt;6&gt;?J+.:=/&amp;%#0$1C23# =&lt;6&gt;?J+@:=&lt;:#0(1C23# =&lt;6&gt;?J+&lt;:J,F5-*#0(1(23# =&lt;6&gt;?J+-?7:,A+,5*/#0(1$23# =&lt;6&gt;?J+B:F&gt;*:&lt;/+&gt;?7-&lt;#0(1923# K?&lt;/676/&lt;# L5?&gt;&lt;56# M/,56*# N547&gt;F/# N:FF#O6</title>
+                            <imprint>
+                                <biblScope unit="volume">6</biblScope>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,70.76,159.22,222.34,6.91;14,70.77,168.18,79.41,6.91" xml:id="b13">
+                        <monogr>
+                            <title/>
+                            <author>
+                                <persName coords="">
+                                    <surname>Mozilla -Firefox</surname>
+                                </persName>
+                            </author>
+                            <ptr target="http://www.mozilla.com" />
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,70.76,179.89,140.82,6.91" xml:id="b14">
+                        <monogr>
+                            <ptr target="http://www.spec.org/jvm98/" />
+                            <title level="m">SPECJVM98</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,70.76,212.27,222.34,6.91;14,70.77,221.23,193.67,6.91" xml:id="b15">
+                        <analytic>
+                            <title/>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">'</forename>
+                                    <surname>Surfin</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <surname>Safari</surname>
+                                </persName>
+                            </author>
+                            <ptr target="http://webkit.org/blog/214/introducing-squirrelfish-extreme/" />
+                        </analytic>
+                        <monogr>
+                            <title level="s">Blog Archive -Announcing SquirrelFish Extreme</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,70.76,232.94,222.34,6.91;14,70.77,241.91,88.99,6.91" xml:id="b16">
+                        <monogr>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">A</forename>
+                                    <surname>Aho</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">R</forename>
+                                    <surname>Sethi</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">J</forename>
+                                    <surname>Ullman</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">M</forename>
+                                    <surname>Lam</surname>
+                                </persName>
+                            </author>
+                            <title level="m">Compilers: Principles, techniques, and tools</title>
+                            <imprint>
+                                <date type="published" when="2006">2006</date>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,70.76,253.61,222.34,6.91;14,70.77,262.44,222.34,7.05;14,70.77,271.41,222.34,6.86;14,70.77,280.51,98.64,6.91" xml:id="b17">
+                        <analytic>
+                            <title level="a" type="main">Dynamo</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">Vasanth</forename>
+                                    <surname>Bala</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Evelyn</forename>
+                                    <surname>Duesterwald</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Sanjeev</forename>
+                                    <surname>Banerjia</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/349299.349303</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Proceedings of the ACM SIGPLAN 2000 conference on Programming language design and implementation - PLDI &apos;00</title>
+                            <meeting>the ACM SIGPLAN 2000 conference on Programming language design and implementation - PLDI &apos;00</meeting>
+                            <imprint>
+                                <publisher>ACM Press</publisher>
+                                <date type="published" when="2000">2000</date>
+                                <biblScope unit="page" from="1" to="12" />
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,70.76,292.22,222.34,6.91;14,70.77,301.18,222.34,6.91;14,70.77,310.01,222.33,7.05;14,70.77,318.98,156.29,7.05" xml:id="b18">
+                        <analytic>
+                            <title level="a" type="main">Context Threading: A Flexible and Efficient Dispatch Technique for Virtual Machine Interpreters</title>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">M</forename>
+                                    <surname>Berndl</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">B</forename>
+                                    <surname>Vitale</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">M</forename>
+                                    <surname>Zaleski</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">A</forename>
+                                    <forename type="middle">D</forename>
+                                    <surname>Brown</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1109/cgo.2005.14</idno>
+                            <ptr type="open-access" target="http://www.cs.toronto.edu/syslab/pubs/demkea_context.pdf" />
+                        </analytic>
+                        <monogr>
+                            <title level="m">International Symposium on Code Generation and Optimization</title>
+                            <imprint>
+                                <publisher>IEEE</publisher>
+                                <date type="published" when="2005">2005. 2005</date>
+                                <biblScope unit="page" from="15" to="26" />
+                            </imprint>
+                        </monogr>
+                        <note>Code Generation and Optimization</note>
+                    </biblStruct>
+                    <biblStruct coords="14,70.76,330.82,222.34,6.91;14,70.77,339.79,222.34,6.91;14,70.77,348.62,222.34,7.05" xml:id="b19">
+                        <analytic>
+                            <title level="a" type="main">Customization: optimizing compiler technology for SELF, a dynamically-typed object-oriented programming language</title>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">C</forename>
+                                    <surname>Chambers</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">D</forename>
+                                    <surname>Ungar</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/74818.74831</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="j">ACM SIGPLAN Notices</title>
+                            <title level="j" type="abbrev">SIGPLAN Not.</title>
+                            <idno type="ISSN">0362-1340</idno>
+                            <idno type="ISSNe">1558-1160</idno>
+                            <imprint>
+                                <biblScope unit="volume">24</biblScope>
+                                <biblScope unit="issue">7</biblScope>
+                                <biblScope unit="page" from="146" to="160" />
+                                <date type="published" when="1989-07">1989</date>
+                                <publisher>Association for Computing Machinery (ACM)</publisher>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,70.77,357.59,222.34,6.86;14,70.77,366.69,160.50,6.91" xml:id="b20">
+                        <monogr>
+                            <title level="m">Conference on Programming Language Design and Implementation</title>
+                            <meeting>
+                                <address>
+                                    <addrLine>New York, NY, USA</addrLine>
+                                </address>
+                            </meeting>
+                            <imprint>
+                                <publisher>ACM</publisher>
+                                <date type="published" when="1989">1989</date>
+                                <biblScope unit="page" from="146" to="160" />
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,333.78,74.65,222.34,7.05;14,333.78,83.61,222.34,7.05;14,333.78,92.71,17.93,6.91" xml:id="b21">
+                        <monogr>
+                            <title level="m" type="main">Efficient Bytecode Verification and Compilation in a Virtual Machine Dissertation</title>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">A</forename>
+                                </persName>
+                            </author>
+                            <imprint>
+                                <date type="published" when="2006">2006</date>
+                                <pubPlace>University Of California, Irvine</pubPlace>
+                            </imprint>
+                        </monogr>
+                        <note type="report_type">PhD thesis</note>
+                    </biblStruct>
+                    <biblStruct coords="14,333.77,104.67,222.34,6.91;14,333.78,113.50,222.34,7.05;14,333.78,122.47,222.34,7.05;14,333.78,131.57,90.45,6.91" xml:id="b22">
+                        <analytic>
+                            <title level="a" type="main">HotpathVM</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">Andreas</forename>
+                                    <surname>Gal</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Christian</forename>
+                                    <forename type="middle">W</forename>
+                                    <surname>Probst</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Michael</forename>
+                                    <surname>Franz</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/1134760.1134780</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Proceedings of the 2nd international conference on Virtual execution environments - VEE &apos;06</title>
+                            <meeting>the 2nd international conference on Virtual execution environments - VEE &apos;06</meeting>
+                            <imprint>
+                                <publisher>ACM Press</publisher>
+                                <date type="published" when="2006">2006</date>
+                                <biblScope unit="page" from="144" to="153" />
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,333.77,143.52,222.34,6.91;14,333.78,152.49,193.00,6.91" xml:id="b23">
+                        <monogr>
+                            <title level="m" type="main">Measurement and Application of Dynamic Receiver Class Distributions</title>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">C</forename>
+                                    <surname>Garrett</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">J</forename>
+                                    <surname>Dean</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">D</forename>
+                                    <surname>Grove</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">C</forename>
+                                    <surname>Chambers</surname>
+                                </persName>
+                            </author>
+                            <imprint>
+                                <date type="published" when="1994">1994</date>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,333.77,164.45,222.34,6.91;14,333.78,173.41,222.34,6.91;14,333.78,182.38,196.90,6.91" xml:id="b24">
+                        <monogr>
+                            <title level="m" type="main">A concurrent trace-based just-in-time compiler for javascript</title>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">J</forename>
+                                    <surname>Ha</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">M</forename>
+                                    <forename type="middle">R</forename>
+                                    <surname>Haghighat</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">S</forename>
+                                    <surname>Cong</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">K</forename>
+                                    <forename type="middle">S</forename>
+                                    <surname>Mckinley</surname>
+                                </persName>
+                            </author>
+                            <idno>TR-09-06</idno>
+                            <imprint>
+                                <date type="published" when="2009">2009</date>
+                            </imprint>
+                            <respStmt>
+                                <orgName>Dept.of Computer Sciences, The University of Texas at Austin</orgName>
+                            </respStmt>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,333.77,194.33,131.22,6.91" xml:id="b25">
+                        <analytic>
+                            <title level="a" type="main">Speech/Communication Disabilities</title>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">B</forename>
+                                    <surname>Mccloskey</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1007/978-0-387-79948-3_1495</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Encyclopedia of Clinical Neuropsychology</title>
+                            <imprint>
+                                <publisher>Springer New York</publisher>
+                                <date type="published" when="2011" />
+                                <biblScope unit="page" from="2340" to="2342" />
+                            </imprint>
+                        </monogr>
+                        <note>Personal communication</note>
+                    </biblStruct>
+                    <biblStruct coords="14,333.77,206.29,222.34,6.91;14,333.78,215.12,222.34,7.05;14,333.78,224.09,222.34,7.05;14,333.78,233.19,124.42,6.91" xml:id="b26">
+                        <analytic>
+                            <title level="a" type="main">Optimizing direct threaded code by selective inlining</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">Ian</forename>
+                                    <surname>Piumarta</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Fabio</forename>
+                                    <surname>Riccardi</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/277650.277743</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Proceedings of the ACM SIGPLAN 1998 conference on Programming language design and implementation - PLDI &apos;98</title>
+                            <meeting>the ACM SIGPLAN 1998 conference on Programming language design and implementation - PLDI &apos;98
+                                <address>
+                                    <addrLine>New York, NY, USA</addrLine>
+                                </address>
+                            </meeting>
+                            <imprint>
+                                <publisher>ACM Press</publisher>
+                                <date type="published" when="1998">1998</date>
+                                <biblScope unit="page" from="291" to="300" />
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,333.77,245.14,222.34,6.91;14,333.78,253.97,144.55,7.05" xml:id="b27">
+                        <analytic>
+                            <title level="a" type="main">Representation-based just-in-time specialization and the psyco prototype for python</title>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">Armin</forename>
+                                    <surname>Rigo</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/1014007.1014010</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Proceedings of the 2004 ACM SIGPLAN symposium on Partial evaluation and semantics-based program manipulation - PEPM &apos;04</title>
+                            <meeting>the 2004 ACM SIGPLAN symposium on Partial evaluation and semantics-based program manipulation - PEPM &apos;04</meeting>
+                            <imprint>
+                                <publisher>ACM Press</publisher>
+                                <date type="published" when="2004">2004</date>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,333.78,266.06,222.33,6.91;14,333.78,274.90,108.38,7.05" xml:id="b28">
+                        <analytic>
+                            <title level="a" type="main">Starkiller: A Static Type Inferencer and Compiler for Python</title>
+                            <author>
+                                <persName coords="">
+                                    <forename type="first">M</forename>
+                                    <surname>Salib</surname>
+                                </persName>
+                            </author>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Master&apos;s Thesis</title>
+                            <imprint>
+                                <date type="published" when="2004">2004</date>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,333.77,286.99,222.34,6.91;14,333.78,295.82,222.34,7.05;14,333.78,304.78,219.41,7.05" xml:id="b29">
+                        <analytic>
+                            <title level="a" type="main">A region-based compilation technique for dynamic compilers</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">Toshio</forename>
+                                    <surname>Suganuma</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Toshiaki</forename>
+                                    <surname>Yasue</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Toshio</forename>
+                                    <surname>Nakatani</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/1111596.1111600</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="j">ACM Transactions on Programming Languages and Systems</title>
+                            <title level="j" type="abbrev">ACM Trans. Program. Lang. Syst.</title>
+                            <idno type="ISSN">0164-0925</idno>
+                            <idno type="ISSNe">1558-4593</idno>
+                            <imprint>
+                                <biblScope unit="volume">28</biblScope>
+                                <biblScope unit="issue">1</biblScope>
+                                <biblScope unit="page" from="134" to="174" />
+                                <date type="published" when="2006-01">2006</date>
+                                <publisher>Association for Computing Machinery (ACM)</publisher>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct coords="14,333.77,316.87,222.34,6.91;14,333.78,325.70,222.34,7.05;14,333.78,334.67,222.34,7.05;14,333.78,343.77,38.74,6.91" xml:id="b30">
+                        <analytic>
+                            <title level="a" type="main">YETI</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">Mathew</forename>
+                                    <surname>Zaleski</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Angela</forename>
+                                    <forename type="middle">Demke</forename>
+                                    <surname>Brown</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Kevin</forename>
+                                    <surname>Stoodley</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/1254810.1254823</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Proceedings of the 3rd international conference on Virtual execution environments - VEE &apos;07</title>
+                            <meeting>the 3rd international conference on Virtual execution environments - VEE &apos;07</meeting>
+                            <imprint>
+                                <publisher>ACM Press</publisher>
+                                <date type="published" when="2007">2007</date>
+                                <biblScope unit="page" from="83" to="93" />
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                </listBibl>
+            </div>
+        </back>
+    </text>
+</TEI>

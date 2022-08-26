@@ -52,6 +52,7 @@
         "lowdb": "^1.0.0",
         "markdown-it": "^13.0.1",
         "md5-file": "^5.0.0",
+        "pdf-poppler": "^0.2.1",
         "pdfjs-dist": "^2.14.305",
         "saltdog": "^0.0.1",
         "utf-8-validate": "^5.0.7",
@@ -59,8 +60,7 @@
         "vue-class-component": "^8.0.0-0",
         "vue-router": "^4.0.0-0",
         "vuex": "^4.0.0-0",
-        "xss": "^1.0.13",
-        "pdf-poppler": "^0.2.1"
+        "xss": "^1.0.13"
     },
     "devDependencies": {
         "@types/electron-devtools-installer": "^2.2.0",
@@ -77,9 +77,9 @@
         "@vue/eslint-config-prettier": "^6.0.0",
         "@vue/eslint-config-typescript": "^7.0.0",
         "docsify-cli": "^4.4.3",
-        "electron": "19.0.0",
+        "electron": "^19.0.0",
         "electron-devtools-installer": "^3.1.0",
-        "electron-rebuild": "^3.2.7",
+        "electron-rebuild": "^3.2.9",
         "eslint": "^7.24.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^3.4.0",

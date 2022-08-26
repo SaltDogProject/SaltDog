@@ -111,16 +111,16 @@ export default defineComponent({
             bus.on('saltdog:openSettings', handleSettingsView);
             bus.on('saltdog:openLibrary', handleLibraryView);
             // @ts-ignore
-            if (proxy.__workspaceInfo.pdfPath && existsSync(proxy.__workspaceInfo.pdfPath)) {
-                // 有预先注入的打开目标
-                // @ts-ignore
-                tabManager.addPdfTab(
-                    // @ts-ignore
-                    path.basename(proxy.__workspaceInfo.pdfPath || '未命名'),
-                    // @ts-ignore
-                    proxy.__workspaceInfo.pdfPath
-                );
-            }
+            // if (proxy.__workspaceInfo.pdfPath && existsSync(proxy.__workspaceInfo.pdfPath)) {
+            //     // 有预先注入的打开目标
+            //     // @ts-ignore
+            //     tabManager.addPdfTab(
+            //         // @ts-ignore
+            //         path.basename(proxy.__workspaceInfo.pdfPath || '未命名'),
+            //         // @ts-ignore
+            //         proxy.__workspaceInfo.pdfPath
+            //     );
+            // }
             // setTimeout(()=>{
             //     tabManager.addPdfTab('hh',`C:/Users/Dorapocket/Desktop/Xilinx Doc/Xilinx Doc/ug1399-vitis-hls.pdf`);
             // },5000)

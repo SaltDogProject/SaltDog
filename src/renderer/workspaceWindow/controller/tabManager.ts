@@ -59,6 +59,7 @@ class MainTabManager implements ITabManager {
     private webviewPendingFunction = {}; // {"MainPanelWebview-1":[fn1,fn2]}
     private pdfTabReadyState = {}; // {"MainPanelWebview-1":false}
     constructor() {
+        console.log(TAG, 'Inited');
         SaltDogMessageChannelRenderer.getInstance().registerCommand('saltdog.openNewPDF', () => {
             this.pickAndOpenPDF();
         });
@@ -120,7 +121,7 @@ class MainTabManager implements ITabManager {
             this.webviewPendingFunction[tabid].push(fn);
         }
     }
-    public addPdfTab(tabName: string, pdfPath: string, itemID = -1) {
+    public addPdfTab(tabName: string, pdfPath: string, itemInfo = null) {
         if (!pdfPath) {
             console.error(TAG, 'Can not create pdf tab: No pdfPath');
         }
@@ -132,6 +133,9 @@ class MainTabManager implements ITabManager {
             });
             return;
         }
+        // if (!itemInfo) {
+        //     ElMessage('未导入的PDF不支持图表/文献识别。若要使用此功能请先导入您的论文库！');
+        // }
         const name = tabName;
         const tabid = this.addTab(name, 'PDFVIEWER');
         this.pdfTabReadyState[tabid] = false;
@@ -142,6 +146,7 @@ class MainTabManager implements ITabManager {
                 'loadPdf',
                 {
                     filePath: pdfPath,
+                    itemInfo,
                 },
                 (msg: any) => {
                     console.log(`Load PDF Result:${msg}`);

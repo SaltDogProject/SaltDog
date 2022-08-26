@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 import { noop, uniqueId } from 'lodash';
 import { IWindowList } from '~/main/window/constants';
 import windowManager from '~/main/window/windowManager';
+import log from 'electron-log';
 export default class SaltDogMessageChannelMain extends EventEmitter {
     private static _instance: SaltDogMessageChannelMain;
     private _host: BrowserWindow | null = null;
@@ -25,11 +26,18 @@ export default class SaltDogMessageChannelMain extends EventEmitter {
                 console.error(`${api} is not a function`);
                 return;
             }
-            const result = await fn(args);
-            e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, result);
+            try {
+                const result = await fn(args);
+                e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, null, result);
+            } catch (err) {
+                e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, JSON.stringify(err), null);
+            }
             // e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, result);
         });
-        ipcMain.on('SALTDOG_IPC_INVOKE_CALLBACK', (e, id: string, result: any) => {
+        ipcMain.on('SALTDOG_IPC_INVOKE_CALLBACK', (e, id: string, err: any, result: any) => {
+            if (err) {
+                log.error('ipc invoke callback err', JSON.parse(err));
+            }
             const cbfn = this._callbackIDMap.get(id);
             if (!cbfn || typeof cbfn !== 'function') {
                 console.error(`callback ${id} is not a function`);
@@ -99,5 +107,9 @@ export default class SaltDogMessageChannelMain extends EventEmitter {
     }
     public onInvokeSync(api: string, fn: (e: Electron.IpcMainEvent, ...args: any[]) => void): void {
         ipcMain.on(api, fn);
+    }
+    public execCommand(command: string, ...args: any) {
+        this.emit(`onCommand:${command}`, ...args);
+        this.publish(`onCommand:${command}`, ...args);
     }
 }

@@ -23,6 +23,7 @@ import { promisify } from 'util';
 const pipeline = promisify(stream.pipeline);
 import { createLoading, cancelLoading } from '../../loading';
 import sysCfg from '../index';
+import SaltDogMessageChannelMain from '../../plugin/api/messageChannel';
 const TAG = '[Main/DB/localFileDB]';
 export type LocalFileDesc = {
     md5: string;
@@ -35,6 +36,9 @@ export class LocalFileDB {
         if (filePath) {
             this._root = filePath;
         }
+        SaltDogMessageChannelMain.getInstance().onInvoke('library.getFileDirByKey', async (localKey: any) => {
+            return path.resolve(this._root, localKey);
+        });
         mkdirSync(filePath, { recursive: true });
     }
     public createFile(dirKey: string, filename: string, data: Buffer): Promise<LocalFileDesc> {
@@ -63,7 +67,7 @@ export class LocalFileDB {
 
     public downloadAndSave(dirKey: string, filename: string, url: string, options?: any): Promise<LocalFileDesc> {
         const targetURL = new URL(url);
-        let defaultOptions: Options = {
+        let defaultOptions: any = {
             method: 'GET' as Method,
             headers: {
                 'user-agent':

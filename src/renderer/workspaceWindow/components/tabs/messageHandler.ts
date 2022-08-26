@@ -4,6 +4,8 @@ import { ipcRenderer } from 'electron';
 import bus from '../../controller/systemBus';
 import SaltDogMessageChannelRenderer from '../../controller/messageChannel';
 import { getSDPDFCoreAnnotate } from '../../controller/library';
+import path from 'path';
+import { existsSync, readFileSync } from 'fs-extra';
 const TAG = '[Renderer/WebviewMessageChannel]';
 export default class MessageHandler {
     private webview: Electron.WebviewTag;
@@ -38,6 +40,16 @@ export default class MessageHandler {
                         callbackId,
                     });
                 });
+                break;
+            case 'reader.getGrobidCacheData':
+                console.log(TAG, 'reader.getGrobidCacheData', data); // data:filepath
+                SaltDogMessageChannelRenderer.getInstance().invokeMain('reader.getGrobidMarkerInfo', data, (res) => {
+                    this.webview.send('HOST_INVOKE_CALLBACK', {
+                        data: res,
+                        callbackId,
+                    });
+                });
+
                 break;
         }
         // const arg = {

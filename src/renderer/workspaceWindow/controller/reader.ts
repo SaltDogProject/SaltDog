@@ -26,6 +26,7 @@ export default class ReaderManager {
     private _readerMap: Map<string, Electron.WebviewTag> = new Map(); // id webview
     private _modifiedStatusMap: Map<string, boolean> = new Map(); // id modified?
     private _messageHandlerMap: Map<string, MessageHandler> = new Map();
+    private _itemInfoMap: Map<string, any> = new Map();
     public setReader(id: string, webview: Electron.WebviewTag, messageHandler: MessageHandler) {
         console.log(TAG, `Set reader ${id}`, messageHandler);
         SaltDogMessageChannelRenderer.getInstance().publish(
@@ -57,6 +58,7 @@ export default class ReaderManager {
         this._readerMap.delete(id);
         this._modifiedStatusMap.delete(id);
         this._messageHandlerMap.delete(id);
+        this._itemInfoMap.delete(id);
     }
     public saveChanges(id: string) {
         console.log(TAG, `Save changes ${id}`);
@@ -76,7 +78,12 @@ export default class ReaderManager {
             });
         });
     }
-    public addReader(tabName: string, path: string) {
-        tabManager.addPdfTab(tabName, path);
+    public addReader(tabName: string, path: string, itemInfo: any) {
+        const id = tabManager.addPdfTab(tabName, path, itemInfo);
+        if (id) this._itemInfoMap.set(id, itemInfo);
+    }
+    public getItemInfo(id: string) {
+        if (this._itemInfoMap.has(id)) return this._itemInfoMap.get(id);
+        return null;
     }
 }

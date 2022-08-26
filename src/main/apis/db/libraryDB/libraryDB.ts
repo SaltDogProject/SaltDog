@@ -7,6 +7,7 @@ import { app } from 'electron';
 import * as path from 'path';
 import log from 'electron-log';
 import { LocalFileDB, LocalFileDesc } from './localFileDB';
+import grobid, { GrobidClient } from '../../grobid/index';
 const TAG = '[Main/LibraryDB]';
 const schemaJSOHPath = path.resolve(__static, 'libraryDB', './schema.json');
 const internalInitSQLPath = path.resolve(__static, 'libraryDB', './internalInit.sql');
@@ -484,7 +485,6 @@ export default class SaltDogItemDB extends Database {
         // path=?,syncState=?,storageModTime=?,storageHash=?,lastProcessedModificationTime=?
         this.prepare(this._sqlTemplate.updateAttachments).run(null, -1, null, null, null, attID);
         localFile ? log.debug(TAG, 'Import attachment with localFile', localFile.path) : null;
-        // TODO: 等待条
         const task = localFile
             ? this._localFileDB!.bindLocalFile(key, path.parse(localFile.path).base, localFile.path)
             : this._localFileDB!.downloadAndSave(key, att.title + '.pdf', att.url);
@@ -499,6 +499,7 @@ export default class SaltDogItemDB extends Database {
                 time,
                 attID
             );
+            // GrobidClient.getInstance().getMarker(stats.path);
         }).catch((err: any) => {
             log.error('Download attachment Error:', err);
             const time = new Date().getTime();

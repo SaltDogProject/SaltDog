@@ -1,0 +1,634 @@
+<TEI
+    xmlns="http://www.tei-c.org/ns/1.0"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:mml="http://www.w3.org/1998/Math/MathML">
+    <teiHeader/>
+    <text>
+        <front/>
+        <body/>
+        <back>
+            <div>
+                <listBibl>
+                    <biblStruct xml:id="b0">
+                        <monogr>
+                            <title/>
+                            <author>
+                                <persName>
+                                    <surname>!"# $!"# %!"# &amp;!"# '!"# (!"# )!"# *!"# +!"# ,!"# $!!</surname>
+                                </persName>
+                            </author>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b1">
+                        <monogr>
+                            <title level="m">1@A&lt;9=.&gt;922?#3!4</title>
+                            <imprint>
+                                <biblScope unit="volume">0</biblScope>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b2">
+                        <monogr>
+                            <title/>
+                            <author>
+                                <persName>
+                                    <forename type="first">#</forename>
+                                    <surname>3%4%56#</surname>
+                                </persName>
+                            </author>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b3">
+                        <monogr>
+                            <title level="m">A18-=#3&apos;4%56#</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b4">
+                        <monogr>
+                            <title level="m">A?@2D2#3&amp;4!56#</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b5">
+                        <monogr>
+                            <author>
+                                <persName>
+                                    <forename type="first">@</forename>
+                                    <surname>&gt;8</surname>
+                                </persName>
+                            </author>
+                            <title level="m">&amp;1@&gt;.1@&gt;?.@A.1=&gt;2#3%(4(56# 1@&gt;8:?.1@&gt;?.@A.1=&gt;2#3+4*56#</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b6">
+                        <monogr>
+                            <author>
+                                <persName>
+                                    <forename type="first">@</forename>
+                                    <surname>&gt;8</surname>
+                                </persName>
+                            </author>
+                            <title level="m">1@&gt;E@?2.&lt;A-#3%(4%56# 1@&gt;8:?.A?@2D2.1@&gt;?#3%4*56#</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b7">
+                        <monogr>
+                            <title level="m">/9=:&gt;8.&lt;2?#3$4)56#</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b8">
+                        <monogr>
+                            <idno>3%4&amp;56# /9=:&gt;8</idno>
+                            <title level="m">2/&gt;9&lt;F.A897#3*4$56# 92J25:.-A&lt;#3&apos;4%56# ?&gt;9@AJ.1&lt;?2)&apos;#3%4(56# ?&gt;9@AJ.B&lt;?&gt;&lt;#3$4</title>
+                            <imprint>
+                                <date>56</date>
+                                <biblScope unit="page" from="56" to="57" />
+                            </imprint>
+                        </monogr>
+                        <note>89-@/#3&apos;4,56# 7&lt;&gt;;.:&lt;9I&lt;F.?07?#3</note>
+                    </biblStruct>
+                    <biblStruct xml:id="b9">
+                        <monogr>
+                            <title/>
+                            <author>
+                                <persName>
+                                    <surname>$!"# %!"# &amp;!"# '!"# (!!</surname>
+                                </persName>
+                            </author>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b10">
+                        <monogr>
+                            <author>
+                                <persName>
+                                    <forename type="first">*</forename>
+                                    <surname>+6</surname>
+                                </persName>
+                            </author>
+                            <title level="m">/#0(1$23#</title>
+                            <imprint>
+                                <biblScope unit="volume">6</biblScope>
+                                <biblScope unit="page">6</biblScope>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b11">
+                        <monogr>
+                            <title level="m">5*;#0%1$23# :,/==+?=&gt;/B/#0)1!23# .&gt;&lt;57=+).&gt;&lt;+.&gt;&lt;=+&gt;?+.;&lt;/#0$C1C23# .&gt;&lt;57=+.&gt;&lt;=+&gt;?+.;&lt;/#0&apos;1D23# .&gt;&lt;57=+.&gt;&lt;E&gt;=/+:?*#0$C1$23# .&gt;&lt;57=+?=&gt;/B/+.&gt;&lt;=#0$1D23# ,5?&lt;65FG5E+6/,-6=&gt;B/#0</title>
+                            <editor>
+                                <persName>
+                                    <forename type="first">/</forename>
+                                    <surname>+&lt;6//=#0!1923# :,</surname>
+                                </persName>
+                            </editor>
+                            <editor>
+                                <persName>
+                                    <forename type="first">/</forename>
+                                    <surname>==+@:??a-,8#0$1$23# :,</surname>
+                                </persName>
+                            </editor>
+                            <editor>
+                                <persName>
+                                    <surname>==+</surname>
+                                </persName>
+                            </editor>
+                            <imprint/>
+                        </monogr>
+                        <note>1!23# ,6;7&lt;5+:/=#0(1&amp;23# 6;7&lt;5+=8:(#0C1923# *:&lt;/+@564:&lt;+&lt;5H/#0(1(23# *:&lt;/+@564:&lt;+27:6.#0(1!23# 4:&lt;8+,56*&gt;,#0%1923# 4:&lt;8+7:6I:F+=-4=#0C1923# 4:&lt;8+=7/,&lt;6:F+?564#0D1(23#</note>
+                    </biblStruct>
+                    <biblStruct xml:id="b12">
+                        <monogr>
+                            <author>
+                                <persName>
+                                    <forename type="first">/J/27+*?</forename>
+                                </persName>
+                            </author>
+                            <title level="m">#0%1$23# =&lt;6&gt;?J+.:=/&amp;%#0$1C23# =&lt;6&gt;?J+@:=&lt;:#0(1C23# =&lt;6&gt;?J+&lt;:J,F5-*#0(1(23# =&lt;6&gt;?J+-?7:,A+,5*/#0(1$23# =&lt;6&gt;?J+B:F&gt;*:&lt;/+&gt;?7-&lt;#0(1923# K?&lt;/676/&lt;# L5?&gt;&lt;56# M/,56*# N547&gt;F/# N:FF#O6</title>
+                            <imprint>
+                                <biblScope unit="volume">6</biblScope>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b13">
+                        <monogr>
+                            <title/>
+                            <author>
+                                <persName>
+                                    <surname>Mozilla -Firefox</surname>
+                                </persName>
+                            </author>
+                            <ptr target="http://www.mozilla.com" />
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b14">
+                        <monogr>
+                            <ptr target="http://www.spec.org/jvm98/" />
+                            <title level="m">SPECJVM98</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b15">
+                        <analytic>
+                            <title/>
+                            <author>
+                                <persName>
+                                    <forename type="first">'</forename>
+                                    <surname>Surfin</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <surname>Safari</surname>
+                                </persName>
+                            </author>
+                            <ptr target="http://webkit.org/blog/214/introducing-squirrelfish-extreme/" />
+                        </analytic>
+                        <monogr>
+                            <title level="s">Blog Archive -Announcing SquirrelFish Extreme</title>
+                            <imprint/>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b16">
+                        <monogr>
+                            <author>
+                                <persName>
+                                    <forename type="first">A</forename>
+                                    <surname>Aho</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">R</forename>
+                                    <surname>Sethi</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">J</forename>
+                                    <surname>Ullman</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">M</forename>
+                                    <surname>Lam</surname>
+                                </persName>
+                            </author>
+                            <title level="m">Compilers: Principles, techniques, and tools</title>
+                            <imprint>
+                                <date type="published" when="2006">2006</date>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b17">
+                        <analytic>
+                            <title level="a" type="main">Dynamo</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">Vasanth</forename>
+                                    <surname>Bala</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Evelyn</forename>
+                                    <surname>Duesterwald</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Sanjeev</forename>
+                                    <surname>Banerjia</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/349299.349303</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Proceedings of the ACM SIGPLAN 2000 conference on Programming language design and implementation - PLDI &apos;00</title>
+                            <meeting>the ACM SIGPLAN 2000 conference on Programming language design and implementation - PLDI &apos;00</meeting>
+                            <imprint>
+                                <publisher>ACM Press</publisher>
+                                <date type="published" when="2000">2000</date>
+                                <biblScope unit="page" from="1" to="12" />
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b18">
+                        <analytic>
+                            <title level="a" type="main">Context Threading: A Flexible and Efficient Dispatch Technique for Virtual Machine Interpreters</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">M</forename>
+                                    <surname>Berndl</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">B</forename>
+                                    <surname>Vitale</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">M</forename>
+                                    <surname>Zaleski</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">A</forename>
+                                    <forename type="middle">D</forename>
+                                    <surname>Brown</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1109/cgo.2005.14</idno>
+                            <ptr type="open-access" target="http://www.cs.toronto.edu/syslab/pubs/demkea_context.pdf" />
+                        </analytic>
+                        <monogr>
+                            <title level="m">International Symposium on Code Generation and Optimization</title>
+                            <imprint>
+                                <publisher>IEEE</publisher>
+                                <date type="published" when="2005">2005. 2005</date>
+                                <biblScope unit="page" from="15" to="26" />
+                            </imprint>
+                        </monogr>
+                        <note>Code Generation and Optimization</note>
+                    </biblStruct>
+                    <biblStruct xml:id="b19">
+                        <analytic>
+                            <title level="a" type="main">Customization: optimizing compiler technology for SELF, a dynamically-typed object-oriented programming language</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">C</forename>
+                                    <surname>Chambers</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">D</forename>
+                                    <surname>Ungar</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/74818.74831</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="j">ACM SIGPLAN Notices</title>
+                            <title level="j" type="abbrev">SIGPLAN Not.</title>
+                            <idno type="ISSN">0362-1340</idno>
+                            <idno type="ISSNe">1558-1160</idno>
+                            <imprint>
+                                <biblScope unit="volume">24</biblScope>
+                                <biblScope unit="issue">7</biblScope>
+                                <biblScope unit="page" from="146" to="160" />
+                                <date type="published" when="1989-07">1989</date>
+                                <publisher>Association for Computing Machinery (ACM)</publisher>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b20">
+                        <monogr>
+                            <title level="m">Conference on Programming Language Design and Implementation</title>
+                            <meeting>
+                                <address>
+                                    <addrLine>New York, NY, USA</addrLine>
+                                </address>
+                            </meeting>
+                            <imprint>
+                                <publisher>ACM</publisher>
+                                <date type="published" when="1989">1989</date>
+                                <biblScope unit="page" from="146" to="160" />
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b21">
+                        <monogr>
+                            <title level="m" type="main">Efficient Bytecode Verification and Compilation in a Virtual Machine Dissertation</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">A</forename>
+                                </persName>
+                            </author>
+                            <imprint>
+                                <date type="published" when="2006">2006</date>
+                                <pubPlace>University Of California, Irvine</pubPlace>
+                            </imprint>
+                        </monogr>
+                        <note type="report_type">PhD thesis</note>
+                    </biblStruct>
+                    <biblStruct xml:id="b22">
+                        <analytic>
+                            <title level="a" type="main">HotpathVM</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">Andreas</forename>
+                                    <surname>Gal</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Christian</forename>
+                                    <forename type="middle">W</forename>
+                                    <surname>Probst</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Michael</forename>
+                                    <surname>Franz</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/1134760.1134780</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Proceedings of the 2nd international conference on Virtual execution environments - VEE &apos;06</title>
+                            <meeting>the 2nd international conference on Virtual execution environments - VEE &apos;06</meeting>
+                            <imprint>
+                                <publisher>ACM Press</publisher>
+                                <date type="published" when="2006">2006</date>
+                                <biblScope unit="page" from="144" to="153" />
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b23">
+                        <monogr>
+                            <title level="m" type="main">Measurement and Application of Dynamic Receiver Class Distributions</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">C</forename>
+                                    <surname>Garrett</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">J</forename>
+                                    <surname>Dean</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">D</forename>
+                                    <surname>Grove</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">C</forename>
+                                    <surname>Chambers</surname>
+                                </persName>
+                            </author>
+                            <imprint>
+                                <date type="published" when="1994">1994</date>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b24">
+                        <monogr>
+                            <title level="m" type="main">A concurrent trace-based just-in-time compiler for javascript</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">J</forename>
+                                    <surname>Ha</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">M</forename>
+                                    <forename type="middle">R</forename>
+                                    <surname>Haghighat</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">S</forename>
+                                    <surname>Cong</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">K</forename>
+                                    <forename type="middle">S</forename>
+                                    <surname>Mckinley</surname>
+                                </persName>
+                            </author>
+                            <idno>TR-09-06</idno>
+                            <imprint>
+                                <date type="published" when="2009">2009</date>
+                            </imprint>
+                            <respStmt>
+                                <orgName>Dept.of Computer Sciences, The University of Texas at Austin</orgName>
+                            </respStmt>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b25">
+                        <analytic>
+                            <title level="a" type="main">Speech/Communication Disabilities</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">B</forename>
+                                    <surname>Mccloskey</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1007/978-0-387-79948-3_1495</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Encyclopedia of Clinical Neuropsychology</title>
+                            <imprint>
+                                <publisher>Springer New York</publisher>
+                                <date type="published" when="2011" />
+                                <biblScope unit="page" from="2340" to="2342" />
+                            </imprint>
+                        </monogr>
+                        <note>Personal communication</note>
+                    </biblStruct>
+                    <biblStruct xml:id="b26">
+                        <analytic>
+                            <title level="a" type="main">Optimizing direct threaded code by selective inlining</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">Ian</forename>
+                                    <surname>Piumarta</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Fabio</forename>
+                                    <surname>Riccardi</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/277650.277743</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Proceedings of the ACM SIGPLAN 1998 conference on Programming language design and implementation - PLDI &apos;98</title>
+                            <meeting>the ACM SIGPLAN 1998 conference on Programming language design and implementation - PLDI &apos;98
+                                <address>
+                                    <addrLine>New York, NY, USA</addrLine>
+                                </address>
+                            </meeting>
+                            <imprint>
+                                <publisher>ACM Press</publisher>
+                                <date type="published" when="1998">1998</date>
+                                <biblScope unit="page" from="291" to="300" />
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b27">
+                        <analytic>
+                            <title level="a" type="main">Representation-based just-in-time specialization and the psyco prototype for python</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">Armin</forename>
+                                    <surname>Rigo</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/1014007.1014010</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Proceedings of the 2004 ACM SIGPLAN symposium on Partial evaluation and semantics-based program manipulation - PEPM &apos;04</title>
+                            <meeting>the 2004 ACM SIGPLAN symposium on Partial evaluation and semantics-based program manipulation - PEPM &apos;04</meeting>
+                            <imprint>
+                                <publisher>ACM Press</publisher>
+                                <date type="published" when="2004">2004</date>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b28">
+                        <analytic>
+                            <title level="a" type="main">Starkiller: A Static Type Inferencer and Compiler for Python</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">M</forename>
+                                    <surname>Salib</surname>
+                                </persName>
+                            </author>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Master&apos;s Thesis</title>
+                            <imprint>
+                                <date type="published" when="2004">2004</date>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b29">
+                        <analytic>
+                            <title level="a" type="main">A region-based compilation technique for dynamic compilers</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">Toshio</forename>
+                                    <surname>Suganuma</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Toshiaki</forename>
+                                    <surname>Yasue</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Toshio</forename>
+                                    <surname>Nakatani</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/1111596.1111600</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="j">ACM Transactions on Programming Languages and Systems</title>
+                            <title level="j" type="abbrev">ACM Trans. Program. Lang. Syst.</title>
+                            <idno type="ISSN">0164-0925</idno>
+                            <idno type="ISSNe">1558-4593</idno>
+                            <imprint>
+                                <biblScope unit="volume">28</biblScope>
+                                <biblScope unit="issue">1</biblScope>
+                                <biblScope unit="page" from="134" to="174" />
+                                <date type="published" when="2006-01">2006</date>
+                                <publisher>Association for Computing Machinery (ACM)</publisher>
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                    <biblStruct xml:id="b30">
+                        <analytic>
+                            <title level="a" type="main">YETI</title>
+                            <author>
+                                <persName>
+                                    <forename type="first">Mathew</forename>
+                                    <surname>Zaleski</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Angela</forename>
+                                    <forename type="middle">Demke</forename>
+                                    <surname>Brown</surname>
+                                </persName>
+                            </author>
+                            <author>
+                                <persName>
+                                    <forename type="first">Kevin</forename>
+                                    <surname>Stoodley</surname>
+                                </persName>
+                            </author>
+                            <idno type="DOI">10.1145/1254810.1254823</idno>
+                        </analytic>
+                        <monogr>
+                            <title level="m">Proceedings of the 3rd international conference on Virtual execution environments - VEE &apos;07</title>
+                            <meeting>the 3rd international conference on Virtual execution environments - VEE &apos;07</meeting>
+                            <imprint>
+                                <publisher>ACM Press</publisher>
+                                <date type="published" when="2007">2007</date>
+                                <biblScope unit="page" from="83" to="93" />
+                            </imprint>
+                        </monogr>
+                    </biblStruct>
+                </listBibl>
+            </div>
+        </back>
+    </text>
+</TEI>

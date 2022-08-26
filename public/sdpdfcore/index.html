@@ -464,8 +464,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                                 <div class="Icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <defs>
-                                            <style>
-                                            </style>
+                                            <style></style>
                                         </defs>
                                         <title>icon - operation - eraser</title>
                                         <path fill="default" class="cls-1" d="M12.93,3.1,7.78,8.25,2.62,13.5a2.18,2.18,0,0,0,0,3.05L7.3,21.22a1.07,1.07,0,0,0,.76.32H20.68a.4.4,0,0,0,.4-.4V19.77a.4.4,0,0,0-.4-.4H13.53l7.84-7.84a2.17,2.17,0,0,0,0-3.06L16,3.1A2.17,2.17,0,0,0,12.93,3.1ZM8.51,19.37,4.17,15,9.32,9.78l.8-.81,5.37,5.37-4.94,4.94-.08.09h-2Z"></path>
@@ -515,11 +514,24 @@ See https://github.com/adobe-type-tools/cmap-resources
                         </svg>
                     </i>
                     <div class="el-alert__content">
-                        <span id="errorMessage" class="el-alert__title"></span>
-                        <i id="errorClose" class="el-icon el-alert__close-btn">
+                        <span id="errorMessage" class="el-alert__title">fdsf</span>
+                        <i id="errorClose" class="el-icon el-alert__close-btn" onclick="javascript:document.getElementById('errorWrapper').hidden=true">
                             <svg class="icon" width="200" height="200" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
                                 <path fill="currentColor" d="M764.288 214.592L512 466.88 259.712 214.592a31.936 31.936 0 00-45.12 45.12L466.752 512 214.528 764.224a31.936 31.936 0 1045.12 45.184L512 557.184l252.288 252.288a31.936 31.936 0 0045.12-45.12L557.12 512.064l252.288-252.352a31.936 31.936 0 10-45.12-45.184z"></path>
                             </svg>
+                        </i>
+                    </div>
+                </div>
+
+                <div id="gbWrapper"  class="el-alert el-alert--info is-center is-light" role="alert" data-v-60a66847="">
+                    <i class="el-icon el-alert__icon">
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M512 64a448 448 0 1 1 0 896.064A448 448 0 0 1 512 64zm67.2 275.072c33.28 0 60.288-23.104 60.288-57.344s-27.072-57.344-60.288-57.344c-33.28 0-60.16 23.104-60.16 57.344s26.88 57.344 60.16 57.344zM590.912 699.2c0-6.848 2.368-24.64 1.024-34.752l-52.608 60.544c-10.88 11.456-24.512 19.392-30.912 17.28a12.992 12.992 0 0 1-8.256-14.72l87.68-276.992c7.168-35.136-12.544-67.2-54.336-71.296-44.096 0-108.992 44.736-148.48 101.504 0 6.784-1.28 23.68.064 33.792l52.544-60.608c10.88-11.328 23.552-19.328 29.952-17.152a12.8 12.8 0 0 1 7.808 16.128L388.48 728.576c-10.048 32.256 8.96 63.872 55.04 71.04 67.84 0 107.904-43.648 147.456-100.416z"></path></svg>
+                    </i>
+                    <div class="el-alert__content">
+                        <span class="el-alert__title">当前文件没有导入您的文献库，SaltDog默认不开启文件解析</span>
+                        <a style="display:inline-block;margin-left:20px;color:#409EFF;cursor:pointer ;" onclick="forceGrobid()">仍要解析</a>
+                        <i class="el-icon el-alert__close-btn" onclick="javascript:document.getElementById('gbWrapper').hidden=true">
+                            <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M764.288 214.592 512 466.88 259.712 214.592a31.936 31.936 0 0 0-45.12 45.12L466.752 512 214.528 764.224a31.936 31.936 0 1 0 45.12 45.184L512 557.184l252.288 252.288a31.936 31.936 0 0 0 45.12-45.12L557.12 512.064l252.288-252.352a31.936 31.936 0 1 0-45.12-45.184z"></path></svg>
                         </i>
                     </div>
                 </div>

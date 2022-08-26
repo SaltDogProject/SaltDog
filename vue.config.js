@@ -58,7 +58,7 @@ const config = {
     },
     pluginOptions: {
         electronBuilder: {
-            externals: ['better-sqlite3', 'formdata-node'],
+            externals: ['better-sqlite3', 'formdata-node', 'canvas'],
             customFileProtocol: './',
             // customFileProtocol: 'saltdog://./',
             // externals: ['saltdog'],

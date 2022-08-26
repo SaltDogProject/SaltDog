@@ -50,6 +50,7 @@ class LifeCycle {
         dbChecker();
         initIpc(windowManager);
         Parser.getInstance();
+        GrobidClient.getInstance();
         SaltDogMessageChannelMain.getInstance();
         SaltDogMessageChannelMain.getInstance().subscribe('_pluginHostReady', () => {
             console.log('[Main] _pluginHostReady');

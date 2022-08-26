@@ -287,7 +287,7 @@ function handleRowDbClick(e: any) {
             const attachments = res.attachments;
             for (const att of attachments) {
                 if (att.path && att.contentType == 'application/pdf') {
-                    reader.getInstance().addReader(e.name, att.path);
+                    reader.getInstance().addReader(e.name, att.path, res);
                     return;
                 }
             }

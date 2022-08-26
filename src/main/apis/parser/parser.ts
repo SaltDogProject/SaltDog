@@ -12,7 +12,7 @@ export default class Parser {
     private static _instance: Parser | null = null;
     private _isDev = process.env.NODE_ENV === 'development';
     private _serverPath = this._isDev
-        ? path.resolve(__static, '../third_party/translation-server/src/server.js')
+        ? path.resolve(__static, '../../translation-server/src/server.js')
         : path.resolve(__static, 'dist/translation-server-build.js');
     // FIXME: download path
     private _downloadURL = 'https://github.com/SaltDogProject/translators/archive/refs/tags/0.0.1.zip';
@@ -42,13 +42,25 @@ export default class Parser {
     }
     public async initParser() {
         console.log(TAG, `Init Parser in ${this._serverPath}`);
-        const worker = fork(this._serverPath, {});
-        this._server = worker;
-        worker.send({
-            type: 'init',
-            data: this._initConfig,
-            translators: await this._loadTranslator(),
+        const worker = fork(this._serverPath, {
+            env: {
+                data: JSON.stringify(this._initConfig),
+                translators: JSON.stringify(await this._loadTranslator()),
+            },
         });
+        this._server = worker;
+        // while (!this.isServerReady) {
+        //     try {
+        //         worker.send({
+        //             type: 'init',
+        //             data: this._initConfig,
+        //             translators: await this._loadTranslator(),
+        //         });
+        //     } catch (e) {
+        //         console.log(e);
+        //     }
+        // }
+
         worker.on('message', (message: any) => {
             if (message.type === 'ready') {
                 console.log(TAG, 'Receive server ready');
@@ -59,6 +71,12 @@ export default class Parser {
                 this.isServerReady = true;
             }
         });
+        // worker.stdout!.on('data', function (data) {
+        //     console.log(data);
+        // });
+        // worker.stderr!.on('data', function (data) {
+        //     console.log(data);
+        // });
     }
     static getInstance() {
         if (!this._instance) {
@@ -112,6 +130,7 @@ export default class Parser {
                 }
             } catch (e) {
                 log.warn(e);
+                callback(e, null);
             }
         }
         if (this.isServerReady) {
@@ -249,12 +268,14 @@ export default class Parser {
         }
         const page = await pdf.getPage(1);
         const textContent = await page.getTextContent();
+
         const textItems = textContent.items;
         const text = textContent.items
             .map(function (s: any) {
                 return s.str;
             })
             .join('');
+        console.log(text);
         return matchArxiv(text)[0];
     }
     private async _getDOIFromMetaData(pdf: pdfjs.PDFDocumentProxy) {

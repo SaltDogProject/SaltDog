@@ -153,7 +153,7 @@ function dealText(targetObj: any, text: any) {
     function addBackDIV(divInfo: any) {
         if (divInfo['-type'] == 'references') {
             parseObjOrArr(divInfo.listBibl.biblStruct, (bib) => {
-                console.log('Analyzing ', bib['-id']);
+                // console.log('Analyzing ', bib['-id']);
                 targetObj.references[bib['-id']] = {
                     coords: bib['-coords'],
                     author:
@@ -249,7 +249,7 @@ function dealText(targetObj: any, text: any) {
     targetObj.general.contents = bodyHeader.concat(backHeader);
 }
 export default function dataConverter(grobidRawData: any) {
-    if (!grobidRawData) return;
+    if (!grobidRawData) return null;
     if (grobidRawData.TEI) grobidRawData = grobidRawData.TEI;
     const df_grobid_data = {
         general: {},

@@ -48,7 +48,7 @@
                             <el-icon><question-filled /></el-icon>
                         </span>
                     </el-tooltip>
-                    <el-upload class="upload-demo" drag :file-list="uploadRef" :limit="1" :auto-upload="false">
+                    <el-upload class="upload-demo" drag :on-change="uploadChange" :limit="1" :auto-upload="false">
                         <el-icon class="el-icon--upload"><upload-filled /></el-icon>
                         <div class="el-upload__text">
                             拖拽至此或
@@ -80,7 +80,7 @@ import { uniqueId, values } from 'lodash';
 import { insertItem, listDir, listLib, getDirInfoByID } from '../../controller/library';
 import SaltDogMessageChannelRenderer from '../../controller/messageChannel';
 const TAG = '[Library/Import]';
-const uploadRef = ref<any[]>([]);
+let uploadRef: any = [];
 const activeName = ref('doi');
 const doiInput = ref('');
 const urlInput = ref('');
@@ -136,6 +136,10 @@ const posprops = ref({
         }
     },
 });
+const uploadChange = (f: any, fs: any) => {
+    uploadRef = fs;
+};
+
 const handlePosChange = (value: any) => {
     console.log(TAG, 'handlePosChange', value);
     posvalue.value = value[value.length - 1];
@@ -156,7 +160,6 @@ const _show = ref(false);
 
 // 由于elementui的限制只能先这样更新showImportPanel了。。
 function closeSelf() {
-    const uploadRef = ref<any>();
     activeName.value = 'doi';
     doiInput.value = '';
     urlInput.value = '';
@@ -191,7 +194,9 @@ function doRetrieveMetadata() {
             break;
         case 'file':
             reqType = 'file';
-            inputData = uploadRef.value[0].raw.path || null;
+            console.log(uploadRef);
+            // @ts-ignore
+            inputData = uploadRef[0].raw.path || null;
             break;
     }
     if (!reqType || !inputData || inputData == '') {

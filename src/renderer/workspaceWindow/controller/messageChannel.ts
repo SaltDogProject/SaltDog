@@ -2,6 +2,7 @@ import { ipcMain, ipcRenderer } from 'electron';
 import EventEmitter from 'events';
 import { noop, uniqueId } from 'lodash';
 import { SaltDogRendererType } from '../../../utils/consts';
+import log from 'electron-log';
 
 export default class SaltDogMessageChannelRenderer extends EventEmitter implements SaltDogMessageChannelRenderer {
     private _workspaceID: number;
@@ -28,14 +29,25 @@ export default class SaltDogMessageChannelRenderer extends EventEmitter implemen
                 console.error(`${api} is not a function`);
                 return;
             }
-            const result = await fn(args);
-            if (e.senderId == 0) {
-                // main不知道为啥不能sendto
-                e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, result);
-            } else ipcRenderer.sendTo(e.senderId, 'SALTDOG_IPC_INVOKE_CALLBACK', id, result);
+            try {
+                const result = await fn(args);
+                if (e.senderId == 0) {
+                    // main不知道为啥不能sendto
+                    e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, null, result);
+                } else ipcRenderer.sendTo(e.senderId, 'SALTDOG_IPC_INVOKE_CALLBACK', id, null, result);
+            } catch (err) {
+                const result = await fn(args);
+                if (e.senderId == 0) {
+                    // main不知道为啥不能sendto
+                    e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, err, null);
+                } else ipcRenderer.sendTo(e.senderId, 'SALTDOG_IPC_INVOKE_CALLBACK', id, err, null);
+            }
         });
-        ipcRenderer.on('SALTDOG_IPC_INVOKE_CALLBACK', (e, id: string, result: any) => {
+        ipcRenderer.on('SALTDOG_IPC_INVOKE_CALLBACK', (e, id: string, err: any, result: any) => {
             // console.log('SALTDOG_IPC_INVOKE_CALLBACK', e, id, result);
+            if (err) {
+                log.error('ipc invoke callback err', JSON.parse(err));
+            }
             const cbfn = this._callbackIDMap.get(id);
             if (!cbfn || typeof cbfn !== 'function') {
                 console.error(`callback ${id} is not a function`);
@@ -110,7 +122,7 @@ export default class SaltDogMessageChannelRenderer extends EventEmitter implemen
         this.on(`onCommand:${command}`, callback);
     }
     public execCommand(command: string, ...args: any) {
-        this.emit(`onCommand:${command}`, ...args);
+        // this.emit(`onCommand:${command}`, ...args);
         this.publish(`onCommand:${command}`, ...args);
     }
 }

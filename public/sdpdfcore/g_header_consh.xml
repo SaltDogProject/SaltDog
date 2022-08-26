@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI xml:space="preserve"
+    xmlns="http://www.tei-c.org/ns/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.tei-c.org/ns/1.0 https://raw.githubusercontent.com/kermitt2/grobid/master/grobid-home/schemas/xsd/Grobid.xsd"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <teiHeader xml:lang="en">
+        <fileDesc>
+            <titleStmt>
+                <title level="a" type="main">Trace-based just-in-time type specialization for dynamic languages</title>
+            </titleStmt>
+            <publicationStmt>
+                <publisher>ACM Press</publisher>
+                <availability status="unknown">
+                    <p>Copyright ACM Press</p>
+                </availability>
+                <date type="published" when="2009">2009</date>
+            </publicationStmt>
+            <sourceDesc>
+                <biblStruct>
+                    <analytic>
+                        <author>
+                            <persName>
+                                <forename type="first">Andreas</forename>
+                                <surname>Gal</surname>
+                            </persName>
+                            <email>gal@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Jason</forename>
+                                <surname>Orendorff</surname>
+                            </persName>
+                            <email>jorendorff@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Jesse</forename>
+                                <surname>Ruderman</surname>
+                            </persName>
+                            <email>jruderman@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Edwin</forename>
+                                <forename type="middle">W</forename>
+                                <surname>Smith</surname>
+                            </persName>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Rick</forename>
+                                <surname>Reitmaier</surname>
+                            </persName>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Michael</forename>
+                                <surname>Bebenita</surname>
+                            </persName>
+                            <email>mbebenit@uci.edu</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Mason</forename>
+                                <surname>Chang</surname>
+                            </persName>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Michael</forename>
+                                <surname>Franz</surname>
+                            </persName>
+                            <email>franz@uci.edu</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Brendan</forename>
+                                <surname>Eich</surname>
+                            </persName>
+                            <email>brendan@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Mike</forename>
+                                <surname>Shaver</surname>
+                            </persName>
+                            <email>shaver@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">David</forename>
+                                <surname>Anderson</surname>
+                            </persName>
+                            <email>danderson@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">David</forename>
+                                <surname>Mandelin</surname>
+                            </persName>
+                            <email>dmandelin@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Mohammad</forename>
+                                <forename type="middle">R</forename>
+                                <surname>Haghighat</surname>
+                            </persName>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Blake</forename>
+                                <surname>Kaplan</surname>
+                            </persName>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Graydon</forename>
+                                <surname>Hoare</surname>
+                            </persName>
+                            <email>graydon@mozilla.com</email>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <author>
+                            <persName>
+                                <forename type="first">Boris</forename>
+                                <surname>Zbarsky</surname>
+                            </persName>
+                            <affiliation key="aff0">
+                                <orgName type="institution">University of California</orgName>
+                                <address>
+                                    <settlement>Irvine</settlement>
+                                </address>
+                            </affiliation>
+                        </author>
+                        <title level="a" type="main">Trace-based just-in-time type specialization for dynamic languages</title>
+                    </analytic>
+                    <monogr>
+                        <title level="m">Proceedings of the 2009 ACM SIGPLAN conference on Programming language design and implementation - PLDI &apos;09</title>
+                        <meeting>the 2009 ACM SIGPLAN conference on Programming language design and implementation - PLDI &apos;09						</meeting>
+                        <imprint>
+                            <publisher>ACM Press</publisher>
+                            <date type="published" when="2009" />
+                        </imprint>
+                    </monogr>
+                    <idno type="MD5">9A192D8B1A7DC652A19835F6F08098BD</idno>
+                    <idno type="DOI">10.1145/1542476.1542528</idno>
+                </biblStruct>
+            </sourceDesc>
+        </fileDesc>
+        <encodingDesc>
+            <appInfo>
+                <application version="0.7.2-SNAPSHOT" ident="GROBID" when="2022-05-13T10:33+0000">
+                    <desc>GROBID - A machine learning software for extracting information from scholarly documents</desc>
+                    <ref target="https://github.com/kermitt2/grobid"/>
+                </application>
+            </appInfo>
+        </encodingDesc>
+        <profileDesc>
+            <textClass>
+                <keywords>
+                    <term>D.3.4 [Programming Languages]: Processors -Incremental compilers</term>
+                    <term>code generation. General Terms Design</term>
+                    <term>Experimentation</term>
+                    <term>Measurement</term>
+                    <term>Performance JavaScript</term>
+                    <term>just-in-time compilation</term>
+                    <term>trace trees</term>
+                </keywords>
+            </textClass>
+            <abstract>
+                <p>Dynamic languages such as JavaScript are more difficult to compile than statically typed ones. Since no concrete type information is available, traditional compilers need to emit generic code that can handle all possible type combinations at runtime. We present an alternative compilation technique for dynamically-typed languages that identifies frequently executed loop traces at run-time and then generates machine code on the fly that is specialized for the actual dynamic types occurring on each path through the loop. Our method provides cheap inter-procedural type specialization, and an elegant and efficient way of incrementally compiling lazily discovered alternative paths through nested loops. We have implemented a dynamic compiler for JavaScript based on our technique and we have measured speedups of 10x and more for certain benchmark programs.</p>
+            </abstract>
+        </profileDesc>
+    </teiHeader>
+    <text xml:lang="en"></text>
+</TEI>
