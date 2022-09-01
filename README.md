@@ -59,9 +59,9 @@
 ### 阅读
 
 ![search](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/search.png)
-![bibs](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/bibs.png)
-![tables](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/tables.png)
-![figures](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/figures.png)
+![bibs](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/bibs.jpg)
+![tables](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/tables.jpg)
+![figures](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/figures.jpg)
 
 ## 构建指南
 
