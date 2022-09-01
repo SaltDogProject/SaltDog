@@ -6,7 +6,7 @@
     <img src="https://img.shields.io/badge/code%20style-standard-green.svg?style=flat-square" alt="">
   </a>
   <a href="https://github.com/SaltDogProject/SaltDog/actions">
-    <img src="https://github.com/Molunerfinn/PicGo/actions/workflows/main.yml/badge.svg" alt="">
+    <img src="https://github.com/SaltDogProject/SaltDog/actions/workflows/main.yml/badge.svg" alt="">
   </a>
   <a href="https://github.com/SaltDogProject/SaltDog/releases">
     <img src="https://img.shields.io/github/downloads/SaltDogProject/SaltDog/total.svg?style=flat-square" alt="">
@@ -25,8 +25,8 @@
 -   基于 Electron 开发，在 Linux、macOS、Windows 上保持同步体验
 -   支持多种科研文献网站的元数据获取与识别，并可以联网实时获取更新
 -   内置基于 mozilla/pdf.js 自研的阅读器[SDPDFCore](https://github.com/SaltDogProject/SDPDFCore)，支持文献批注、摘要搜索等
--   [comming soon] 智能的论文结构分析、图表提取、图表悬停提示、引文提取等功能
--   强大的插件系统。参照 vscode api 设计，使插件的开发更为简单和便捷。对应的插件支持包[saltdog_npm](https://github.com/SaltDogProject/saltdog_npm)提供了代码提示等多种功能。内置基于 NPM 的插件安装商店，让插件的开发和发布更为自由（插件文档正在编写中）
+-   智能的论文结构分析、图表提取、图表悬停提示、引文提取等功能
+-   (尚不稳定)强大的插件系统。参照 vscode api 设计，使插件的开发更为简单和便捷。对应的插件支持包[saltdog_npm](https://github.com/SaltDogProject/saltdog_npm)提供了代码提示等多种功能。内置基于 NPM 的插件安装商店，让插件的开发和发布更为自由（插件文档正在编写中）
 -   更多便捷功能等待您去探索！或加入开发 SaltDog 本体/插件，共同学习与进步
 
 ## 安装
@@ -59,6 +59,9 @@
 ### 阅读
 
 ![search](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/search.png)
+![bibs](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/bibs.png)
+![tables](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/tables.png)
+![figures](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/figures.png)
 
 ## 构建指南
 
@@ -71,7 +74,7 @@ yarn install
 yarn dev
 ```
 
-由于 pdfjs-dist 使用了[node-canvas](https://github.com/Automattic/node-canvas#compiling), 若您的操作系统在编译时出现 canvas 包相关的错误(常见于 M1 芯片的 Mac OS)，您可能需要从源码重新编译该包，相见 node-canvas [Compiling](https://github.com/Automattic/node-canvas#compiling)
+由于 pdfjs-dist 使用了[node-canvas](https://github.com/Automattic/node-canvas#compiling), 若您的操作系统在编译时出现 canvas 包相关的错误，您可能需要从源码重新编译该包，相见 node-canvas [Compiling](https://github.com/Automattic/node-canvas#compiling)。我们也提供了在某些系统环境下的 prebuild 文件，参见/prebuilds
 
 ## 提交规范
 
