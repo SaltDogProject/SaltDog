@@ -61,7 +61,7 @@
 ![search](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/search.png)
 ![bibs](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/bibs.jpg)
 ![tables](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/tables.jpg)
-![figures](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/figures.jpg)
+![figures](https://raw.githubusercontent.com/SaltDogProject/SaltDog/main/.imgs/figs.jpg)
 
 ## 构建指南
 
