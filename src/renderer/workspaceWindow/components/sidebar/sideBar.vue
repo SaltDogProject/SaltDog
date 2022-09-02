@@ -44,13 +44,14 @@
 import Outline from './outline.vue';
 import Search from './search.vue';
 import Plugin from './plugin.vue';
+import Library from './library.vue';
 import { defineComponent, DefineComponent, getCurrentInstance, onMounted, onUpdated, ref } from 'vue';
 import plugins from '../../controller/plugin/plugin';
 const TAG = '[Sidebar]';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 export default defineComponent({
-    components: { Outline, Search, Plugin },
+    components: { Outline, Search, Plugin, Library },
     setup() {
         // eslint-disable-next-line no-undef
         const staticPath = 'file:///' + __static;
@@ -108,7 +109,7 @@ sidebar-title-margin-left = 10px
         display: grid;
         height: 40px
         width: 100%
-        box-shadow: 0px 0px 17px -12px rgba(0,0,0,100);
+        // box-shadow: 0px 0px 17px -12px rgba(0,0,0,100);
         .sidebar-title
             display: flex;
             flex-direction: row;

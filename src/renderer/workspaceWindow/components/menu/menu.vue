@@ -103,7 +103,7 @@ function renderMenu(index: number) {
     hasMenuDisplay.value = true;
     activeMenuIndex.value = index;
     displayedMenuItem.value = menuList[index].children as ISaltdogSubMenuItem[];
-    menuLeft.value = (activeMenuIndex.value * 50+(os==='darwin'?60:40)) +'px';
+    menuLeft.value = activeMenuIndex.value * 50 + (os === 'darwin' ? 60 : 40) + 'px';
     console.log('render', index);
 }
 function onMouseLeave() {

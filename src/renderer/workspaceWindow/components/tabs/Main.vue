@@ -24,7 +24,7 @@
                         :preload="item.isPdf ? pdfViewerPreload : ''"
                     ></webview>
                     <settings v-if="item.type == 'settings'" />
-                    <library v-if="item.type == 'library'" />
+                    <library v-if="item.type == 'library'" :args="item.args" />
                 </div>
             </keep-alive>
             <!--
@@ -95,11 +95,12 @@ export default defineComponent({
                 settingsViewId = tabManager.addTab('设置', '', 'settings');
             }
         }
-        function handleLibraryView() {
+        function handleLibraryView(libraryID = 1, dirID = 1) {
             if (libraryViewId != '' && tabManager.getInfoById(libraryViewId) != null) {
                 tabManager.setCurrentTab(libraryViewId);
+                SaltDogMessageChannelRenderer.getInstance().emit('saltdog.refreshLibrary', libraryID, dirID);
             } else {
-                libraryViewId = tabManager.addTab('文献列表', '', 'library');
+                libraryViewId = tabManager.addTab('文献列表', '', 'library', { libraryID, dirID });
             }
         }
         onUnmounted(() => {

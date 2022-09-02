@@ -21,7 +21,9 @@
             </el-tree>
         </div>
     </div>
-    <div v-else>此页面暂不支持进行查找</div>
+    <div v-else>
+        <div class="cantSearchBox"><div class="text">请打开PDF以进行查找</div></div>
+    </div>
 </template>
 <script lang="ts">
 import {
@@ -127,7 +129,7 @@ export default defineComponent({
         function searchBarDeactivated() {
             console.log(TAG, 'Deactivated');
             for (const i of Object.keys(listenedEvents)) {
-                bus.off(i);
+                bus.removeAllListeners(i);
             }
         }
         function handleResultClick(node: ResultDigest) {
@@ -166,6 +168,20 @@ export default defineComponent({
 });
 </script>
 <style lang="stylus">
+.cantSearchBox
+    position: relative;
+    min-height: 60px;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    &>.text
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        color: var(--el-text-color-secondary);
+        font-size: var(--el-font-size-base);
+
 .SearchTree
     background: var(--saltdog-sidebar-background-color)!important;
     border-radius:5px;

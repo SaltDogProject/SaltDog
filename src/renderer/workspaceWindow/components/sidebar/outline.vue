@@ -20,11 +20,9 @@ import {
     ref,
     toRefs,
 } from 'vue';
-import bus from '../../controller/systemBus';
 import mainTabManager from '../../controller/tabManager';
 import { PDFAPISTAT } from '@/utils/constants';
 import SaltDogMessageChannelRenderer from '../../controller/messageChannel';
-import { Console } from 'console';
 const TAG = '[Sidebar/Outline]';
 interface Tree {
     dest: string;

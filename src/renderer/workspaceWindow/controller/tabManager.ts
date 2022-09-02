@@ -186,7 +186,7 @@ class MainTabManager implements ITabManager {
     }
 
     // 添加tab
-    public addTab(title: string, webviewUrl: string, type = 'webview'): string {
+    public addTab(title: string, webviewUrl: string, type = 'webview', args = {}): string {
         const id = uuid();
         const baseInfo = {
             title,
@@ -198,6 +198,7 @@ class MainTabManager implements ITabManager {
                     ? `${'file:///' + __static}/sdpdfcore/index.html?webviewId=${id}`
                     : webviewUrl,
             webviewId: id,
+            args,
         };
         this.getTabList().push(baseInfo);
         this.webviewId2Info.set(id, baseInfo);

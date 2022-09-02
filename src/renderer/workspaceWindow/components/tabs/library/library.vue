@@ -76,12 +76,12 @@
             <Info :item-info="itemInfo" @closePanel="closeInfoPanel" />
         </div>
     </div>
-    <ImportDialog
+    <!-- <ImportDialog
         v-model:show-import-panel="showImportPanel"
         :current-lib="currentLib"
         :current-dir="currentDir"
         @updateView="updateView"
-    />
+    /> -->
     <!--右键菜单-->
     <ul
         v-show="contextMenuVisible"
@@ -100,7 +100,7 @@
     </ul>
 </template>
 <script setup lang="ts">
-import { ref, defineProps, onMounted, watchEffect, getCurrentInstance } from 'vue';
+import { ref, defineProps, onMounted, watchEffect, getCurrentInstance, toRefs } from 'vue';
 // @ts-ignore
 import Info from './info.vue';
 import Navi from './navi.vue';
@@ -136,8 +136,15 @@ const contextMenuLeft = ref(0);
 const contextMenuTop = ref(0);
 let _dirID = 1;
 let _libraryID = 1;
+const p = defineProps<{
+    args: any;
+}>();
+
+const { args } = toRefs(p);
 onMounted(() => {
-    updateView(_libraryID, _dirID);
+    if (args.value.libraryID && args.value.dirID) {
+        updateView(args.value.libraryID, args.value.dirID);
+    } else updateView(_libraryID, _dirID);
 });
 watchEffect(
     (onInvalidate) => {
@@ -170,7 +177,8 @@ function closeContextMenu() {
     contextMenuVisible.value = false;
 }
 function doImport() {
-    showImportPanel.value = true;
+    // showImportPanel.value = true;
+    SaltDogMessageChannelRenderer.getInstance().execCommand('saltdog.showImportPanel');
 }
 SaltDogMessageChannelRenderer.getInstance().on('saltdog.refreshLibrary', (lib, dir) => {
     updateView(lib, dir);
