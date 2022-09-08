@@ -123,6 +123,11 @@ export default class SaltDogItemDB extends Database {
             'UPDATE itemAttachments SET path=?,syncState=?,storageModTime=?,storageHash=?,lastProcessedModificationTime=? WHERE attachmentID=?;',
         getSDPDFCoreAnnotate: 'SELECT annotations from pdfAnnotations WHERE key=?;',
         setSDPDFCoreAnnotate: 'REPLACE INTO pdfAnnotations (key,annotations) VALUES (?,?);',
+        modifyItemType: 'UPDATE items SET itemTypeID=? WHERE itemID=?;',
+        modifyItemTitle: 'UPDATE items SET itemName=? WHERE itemID=?;',
+        modifyDate: 'UPDATE items SET  dateAdded=?,dateModified=? WHERE itemID=?;',
+        modifyGetValueID: 'SELECT valueID from itemData WHERE itemID=? AND fieldID=?;',
+        modifyValue: 'REPLACE INTO itemDataValues (valueID,value) VALUES (?,?);',
     };
     public insertItem(item: any, libraryID: number, dirID: number, localFile: any): any {
         const itemTypeID = this._type2id.get(item.itemType);
@@ -248,7 +253,66 @@ export default class SaltDogItemDB extends Database {
             throw e;
         }
     }
+    public updateModifyDate(itemID: number) {
+        const date = new Date().getTime();
+        this.prepare(this._sqlTemplate.modifyDate).run(date, date, itemID);
+    }
+    public modifyItem(modifyObjs: { itemID: number; add: any[]; modify: any[]; delete: any[] }) {
+        console.log(JSON.stringify(modifyObjs));
+        try {
+            for (const addItem of modifyObjs.add) {
+                // 插入值
+                const valueID = this.prepare(this._sqlTemplate.insertItemValue).run(addItem.value).lastInsertRowid;
+                // 插入field对应关系
+                this.prepare(this._sqlTemplate.insertItemValueRelation).run(
+                    modifyObjs.itemID,
+                    this._field2id.get(addItem.key),
+                    valueID
+                );
+            }
 
+            for (const modifyItem of modifyObjs.modify) {
+                console.log('2');
+                if (modifyItem.type == 'itemType') {
+                    this.prepare(this._sqlTemplate.modifyItemType).run(
+                        this._type2id.get(modifyItem.value),
+                        modifyObjs.itemID
+                    );
+                } else {
+                    if (modifyItem.key == 'title') {
+                        this.prepare(this._sqlTemplate.modifyItemTitle).run(modifyItem.value, modifyObjs.itemID);
+                    }
+                    const valueID = this.prepare(this._sqlTemplate.modifyGetValueID).get(
+                        modifyObjs.itemID,
+                        this._field2id.get(modifyItem.key)
+                    ).valueID;
+                    if (valueID && valueID > 0) {
+                        this.prepare(this._sqlTemplate.modifyValue).run(valueID, modifyItem.value);
+                    }
+                }
+            }
+            for (const deleteItem of modifyObjs.delete) {
+                const valueID = this.prepare(this._sqlTemplate.modifyGetValueID).get(
+                    modifyObjs.itemID,
+                    this._field2id.get(deleteItem.key)
+                ).valueID;
+                if (valueID && valueID > 0) {
+                    this.prepare('DELETE FROM itemData WHERE itemID=? AND fieldID=?;').run(
+                        modifyObjs.itemID,
+                        this._field2id.get(deleteItem.key)
+                    );
+                    this.prepare('DELETE FROM itemDataValues WHERE valueID=?;').run(valueID);
+                }
+            }
+            if (modifyObjs.add.length != 0 || modifyObjs.modify.length != 0 || modifyObjs.delete.length != 0) {
+                this.updateModifyDate(modifyObjs.itemID);
+            }
+            return true;
+        } catch (e) {
+            log.error(TAG, 'Modify Item error:', e);
+            throw e;
+        }
+    }
     public deleteItem(itemID: number) {
         try {
             this.transaction((itemID: number) => {

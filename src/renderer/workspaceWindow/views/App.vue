@@ -65,6 +65,7 @@
                 :current-lib="ImportPanel_currentLib"
                 :current-dir="ImportPanel_currentDir"
             />
+            <ImportEdit />
         </div>
     </div>
 </template>
@@ -81,15 +82,16 @@ import sidebar from '../components/sidebar/sideBar.vue';
 import TitleMenu from '../components/menu/menu.vue';
 import StatusBar from '../components/statusBar/statusBar.vue';
 import ImportDialog from '../components/dialogs/importDialog.vue';
+import ImportEdit from '../components/dialogs/importEdit.vue';
 import tabManager from '../controller/tabManager';
 import { ipcRenderer } from 'electron';
 import bus from '../controller/systemBus';
-import { Minus, Refresh, Close } from '@element-plus/icons-vue';
+import { Minus, Refresh, Close, Edit } from '@element-plus/icons-vue';
 import SaltDogMessageChannelRenderer from '../controller/messageChannel';
 declare var __static: string;
 
 const App = defineComponent({
-    components: { Tabs, SidebarIcons, sidebar, Minus, Refresh, Close, TitleMenu, StatusBar, ImportDialog },
+    components: { Tabs, SidebarIcons, sidebar, Minus, Refresh, Close, TitleMenu, StatusBar, ImportDialog, ImportEdit },
     setup() {
         const documentName = ref('欢迎');
         const os = ref(process.platform);
@@ -179,7 +181,6 @@ const App = defineComponent({
             ImportPanel_currentDir.value = 1;
             showImportPanel.value = false;
         });
-
         return {
             iconPath,
             documentName,

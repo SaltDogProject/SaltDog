@@ -63,3 +63,6 @@ export function setReadHistory(title: string, filePath: string, operationType = 
 export function getReadHistory(operationType = 'open', limit = 5): Promise<IReadHistory[]> {
     return invokeLibraryMethodAsync('getReadHistory', operationType, limit) as Promise<IReadHistory[]>;
 }
+export function modifyItem(modifyObjs: { itemID: number; add: any[]; modify: any[]; delete: any[] }): Promise<boolean> {
+    return invokeLibraryMethodAsync('modifyItem', modifyObjs) as Promise<boolean>;
+}

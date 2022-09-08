@@ -30,7 +30,7 @@ export default {
             note: '笔记',
             patent: '专利',
             podcast: '播客',
-            preprint: 'Preprint',
+            preprint: '预印本',
             presentation: '演示文档',
             radioBroadcast: '电台广播',
             report: '报告',

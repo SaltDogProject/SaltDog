@@ -84,7 +84,7 @@
     /> -->
     <!--右键菜单-->
     <ul
-        v-show="contextMenuVisible"
+        v-show="contextMenuVisible && selectType == 'item'"
         :style="{ left: contextMenuLeft + 'px', top: contextMenuTop + 'px' }"
         class="contextmenu"
         ref="contextMenuRef"
@@ -134,6 +134,7 @@ let contextMenuActiveItem: any = null;
 const contextMenuVisible = ref(false);
 const contextMenuLeft = ref(0);
 const contextMenuTop = ref(0);
+const selectType = ref('');
 let _dirID = 1;
 let _libraryID = 1;
 const p = defineProps<{
@@ -321,9 +322,11 @@ function handleRowClick(e: any) {
     showInfo.value = true;
 }
 function handleRowContextMenu(data: any, _: any, pointer: PointerEvent) {
+    contextMenuActiveItem = data;
     contextMenuTop.value = pointer.pageY;
     contextMenuLeft.value = pointer.pageX;
     contextMenuVisible.value = true; //显示菜单
+    selectType.value = data.type;
     setTimeout(() => {
         const { width, height } = contextMenuRef.value.getBoundingClientRect();
         if (pointer.pageY + height > window.innerHeight - 40) {
@@ -333,14 +336,14 @@ function handleRowContextMenu(data: any, _: any, pointer: PointerEvent) {
             contextMenuLeft.value = pointer.pageX - width;
         }
     }, 0);
-
-    contextMenuActiveItem = data;
+    console.log(data);
 }
 
 function handleLibraryEdit(type: 'edit' | 'delete') {
     switch (type) {
         case 'edit':
-            log.debug(TAG, 'EditMode');
+            log.debug(TAG, 'Toggle Edit Mode.', contextMenuActiveItem);
+            SaltDogMessageChannelRenderer.getInstance().execCommand('saltdog.showImportEdit', contextMenuActiveItem.id);
             break;
         case 'delete':
             log.debug(TAG, 'Delete');

@@ -30,7 +30,10 @@
                         </span>
                     </div>
                 </div>
-                <div style="font-size: 20px">详情</div>
+                <div style="font-size: 20px; vertical-align: baseline">
+                    详情
+                    <el-button style="margin-top: 3px" type="primary" link @click="editInfo">编辑</el-button>
+                </div>
                 <div class="itemInfoListContainer" :style="infoH">
                     <el-descriptions :column="1" direction="horizontal">
                         <el-descriptions-item
@@ -109,12 +112,13 @@
 </template>
 
 <script setup lang="ts">
-import i18N from './i18n';
+import i18N from '../../../utils/i18n';
 import { openExternal } from '../../../utils/external';
 import { getMIMEImage, getItemTypeImage } from './utils';
 import { computed, onMounted, ref, defineProps, defineEmits, toRefs, onUpdated } from 'vue';
 import { Close } from '@element-plus/icons-vue';
 import reader from '../../../controller/reader';
+import SaltDogMessageChannelRenderer from '../../../controller/messageChannel';
 const TAG = '[Renderer/Library/Info]';
 const p = defineProps<{
     itemInfo: any;
@@ -213,6 +217,9 @@ const infoH = computed({
 const handleClick = (tab: any, event: Event) => {
     console.log(tab, event);
 };
+function editInfo() {
+    SaltDogMessageChannelRenderer.getInstance().execCommand('saltdog.showImportEdit', itemInfo.value.itemID);
+}
 function handleAttachmentClick(attachment: any) {
     console.log(attachment);
     if (attachment.contentType == 'text/html') {
