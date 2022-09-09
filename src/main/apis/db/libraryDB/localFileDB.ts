@@ -64,23 +64,21 @@ export class LocalFileDB {
             });
         });
     }
-
-    public downloadAndSave(dirKey: string, filename: string, url: string, options?: any): Promise<LocalFileDesc> {
-        const targetURL = new URL(url);
+    private _getGotOptions(url: URL, options?: any) {
         let defaultOptions: any = {
             method: 'GET' as Method,
             headers: {
                 'user-agent':
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-                referer: targetURL.protocol + '//' + targetURL.hostname,
+                referer: url.protocol + '//' + url.hostname,
             },
-            isStream: true,
+            // isStream: true,
         };
         if (sysCfg.get('preferences.allowNetworkProxy')) {
-            log.debug(TAG, 'Download using proxy.');
+            log.debug(TAG, 'Using proxy.');
             const httpsProxy = sysCfg.get('preferences.httpsProxyAddress') || null;
             const httpProxy = sysCfg.get('preferences.httpProxyAddress') || null;
-            if (targetURL.protocol === 'https:' && httpsProxy) {
+            if (url.protocol === 'https:' && httpsProxy) {
                 log.debug(TAG, 'Using https proxy.', httpsProxy);
                 defaultOptions.agent = {
                     https: new HttpsProxyAgent({
@@ -92,7 +90,7 @@ export class LocalFileDB {
                         proxy: httpsProxy,
                     }),
                 };
-            } else if (targetURL.protocol === 'http:' && httpProxy) {
+            } else if (url.protocol === 'http:' && httpProxy) {
                 log.debug(TAG, 'Using http proxy.', httpsProxy);
                 defaultOptions.agent = {
                     http: new HttpProxyAgent({
@@ -109,6 +107,10 @@ export class LocalFileDB {
         if (options) {
             defaultOptions = extend(defaultOptions, options);
         }
+        return defaultOptions;
+    }
+    public downloadAndSave(dirKey: string, filename: string, url: string, options?: any): Promise<LocalFileDesc> {
+        const targetURL = new URL(url);
         createLoading({
             id: 'downloadPDF_' + dirKey + '_' + filename,
             name: '文献下载',
@@ -117,7 +119,7 @@ export class LocalFileDB {
         });
         return new Promise((resolve, reject) => {
             // @ts-ignore
-            const downloadStream = got.stream(url, defaultOptions);
+            const downloadStream = got.stream(url, this._getGotOptions(targetURL, options));
             const fpath = path.resolve(this._root, dirKey, filename);
             if (existsSync(fpath)) {
                 unlinkSync(fpath);
@@ -170,5 +172,11 @@ export class LocalFileDB {
                     reject(err);
                 });
         });
+    }
+    public async urlContentTypeTest(url: string) {
+        log.log(TAG, 'Test URLs with OPTIONS request.');
+        const res = await got(url, this._getGotOptions(new URL(url), { method: 'GET' }));
+        // filter charset
+        return res.headers['content-type'] ? res.headers['content-type'].split(';')[0] : 'text/html';
     }
 }

@@ -205,7 +205,7 @@ title_bar_icon_width = 16px
 title_bar_height = 30px
 bottom_bar_height = 22px
 side_bar_icons_width = 48px
-side_bar_width = 180px
+side_bar_width = 230px
 bottom_panel_height = 200px
 resizer_width_or_height = 4px;
 .saltdog-fade

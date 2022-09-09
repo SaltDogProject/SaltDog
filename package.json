@@ -52,6 +52,7 @@
         "lowdb": "^1.0.0",
         "markdown-it": "^13.0.1",
         "md5-file": "^5.0.0",
+        "mime": "^3.0.0",
         "pdf-poppler": "^0.2.1",
         "pdfjs-dist": "^2.14.305",
         "saltdog": "^0.0.1",

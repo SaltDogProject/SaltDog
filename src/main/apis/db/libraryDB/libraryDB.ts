@@ -8,6 +8,7 @@ import * as path from 'path';
 import log from 'electron-log';
 import { LocalFileDB, LocalFileDesc } from './localFileDB';
 import grobid, { GrobidClient } from '../../grobid/index';
+import mime from 'mime';
 const TAG = '[Main/LibraryDB]';
 const schemaJSOHPath = path.resolve(__static, 'libraryDB', './schema.json');
 const internalInitSQLPath = path.resolve(__static, 'libraryDB', './internalInit.sql');
@@ -506,6 +507,38 @@ export default class SaltDogItemDB extends Database {
             tags,
             attachments,
         };
+    }
+    public async addAttachment(
+        itemID: number,
+        attachmentObjs: { title: string; attachmentType: 'online' | 'local'; url: string }
+    ) {
+        const itemInfo = this.getItemInfo(itemID);
+        if (attachmentObjs.attachmentType == 'online') {
+            const ct = await this._localFileDB!.urlContentTypeTest(attachmentObjs.url);
+            if (ct == 'application/pdf') {
+                this._bindingAttachment(
+                    itemInfo.localKey,
+                    itemID,
+                    { title: attachmentObjs.title, url: attachmentObjs.url, mimeType: ct },
+                    false
+                );
+            } else {
+                this.prepare(this._sqlTemplate.insertAttachments).run(
+                    itemID,
+                    attachmentObjs.title,
+                    ct,
+                    attachmentObjs.url
+                );
+            }
+        } else {
+            this._bindingAttachment(
+                itemInfo.localKey,
+                itemID,
+                { title: attachmentObjs.title, url: attachmentObjs.url, mimeType: mime.getType(attachmentObjs.url) },
+                { path: attachmentObjs.url }
+            );
+        }
+        return true;
     }
     public getSDPDFCoreAnnotate(docID: string) {
         const doc = this.prepare(this._sqlTemplate.getSDPDFCoreAnnotate).get(docID);

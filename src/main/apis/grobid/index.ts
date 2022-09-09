@@ -79,12 +79,12 @@ export class GrobidClient {
                 .getDocument(readFileSync(file))
                 .promise.then(async (pdf) => {
                     log.log(TAG, 'Target pdf file page number:', pdf.numPages);
-                    if (pdf.numPages > 40) {
+                    if (pdf.numPages > 30) {
                         SaltDogMessageChannelMain.getInstance().execCommand(
                             'saltdog.showNotification',
                             'warning',
                             '无法智能解析该文件',
-                            '该文件过长，SaltDog暂时只支持50页以下的文件。'
+                            '该文件过长，SaltDog暂时只支持30页以下的文件。'
                         );
                     }
                     const form = new FormData();
@@ -115,7 +115,7 @@ export class GrobidClient {
                         .post(this._host + GROBID_API.FULLTEXT, {
                             body: form,
                             timeout: {
-                                request: 60000,
+                                request: 120000,
                             },
                         })
                         .json();

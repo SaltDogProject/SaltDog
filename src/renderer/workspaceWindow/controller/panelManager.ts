@@ -119,7 +119,7 @@ class viewsManager {
         if (this.isSideBarOpen) return;
         this.isSideBarOpen = true;
         const outer = this.resizers!.sideBar2mainPanel.outerContainer.getBoundingClientRect();
-        const sideBarWidth = 180;
+        const sideBarWidth = 230;
         const mainPanelWidth = outer!.width - sideBarWidth;
         // -2 因为resizer占4个
         this.sideBar!.htmlElement.style.display = 'block';

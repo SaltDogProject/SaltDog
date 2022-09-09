@@ -118,6 +118,7 @@ function confirmBtn() {
                 type: 'success',
             });
             dialogClosed();
+            SaltDogMessageChannelRenderer.getInstance().emit('saltdog.refreshLibrary');
         })
         .catch((e) => {
             ElMessage({

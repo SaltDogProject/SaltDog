@@ -66,3 +66,9 @@ export function getReadHistory(operationType = 'open', limit = 5): Promise<IRead
 export function modifyItem(modifyObjs: { itemID: number; add: any[]; modify: any[]; delete: any[] }): Promise<boolean> {
     return invokeLibraryMethodAsync('modifyItem', modifyObjs) as Promise<boolean>;
 }
+export function addAttachment(
+    itemID: number,
+    attachmentObjs: { title: string; attachmentType: 'online' | 'local'; url: string }
+): Promise<void> {
+    return invokeLibraryMethodAsync('addAttachment', itemID, attachmentObjs) as Promise<void>;
+}

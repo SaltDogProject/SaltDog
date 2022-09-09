@@ -76,6 +76,7 @@
             <Info :item-info="itemInfo" @closePanel="closeInfoPanel" />
         </div>
     </div>
+    <ImportAttachments />
     <!-- <ImportDialog
         v-model:show-import-panel="showImportPanel"
         :current-lib="currentLib"
@@ -93,6 +94,10 @@
             <el-icon><EditPen /></el-icon>
             <span>编辑</span>
         </li>
+        <li class="contextMenuSelect" @click="handleLibraryEdit('addAttachment')">
+            <el-icon><Plus /></el-icon>
+            <span>新增条目附件</span>
+        </li>
         <li class="contextMenuSelect" @click="handleLibraryEdit('delete')">
             <el-icon><Remove /></el-icon>
             <span>删除</span>
@@ -106,7 +111,7 @@ import Info from './info.vue';
 import Navi from './navi.vue';
 import ImportDialog from './import.vue';
 import { getItemTypeImage } from './utils';
-import { FolderAdd, Upload, Document, EditPen, Remove } from '@element-plus/icons-vue';
+import { FolderAdd, Upload, Document, EditPen, Remove, Plus } from '@element-plus/icons-vue';
 import { locateDir, listDir, getLibraryInfoByID, mkdir, getItemInfo, deleteItem } from '../../../controller/library';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { trim } from 'lodash';
@@ -116,6 +121,7 @@ import { EventEmitter } from 'stream';
 import log from 'electron-log';
 import { showMessage } from '@/workspaceWindow/controller/notification';
 import db from '../../../../utils/db';
+import ImportAttachments from '../../dialogs/importAttachments.vue';
 const TAG = '[Renderer/Library/Library]';
 
 interface User {
@@ -181,9 +187,10 @@ function doImport() {
     // showImportPanel.value = true;
     SaltDogMessageChannelRenderer.getInstance().execCommand('saltdog.showImportPanel');
 }
-SaltDogMessageChannelRenderer.getInstance().on('saltdog.refreshLibrary', (lib, dir) => {
+SaltDogMessageChannelRenderer.getInstance().on('saltdog.refreshLibrary', (lib = _libraryID, dir = _dirID) => {
     updateView(lib, dir);
 });
+
 function updateView(libraryID: number, dirID: number) {
     log.debug(TAG, 'updateView', libraryID, dirID);
     _dirID = dirID;
@@ -339,11 +346,15 @@ function handleRowContextMenu(data: any, _: any, pointer: PointerEvent) {
     console.log(data);
 }
 
-function handleLibraryEdit(type: 'edit' | 'delete') {
+function handleLibraryEdit(type: 'edit' | 'delete' | 'addAttachment') {
     switch (type) {
         case 'edit':
             log.debug(TAG, 'Toggle Edit Mode.', contextMenuActiveItem);
             SaltDogMessageChannelRenderer.getInstance().execCommand('saltdog.showImportEdit', contextMenuActiveItem.id);
+            break;
+        case 'addAttachment':
+            log.debug(TAG, 'Toggle Add attachment.', contextMenuActiveItem);
+            SaltDogMessageChannelRenderer.getInstance().execCommand('saltdog.addAttachment', contextMenuActiveItem.id);
             break;
         case 'delete':
             log.debug(TAG, 'Delete');

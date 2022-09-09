@@ -125,12 +125,13 @@ export function initIpc(windowManager: IWindowManager): void {
         e.returnValue = buildSettingsTemplate(pluginSettings);
     });
 
-    ipcMain.on('invokeLibraryMethod', (e, fn, id, ...args) => {
+    ipcMain.on('invokeLibraryMethod', async (e, fn, id, ...args) => {
         console.log(TAG, 'invokeLibraryMethod', fn, id, ...args);
         try {
             const libraryDB = LibraryDB.getInstance();
             if (typeof libraryDB[fn] == 'function') {
-                const rtData = libraryDB[fn](...args);
+                const rtData = await libraryDB[fn](...args);
+                log.debug(TAG, 'will return', rtData);
                 e.sender.send('invokeLibraryMethodReply', id, null, rtData);
             } else {
                 e.sender.send('invokeLibraryMethodReply', id, 'Bad Method', null);

@@ -15,7 +15,10 @@
     <div style="margin: 10px; height: calc(100% - 190px)" v-if="itemInfo && displayInfo">
         <el-tabs stretch v-model="activeName" class="itemInfoListTabs" @tab-click="handleClick">
             <el-tab-pane label="详细信息" name="info">
-                <div style="font-size: 20px">附件</div>
+                <div style="font-size: 20px">
+                    附件
+                    <el-button style="margin-top: 3px" type="primary" link @click="addAttachment">新增</el-button>
+                </div>
                 <div class="attachment_group">
                     <div
                         @click="handleAttachmentClick(a)"
@@ -226,12 +229,15 @@ function handleAttachmentClick(attachment: any) {
         openExternal(attachment.url);
     } else if (attachment.contentType == 'application/pdf') {
         if (attachment.path) {
-            reader.getInstance().addReader(itemInfo.value.title, attachment.path, itemInfo);
+            reader.getInstance().addReader(itemInfo.value.title, attachment.path, JSON.parse(JSON.stringify(itemInfo)));
             // openExternal(attachment.path);
         } else if (attachment.url) {
             openExternal(attachment.url);
         }
     }
+}
+function addAttachment() {
+    SaltDogMessageChannelRenderer.getInstance().execCommand('saltdog.addAttachment', itemInfo.value.itemID);
 }
 </script>
 <style lang="stylus">

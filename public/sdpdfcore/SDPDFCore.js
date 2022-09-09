@@ -48144,7 +48144,10 @@ module.exports.inflateUndermine = inflateUndermine;
                         // this.renderBibWindow({}, 100, 100);
                     }
                     init() {
-                        if (!window._isInLibrary) document.getElementById('gbWrapper').hidden = false;
+                        if (window._isInLibrary) {
+                            document.getElementById('gbWrapper').hidden = true;
+                            this.loadData();
+                        }
                     }
                     test() {
                         this.init();
