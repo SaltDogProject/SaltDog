@@ -42,7 +42,8 @@ import { ipcRenderer } from 'electron';
 import tabManager from '../../controller/tabManager';
 import path from 'path';
 import { Plus } from '@element-plus/icons-vue';
-import { getReadHistory } from '../../controller/library';
+import { getItemInfo, getReadHistory } from '../../controller/library';
+import ReaderManager from '../../controller/reader';
 const TAG = '[Renderer/Welcome]';
 export default defineComponent({
     components: { Plus },
@@ -67,7 +68,13 @@ export default defineComponent({
         }
         function handleHistoryClick(e: any) {
             console.log(e);
-            tabManager.addPdfTab(e.title, e.path);
+            if (e.itemID) {
+                getItemInfo(e.itemID).then((info) => {
+                    ReaderManager.getInstance().addReader(e.title, e.path, info);
+                });
+            } else {
+                ReaderManager.getInstance().addReader(e.title, e.path, null);
+            }
         }
         return { tableData, openDocument, handleHistoryClick };
     },

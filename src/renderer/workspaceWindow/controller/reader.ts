@@ -78,9 +78,10 @@ export default class ReaderManager {
             });
         });
     }
-    public addReader(tabName: string, path: string, itemInfo: any) {
+    public addReader(tabName: string, path: string, itemInfo: any = null) {
         const id = tabManager.addPdfTab(tabName, path, itemInfo);
         if (id) this._itemInfoMap.set(id, itemInfo);
+        return id;
     }
     public getItemInfo(id: string) {
         if (this._itemInfoMap.has(id)) return this._itemInfoMap.get(id);

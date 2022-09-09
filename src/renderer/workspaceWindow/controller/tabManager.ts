@@ -12,6 +12,7 @@ import { uuid } from 'licia';
 import ReaderManager from './reader';
 import { Action, ElMessage, ElMessageBox, ElNotification } from 'element-plus';
 import { setReadHistory } from './library';
+import Reader from '../controller/reader';
 const TAG = '[Renderer/TabManager]';
 class MainTabManager implements ITabManager {
     private _eventList = [
@@ -71,7 +72,7 @@ class MainTabManager implements ITabManager {
                 console.log(TAG, 'Open new PDF file', arg.filePaths);
                 for (const p of arg.filePaths) {
                     // 打开PDF
-                    this.addPdfTab(path.basename(p || '未命名'), p);
+                    Reader.getInstance().addReader(path.basename(p || '未命名'), p);
                 }
             }
         });
