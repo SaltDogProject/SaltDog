@@ -27,10 +27,10 @@ export class GrobidClient {
     constructor() {
         if (!existsSync(this._grobidCacheDir)) mkdirSync(this._grobidCacheDir, { recursive: true });
         SaltDogMessageChannelMain.getInstance().onInvoke('reader.getGrobidMarkerInfo', async (path) => {
-            SaltDogMessageChannelMain.getInstance().execCommand('saltdog.showMessage', 'info', '正在解析文档，请稍后');
             let data = null;
             try {
                 data = await this.getMarker(path);
+                if (!data) return null;
             } catch (e) {
                 data = null;
                 SaltDogMessageChannelMain.getInstance().execCommand('saltdog.showMessage', 'error', '解析失败😭');
@@ -86,7 +86,15 @@ export class GrobidClient {
                             '无法智能解析该文件',
                             '该文件过长，SaltDog暂时只支持30页以下的文件。'
                         );
+                        log.log(TAG, 'File Too long.');
+                        resolve(null);
+                        return;
                     }
+                    SaltDogMessageChannelMain.getInstance().execCommand(
+                        'saltdog.showMessage',
+                        'info',
+                        '正在解析文档，请稍后'
+                    );
                     const form = new FormData();
                     // const file = fs.readFileSync('F:\\研究生\\论文\\fpga\\a.pdf');
                     // console.log('readfile', fileFromPathSync(file));

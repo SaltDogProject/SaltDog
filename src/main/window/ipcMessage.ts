@@ -8,6 +8,7 @@ import LibraryDB from '../apis/db/libraryDB/libraryDB';
 import Parser from '../apis/parser/parser';
 import { buildSettingsTemplate } from '../apis/db/index';
 import log from 'electron-log';
+import SaltDogMessageChannelMain from '../apis/plugin/api/messageChannel';
 // import SaltDogMessageChannelMain from '../apis/plugin/api/messageChannel';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const TAG = '[Main/IPC]';
@@ -70,6 +71,10 @@ export function initIpc(windowManager: IWindowManager): void {
         console.log(TAG, 'openExternal', url);
         shell.openExternal(url);
     });
+    ipcMain.on('showItemInFolder', (e, path) => {
+        console.log(TAG, 'showItemInFolder', path);
+        shell.showItemInFolder(path);
+    });
     // plugin webview->plugin host
     // ipcMain.on('PLUGINWEBVIEW_IPC', (e, msg) => {
     //     // console.log('[MAIN] PLUGINWEBVIEW_IPC', msg);
@@ -131,13 +136,13 @@ export function initIpc(windowManager: IWindowManager): void {
             const libraryDB = LibraryDB.getInstance();
             if (typeof libraryDB[fn] == 'function') {
                 const rtData = await libraryDB[fn](...args);
-                log.debug(TAG, 'will return', rtData);
+                // log.debug(TAG, 'will return', rtData);
                 e.sender.send('invokeLibraryMethodReply', id, null, rtData);
             } else {
                 e.sender.send('invokeLibraryMethodReply', id, 'Bad Method', null);
             }
         } catch (err: any) {
-            console.error('library Err:', err);
+            log.error('library Err:', err);
             e.sender.send(`invokeLibraryMethodReply`, id, err.message ? err.message : JSON.stringify(err), null);
         }
     });

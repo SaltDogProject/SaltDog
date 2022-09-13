@@ -71,9 +71,10 @@
                 </template>
             </el-table-column>
         </el-table>
+
         <!-- <div style="width: 100%; height: 100%" @click="closeInfoPanel"></div> -->
         <div v-show="showInfo" :class="{ itemInfoPanel: true }">
-            <Info :item-info="itemInfo" @closePanel="closeInfoPanel" />
+            <Info :item-id="infoPanelItemID" @closePanel="closeInfoPanel" />
         </div>
     </div>
     <ImportAttachments />
@@ -162,12 +163,12 @@ watchEffect(
         }
 
         if (showInfo.value) {
-            log.debug(TAG, 'setlis');
+            // log.debug(TAG, 'setlis');
             setTimeout(() => {
                 document.body.addEventListener('click', closeInfoPanel);
             }, 500);
         } else {
-            log.debug(TAG, 'remlis');
+            // log.debug(TAG, 'remlis');
             document.body.removeEventListener('click', closeInfoPanel);
         }
 
@@ -312,6 +313,7 @@ function handleRowDbClick(e: any) {
 }
 
 let _currentItem: any = null;
+const infoPanelItemID = ref(-1);
 function handleRowClick(e: any) {
     if (!e) return;
     if (_currentItem && _currentItem.id == e.id && _currentItem.type == e.type && showInfo.value) return;
@@ -322,10 +324,7 @@ function handleRowClick(e: any) {
     }
     log.debug(TAG, 'handleCurrentChange', e);
 
-    getItemInfo(e.id).then((res: any) => {
-        itemInfo.value = res;
-        log.debug(TAG, 'getItemInfo', res);
-    });
+    infoPanelItemID.value = e.id;
     showInfo.value = true;
 }
 function handleRowContextMenu(data: any, _: any, pointer: PointerEvent) {
@@ -343,7 +342,7 @@ function handleRowContextMenu(data: any, _: any, pointer: PointerEvent) {
             contextMenuLeft.value = pointer.pageX - width;
         }
     }, 0);
-    console.log(data);
+    // console.log(data);
 }
 
 function handleLibraryEdit(type: 'edit' | 'delete' | 'addAttachment') {

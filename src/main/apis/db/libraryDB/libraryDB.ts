@@ -122,6 +122,7 @@ export default class SaltDogItemDB extends Database {
         insertAttachments: 'INSERT INTO itemAttachments (parentItemID,name,contentType,url) VALUES (?,?,?,?);',
         updateAttachments:
             'UPDATE itemAttachments SET path=?,syncState=?,storageModTime=?,storageHash=?,lastProcessedModificationTime=? WHERE attachmentID=?;',
+        deleteAttachments: 'DELETE FROM itemAttachments WHERE attachmentID=?;',
         getSDPDFCoreAnnotate: 'SELECT annotations from pdfAnnotations WHERE key=?;',
         setSDPDFCoreAnnotate: 'REPLACE INTO pdfAnnotations (key,annotations) VALUES (?,?);',
         modifyItemType: 'UPDATE items SET itemTypeID=? WHERE itemID=?;',
@@ -539,6 +540,14 @@ export default class SaltDogItemDB extends Database {
             );
         }
         return true;
+    }
+    public deleteAttachment(attachmentID: number) {
+        try {
+            this.prepare(this._sqlTemplate.deleteAttachments).run(attachmentID);
+        } catch (e) {
+            log.error(e);
+            throw e;
+        }
     }
     public getSDPDFCoreAnnotate(docID: string) {
         const doc = this.prepare(this._sqlTemplate.getSDPDFCoreAnnotate).get(docID);

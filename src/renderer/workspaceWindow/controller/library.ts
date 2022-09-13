@@ -72,3 +72,6 @@ export function addAttachment(
 ): Promise<void> {
     return invokeLibraryMethodAsync('addAttachment', itemID, attachmentObjs) as Promise<void>;
 }
+export function deleteAttachment(attachmentID: number): Promise<void> {
+    return invokeLibraryMethodAsync('deleteAttachment', attachmentID) as Promise<void>;
+}

@@ -61,8 +61,8 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
     multiple: false,
     options() {
         const options: IBrowserWindowOptions = {
-            height: 800,
-            width: 1200,
+            height: 900,
+            width: 1400,
             show: true, //false, // 预加载
             frame: true,
             center: true,

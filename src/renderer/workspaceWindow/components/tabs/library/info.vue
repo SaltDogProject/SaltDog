@@ -25,6 +25,8 @@
                         :key="a.attachmentID"
                         v-for="a in displayInfo.attachments"
                         :class="{ attacment_item: true, attachment_downloading: a.syncState == -1 }"
+                        @contextmenu="showContextmenu"
+                        :data-attachmentInfo="JSON.stringify(a)"
                     >
                         <img style="width: 20px; height: 20px" :src="getMIMEImage(a.contentType)" alt="" />
                         <span class="attacment_title">
@@ -111,6 +113,28 @@
                 </div>
             </el-tab-pane>
         </el-tabs>
+        <!--右键菜单-->
+        <ul
+            v-show="contextMenuVisible"
+            :style="{ left: contextMenuLeft + 'px', top: contextMenuTop + 'px' }"
+            class="contextmenu"
+            ref="contextMenuRef"
+        >
+            <li class="contextMenuSelect" v-if="itemIsLocal" @click="handleAttachEdit('openPath')">
+                <el-icon><Files /></el-icon>
+                <span>打开文件位置</span>
+            </li>
+            <li class="contextMenuSelect" v-if="itemHasUrl" @click="handleAttachEdit('openURL')">
+                <el-icon>
+                    <img :src="getMIMEImage('text/html')" style="width: 12px; height: 12px" alt="" srcset="" />
+                </el-icon>
+                <span>打开URL</span>
+            </li>
+            <li class="contextMenuSelect" @click="handleAttachEdit('delete')">
+                <el-icon><Remove /></el-icon>
+                <span>删除</span>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -118,13 +142,17 @@
 import i18N from '../../../utils/i18n';
 import { openExternal } from '../../../utils/external';
 import { getMIMEImage, getItemTypeImage } from './utils';
-import { computed, onMounted, ref, defineProps, defineEmits, toRefs, onUpdated } from 'vue';
-import { Close } from '@element-plus/icons-vue';
+import { computed, onMounted, ref, defineProps, defineEmits, toRefs, onUpdated, reactive, watchEffect } from 'vue';
+import { Close, Remove, Files } from '@element-plus/icons-vue';
 import reader from '../../../controller/reader';
 import SaltDogMessageChannelRenderer from '../../../controller/messageChannel';
+import { deleteAttachment, getItemInfo } from '@/workspaceWindow/controller/library';
+import { existsSync } from 'fs-extra';
+import { ElMessageBox } from 'element-plus';
+
 const TAG = '[Renderer/Library/Info]';
 const p = defineProps<{
-    itemInfo: any;
+    itemId: any;
 }>();
 const emit = defineEmits<{
     (e: 'closePanel'): void;
@@ -132,8 +160,26 @@ const emit = defineEmits<{
 function geti18N(str: string) {
     return i18N['zh-CN']['fields'][str] || i18N['zh-CN']['itemTypes'][str];
 }
-
-const { itemInfo } = toRefs(p);
+function closeContextMenu() {
+    contextMenuVisible.value = false;
+}
+watchEffect(
+    (onInvalidate) => {
+        if (contextMenuVisible.value) {
+            document.body.addEventListener('click', closeContextMenu);
+        } else {
+            document.body.removeEventListener('click', closeContextMenu);
+        }
+        onInvalidate(() => {
+            //当组件失效，watchEffect被主动停止或者副作用即将重新执行时
+        });
+    },
+    {
+        flush: 'post', //在组件更新后触发
+    }
+);
+const { itemId } = toRefs(p);
+const itemInfo = ref<any>({});
 const displayInfo = computed<any>({
     get: () => {
         if (!itemInfo.value) return;
@@ -195,13 +241,23 @@ const displayInfo = computed<any>({
         return;
     },
 });
+let currentid = -1;
 onUpdated(() => {
-    console.log(TAG, itemInfo.value);
+    updateInfoView();
 });
-
+function updateInfoView(force = false) {
+    if (!force && itemId.value == -1) return;
+    if (!force && itemId.value == currentid) return;
+    getItemInfo(itemId.value).then((res) => {
+        itemInfo.value = res;
+    });
+    currentid = itemId.value;
+}
 function closeInfoPanel() {
     console.log('closePanel');
     emit('closePanel');
+    itemId.value = -1;
+    currentid = -1;
 }
 const activeName = ref('info');
 const infoH = computed({
@@ -239,6 +295,79 @@ function handleAttachmentClick(attachment: any) {
 function addAttachment() {
     SaltDogMessageChannelRenderer.getInstance().execCommand('saltdog.addAttachment', itemInfo.value.itemID);
 }
+let contextMenuActiveItem: any = {};
+const contextMenuVisible = ref(false);
+const contextMenuLeft = ref(0);
+const contextMenuTop = ref(0);
+const contextMenuRef = ref<any>(null);
+// TODO: 不知道为啥这个东西只能分开做ref 用torefs和reactive都没办法在context渲染之前计算完状态，导致context菜单全部展示。
+const itemIsLocal = ref(false);
+const itemHasUrl = ref(false);
+function showContextmenu(pointer: any) {
+    if (!pointer) return;
+    const item = pointer.path.filter((ele: any) => ele.classList && ele.classList.contains('attacment_item'))[0];
+    const data = JSON.parse(item.getAttribute('data-attachmentInfo'));
+    contextMenuActiveItem = data;
+    contextMenuTop.value = pointer.pageY;
+    contextMenuLeft.value = pointer.pageX;
+    itemIsLocal.value = contextMenuActiveItem.path != null;
+    itemHasUrl.value = contextMenuActiveItem.url != null;
+    contextMenuVisible.value = true; //显示菜单
+
+    // if (contextMenuActiveItem.path != null) {
+    //     console.error('true');
+    //     contextMenuActiveRef.isLocal.value = true;
+    // } else {
+    //     contextMenuActiveRef.isLocal.value = false;
+    // }
+    setTimeout(() => {
+        const { width, height } = contextMenuRef.value.getBoundingClientRect();
+        if (pointer.pageY + height > window.innerHeight - 40) {
+            contextMenuTop.value = pointer.pageY - height;
+        }
+        if (pointer.pageX + width > window.innerWidth - 40) {
+            contextMenuLeft.value = pointer.pageX - width;
+        }
+    }, 0);
+    // console.log(contextMenuActiveItem);
+}
+function handleAttachEdit(type: 'delete' | 'openPath' | 'openURL') {
+    console.log('atta Edit', contextMenuActiveItem);
+    switch (type) {
+        case 'delete':
+            ElMessageBox.confirm(`确定要删除${contextMenuActiveItem.name}吗？`, '删除', {
+                confirmButtonText: '删除',
+                cancelButtonText: '再想想',
+                type: 'warning',
+            }).then(() => {
+                if (contextMenuActiveItem.attachmentID) deleteAttachment(contextMenuActiveItem.attachmentID);
+            });
+            break;
+        case 'openPath':
+            if (contextMenuActiveItem.path && existsSync(contextMenuActiveItem.path)) {
+                SaltDogMessageChannelRenderer.getInstance().execCommand(
+                    'saltdog.showItemInFolder',
+                    contextMenuActiveItem.path,
+                    false
+                );
+            } else {
+                SaltDogMessageChannelRenderer.getInstance().execCommand(
+                    'saltdog.showMessage',
+                    'error',
+                    '打开失败, 目标文件已经移动或删除'
+                );
+            }
+            break;
+        case 'openURL':
+            if (!contextMenuActiveItem.url) break;
+            SaltDogMessageChannelRenderer.getInstance().execCommand('saltdog.openExternal', contextMenuActiveItem.url);
+            break;
+    }
+    updateInfoView(true);
+}
+SaltDogMessageChannelRenderer.getInstance().registerCommand('saltdog.refreshInfoPanel', () => {
+    updateInfoView(true);
+});
 </script>
 <style lang="stylus">
 .infoTag {
@@ -246,6 +375,7 @@ function addAttachment() {
     margin-bottom: 5px;
 }
 .itemInfoList_content {
+    user-select: text;
     display: inline-block;
     max-width: calc(100% - 90px);
     line-height: 24px;
@@ -283,6 +413,7 @@ function addAttachment() {
     word-wrap: break-all;
 }
 .itemInfoHead_title {
+    user-select: text;
     padding-right 20px
     font-size: 20px;
     font-variant-ligatures: no-contextual;

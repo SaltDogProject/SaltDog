@@ -1,9 +1,12 @@
 import SaltDogMessageChannelRenderer from '../controller/messageChannel';
-import { openExternal } from './external';
+import { openExternal, showItemInFolder } from './external';
 import { ElNotification, ElMessage } from 'element-plus';
 export default function initCommandListener() {
     SaltDogMessageChannelRenderer.getInstance().registerCommand('saltdog.openExternal', (url) => {
         openExternal(url);
+    });
+    SaltDogMessageChannelRenderer.getInstance().registerCommand('saltdog.showItemInFolder', (path, ask = true) => {
+        showItemInFolder(path, ask);
     });
     SaltDogMessageChannelRenderer.getInstance().registerCommand(
         'saltdog.showNotification',

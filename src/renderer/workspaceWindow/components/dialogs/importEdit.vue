@@ -119,6 +119,7 @@ function confirmBtn() {
             });
             dialogClosed();
             SaltDogMessageChannelRenderer.getInstance().emit('saltdog.refreshLibrary');
+            SaltDogMessageChannelRenderer.getInstance().execCommand('saltdog.refreshInfoPanel');
         })
         .catch((e) => {
             ElMessage({
