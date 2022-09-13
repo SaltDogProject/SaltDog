@@ -95,6 +95,10 @@
             <el-icon><EditPen /></el-icon>
             <span>编辑</span>
         </li>
+        <!-- <li class="contextMenuSelect" @click="handleLibraryEdit('reCrawMeta')">
+            <el-icon><RefreshLeft /></el-icon>
+            <span>重新抓取元数据</span>
+        </li> -->
         <li class="contextMenuSelect" @click="handleLibraryEdit('addAttachment')">
             <el-icon><Plus /></el-icon>
             <span>新增条目附件</span>
@@ -112,7 +116,7 @@ import Info from './info.vue';
 import Navi from './navi.vue';
 import ImportDialog from './import.vue';
 import { getItemTypeImage } from './utils';
-import { FolderAdd, Upload, Document, EditPen, Remove, Plus } from '@element-plus/icons-vue';
+import { FolderAdd, Upload, Document, EditPen, Remove, Plus, RefreshLeft } from '@element-plus/icons-vue';
 import { locateDir, listDir, getLibraryInfoByID, mkdir, getItemInfo, deleteItem } from '../../../controller/library';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { trim } from 'lodash';
@@ -345,7 +349,7 @@ function handleRowContextMenu(data: any, _: any, pointer: PointerEvent) {
     // console.log(data);
 }
 
-function handleLibraryEdit(type: 'edit' | 'delete' | 'addAttachment') {
+function handleLibraryEdit(type: 'edit' | 'delete' | 'addAttachment' | 'reCrawMeta') {
     switch (type) {
         case 'edit':
             log.debug(TAG, 'Toggle Edit Mode.', contextMenuActiveItem);
@@ -384,6 +388,8 @@ function handleLibraryEdit(type: 'edit' | 'delete' | 'addAttachment') {
                     log.debug(TAG, 'Delete Canceled');
                 });
             break;
+        case 'reCrawMeta':
+            console.log(contextMenuActiveItem);
     }
 }
 </script>
