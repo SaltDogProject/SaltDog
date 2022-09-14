@@ -1,6 +1,7 @@
 import SaltDogMessageChannelRenderer from '../controller/messageChannel';
 import { openExternal, showItemInFolder } from './external';
 import { ElNotification, ElMessage } from 'element-plus';
+import { ipcRenderer } from 'electron';
 export default function initCommandListener() {
     SaltDogMessageChannelRenderer.getInstance().registerCommand('saltdog.openExternal', (url) => {
         openExternal(url);
@@ -27,4 +28,10 @@ export default function initCommandListener() {
             });
         }
     );
+    SaltDogMessageChannelRenderer.getInstance().registerCommand('saltdog.toggleDevtools', () => {
+        ipcRenderer.send('toggleDevTools', 'WORKSPACE_WINDOW');
+    });
+    SaltDogMessageChannelRenderer.getInstance().registerCommand('saltdog.toggleDevtoolsPlugin', () => {
+        ipcRenderer.send('toggleDevTools', 'PLUGIN_HOST', 'detach');
+    });
 }

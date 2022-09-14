@@ -165,4 +165,14 @@ export function initIpc(windowManager: IWindowManager): void {
             console.error(err);
         }
     });
+    ipcMain.on('toggleDevTools', (e, window_name: string, mode) => {
+        const window = windowManager.get(window_name);
+        if (window) {
+            if (mode) {
+                window.webContents.openDevTools({ mode });
+            } else {
+                window.webContents.toggleDevTools();
+            }
+        }
+    });
 }

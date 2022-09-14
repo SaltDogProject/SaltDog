@@ -1,12 +1,12 @@
 <template>
     <div class="sideBarIconsView">
-        <div
-            :class="{ sideBarIconsContainer: true, activeIcon: icon.active }"
-            v-for="(icon, index) in iconList"
-            :key="index"
-            @click="iconClick(index)"
-        >
-            <img :src="icon.iconImg" :alt="icon.description" />
+        <div style="width: 100%" v-for="(icon, index) in iconList" :key="index" @click="iconClick(index)">
+            <div
+                :class="{ sideBarIconsContainer: true, activeIcon: icon.active }"
+                v-if="icon.when == '*' || icon.when == currentTabType"
+            >
+                <img :src="icon.iconImg" :alt="icon.description" />
+            </div>
         </div>
         <div style="flex-grow: 1"></div>
         <!-- <div :class="{ sideBarIconsContainer: true, activeIcon: false }" @click="openLibrary">
@@ -22,9 +22,12 @@ import { defineComponent, getCurrentInstance, ref } from 'vue';
 import { Location, Document, Menu as IconMenu, Setting } from '@element-plus/icons';
 import sysBus from '../controller/systemBus';
 import plugins from '../controller/plugin/plugin';
+import SaltDogMessageChannelRenderer from '../controller/messageChannel';
+import tabManager from '../controller/tabManager';
 
 export default defineComponent({
     setup() {
+        const currentTabType = ref('*');
         // eslint-disable-next-line no-undef
         const settingsIcon = `${'file:///' + __static}/images/workspace/settings.svg`;
         // eslint-disable-next-line no-undef
@@ -53,8 +56,17 @@ export default defineComponent({
         function openSettings() {
             sysBus.emit('saltdog:openSettings');
         }
+        SaltDogMessageChannelRenderer.getInstance().on('saltdog.tabsChange', (value) => {
+            const info = tabManager.getInfoById(value);
+            if (info && info.isPdf) {
+                currentTabType.value = 'reader';
+            } else {
+                currentTabType.value = '*';
+            }
+        });
         return {
             iconList,
+            currentTabType,
             iconClick,
             settingsIcon,
             libraryIcon,
@@ -96,7 +108,7 @@ sidebar_icon_true_width = 27px
             transform: translateX(-80px);
         overflow:hidden
         align-items: center;
-        width:calc(100% - 12px)
+        // width:calc(100% - 12px)
         text-align: center;
         padding:10px 3px 10px 3px
         //margin:0px

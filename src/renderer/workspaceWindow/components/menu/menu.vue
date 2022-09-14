@@ -82,6 +82,19 @@ const menuList = [
             },
         ],
     },
+    {
+        title: '帮助',
+        children: [
+            {
+                title: '打开开发人员工具',
+                command: 'saltdog.toggleDevtools',
+            },
+            {
+                title: '打开开发人员工具(插件)',
+                command: 'saltdog.toggleDevtoolsPlugin',
+            },
+        ],
+    },
 ] as ISaltdogMenuItem[];
 let judgeTimer: any = null;
 const hasMenuDisplay = ref(false);

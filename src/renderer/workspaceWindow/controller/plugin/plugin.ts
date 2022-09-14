@@ -53,24 +53,28 @@ class SaltDogPlugin {
             {
                 iconImg: `${buildinIconPath}/library.svg`,
                 description: '图书馆',
+                when: '*',
                 active: false,
                 command: 'onClickSidebarIcon:saltdog.library',
             },
             {
                 iconImg: `${buildinIconPath}/content.svg`,
                 description: '目录',
+                when: 'reader',
                 active: false,
                 command: 'onClickSidebarIcon:saltdog.outline',
             },
             {
                 iconImg: `${buildinIconPath}/search.svg`,
                 description: '搜索',
+                when: 'reader',
                 active: false,
                 command: 'onClickSidebarIcon:saltdog.search',
             },
             {
                 iconImg: `${buildinIconPath}/plugin.svg`,
                 description: '插件',
+                when: '*',
                 active: false,
                 command: 'onClickSidebarIcon:saltdog.plugin',
             },
@@ -83,6 +87,7 @@ class SaltDogPlugin {
                             iconImg: icon.iconPath,
                             description: icon.description,
                             active: false,
+                            when: icon.when || '*',
                             command: `onClickSidebarIcon:${icon.command}`,
                         });
                     });
