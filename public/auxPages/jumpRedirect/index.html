@@ -1,0 +1,41 @@
+<head>
+    <title>Redirect</title>
+</head>
+<body>
+    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; height: 100%">
+        <img src="../../images/illustrations/loading.svg" style="width: 300px; height: 300px" />
+        <h2 style="font-weight: 500">
+            正在处理，请稍后
+            <span id="indicator"></span>
+        </h2>
+    </div>
+    <footer
+        style="
+            position: fixed;
+            bottom: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        "
+    >
+        <div style="margin: auto; font-size: 10px; color: rgb(155, 155, 155)">
+            若长时间无响应, 请检查您的网络连接或关闭本页重试
+        </div>
+        <div style="margin-top: 10px; font-size: 10px; color: rgb(155, 155, 155)">2022 SaltDog Project</div>
+    </footer>
+    <script>
+        const ind = document.getElementById('indicator');
+        let cnt = 0;
+        setInterval(() => {
+            if (cnt < 3) {
+                ind.innerText += '.';
+                cnt++;
+            } else {
+                cnt = 0;
+                ind.innerText = '';
+            }
+        }, 1000);
+    </script>
+</body>

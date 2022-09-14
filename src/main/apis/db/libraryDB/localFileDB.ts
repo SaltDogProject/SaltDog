@@ -15,7 +15,6 @@ import { extend, throttle } from 'lodash';
 import * as path from 'path';
 import log from 'electron-log';
 import got, { Method, Options } from 'got-cjs';
-import { HttpsProxyAgent, HttpProxyAgent } from 'hpagent';
 import md5 from 'md5-file';
 import { readFile } from 'licia/fs';
 import stream from 'stream';
@@ -24,6 +23,7 @@ const pipeline = promisify(stream.pipeline);
 import { createLoading, cancelLoading } from '../../loading';
 import sysCfg from '../index';
 import SaltDogMessageChannelMain from '../../plugin/api/messageChannel';
+import { getGotOptions } from '../../../utils/network';
 const TAG = '[Main/DB/localFileDB]';
 export type LocalFileDesc = {
     md5: string;
@@ -64,51 +64,7 @@ export class LocalFileDB {
             });
         });
     }
-    private _getGotOptions(url: URL, options?: any) {
-        let defaultOptions: any = {
-            method: 'GET' as Method,
-            headers: {
-                'user-agent':
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-                referer: url.protocol + '//' + url.hostname,
-            },
-            // isStream: true,
-        };
-        if (sysCfg.get('preferences.allowNetworkProxy')) {
-            log.debug(TAG, 'Using proxy.');
-            const httpsProxy = sysCfg.get('preferences.httpsProxyAddress') || null;
-            const httpProxy = sysCfg.get('preferences.httpProxyAddress') || null;
-            if (url.protocol === 'https:' && httpsProxy) {
-                log.debug(TAG, 'Using https proxy.', httpsProxy);
-                defaultOptions.agent = {
-                    https: new HttpsProxyAgent({
-                        keepAlive: true,
-                        keepAliveMsecs: 1000,
-                        maxSockets: 256,
-                        maxFreeSockets: 256,
-                        scheduling: 'lifo',
-                        proxy: httpsProxy,
-                    }),
-                };
-            } else if (url.protocol === 'http:' && httpProxy) {
-                log.debug(TAG, 'Using http proxy.', httpsProxy);
-                defaultOptions.agent = {
-                    http: new HttpProxyAgent({
-                        keepAlive: true,
-                        keepAliveMsecs: 1000,
-                        maxSockets: 256,
-                        maxFreeSockets: 256,
-                        scheduling: 'lifo',
-                        proxy: httpProxy,
-                    }),
-                };
-            }
-        }
-        if (options) {
-            defaultOptions = extend(defaultOptions, options);
-        }
-        return defaultOptions;
-    }
+
     public downloadAndSave(dirKey: string, filename: string, url: string, options?: any): Promise<LocalFileDesc> {
         const targetURL = new URL(url);
         createLoading({
@@ -119,7 +75,7 @@ export class LocalFileDB {
         });
         return new Promise((resolve, reject) => {
             // @ts-ignore
-            const downloadStream = got.stream(url, this._getGotOptions(targetURL, options));
+            const downloadStream = got.stream(url, getGotOptions(targetURL, options));
             const fpath = path.resolve(this._root, dirKey, filename);
             if (existsSync(fpath)) {
                 unlinkSync(fpath);
@@ -175,7 +131,7 @@ export class LocalFileDB {
     }
     public async urlContentTypeTest(url: string) {
         log.log(TAG, 'Test URLs with OPTIONS request.');
-        const res = await got(url, this._getGotOptions(new URL(url), { method: 'GET' }));
+        const res = await got(url, getGotOptions(new URL(url), { method: 'GET' }));
         // filter charset
         return res.headers['content-type'] ? res.headers['content-type'].split(';')[0] : 'text/html';
     }

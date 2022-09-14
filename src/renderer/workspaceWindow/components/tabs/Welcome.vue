@@ -68,7 +68,7 @@ export default defineComponent({
         }
         function handleHistoryClick(e: any) {
             console.log(e);
-            if (e.itemID) {
+            if (e.itemID && e.itemID != -1) {
                 getItemInfo(e.itemID).then((info) => {
                     ReaderManager.getInstance().addReader(e.title, e.path, info);
                 });

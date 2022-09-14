@@ -3453,7 +3453,7 @@ html:not([data-tabbing=true]) .ColorPalette .cell-container {
   background-color: #95d475;
 }
 .DragWindow > .titleBar {
-  
+
 padding: 10px;
 color: white;
 font-size:14px;
@@ -3519,4 +3519,53 @@ border-radius: 4px 4px 0px 0px;
 .DragWindow > .container > .placeholder{
   order:800;
   flex-grow: 1;
+}
+@keyframes highlightAnimation {
+  0% {
+    opacity: 0%;
+}
+50% {
+    opacity: 50%;
+}
+100% {
+  opacity: 0%;
+}
+}
+.highlightAnim{
+  padding:1px;
+  background-color: yellow;
+  opacity: 0%;
+  animation: highlightAnimation 1.5s linear 5;
+}
+
+.ReturnPrevOverlay {
+  position: fixed;
+  bottom: 80px;
+  height: 40px;
+  width:120px;
+  font-family: Lato;
+  color: #485056;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0.85;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-left: auto;
+  margin-right: auto;
+  background: #485056;
+  border-radius: 20px;
+  z-index: 0;
+}
+.ReturnPrevOverlay .formContainer {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  margin:auto;
+}
+.ReturnPrevOverlay .formContainer div{
+  top: -1px;
+  position: relative;
+  color: #fff;
+  font-size: 13px;
 }

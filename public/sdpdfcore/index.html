@@ -20,6 +20,9 @@ Adobe CMap resources are covered by their own copyright but the same license:
 
 See https://github.com/adobe-type-tools/cmap-resources
 -->
+<!--
+    Modified by SaltDog Project
+-->
 <html dir="ltr" mozdisallowselectionprint>
     <head>
         <meta charset="utf-8" />
@@ -479,6 +482,12 @@ See https://github.com/adobe-type-tools/cmap-resources
                 <div id="viewerContainer" tabindex="0">
                     <div id="viewer" class="pdfViewer"></div>
                     <!-- footer 加 fadeout -->
+                    <div hidden="true" id="goBackPrevBtn" data-element="pageNavOverlay" class="Overlay ReturnPrevOverlay">
+                        <div class="formContainer" >
+                            <div style="flex-grow: 1;">返回跳转位置</div>
+                            <div style="flex-grow: 0;margin-left:10px;" onclick="document.getElementById('goBackPrevBtn').hidden=true;">×</div>
+                        </div>
+                    </div>
                     <div class="footer">
                         <div data-element="pageNavOverlay" class="Overlay PageNavOverlay">
                             <button id="previous" class="Button side-arrow-container" aria-label="Previous page" type="button">
@@ -504,6 +513,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                                 </div>
                             </button>
                         </div>
+                        
                     </div>
                 </div>
 
@@ -523,7 +533,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                     </div>
                 </div>
 
-                <div id="gbWrapper"  class="el-alert el-alert--info is-center is-light" role="alert" data-v-60a66847="">
+                <div id="gbWrapper"  hidden="true" class="el-alert el-alert--info is-center is-light" role="alert" data-v-60a66847="">
                     <i class="el-icon el-alert__icon">
                         <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M512 64a448 448 0 1 1 0 896.064A448 448 0 0 1 512 64zm67.2 275.072c33.28 0 60.288-23.104 60.288-57.344s-27.072-57.344-60.288-57.344c-33.28 0-60.16 23.104-60.16 57.344s26.88 57.344 60.16 57.344zM590.912 699.2c0-6.848 2.368-24.64 1.024-34.752l-52.608 60.544c-10.88 11.456-24.512 19.392-30.912 17.28a12.992 12.992 0 0 1-8.256-14.72l87.68-276.992c7.168-35.136-12.544-67.2-54.336-71.296-44.096 0-108.992 44.736-148.48 101.504 0 6.784-1.28 23.68.064 33.792l52.544-60.608c10.88-11.328 23.552-19.328 29.952-17.152a12.8 12.8 0 0 1 7.808 16.128L388.48 728.576c-10.048 32.256 8.96 63.872 55.04 71.04 67.84 0 107.904-43.648 147.456-100.416z"></path></svg>
                     </i>
@@ -542,17 +552,17 @@ See https://github.com/adobe-type-tools/cmap-resources
                 <div id="passwordOverlay" class="container hidden">
                     <div class="dialog">
                         <div class="row">
-                            <p id="passwordText" data-l10n-id="password_label">Enter the password to open this PDF file:</p>
+                            <p id="passwordText" data-l10n-id="password_label">输入密码来访问该PDF:</p>
                         </div>
                         <div class="row">
                             <input type="password" id="password" class="toolbarField" />
                         </div>
                         <div class="buttonRow">
                             <button id="passwordCancel" class="overlayButton">
-                                <span data-l10n-id="password_cancel">Cancel</span>
+                                <span data-l10n-id="password_cancel">取消</span>
                             </button>
                             <button id="passwordSubmit" class="overlayButton">
-                                <span data-l10n-id="password_ok">OK</span>
+                                <span data-l10n-id="password_ok">确认</span>
                             </button>
                         </div>
                     </div>
@@ -562,7 +572,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                 <div id="printServiceOverlay" class="container hidden">
                     <div class="dialog">
                         <div class="row">
-                            <span data-l10n-id="print_progress_message">Preparing document for printing…</span>
+                            <span data-l10n-id="print_progress_message">准备打印…</span>
                         </div>
                         <div class="row">
                             <progress value="0" max="100"></progress>
@@ -570,7 +580,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                         </div>
                         <div class="buttonRow">
                             <button id="printCancel" class="overlayButton">
-                                <span data-l10n-id="print_progress_close">Cancel</span>
+                                <span data-l10n-id="print_progress_close">取消</span>
                             </button>
                         </div>
                     </div>

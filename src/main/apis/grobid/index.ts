@@ -61,10 +61,12 @@ export class GrobidClient {
                 readJSON(cachefile)
                     .then((json) => {
                         resolve(json);
+                        return;
                     })
                     .catch((e) => {
                         reject(e);
                     });
+                return;
             }
             if (!existsSync(file)) {
                 log.error('File not found: ' + file);

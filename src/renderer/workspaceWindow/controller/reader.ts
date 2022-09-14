@@ -2,9 +2,11 @@ import MessageHandler from '../components/tabs/messageHandler';
 import SaltDogMessageChannelRenderer from './messageChannel';
 import { setSDPDFCoreAnnotate } from './library';
 import tabManager from './tabManager';
+import log from 'electron-log';
 import { ElMessage } from 'element-plus';
 const TAG = '[Renderer/Reader]';
 export default class ReaderManager {
+    private _msgChannel = SaltDogMessageChannelRenderer.getInstance();
     public static getInstance(): ReaderManager {
         if (!ReaderManager.instance) {
             ReaderManager.instance = new ReaderManager();
@@ -13,13 +15,29 @@ export default class ReaderManager {
     }
     constructor() {
         // tabs/messagehandler.ts
-        SaltDogMessageChannelRenderer.getInstance().on('reader.pdfModified', (data, id) => {
+        this._msgChannel.on('reader.pdfModified', (data, id) => {
             if (this._readerMap.has(id)) {
                 this.setModified(id, true);
-                console.log(TAG, 'reader.pdfModified', true);
+                log.log(TAG, 'reader.pdfModified', true);
                 return;
             }
-            console.log(TAG, 'Invalid id', id);
+            log.log(TAG, 'Invalid id', id);
+        });
+        this._msgChannel.on('reader.openDetial', (raw_doi) => {
+            const tab = tabManager.addTab('详情:' + raw_doi, `file:///${__static}/auxPages/jumpRedirect/index.html`);
+
+            this._msgChannel.invokeMain('semantic.getPaperHashByDOI', raw_doi, (d) => {
+                const tag = tabManager.getWebviewById(tab);
+                console.log(TAG, tag, d);
+                if (d != null) {
+                    tag && (tag.src = `https://www.semanticscholar.org/paper/${d}`);
+                } else {
+                    tag && (tag.src = `https://www.doi.org/${raw_doi}`);
+                }
+                // tag && d && (tag.src = `https://www.semanticscholar.org/paper/${d}`);
+                // tag!.reload();
+                // tabManager.addTab('详情:' + raw_doi, `https://www.semanticscholar.org/paper/${d}`);
+            });
         });
     }
     private static instance: ReaderManager;
@@ -29,11 +47,7 @@ export default class ReaderManager {
     private _itemInfoMap: Map<string, any> = new Map();
     public setReader(id: string, webview: Electron.WebviewTag, messageHandler: MessageHandler) {
         console.log(TAG, `Set reader ${id}`, messageHandler);
-        SaltDogMessageChannelRenderer.getInstance().publish(
-            'reader.readerCreated',
-            webview.id,
-            webview.getWebContentsId()
-        );
+        this._msgChannel.publish('reader.readerCreated', webview.id, webview.getWebContentsId());
         this._readerMap.set(webview.id, webview);
         this._modifiedStatusMap.set(webview.id, false);
         this._messageHandlerMap.set(webview.id, messageHandler);
@@ -50,11 +64,7 @@ export default class ReaderManager {
     }
     public distroyReader(id: string) {
         console.log(TAG, `Destroy reader ${id}`);
-        SaltDogMessageChannelRenderer.getInstance().publish(
-            'reader.readerDestroyed',
-            id,
-            this._readerMap.get(id)!.getWebContentsId()
-        );
+        this._msgChannel.publish('reader.readerDestroyed', id, this._readerMap.get(id)!.getWebContentsId());
         this._readerMap.delete(id);
         this._modifiedStatusMap.delete(id);
         this._messageHandlerMap.delete(id);

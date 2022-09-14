@@ -10,11 +10,13 @@ import { Parser, DomUtils, DomHandler } from 'htmlparser2';
 import render from 'dom-serializer';
 import xss from 'xss';
 import { SaltDogPlugin } from '.';
+import { getGotOptions } from '~/main/utils/network';
+import sysCfg from '../db/index';
 const TAG = '[Main/PluginInstaller]';
 export default class SaltDogPluginInstaller {
     private _searchURL = '';
     private _pluginPath = '';
-    private _npmmirror = 'https://registry.npmmirror.com';
+    // private _npmmirror = 'https://registry.npmmirror.com';
     private _msgChannel = SaltDogMessageChannelMain.getInstance();
     private _manager: SaltDogPlugin | null = null;
     constructor(manager: SaltDogPlugin, pluginPath: string) {
@@ -88,7 +90,8 @@ export default class SaltDogPluginInstaller {
     }
     public async initNodeDependents() {
         exec(
-            'npm install saltdog ' + (this._npmmirror.length != 0 ? '--registry ' + this._npmmirror : ''),
+            'npm install saltdog ' +
+                (sysCfg.get('plugin.allowNpmmirror') || false ? '--registry ' + sysCfg.get('plugin.npmmirror') : ''),
             { cwd: this._pluginPath },
             (err, stdout, stderr) => {
                 if (err) {
@@ -101,7 +104,9 @@ export default class SaltDogPluginInstaller {
     }
     public async search(keywords = '') {
         return await got(
-            `https://registry.npmjs.com/-/v1/search?text=saltdogplugin_${keywords}&size=200&popularity=1.0`
+            getGotOptions(
+                `https://registry.npmjs.com/-/v1/search?text=saltdogplugin_${keywords}&size=200&popularity=1.0`
+            )
         ).json();
         /**
          * objects:[
@@ -157,7 +162,7 @@ export default class SaltDogPluginInstaller {
             pluginName = pluginName.split(' ')[0];
             exec(
                 `npm install ${pluginName} --save ${
-                    this._npmmirror.length != 0 ? '--registry ' + this._npmmirror : ''
+                    sysCfg.get('plugin.allowNpmmirror') || false ? '--registry ' + sysCfg.get('plugin.npmmirror') : ''
                 }`,
                 { cwd: this._pluginPath },
                 (e, stdout, stderr) => {

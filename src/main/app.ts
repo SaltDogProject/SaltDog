@@ -17,6 +17,7 @@ import log from 'electron-log';
 import { initLog } from './utils/logger';
 import { checkUpdate } from './utils/updater';
 import { GrobidClient } from './apis/grobid';
+import SemanticScholarClient from './apis/semantic';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 class LifeCycle {
     private pluginManager = saltDogPlugin;
@@ -51,6 +52,7 @@ class LifeCycle {
         initIpc(windowManager);
         Parser.getInstance();
         GrobidClient.getInstance();
+        SemanticScholarClient.getInstance();
         SaltDogMessageChannelMain.getInstance();
         SaltDogMessageChannelMain.getInstance().subscribe('_pluginHostReady', () => {
             console.log('[Main] _pluginHostReady');
