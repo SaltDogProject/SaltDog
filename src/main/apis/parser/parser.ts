@@ -6,14 +6,17 @@ import * as path from 'path';
 import SaltDogMessageChannelMain from '../plugin/api/messageChannel';
 // import pdfjs, { PDFDocumentProxy } from 'pdfjs-dist';
 import log from 'electron-log';
+import { app } from 'electron';
 const TAG = '[Main/parser]';
-const isDev = process.env.NODE_ENV === 'development';
 export default class Parser {
     private static _instance: Parser | null = null;
     private _isDev = process.env.NODE_ENV === 'development';
     private _serverPath = this._isDev
         ? path.resolve(__static, '../../translation-server/src/server.js')
         : path.resolve(__static, 'dist/translation-server-build.js');
+    private _translatorPath = this._isDev
+        ? path.resolve(__static, '../extraResources/translators')
+        : path.resolve(app.getAppPath(), '../extraResources/translators');
     // FIXME: download path
     private _downloadURL = 'https://github.com/SaltDogProject/translators/archive/refs/tags/0.0.1.zip';
 
@@ -35,13 +38,13 @@ export default class Parser {
             'CrossrefREST.email': 'service@saltdog.cn', // Pass an email to Crossref REST API to utilize the faster servers pool
         },
         userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:61.0) Gecko/20100101 Firefox/61.0 SaltDog/1.0',
-        translatorsDirectory: path.resolve(__static, 'translators'),
+        translatorsDirectory: this._translatorPath,
     };
     constructor() {
         this.initParser();
     }
     public async initParser() {
-        console.log(TAG, `Init Parser in ${this._serverPath}`);
+        log.log(TAG, `Init Parser in ${this._serverPath}`);
         const worker = fork(this._serverPath, {
             env: {
                 data: JSON.stringify(this._initConfig),
@@ -57,26 +60,31 @@ export default class Parser {
         //             translators: await this._loadTranslator(),
         //         });
         //     } catch (e) {
-        //         console.log(e);
+        //         log.log(e);
         //     }
         // }
-
+        worker.on('error', (e) => {
+            log.error(TAG, e);
+        });
         worker.on('message', (message: any) => {
             if (message.type === 'ready') {
-                console.log(TAG, 'Receive server ready');
+                log.log(TAG, 'Receive server ready');
                 for (const i in this._pendingQuery) {
                     this._pendingQuery[i]();
                 }
                 delete this._pendingQuery;
                 this.isServerReady = true;
+            } else if (message.type === 'log') {
+                log.log(TAG, '[Zotero Translator]', message.data);
             }
         });
         // worker.stdout!.on('data', function (data) {
-        //     console.log(data);
+        //     log.log(data);
         // });
-        // worker.stderr!.on('data', function (data) {
-        //     console.log(data);
-        // });
+        worker.stderr &&
+            worker.stderr.on('data', function (data) {
+                log.log(data);
+            });
     }
     static getInstance() {
         if (!this._instance) {
@@ -85,13 +93,13 @@ export default class Parser {
         return this._instance;
     }
     public _query(type: 'import' | 'web' | 'export' | 'search' | 'file', data: string) {
+        log.log(TAG, 'Run query ', data);
         return new Promise((resolve, reject) => {
             SaltDogMessageChannelMain.getInstance().invokePluginHost(
                 '_beforeRetrieve',
                 { type, data },
                 ({ type, data }) => {
-                    console.log(TAG, `Execute query ${type} with payload: ${data}`);
-
+                    log.log(TAG, `Execute query ${type} with payload: ${data}`);
                     try {
                         const url = `http://127.0.0.1:${this._serverPort}/${type}`;
                         const res = got
@@ -139,17 +147,18 @@ export default class Parser {
                     callback(null, data);
                 })
                 .catch((e: any) => {
-                    console.error(TAG, `Query Request Error`, e);
+                    log.error(TAG, `Query Request Error`, e);
                     callback(e, null);
                 });
         } else {
+            log.log(TAG, 'Server not ready. Push to pending queue.');
             this._pendingQuery.push(() => {
                 this._query(type, data)
                     .then((data) => {
                         callback(null, data);
                     })
                     .catch((e: any) => {
-                        console.error(TAG, `Query Request Error`, e);
+                        log.error(TAG, `Query Request Error`, e);
                         callback(e, null);
                     });
             });
@@ -157,14 +166,14 @@ export default class Parser {
     }
     private async _loadTranslator(update = false) {
         const translatorsDirPath = this._initConfig.translatorsDirectory;
-        const cacheJSONPath = path.resolve(translatorsDirPath, '_cacheMeta.json');
+        const cacheJSONPath = path.resolve(this._translatorPath, '_cacheMeta.json');
         if (!update) {
             if (await new Promise((resolve) => fs.access(cacheJSONPath, (err) => resolve(!err)))) {
-                console.log(TAG, 'Get metadata from cache');
+                log.log(TAG, 'Get metadata from cache');
                 return JSON.parse(fs.readFileSync(cacheJSONPath, 'utf-8'));
             }
         }
-
+        log.log(TAG, 'Regenerate translator cache.');
         if (!(await new Promise((resolve) => fs.access(translatorsDirPath, (err) => resolve(!err))))) {
             throw new Error(
                 'Translators directory ' +
@@ -191,7 +200,7 @@ export default class Parser {
             // We assume lastUpdated is at the end to avoid running the regexp on more than necessary
             const lastUpdatedIndex = data.indexOf('"lastUpdated"');
             if (lastUpdatedIndex == -1) {
-                console.log('Invalid or missing translator metadata JSON object in ' + filePath);
+                log.log('Invalid or missing translator metadata JSON object in ' + filePath);
                 continue;
             }
 
@@ -200,7 +209,7 @@ export default class Parser {
             const infoRe = /^\s*{[\S\s]*?}\s*?[\r\n]/;
             const m = infoRe.exec(header);
             if (!m) {
-                console.log('Invalid or missing translator metadata JSON object in ' + filePath);
+                log.log('Invalid or missing translator metadata JSON object in ' + filePath);
                 continue;
             }
 
@@ -209,7 +218,7 @@ export default class Parser {
             try {
                 info = JSON.parse(metadataString);
             } catch (e) {
-                console.log('Invalid or missing translator metadata JSON object in ' + filePath);
+                log.log('Invalid or missing translator metadata JSON object in ' + filePath);
                 continue;
             }
             info.cacheCode = false;
@@ -226,7 +235,7 @@ export default class Parser {
                 fs.unlinkSync(cacheJSONPath);
             }
             fs.writeFile(cacheJSONPath, JSON.stringify(translators), 'utf-8', (err) => {
-                console.error('Create translator cache failed');
+                log.error('Create translator cache failed', err);
             });
         });
         return translators;
@@ -275,7 +284,7 @@ export default class Parser {
                 return s.str;
             })
             .join('');
-        console.log(text);
+        log.log(text);
         return matchArxiv(text)[0];
     }
     private async _getDOIFromMetaData(pdf: pdfjs.PDFDocumentProxy) {
@@ -305,14 +314,14 @@ export default class Parser {
             throw new Error('No DOI found');
         }
         return matchRes[1];
-        // console.log(await getMetaFromCrossRef(doi));
+        // log.log(await getMetaFromCrossRef(doi));
     }
 
     public extractID(docpath: string): Promise<{ type: string | null; value: string | null }> {
         return new Promise((resolve, reject) => {
             fs.readFile(docpath, {}, (err, data) => {
                 if (err) {
-                    console.error(TAG, `extractID readFile failed`, err);
+                    log.error(TAG, `extractID readFile failed`, err);
                     reject(`Cannot read file ${docpath}`);
                 }
                 const binaryPDF = data;
@@ -325,7 +334,7 @@ export default class Parser {
                             value: await this._getDOIFromMetaData(pdf),
                         };
                     } catch (e) {
-                        console.error("PDF don't have doi", e);
+                        log.error("PDF don't have doi", e);
                     }
                     if (!doi.value) {
                         try {
@@ -334,7 +343,7 @@ export default class Parser {
                                 value: await this._getDOIFromArxiv(pdf),
                             };
                         } catch (e) {
-                            console.error("PDF don't have arxiv id", e);
+                            log.error("PDF don't have arxiv id", e);
                         }
                     }
                     if (doi && doi.type && doi.value) resolve(doi);

@@ -79,6 +79,7 @@ import { ipcRenderer } from 'electron';
 import { uniqueId, values } from 'lodash';
 import { insertItem, listDir, listLib, getDirInfoByID } from '../../controller/library';
 import SaltDogMessageChannelRenderer from '../../controller/messageChannel';
+import log from 'electron-log';
 const TAG = '[Library/Import]';
 let uploadRef: any = [];
 const activeName = ref('doi');
@@ -97,7 +98,7 @@ const posprops = ref({
             listLib().then((liblist) => {
                 const queue = [];
                 for (const i of liblist) {
-                    queue.push(listDir(i.libraryID, i.rootDir));
+                    queue.push(listDir(i.rootDir));
                 }
                 Promise.all(queue).then((libdirs) => {
                     for (let j = 0; j < libdirs.length; j++) {
@@ -115,10 +116,10 @@ const posprops = ref({
         } else {
             const { value } = node;
             const [libID, dirID] = value.split('-');
-            listDir(libID, dirID).then((libdirs) => {
+            listDir(dirID).then((libdirs) => {
                 const queue = [];
                 for (const i of libdirs.dirs) {
-                    queue.push(listDir(libID, i.dirID));
+                    queue.push(listDir(i.dirID));
                 }
                 Promise.all(queue).then((nxtdirs) => {
                     for (let j = 0; j < libdirs.dirs.length; j++) {
@@ -141,11 +142,11 @@ const uploadChange = (f: any, fs: any) => {
 };
 
 const handlePosChange = (value: any) => {
-    console.log(TAG, 'handlePosChange', value);
+    log.log(TAG, 'handlePosChange', value);
     posvalue.value = value[value.length - 1];
 };
 const handleClick = (tab: any, event: Event) => {
-    console.log(tab, event);
+    log.log(tab, event);
 };
 const p = defineProps<{
     showImportPanel: boolean;
@@ -194,7 +195,7 @@ function doRetrieveMetadata() {
             break;
         case 'file':
             reqType = 'file';
-            console.log(uploadRef);
+            log.log(uploadRef);
             // @ts-ignore
             inputData = uploadRef[0].raw.path || null;
             break;
@@ -204,11 +205,12 @@ function doRetrieveMetadata() {
         return;
     }
     retriveLoading.value = true;
+    log.log('retriveMetadata', reqId, reqType, inputData);
     ipcRenderer.send('retriveMetadata', reqId, reqType, inputData);
     ipcRenderer.once(`retriveMetadataReply_${reqId}`, (event, err, data) => {
         retriveLoading.value = false;
         if (err) {
-            console.error(err);
+            log.error(err);
             ElMessage.error(`获取出错：${err}`);
             retriveLoading.value = false;
             return;
@@ -216,7 +218,7 @@ function doRetrieveMetadata() {
         doiInput.value = urlInput.value = '';
         const targetLibID = libID || currentLib.value.libraryID;
         const targetDirID = dirID || currentDir.value;
-        console.log(TAG, 'Import', data, 'Library:', targetLibID, 'DirID:', targetDirID);
+        log.log(TAG, 'Import', data, 'Library:', targetLibID, 'DirID:', targetDirID);
         insertItem(
             data[0],
             targetLibID,
@@ -229,7 +231,7 @@ function doRetrieveMetadata() {
             })
             .catch((e) => {
                 ElMessage.error(`导入出错，${e}`);
-                console.error(e);
+                log.error(e);
                 retriveLoading.value = false;
                 return;
             });

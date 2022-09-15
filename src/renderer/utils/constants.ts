@@ -1,4 +1,4 @@
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 export const PDFVIEWER_WEBVIEW_PRELOAD_URL = isDevelopment
     ? `${'./pdfviewer/web/preload.js' as string}`

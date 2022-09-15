@@ -251,6 +251,7 @@ class SaltDogPlugin {
             // ipcRenderer.send(event.channel, event.args);
         });
         SaltDogMessageChannelRenderer.getInstance().subscribe(`sidebar.pluginHostMsg:${viewInfo.viewName}`, (data) => {
+            console.log(data);
             const { channel, args } = data;
             webview.send(channel, ...args);
         });

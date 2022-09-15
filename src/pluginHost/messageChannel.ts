@@ -24,7 +24,7 @@ export default class SaltDogMessageChannelRenderer extends EventEmitter implemen
         this._workspaceID = workspaceID;
         this._whoami = SaltDogRendererType.PLUGINHOST;
         ipcRenderer.on('SALTDOG_IPC_INVOKE', async (e, api, args, id) => {
-            // console.log('__ONINCVOKE', e, api, args, id);
+            console.log('__ONINCVOKE', e, api, args, id);
             const fn = this._bindFns.get(api);
             if (!fn || typeof fn !== 'function') {
                 console.error(`${api} is not a function`);
@@ -34,11 +34,13 @@ export default class SaltDogMessageChannelRenderer extends EventEmitter implemen
                 const result = await fn(args);
                 if (e.senderId == 0) {
                     // main不知道为啥不能sendto
+                    console.log('__ONINCVOKECALLBACK', e, api, args, id);
                     e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, null, result);
                 } else ipcRenderer.sendTo(e.senderId, 'SALTDOG_IPC_INVOKE_CALLBACK', id, null, result);
             } catch (err) {
                 if (e.senderId == 0) {
                     // main不知道为啥不能sendto
+                    console.log('__ONINCVOKECALLBACK', e, api, args, id);
                     e.sender.send('SALTDOG_IPC_INVOKE_CALLBACK', id, err, null);
                 } else ipcRenderer.sendTo(e.senderId, 'SALTDOG_IPC_INVOKE_CALLBACK', id, err, null);
             }

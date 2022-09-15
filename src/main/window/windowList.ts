@@ -9,6 +9,7 @@ import Reader from '../apis/reader';
 const windowList = new Map<IWindowList, IWindowListItem>();
 declare const __static: string;
 const TAG = '[Main/WindowList]';
+const isDevelopment = process.env.NODE_ENV === 'development';
 // entry
 windowList.set(IWindowList.ENTRY_WINDOW, {
     isValid: true,
@@ -44,7 +45,7 @@ windowList.set(IWindowList.ENTRY_WINDOW, {
     },
     callback(window, windowManager) {
         window.loadURL(ENTRY_WINDOW_URL);
-        if (process.env.NODE_ENV == 'development') window.webContents.openDevTools();
+        if (isDevelopment) window.webContents.openDevTools();
         window.on('closed', () => {
             if (process.platform === 'linux') {
                 process.nextTick(() => {
@@ -91,7 +92,9 @@ windowList.set(IWindowList.WORKSPACE_WINDOW, {
     },
     callback(window, windowManager) {
         window.loadURL(WORKSPACE_WINDOW_URL);
-        window.webContents.openDevTools();
+        if (isDevelopment) {
+            window.webContents.openDevTools();
+        }
         Reader.getInstance();
         ipcMain.on('getWindowId', (e: IpcMainEvent, str: string) => {
             e.returnValue = window.id;
@@ -159,9 +162,10 @@ windowList.set(IWindowList.PLUGIN_HOST, {
     callback(window, windowManager) {
         console.log('Starting PluginHost..');
         window.loadURL(PLUGINHOST_URL);
-        window.webContents.openDevTools({
-            mode: 'detach',
-        });
+        if (isDevelopment)
+            window.webContents.openDevTools({
+                mode: 'detach',
+            });
         function getHostWindowIdSync(e: IpcMainEvent, str: string) {
             e.returnValue = window.webContents.id;
         }

@@ -6,7 +6,7 @@ import path from 'path';
 import process from 'process';
 import { ChildProcess } from 'child_process';
 import SaltDogMessageChannel from './api/messageChannel';
-import { log } from 'electron-log';
+import log from 'electron-log';
 import { writeFileSync } from 'fs';
 import SaltDogPluginInstaller from './installer';
 const TAG = 'SaltDogPlugin';
@@ -16,12 +16,13 @@ export class SaltDogPlugin {
     private _pluginHost: BrowserWindow | null = null;
     private _activator: SaltDogPluginActivator | null = null;
     private _installer;
-    private isDevelopment = process.env.NODE_ENV == 'development';
+    private isDevelopment = process.env.NODE_ENV === 'development';
     // 开发模式下加载文件路径内的插件，方便调试
-    public pluginPath = path.normalize(
-        this.isDevelopment ? path.join(__static, '../plugin_demo') : app.getPath('userData') + '/SaltDogPlugins'
-    );
+    public pluginPath = this.isDevelopment
+        ? path.join(__static, '../plugin_demo')
+        : path.resolve(app.getPath('userData'), 'SaltDogPlugins');
     constructor() {
+        log.log(TAG, 'NODE_ENV', process.env.NODE_ENV, this.pluginPath);
         // ipcMain.on('restartPlugin', (e: IpcMainEvent, data: any) => {
         //     // {name}
         //     const res = this.restartPluginHost(data.name);
@@ -51,6 +52,7 @@ export class SaltDogPlugin {
         const plugindir = readdirSync(path.resolve(this.pluginPath, 'node_modules')).filter((item) => {
             return item.startsWith('saltdogplugin_');
         });
+
         // 读取插件manifest.json
         plugindir.forEach((item) => {
             if (existsSync(path.resolve(this.pluginPath, 'node_modules', item, 'manifest.json'))) {
@@ -70,7 +72,7 @@ export class SaltDogPlugin {
                     );
                     this._nameMap.set(item, pluginInfo.name);
                 } catch (e) {
-                    console.log(
+                    log.log(
                         'Read plugin manifest.json error, path:',
                         path.resolve(this.pluginPath, 'node_modules', item, 'manifest.json'),
                         e
@@ -78,6 +80,36 @@ export class SaltDogPlugin {
                 }
             }
         });
+
+        if (this.isDevelopment) {
+            const devPlugin = readdirSync(path.resolve(this.pluginPath)).filter((item) => {
+                return item.startsWith('saltdogplugin_');
+            });
+            devPlugin.forEach((item) => {
+                if (existsSync(path.resolve(this.pluginPath, item, 'manifest.json'))) {
+                    try {
+                        const pluginInfo = readJsonSync(path.resolve(this.pluginPath, item, 'manifest.json'));
+                        const pkgjson = readJsonSync(path.resolve(this.pluginPath, item, 'package.json'));
+                        this._plugins.set(
+                            pluginInfo.name,
+                            extend(pluginInfo, {
+                                rootDir: path.resolve(this.pluginPath, item),
+                                version: pkgjson.version,
+                                author: pkgjson.author,
+                                description: pkgjson.description || '',
+                            })
+                        );
+                        this._nameMap.set(item, pluginInfo.name);
+                    } catch (e) {
+                        log.log(
+                            'Read plugin manifest.json error, path:',
+                            path.resolve(this.pluginPath, item, 'manifest.json'),
+                            e
+                        );
+                    }
+                }
+            });
+        }
         //FIXME: 懒加载，workspace初始化的时候就要msgchannel了，而msgchannel实在activate生成的，应该提出来
         ipcMain.once('WorkspaceWindowReady', () => {
             this._plugins.forEach((item) => {
@@ -101,7 +133,7 @@ export class SaltDogPlugin {
     // public restartPluginHost(targetPlugin: string): boolean {
     //     const pluginHost = this._pluginHost;
     //     if (!pluginHost) {
-    //         console.error(TAG, `Cannot restart Host :PluginHost not activated yet.`);
+    //         log.error(TAG, `Cannot restart Host :PluginHost not activated yet.`);
     //         return false;
     //     }
     //     pluginHost!.kill();
@@ -146,7 +178,7 @@ export class SaltDogPlugin {
                             command: `${plugin.name}.${item.id}`,
                         });
                     } catch (e) {
-                        console.log(TAG, `plugin ${plugin.name} workspaceGetBasicPluginInfo-activitybar failed`, e);
+                        log.log(TAG, `plugin ${plugin.name} workspaceGetBasicPluginInfo-activitybar failed`, e);
                     }
                 });
             }
@@ -166,7 +198,7 @@ export class SaltDogPlugin {
                             // command: `${plugin.name}.${item.id}`,
                         });
                     } catch (e) {
-                        console.log(TAG, `plugin ${plugin.name} workspaceGetBasicPluginInfo-views failed`, e);
+                        log.log(TAG, `plugin ${plugin.name} workspaceGetBasicPluginInfo-views failed`, e);
                     }
                 }
             }
@@ -196,7 +228,7 @@ export class SaltDogPlugin {
                 }
                 settingsList.push(temp as IPluginSettings);
             } catch (e) {
-                console.log(TAG, `plugin ${plugin.name} collectSettingsInfo failed`, e);
+                log.log(TAG, `plugin ${plugin.name} collectSettingsInfo failed`, e);
             }
         });
         return settingsList;

@@ -45,10 +45,12 @@ import Outline from './outline.vue';
 import Search from './search.vue';
 import Plugin from './plugin.vue';
 import Library from './library.vue';
+import log from 'electron-log';
 import { defineComponent, DefineComponent, getCurrentInstance, onMounted, onUpdated, ref } from 'vue';
 import plugins from '../../controller/plugin/plugin';
 const TAG = '[Sidebar]';
-const isDevelopment = process.env.NODE_ENV !== 'production';
+log.log('Renderer NODE_ENV', process.env.NODE_ENV);
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 export default defineComponent({
     components: { Outline, Search, Plugin, Library },

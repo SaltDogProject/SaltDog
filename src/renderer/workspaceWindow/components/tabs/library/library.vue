@@ -201,38 +201,36 @@ function updateView(libraryID: number, dirID: number) {
     _dirID = dirID;
     _libraryID = libraryID;
     currentDir.value = dirID;
-    Promise.all([locateDir(dirID), listDir(libraryID, dirID), getLibraryInfoByID(libraryID)]).then(
-        ([res1, res2, res3]) => {
-            currentPath.value = res1.slice(1, res1.length);
-            const list = [];
-            for (let i of res2.dirs) {
-                list.push({
-                    id: i.dirID,
-                    name: i.name,
-                    type: 'dir',
-                    customFields: {},
-                });
-            }
-            for (let i of res2.items) {
-                list.push({
-                    id: i.itemID,
-                    itemType: i.itemType,
-                    name: i.name,
-                    type: 'item',
-                    customFields: {},
-                });
-            }
-            let regularTableData = {
-                column: [],
-                row: list,
-            };
-            SaltDogMessageChannelRenderer.getInstance().invoke('_beforeDisplay', regularTableData, (finalData: any) => {
-                itemData.value = finalData;
-                currentLib.value = res3;
-                // log.debug(TAG, `Load View `, res1, finalData, res3);
+    Promise.all([locateDir(dirID), listDir(dirID), getLibraryInfoByID(libraryID)]).then(([res1, res2, res3]) => {
+        currentPath.value = res1.slice(1, res1.length);
+        const list = [];
+        for (let i of res2.dirs) {
+            list.push({
+                id: i.dirID,
+                name: i.name,
+                type: 'dir',
+                customFields: {},
             });
         }
-    );
+        for (let i of res2.items) {
+            list.push({
+                id: i.itemID,
+                itemType: i.itemType,
+                name: i.name,
+                type: 'item',
+                customFields: {},
+            });
+        }
+        let regularTableData = {
+            column: [],
+            row: list,
+        };
+        SaltDogMessageChannelRenderer.getInstance().invoke('_beforeDisplay', regularTableData, (finalData: any) => {
+            itemData.value = finalData;
+            currentLib.value = res3;
+            // log.debug(TAG, `Load View `, res1, finalData, res3);
+        });
+    });
 }
 function createDir() {
     ElMessageBox.prompt('请输入文件夹名称', '新建文件夹', {
@@ -246,7 +244,7 @@ function createDir() {
                     message: `文件夹名称不能为空，请重试`,
                 });
             }
-            mkdir(_libraryID, _dirID, trim(value))
+            mkdir(_dirID, trim(value))
                 .then((res: any) => {
                     // res.dirID,res.localKey
                     updateView(_libraryID, _dirID);

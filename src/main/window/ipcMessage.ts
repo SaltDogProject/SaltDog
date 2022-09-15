@@ -10,7 +10,7 @@ import { buildSettingsTemplate } from '../apis/db/index';
 import log from 'electron-log';
 import SaltDogMessageChannelMain from '../apis/plugin/api/messageChannel';
 // import SaltDogMessageChannelMain from '../apis/plugin/api/messageChannel';
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
 const TAG = '[Main/IPC]';
 export function initIpc(windowManager: IWindowManager): void {
     console.log('[IPC] inited');

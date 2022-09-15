@@ -85,6 +85,7 @@ const config = {
             },
             mainProcessFile: 'src/background.ts',
             outputDir: 'saltdog_electron',
+
             nodeIntegration: true,
             builderOptions: {
                 electronDownload: {
@@ -93,6 +94,12 @@ const config = {
                 appId: 'top.lgyserver.saltdog',
                 productName: 'SaltDog',
                 copyright: 'Copyright © 2021 Dorapocket',
+                extraResources: [
+                    {
+                        from: 'extraResources/',
+                        to: 'extraResources',
+                    },
+                ],
                 publish: [
                     {
                         provider: 'github',
@@ -171,6 +178,9 @@ if (process.env.NODE_ENV === 'development') {
     };
     // for dev main process hot reload
     config.pluginOptions.electronBuilder.mainProcessWatch = ['src/main/**/*'];
+}
+if (process.platform == 'win32') {
+    config.pluginOptions.electronBuilder.builderOptions.npmRebuild = false;
 }
 module.exports = {
     ...config,

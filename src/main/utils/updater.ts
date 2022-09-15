@@ -45,7 +45,7 @@ export async function checkUpdate() {
     // 检查更新出错
     autoUpdater.on('error', (e: any, msg: any) => {
         log.error(TAG, 'Error checking update', msg, e);
-        SaltDogMessageChannelMain.getInstance().publish('update._updateError', msg);
+        // SaltDogMessageChannelMain.getInstance().publish('update._updateError', msg);
     });
     // 检查到新版本
     autoUpdater.on('update-available', (info: UpdateInfo) => {

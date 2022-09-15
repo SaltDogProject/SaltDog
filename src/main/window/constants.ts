@@ -3,7 +3,7 @@ export enum IWindowList {
     WORKSPACE_WINDOW = 'WORKSPACE_WINDOW',
     PLUGIN_HOST = 'PLUGIN_HOST',
 }
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 export const ENTRY_WINDOW_URL = isDevelopment
     ? `${(process.env.WEBPACK_DEV_SERVER_URL + 'entry.html') as string}`

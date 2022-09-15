@@ -24,6 +24,20 @@ export default {
                         type: 'text',
                         id: 'preferences.httpsProxyAddress',
                     },
+                    allowNpmmirror: {
+                        title: '启用NPM镜像',
+                        desc: '允许使用NPM镜像',
+                        type: 'boolean',
+                        id: 'plugin.allowNpmmirror',
+                        value: false,
+                    },
+                    npmmirror: {
+                        title: 'NPM镜像地址',
+                        desc: 'NPM镜像地址',
+                        type: 'text',
+                        id: 'plugin.npmmirror',
+                        value: 'https://registry.npmmirror.com',
+                    },
                 },
             },
             {
@@ -82,25 +96,6 @@ export default {
     },
     plugins: {
         title: '插件',
-        subGroup: [
-            {
-                title: '通用',
-                children: {
-                    allowNpmmirror: {
-                        title: '启用NPM镜像',
-                        desc: '允许使用NPM镜像',
-                        type: 'boolean',
-                        id: 'plugin.allowNpmmirror',
-                        value: false,
-                    },
-                    npmmirror: {
-                        title: 'NPM镜像地址',
-                        desc: 'NPM镜像地址',
-                        type: 'text',
-                        id: 'plugin.npmmirror',
-                    },
-                },
-            },
-        ],
+        subGroup: [],
     },
 };

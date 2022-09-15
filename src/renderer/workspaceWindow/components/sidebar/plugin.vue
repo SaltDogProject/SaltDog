@@ -4,7 +4,11 @@
     </div>
     <div class="searchLoading"></div>
     <div v-loading="loading" element-loading-background="rgba(122, 122, 122, 0.1)" class="searchResultContainer">
-        <div v-if="searchData.length == 0 && !firstSearch" style="width: 100%; margin-top: 20px; text-align: center">
+        <div v-if="netErr" style="width: 100%; margin-top: 20px; text-align: center">网络错误，请检查网络连接。</div>
+        <div
+            v-if="!netErr && searchData.length == 0 && !firstSearch"
+            style="width: 100%; margin-top: 20px; text-align: center"
+        >
             滴滴，查无此插件
         </div>
         <div @click="showMoreInfo(data)" v-for="(data, index) in searchData" :key="index" class="searchResultItem">
@@ -112,17 +116,31 @@ const installLoading = ref(false);
 const uninstallLoading = ref(false);
 const updateLoading = ref(false);
 const readmeHTML = ref('');
+const netErr = ref(false);
 const _msgChannel = SaltDogMessageChannelRenderer.getInstance();
 _msgChannel.invokeMain('plugin.search', '', (res) => {
-    firstSearch.value = false;
-    res.objects && (searchData.value = res.objects);
+    if (!res) {
+        netErr.value = true;
+        searchData.value = [];
+    } else {
+        netErr.value = false;
+        firstSearch.value = false;
+        res.objects && (searchData.value = res.objects);
+    }
     loading.value = false;
 });
 function searchChange(value: any) {
     firstSearch.value = false;
     loading.value = true;
     _msgChannel.invokeMain('plugin.search', value, (res) => {
-        res.objects && (searchData.value = res.objects);
+        if (!res) {
+            netErr.value = true;
+            searchData.value = [];
+        } else {
+            netErr.value = false;
+            res.objects && (searchData.value = res.objects);
+        }
+
         loading.value = false;
     });
 }

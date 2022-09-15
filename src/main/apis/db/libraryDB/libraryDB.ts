@@ -363,8 +363,9 @@ export default class SaltDogItemDB extends Database {
         }
     }
     // 创建新文件夹
-    public mkdir(libraryID: number, parentDirID: number, dirname: string) {
+    public mkdir(parentDirID: number, dirname: string) {
         try {
+            const { libraryID } = this.prepare('SELECT libraryID FROM dirs WHERE dirID=?;').get(parentDirID);
             const smdir = this.prepare(this._sqlTemplate.checkDirSameName).get(parentDirID, dirname);
             if (smdir && smdir.dirID) throw new Error(`Already have ${dirname} in this folder.`);
             const key = uuid();
@@ -374,7 +375,7 @@ export default class SaltDogItemDB extends Database {
                 localKey: key,
             };
         } catch (e) {
-            console.error(`Error while mkdir in (library ${libraryID},dir ${parentDirID},mkdir ${dirname}.`);
+            console.error(`Error while mkdir in (dir ${parentDirID},mkdir ${dirname}.`);
             throw e;
         }
     }
@@ -451,7 +452,8 @@ export default class SaltDogItemDB extends Database {
         return l;
     }
     //
-    public listDir(libraryID: number, dirID: number): IDirList {
+    public listDir(dirID: number): IDirList {
+        const { libraryID } = this.prepare('SELECT libraryID FROM dirs WHERE dirID=?;').get(dirID);
         const itemList = {
             meta: { parentDirID: dirID, libraryID, isRoot: false },
             dirs: [],

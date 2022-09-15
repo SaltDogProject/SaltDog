@@ -65,7 +65,7 @@ function loadNode(node: Node, resolve: (data: Tree[]) => void) {
     const clickNodeData: Tree = node.data as Tree;
     const tree: Tree[] = [];
     if (clickNodeData.type == 'lib') {
-        listDir(clickNodeData._data.libraryID, clickNodeData._data.rootDir).then((lists) => {
+        listDir(clickNodeData._data.rootDir).then((lists) => {
             for (const list of lists.dirs) {
                 tree.push({
                     name: list.name,
@@ -78,7 +78,7 @@ function loadNode(node: Node, resolve: (data: Tree[]) => void) {
             resolve(tree);
         });
     } else if (clickNodeData.type == 'dir') {
-        listDir(clickNodeData.libraryID as number, clickNodeData._data.dirID).then((lists) => {
+        listDir(clickNodeData._data.dirID).then((lists) => {
             for (const list of lists.dirs) {
                 tree.push({
                     name: list.name,

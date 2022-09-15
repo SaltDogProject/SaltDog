@@ -47,7 +47,7 @@ chore：构建过程或辅助工具的变动
 
 -   为啥要"vue-cli-plugin-electron-builder": "git+https://github.com/nklayman/vue-cli-plugin-electron-builder.git"
     官方 npm 不更新了，在 Mac 12.3 以上 build 要最新的electron-builder@23.0.3+
--   发版前必查: public/sctipts 的 pdfjsworker 版本和 pdfjs 版本一样不、canvas 的 ABI 版本（目前 build 无解，electron19.0.0-abi106, 暂时修改头文件 node_version.h 解决）
+-   发版前必查: public/sctipts 的 pdfjsworker 版本和 pdfjs 版本一样不、canvas 的 ABI 版本（目前 build 无解，electron19.0.0-abi106, 暂时修改头文件 node_version.h 解决）win 要先 rebuild 一遍，替换 prebuild 再 release
 
 ### DB schemas
 

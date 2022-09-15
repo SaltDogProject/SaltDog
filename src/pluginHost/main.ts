@@ -11,6 +11,7 @@ const pluginMap = new Map<string, any>();
 declare global {
     interface Window {
         _plugins: any;
+        saltdog: any;
     }
 }
 
@@ -26,6 +27,8 @@ SaltDogMessageChannelRenderer.getInstance().onInvoke('_pluginHostConfig', async 
 // __non_webpack_require__.cache[__non_webpack_require__.resolve('saltdog')] = {
 //     exports: SaltDogApiModule,
 // };
+//
+window.saltdog = SaltDogApiModule;
 
 SaltDogMessageChannelRenderer.getInstance().onInvoke('_activatePlugin', async (msg: any) => {
     console.log(TAG, ` Activate Plugin ${msg.mainjs}`);

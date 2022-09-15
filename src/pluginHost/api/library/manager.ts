@@ -47,6 +47,7 @@ export default class LibraryManager {
         this._beforeDisplayHooks.push(fn);
     }
     private async _dealBeforeRetrive(args: { type: string; data: string }) {
+        console.log('_dealBeforeRetrive', args);
         const result = [];
         for (let i = 0; i < this._beforeRetriveHooks.length; i++) {
             const fn = this._beforeRetriveHooks[i];

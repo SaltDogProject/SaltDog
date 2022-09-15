@@ -57,7 +57,7 @@ import Library from './library/library.vue';
 // @ts-ignore
 import Settings from './Settings.vue';
 import bus from '../../controller/systemBus';
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
 declare const __static: any;
 const TAG = '[tabs/Main]';
 export default defineComponent({

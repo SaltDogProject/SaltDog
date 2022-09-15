@@ -1,3 +1,4 @@
+import SaltDogMessageChannelRenderer from '../../messageChannel';
 import { ipcRenderer } from 'electron';
 import { uniqId } from 'licia';
 const _libraryFns = new Map();

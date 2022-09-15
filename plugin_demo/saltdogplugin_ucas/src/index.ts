@@ -12,6 +12,7 @@ export function activate() {
         },
     });
     saltdog.library.registerDisplayProvider((data) => {
+        console.log('dp', data);
         data.column.push({ displayName: '分区', indexName: 'region' });
         for (let i = 0; i < data.row.length; i++) {
             data.row[i].customFields = data.row[i].customFields || {};

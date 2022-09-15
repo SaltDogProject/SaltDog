@@ -18,7 +18,7 @@ import { initLog } from './utils/logger';
 import { checkUpdate } from './utils/updater';
 import { GrobidClient } from './apis/grobid';
 import SemanticScholarClient from './apis/semantic';
-const isDevelopment = process.env.NODE_ENV !== 'production';
+const isDevelopment = process.env.NODE_ENV === 'development';
 class LifeCycle {
     private pluginManager = saltDogPlugin;
     beforeReady() {
@@ -71,7 +71,7 @@ class LifeCycle {
     }
     onReady() {
         const readyFunction = async () => {
-            console.log('App ready');
+            log.log('App ready');
             /* disable this to accelerate launch speed in debug mode*/
             // if (isDevelopment && !process.env.IS_TEST) {
             //     // Install Vue Devtools

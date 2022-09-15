@@ -123,6 +123,7 @@ class MainTabManager implements ITabManager {
         }
     }
     public addPdfTab(tabName: string, pdfPath: string, itemInfo = null) {
+        console.log(TAG, 'add pdf tab', tabName, pdfPath);
         if (!pdfPath) {
             console.error(TAG, 'Can not create pdf tab: No pdfPath');
         }
@@ -140,7 +141,10 @@ class MainTabManager implements ITabManager {
         const name = tabName;
         const tabid = this.addTab(name, 'PDFVIEWER');
         this.pdfTabReadyState[tabid] = false;
+        console.log(TAG, 'listen SDPDFCore_Ready');
+
         bus.once(`PDFVIEW_${tabid}:SDPDFCore_Ready`, () => {
+            console.log('SDPDFCore_Ready,invoke loadPDF');
             const handler = this.getMessageHandler(tabid) as MessageHandler;
 
             handler.invokeWebview(

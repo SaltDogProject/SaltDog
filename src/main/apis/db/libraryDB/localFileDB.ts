@@ -75,7 +75,7 @@ export class LocalFileDB {
         });
         return new Promise((resolve, reject) => {
             // @ts-ignore
-            const downloadStream = got.stream(url, getGotOptions(targetURL, options));
+            const downloadStream = got.stream(getGotOptions(targetURL, options));
             const fpath = path.resolve(this._root, dirKey, filename);
             if (existsSync(fpath)) {
                 unlinkSync(fpath);
@@ -105,9 +105,14 @@ export class LocalFileDB {
                     });
                 })
                 .catch((error) => {
-                    cancelLoading('downloadPDF_' + filename);
+                    cancelLoading('downloadPDF_' + dirKey + '_' + filename);
                     log.error(TAG, 'download Error', error);
-                    reject('下载失败' + error.message || '');
+                    SaltDogMessageChannelMain.getInstance().execCommand(
+                        'saltdog.showMessage',
+                        'error',
+                        '下载失败' + error.message
+                    );
+                    reject(error);
                 });
         });
     }

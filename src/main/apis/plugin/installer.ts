@@ -23,14 +23,19 @@ export default class SaltDogPluginInstaller {
         this._pluginPath = pluginPath;
         this._manager = manager;
         this._msgChannel.onInvoke('plugin.search', async (key: string) => {
-            const res = (await this.search(key)) as any;
-            res.objects = res.objects.filter((obj: any) => {
-                const { isInstalled, needUpdate } = this.checkInstallStatus(obj.package.name, obj.package.version);
-                obj.package.isInstalled = isInstalled;
-                obj.package.needUpdate = needUpdate;
-                return obj.package.name.startsWith('saltdogplugin_');
-            });
-            return res;
+            try {
+                const res = (await this.search(key)) as any;
+                res.objects = res.objects.filter((obj: any) => {
+                    const { isInstalled, needUpdate } = this.checkInstallStatus(obj.package.name, obj.package.version);
+                    obj.package.isInstalled = isInstalled;
+                    obj.package.needUpdate = needUpdate;
+                    return obj.package.name.startsWith('saltdogplugin_');
+                });
+                return res;
+            } catch (e) {
+                log.error(TAG, e);
+                return null;
+            }
         });
         ipcMain.once('WorkspaceWindowReady', () => {
             this.checkEnv().then((allow: any) => {
@@ -103,11 +108,19 @@ export default class SaltDogPluginInstaller {
         );
     }
     public async search(keywords = '') {
-        return await got(
+        const data = await got(
+            // `https://registry.npmjs.com/-/v1/search?text=saltdogplugin_${keywords}&size=200&popularity=1.0`
             getGotOptions(
                 `https://registry.npmjs.com/-/v1/search?text=saltdogplugin_${keywords}&size=200&popularity=1.0`
+                // {
+                //     headers: {
+                //         referer: `https://registry.npmjs.com`,
+                //     },
+                // }
             )
-        ).json();
+        );
+        if (data.body) return JSON.stringify(data.body);
+        return null;
         /**
          * objects:[
          *  {
