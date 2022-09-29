@@ -4,6 +4,7 @@ import path from 'path';
 import { ISaltDogPluginMessageType } from '~/main/apis/plugin/constant';
 import SaltDogApiModule from './api';
 import { Module } from 'module';
+import log from 'electron-log';
 import SaltDogMessageChannelRenderer from './messageChannel';
 import { any } from 'licia/Promise';
 const TAG = '[PluginHostMain]';
@@ -24,21 +25,27 @@ SaltDogMessageChannelRenderer.getInstance().onInvoke('_pluginHostConfig', async 
     return {};
 });
 
-// __non_webpack_require__.cache[__non_webpack_require__.resolve('saltdog')] = {
-//     exports: SaltDogApiModule,
-// };
-//
 window.saltdog = SaltDogApiModule;
 
 SaltDogMessageChannelRenderer.getInstance().onInvoke('_activatePlugin', async (msg: any) => {
     console.log(TAG, ` Activate Plugin ${msg.mainjs}`);
     window._plugins[msg.name] = msg.pluginManifest;
-    const plugin = __non_webpack_require__(msg.mainjs);
-    __non_webpack_require__.cache[path.resolve(msg.pluginManifest.rootDir, 'node_modules', 'saltdog', 'index.ts')] = {
-        exports: SaltDogApiModule,
-    };
-    pluginMap.set(msg.name, plugin);
-    plugin.activate();
+    try {
+        const plugin = __non_webpack_require__(msg.mainjs);
+        window._plugins[msg.name].instance = plugin;
+        __non_webpack_require__.cache[path.resolve(msg.pluginManifest.rootDir, 'node_modules', 'saltdog', 'index.ts')] =
+            {
+                exports: SaltDogApiModule,
+            };
+        __non_webpack_require__.cache[path.resolve(msg.pluginManifest.rootDir, '..', 'saltdog', 'index.ts')] = {
+            exports: SaltDogApiModule,
+        };
+        pluginMap.set(msg.name, plugin);
+        plugin.activate();
+    } catch (e) {
+        log.error(e);
+        throw e;
+    }
 });
 
 SaltDogMessageChannelRenderer.getInstance().publish('_pluginHostReady');

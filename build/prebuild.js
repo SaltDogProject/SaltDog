@@ -86,12 +86,7 @@ const webpack = require('webpack');
 //         }
 //     }
 // );
-if (fs.existsSync('extraResources/translators/_cacheMeta.json')) {
-    fs.unlinkSync('extraResources/translators/_cacheMeta.json');
-}
-if (fs.existsSync('../extraResources/translators/_cacheMeta.json')) {
-    fs.unlinkSync('../extraResources/translators/_cacheMeta.json');
-}
+
 webpack(
     {
         entry: path.join(__dirname, '../third_party/translation-server/src/server.js'),

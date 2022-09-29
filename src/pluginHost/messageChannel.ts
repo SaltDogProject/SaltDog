@@ -58,6 +58,7 @@ export default class SaltDogMessageChannelRenderer extends EventEmitter implemen
             cbfn(result);
         });
         ipcRenderer.on('SALTDOG_IPC_PUBLISH', (elee, e: string, ...args: any) => {
+            console.log('__RECEIVEIPCPUBLISH', e, ...args);
             this.emit(e, ...args);
         });
     }

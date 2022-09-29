@@ -11,6 +11,7 @@ import path from 'path';
 import converter from './dataConverter';
 import { app } from 'electron';
 import crypto from 'crypto';
+import { appendSemanticData } from './semanticSearch';
 // import { saveFRTImages } from './figureProc';
 const TAG = '[Main/GrobidClient]';
 enum GROBID_API {
@@ -81,12 +82,12 @@ export class GrobidClient {
                 .getDocument(readFileSync(file))
                 .promise.then(async (pdf) => {
                     log.log(TAG, 'Target pdf file page number:', pdf.numPages);
-                    if (pdf.numPages > 30) {
+                    if (pdf.numPages > 40) {
                         SaltDogMessageChannelMain.getInstance().execCommand(
                             'saltdog.showNotification',
                             'warning',
                             '无法智能解析该文件',
-                            '该文件过长，SaltDog暂时只支持30页以下的文件。'
+                            '该文件过长，SaltDog暂时只支持40页以下的文件。'
                         );
                         log.log(TAG, 'File Too long.');
                         resolve(null);
@@ -101,8 +102,8 @@ export class GrobidClient {
                     // const file = fs.readFileSync('F:\\研究生\\论文\\fpga\\a.pdf');
                     // console.log('readfile', fileFromPathSync(file));
                     form.append('file', fileFromPathSync(file));
-                    form.append('consolidateHeader', '1');
-                    form.append('consolidateCitations', '1');
+                    // form.append('consolidateHeader', '1');
+                    // form.append('consolidateCitations', '1');
                     form.append('includeRawCitations', '1');
                     form.append('includeRawAffiliations', '1');
                     form.append('segmentSentences', '1');
@@ -133,16 +134,25 @@ export class GrobidClient {
                         .then((res: any) => {
                             const dir = this._grobidCacheDir;
                             res = converter(res);
-                            // log.log(TAG, 'Grobid result arrived', res);
-                            cancelLoading('parsePDF_' + file);
-                            if (saveResult) {
-                                createFileSync(path.resolve(dir, md5 + '.json'));
-                                writeFileSync(path.resolve(dir, md5 + '.json'), JSON.stringify(res));
-                            }
-                            // saveFRTImages(res, file, dir).catch((e) => {
-                            //     log.error(TAG, 'saveFRTImages error', e);
-                            // });
-                            resolve(res);
+                            if (!res) resolve(res);
+                            appendSemanticData(res)
+                                .then((appd) => {
+                                    // log.log(TAG, 'Grobid result arrived', res);
+                                    cancelLoading('parsePDF_' + file);
+                                    if (saveResult) {
+                                        createFileSync(path.resolve(dir, md5 + '.json'));
+                                        writeFileSync(path.resolve(dir, md5 + '.json'), JSON.stringify(appd));
+                                    }
+                                    // saveFRTImages(res, file, dir).catch((e) => {
+                                    //     log.error(TAG, 'saveFRTImages error', e);
+                                    // });
+                                    resolve(appd);
+                                })
+                                .catch((err) => {
+                                    cancelLoading('parsePDF_' + file);
+                                    log.error(TAG, 'append semantic data failed', err);
+                                    resolve(res);
+                                });
                         })
                         .catch((err: any) => {
                             cancelLoading('parsePDF_' + file);

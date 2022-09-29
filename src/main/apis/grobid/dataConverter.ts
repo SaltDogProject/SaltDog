@@ -248,7 +248,16 @@ function dealText(targetObj: any, text: any) {
     }
     targetObj.general.contents = bodyHeader.concat(backHeader);
 }
-export default function dataConverter(grobidRawData: any) {
+export interface IGrobidData {
+    general: any;
+    // start at 1
+    pages: any[];
+    sentenceGroups: any[];
+    references: any;
+    figures: any;
+    semantic: any;
+}
+export default function dataConverter(grobidRawData: any): IGrobidData | null {
     if (!grobidRawData) return null;
     if (grobidRawData.TEI) grobidRawData = grobidRawData.TEI;
     const df_grobid_data = {
@@ -266,6 +275,7 @@ export default function dataConverter(grobidRawData: any) {
         sentenceGroups: [],
         references: {},
         figures: {},
+        semantic: null,
         // tables: {},
         // formulas: {},
     };

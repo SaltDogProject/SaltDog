@@ -111,16 +111,16 @@ export default class SaltDogPluginInstaller {
         const data = await got(
             // `https://registry.npmjs.com/-/v1/search?text=saltdogplugin_${keywords}&size=200&popularity=1.0`
             getGotOptions(
-                `https://registry.npmjs.com/-/v1/search?text=saltdogplugin_${keywords}&size=200&popularity=1.0`
+                `https://registry.npmjs.org/-/v1/search?text=saltdogplugin_${keywords}&size=200&popularity=1.0`
                 // {
                 //     headers: {
                 //         referer: `https://registry.npmjs.com`,
                 //     },
                 // }
             )
-        );
-        if (data.body) return JSON.stringify(data.body);
-        return null;
+        ).json();
+        // if (data.body) return JSON.stringify(data.body);
+        return data;
         /**
          * objects:[
          *  {

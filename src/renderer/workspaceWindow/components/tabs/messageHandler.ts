@@ -51,6 +51,16 @@ export default class MessageHandler {
                 });
 
                 break;
+            case 'reader.floatGraphWindow':
+                console.warn(TAG, 'reader.floatGraphWindow: not implemented', data); // data:filepath
+                // SaltDogMessageChannelRenderer.getInstance().invokeMain('reader.getGrobidMarkerInfo', data, (res) => {
+                //     this.webview.send('HOST_INVOKE_CALLBACK', {
+                //         data: res,
+                //         callbackId,
+                //     });
+                // });
+
+                break;
         }
         // const arg = {
         //     data: {},

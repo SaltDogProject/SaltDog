@@ -33,7 +33,7 @@ export default {
                     },
                     npmmirror: {
                         title: 'NPM镜像地址',
-                        desc: 'NPM镜像地址',
+                        desc: 'NPM镜像, 如https://registry.npmmirror.com',
                         type: 'text',
                         id: 'plugin.npmmirror',
                         value: 'https://registry.npmmirror.com',
