@@ -3,16 +3,19 @@ import got from 'got-cjs';
 import { IGrobidData } from './dataConverter';
 import { distance } from 'fastest-levenshtein';
 import log from 'electron-log';
+import { getGotOptions } from '../../utils/network';
 const utils = DomUtils;
 const TAG = '[Main/Grobid/Semantic]';
 export async function semanticQuery(semanticID: string) {
     console.log('Query with semantic scholar');
-    const html = await got('https://www.semanticscholar.org/paper/' + semanticID, {
-        headers: {
-            'User-Agent':
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
-        },
-    });
+    const html = await got(
+        getGotOptions('https://www.semanticscholar.org/paper/' + semanticID, {
+            headers: {
+                'User-Agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+            },
+        })
+    );
     console.log('done');
     const dom = parseDocument(html.body);
     const databdy = utils.findOne((ele) => {
@@ -80,18 +83,20 @@ function decode(str: string) {
 }
 async function tryGetInfoByFullTitle(title: string) {
     console.log('tryGetInfoByTitle Query with semantic scholar ');
-    const res = (await got('https://api.semanticscholar.org/graph/v1/paper/search', {
-        headers: {
-            'User-Agent':
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
-        },
-        searchParams: {
-            query: title,
-            fields: 'paperId,externalIds,url,title,abstract,venue,year,referenceCount,citationCount,influentialCitationCount,isOpenAccess,fieldsOfStudy,s2FieldsOfStudy,publicationTypes,publicationDate,journal,authors',
-            offset: 0,
-            limit: 5,
-        },
-    }).json()) as any;
+    const res = (await got(
+        getGotOptions('https://api.semanticscholar.org/graph/v1/paper/search', {
+            headers: {
+                'User-Agent':
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
+            },
+            searchParams: {
+                query: title,
+                fields: 'paperId,externalIds,url,title,abstract,venue,year,referenceCount,citationCount,influentialCitationCount,isOpenAccess,fieldsOfStudy,s2FieldsOfStudy,publicationTypes,publicationDate,journal,authors',
+                offset: 0,
+                limit: 5,
+            },
+        })
+    ).json()) as any;
     console.log('done');
     // 进行一个粗略的匹配防止查到的和本文不一样。。
     if (res.data.length == 0) return null;
