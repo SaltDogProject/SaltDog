@@ -1,88 +1,47 @@
-import { Parser, DomUtils, DomHandler, parseDocument } from 'htmlparser2';
 import got from 'got-cjs';
 import { IGrobidData } from './dataConverter';
 import { distance } from 'fastest-levenshtein';
 import log from 'electron-log';
 import { getGotOptions } from '../../utils/network';
-const utils = DomUtils;
 const TAG = '[Main/Grobid/Semantic]';
-export async function semanticQuery(semanticID: string) {
-    console.log('Query with semantic scholar');
-    const html = await got(
-        getGotOptions('https://www.semanticscholar.org/paper/' + semanticID, {
-            headers: {
-                'User-Agent':
-                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
-            },
-        })
-    );
-    console.log('done');
-    const dom = parseDocument(html.body);
-    const databdy = utils.findOne((ele) => {
-        return ele.name == 'body';
-    }, dom.children);
-    const scriptsData = utils.findOne((ele) => {
-        return ele.name == 'script' && utils.innerText(ele.children).indexOf('var DATA') != -1;
-    }, databdy!.children);
-    const str = utils.innerText(scriptsData!.children);
-    const DATA = decodeURIComponent(decode(str.substring(12, str.length - 2)));
-    const dataObj = JSON.parse(DATA);
-    const result = { detail: null, citations: null };
-    for (let i = 0; i < dataObj.length; i++) {
-        if (dataObj[i]['actionType'] == 'API_REQUEST_COMPLETE' && dataObj[i]['requestType'] == 'PAPER_DETAIL')
-            result.detail = dataObj[i]['resultData'];
-        if (dataObj[i]['actionType'] == 'API_REQUEST_COMPLETE' && dataObj[i]['requestType'] == 'SEARCH_CITATIONS')
-            result.citations = dataObj[i]['resultData'];
-    }
-    return result;
+
+export function semanticQuery(semanticID: string) {
+    return new Promise((resolve, reject) => {
+        console.log('Query with semantic scholar');
+        const htmlQ = got(getGotOptions('https://www.semanticscholar.org/api/1/paper/' + semanticID)).json();
+        const citQ = got(
+            getGotOptions('https://api.semanticscholar.org/graph/v1/paper/' + semanticID + '/references', {
+                headers: {
+                    Referer: 'https://semanticscholar.org/paper/' + semanticID,
+                },
+                searchParams: {
+                    offset: 0,
+                    limit: 500,
+                    fields: 'isInfluential,corpusId,externalIds,title,abstract,venue,year,referenceCount,citationCount,influentialCitationCount,isOpenAccess,fieldsOfStudy,publicationDate,authors',
+                },
+            })
+        ).json();
+        Promise.allSettled([htmlQ, citQ]).then(([htmlTask, citejsonTask]) => {
+            const result = { detail: null, citations: null };
+            if (htmlTask.status == 'rejected') {
+                log.error(TAG, 'Get figureExtraction Failed.', htmlTask.reason);
+            } else {
+                log.log(TAG, 'Get figureExtraction Success');
+                result.detail = htmlTask.value as any;
+            }
+
+            if (citejsonTask.status == 'rejected') log.error(TAG, 'Get citation Failed.', citejsonTask.reason);
+            else {
+                log.log(TAG, 'Get citation Success');
+                result.citations = citejsonTask.value as any;
+            }
+            resolve(result);
+        });
+    });
 }
-function decode(str: string) {
-    const base64EncodeChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-    const base64DecodeChars = [
-        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59,
-        60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-        21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42,
-        43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1,
-    ];
-    let c1, c2, c3, c4;
-    let i, out;
-    const len = str.length;
-    i = 0;
-    out = '';
-    while (i < len) {
-        /* c1 */
-        do {
-            c1 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
-        } while (i < len && c1 == -1);
-        if (c1 == -1) break;
-        /* c2 */
-        do {
-            c2 = base64DecodeChars[str.charCodeAt(i++) & 0xff];
-        } while (i < len && c2 == -1);
-        if (c2 == -1) break;
-        out += String.fromCharCode((c1 << 2) | ((c2 & 0x30) >> 4));
-        /* c3 */
-        do {
-            c3 = str.charCodeAt(i++) & 0xff;
-            if (c3 == 61) return out;
-            c3 = base64DecodeChars[c3];
-        } while (i < len && c3 == -1);
-        if (c3 == -1) break;
-        out += String.fromCharCode(((c2 & 0xf) << 4) | ((c3 & 0x3c) >> 2));
-        /* c4 */
-        do {
-            c4 = str.charCodeAt(i++) & 0xff;
-            if (c4 == 61) return out;
-            c4 = base64DecodeChars[c4];
-        } while (i < len && c4 == -1);
-        if (c4 == -1) break;
-        out += String.fromCharCode(((c3 & 0x03) << 6) | c4);
-    }
-    return out;
-}
+
 async function tryGetInfoByFullTitle(title: string) {
-    console.log('tryGetInfoByTitle Query with semantic scholar ');
+    log.log(TAG, 'tryGetInfoByTitle Query with semantic scholar ');
     const res = (await got(
         getGotOptions('https://api.semanticscholar.org/graph/v1/paper/search', {
             headers: {
@@ -97,19 +56,32 @@ async function tryGetInfoByFullTitle(title: string) {
             },
         })
     ).json()) as any;
-    console.log('done');
+    log.log(TAG, 'tryGetInfoByTitle done');
     // 进行一个粗略的匹配防止查到的和本文不一样。。
-    if (res.data.length == 0) return null;
+    if (res.data.length == 0) {
+        log.log(TAG, 'Cannot get search result.', null);
+        return null;
+    }
     let searchedTitle = res.data[0].title;
     title = title.replaceAll(' ', '').toLocaleLowerCase();
     searchedTitle = searchedTitle.replaceAll(' ', '').toLocaleLowerCase();
     // 完全一致
-    if (title == searchedTitle) return res.data[0].paperId;
+    if (title == searchedTitle) {
+        log.log(TAG, 'Match Exactly!.', res.data[0].paperId);
+        return res.data[0].paperId;
+    }
 
-    // 如果一样长并且编辑距离小于1，暂且认为就是同一个，可以防止grobid ocr错误
-    if (title.length == searchedTitle.length && distance(title, searchedTitle) < 5) return res.data[0].paperId;
+    // 如果一样长并且编辑距离小于5，暂且认为就是同一个，可以防止grobid ocr错误
+    if (title.length == searchedTitle.length && distance(title, searchedTitle) < 5) {
+        log.log(TAG, 'Ambigious Matched!', res.data[0].paperId);
+        return res.data[0].paperId;
+    }
     // 关键字的互相包含
-    if (title.indexOf(searchedTitle) != -1 || searchedTitle.indexOf(title) != -1) return res.data[0].paperId;
+    if (title.indexOf(searchedTitle) != -1 || searchedTitle.indexOf(title) != -1) {
+        log.log(TAG, 'Substring Matched!', res.data[0].paperId);
+        return res.data[0].paperId;
+    }
+    log.log(TAG, 'Not matched.', null);
     return null;
 }
 function _mergeData(gdata: IGrobidData, sdata: any) {

@@ -25,19 +25,12 @@ export default class ReaderManager {
         });
         this._msgChannel.on('reader.openDetial', (raw_doi) => {
             const tab = tabManager.addTab('详情:' + raw_doi, `file:///${__static}/auxPages/jumpRedirect/index.html`);
-
-            this._msgChannel.invokeMain('semantic.getPaperHashByDOI', raw_doi, (d) => {
-                const tag = tabManager.getWebviewById(tab);
-                console.log(TAG, tag, d);
-                if (d != null) {
-                    tag && (tag.src = `https://www.semanticscholar.org/paper/${d}`);
-                } else {
-                    tag && (tag.src = `https://www.doi.org/${raw_doi}`);
-                }
-                // tag && d && (tag.src = `https://www.semanticscholar.org/paper/${d}`);
-                // tag!.reload();
-                // tabManager.addTab('详情:' + raw_doi, `https://www.semanticscholar.org/paper/${d}`);
-            });
+            const tag = tabManager.getWebviewById(tab);
+            if (raw_doi.semanticID) {
+                tag && (tag.src = `https://www.semanticscholar.org/paper/${raw_doi.semanticID}`);
+            } else {
+                tag && (tag.src = `https://www.doi.org/${raw_doi.DOI}`);
+            }
         });
     }
     private static instance: ReaderManager;
